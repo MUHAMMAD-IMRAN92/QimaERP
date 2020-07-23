@@ -19,7 +19,7 @@ use Spatie\Permission\Models\Permission;
  */
 //$user = User::where('user_id', 1)->first();
 //$user->assignRole('Coffee Buying Manager');
-$role = Role::create(['name' => 'Coffee Buyer']);
+$role = Role::create(['name' => 'Coffee Buying Manager']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
