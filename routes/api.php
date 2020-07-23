@@ -17,7 +17,7 @@ use Spatie\Permission\Models\Permission;
   | is assigned the "api" middleware group. Enjoy building your API!
   |
  */
-//$user = User::where('user_id', 1)->first();
+$user = User::where('user_id', 1)->first();
 //$user->assignRole('Coffee Buying Manager');
 //$role = Role::create(['name' => 'Coffee Buying Manager']);
 
