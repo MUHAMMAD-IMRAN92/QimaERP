@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Governerate;
+use App\Region;
 use App\LoginUser;
 use App\Province;
 use App\Village;
@@ -98,12 +99,87 @@ class AuthController extends Controller {
         return sendSuccess('Successfully retrieved Governerate', $governerates);
     }
 
-    function villages(Request $request) {
+    function addRegion(Request $request) {
+        //::validation
+        $validator = Validator::make($request->all(), [
+                    'region_code' => 'required|unique:regions,region_code',
+                    'region_title' => 'required|unique:regions,region_title',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+//::create new 
+        $region = Region::create([
+                    'region_code' => $request['region_code'],
+                    'region_title' => $request['region_title'],
+        ]);
 
-        $villages = Village::OrderBy('village_name', 'asc')->get();
-        return sendSuccess('Successfully retrieved villages', $villages);
+        return sendSuccess('Region was created Successfully', $region);
     }
 
+    function regions(Request $request) {
+        $skip = 0;
+        if ($request->skip) {
+            $skip = $request->skip * 15;
+        }
+        $take = 15;
+        $search = $request->search;
+        $regions = Region::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('region_title', 'like', "%$search%")->orwhere('region_code', 'like', "%$search%");
+                    });
+                })->skip($skip)->take($take)->orderBy('region_title')->get();
+        return sendSuccess('Successfully retrieved region', $regions);
+    }
+
+    function addVillage(Request $request) {
+        //::validation
+        $validator = Validator::make($request->all(), [
+                    'village_title' => 'required|unique:villages,village_title',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+        $lastVillage = Village::orderBy('created_at', 'desc')->first();
+
+        $villageCode = '01';
+        if (isset($lastVillage) && $lastVillage) {
+            $length = strlen((string) $lastVillage->village_id);
+            if ($length == '1') {
+                $villageCode = '0' . ($lastVillage->village_id + 1);
+            } else {
+                $villageCode = ($lastVillage->village_id + 1);
+            }
+        }
+//::create new 
+        $village = Village::create([
+                    'village_code' => $villageCode,
+                    'village_title' => $request['village_title'],
+        ]);
+
+        return sendSuccess('Village was created Successfully', $village);
+    }
+
+  
+
+    
+     function villages(Request $request) {
+        $skip = 0;
+        if ($request->skip) {
+            $skip = $request->skip * 15;
+        }
+        $take = 15;
+        $search = $request->search;
+        $villages = Village::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('village_title', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
+                    });
+                })->skip($skip)->take($take)->orderBy('village_title')->get();
+        return sendSuccess('Successfully retrieved villages', $villages);
+    }
+    
     function provinces(Request $request) {
 
         $provinces = Province::OrderBy('province_name', 'asc')->get();
