@@ -2,10 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\User;
-
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+//use App\User;
+//
+//use Spatie\Permission\Models\Role;
+//use Spatie\Permission\Models\Permission;
 
 /*
   |--------------------------------------------------------------------------
@@ -17,8 +17,8 @@ use Spatie\Permission\Models\Permission;
   | is assigned the "api" middleware group. Enjoy building your API!
   |
  */
-$user = User::where('user_id', 1)->first();
-$user->assignRole('Coffee Buying Manager');
+//$user = User::where('user_id', 1)->first();
+//$user->assignRole('Coffee Buying Manager');
 //$role = Role::create(['name' => 'Coffee Buying Manager']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
