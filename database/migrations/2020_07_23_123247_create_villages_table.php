@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGoverneratesTable extends Migration {
+class CreateVillagesTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,10 +12,10 @@ class CreateGoverneratesTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('governerates', function (Blueprint $table) {
-            $table->id('governerate_id');
-            $table->string('governerate_code', 10)->index();
-            $table->string('governerate_title');
+        Schema::create('villages', function (Blueprint $table) {
+            $table->id('village_id');
+            $table->string('village_code')->index();
+            $table->string('village_title');
             $table->timestamps();
         });
     }
@@ -26,7 +26,7 @@ class CreateGoverneratesTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::dropIfExists('governerates');
+        Schema::dropIfExists('villages');
     }
 
 }

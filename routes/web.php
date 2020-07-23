@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('login', 'AuthController@adminLogin')->name('login');
 Route::get('/', function () {
-    return view('welcome');
+    return Redirect::route('login');
+   // return view('welcome');
 });
 
 
