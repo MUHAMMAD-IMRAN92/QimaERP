@@ -31,13 +31,23 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 // Logged In users
     Route::group(['middleware' => ['checkSession']], function () {
         //::governerate
-        Route::post('/add_governerate', 'API\AuthController@addGovernerate');
-        Route::get('/governerate', 'API\AuthController@governerate');
+        Route::post('/add_governerate', 'API\CommonController@addGovernerate');
+        Route::get('/governerate', 'API\CommonController@governerate');
         //::region
-        Route::post('/add_region', 'API\AuthController@addRegion');
-        Route::get('/regions', 'API\AuthController@regions');
+        Route::post('/add_region', 'API\CommonController@addRegion');
+        Route::get('/regions', 'API\CommonController@regions');
         //::village
-        Route::post('/add_village', 'API\AuthController@addVillage');
-        Route::get('/villages', 'API\AuthController@villages');
+        Route::post('/add_village', 'API\CommonController@addVillage');
+        Route::get('/villages', 'API\CommonController@villages');
+
+        //::farmer
+        Route::post('/add_farmer', 'API\CommonController@addFarmer');
+        //::coffee buyer manager
+        Route::get('/coffee_buyer_manager_farmer', 'API\CoffeeBuyerManager@farmer');
+        //::coffee buyer
+        Route::get('/coffee_buyer_farmer', 'API\CoffeeBuyer@farmer');
+        //::Add container
+         Route::post('/add_container', 'API\CommonController@addContainer');
+         Route::get('/containers', 'API\CommonController@containers');
     });
 });

@@ -30,3 +30,81 @@ function sendSuccess($message, $data) {
 function sendError($error_message, $code, $data = null) {
     return Response::json(array('status' => 'error', 'message' => $error_message, 'data' => $data), $code);
 }
+
+function containerType() {
+    $arr = array(
+        1 => array(
+            'code' => 'BS',
+            'type' => 'Basket',
+        ),
+        2 => array(
+            'code' => 'DT',
+            'type' => 'Drying Tables',
+        ),
+        3 => array(
+            'code' => 'SC',
+            'type' => 'Special Process barrel',
+        ),
+        4 => array(
+            'code' => 'DM',
+            'type' => 'Drying Machine (Future)',
+        ),
+        5 => array(
+            'code' => 'DS',
+            'type' => 'Dry Coffee Bag',
+        ),
+        6 => array(
+            'code' => 'GS',
+            'type' => 'Pre Defect removal Export Coffee (Size 1 and Size 2) bag',
+        ),
+        7 => array(
+            'code' => 'ES',
+            'type' => 'Defect Free Export coffee (Size 1 and Size 2) bag',
+        ),
+        8 => array(
+            'code' => 'PS',
+            'type' => 'Peaberry Coffee Bag',
+        ),
+        9 => array(
+            'code' => 'SS',
+            'type' => 'Grade 2 Coffee (small and big beans)',
+        ),
+        10 => array(
+            'code' => 'LS',
+            'type' => 'Grade 3 (defect) Coffee',
+        ),
+        11 => array(
+            'code' => 'HS',
+            'type' => 'Grade 1 husk  Bag',
+        ),
+        12 => array(
+            'code' => 'QS',
+            'type' => 'Grade 2 husk Bag',
+        ),
+        13 => array(
+            'code' => 'KS',
+            'type' => 'Grade 3 husk bag',
+        ),
+        14 => array(
+            'code' => 'VB',
+            'type' => '5kg Vacuum Bag for export',
+        ),
+        15 => array(
+            'code' => 'PB',
+            'type' => '15kg Premium Bag for export',
+        ),
+        16 => array(
+            'code' => 'VP',
+            'type' => '10kg Shipping Box',
+        ),
+        17 => array(
+            'code' => 'PP',
+            'type' => '30kg Shipping Box',
+        ),
+        18 => array(
+            'code' => 'SM',
+            'type' => 'Sample Bag 1',
+        )
+    );
+    return $arr;
+}
