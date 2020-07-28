@@ -34,7 +34,6 @@ class CommonController extends Controller {
         foreach ($governerates as $key => $governerate) {
             $systemExist = Governerate::Where('governerate_code', $governerate->governerate_code)->where('governerate_title', $governerate->governerate_title)->first();
             if (!$systemExist) {
-
                 //::create new 
                 $governerate = Governerate::create([
                             'governerate_code' => $governerate->governerate_code,
