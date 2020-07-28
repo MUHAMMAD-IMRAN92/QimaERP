@@ -22,20 +22,32 @@ class CommonController extends Controller {
     function addGovernerate(Request $request) {
         //::validation
         $validator = Validator::make($request->all(), [
-                    'governerate_code' => 'required|unique:governerates,governerate_code',
-                    'governerate_title' => 'required|unique:governerates,governerate_title',
+                    'governerates' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-//::create new 
-        $governerate = Governerate::create([
-                    'governerate_code' => $request['governerate_code'],
-                    'governerate_title' => $request['governerate_title'],
-        ]);
 
-        return sendSuccess('Governerate was created Successfully', $governerate);
+        $governerates = json_decode($request['governerates']);
+
+        foreach ($governerates as $key => $governerate) {
+            $systemExist = Governerate::Where('governerate_code', $governerate->governerate_code)->where('governerate_title', $governerate->governerate_title)->first();
+            if (!$systemExist) {
+
+                //::create new 
+                $governerate = Governerate::create([
+                            'governerate_code' => $governerate->governerate_code,
+                            'governerate_title' => $governerate->governerate_title,
+                            'created_by' => $governerate->created_by,
+                            'is_local' => TRUE,
+                            'local_code' => $governerate->local_code,
+                ]);
+            }
+        }
+
+
+        return sendSuccess('Governerate was created Successfully', []);
     }
 
     function governerate(Request $request) {

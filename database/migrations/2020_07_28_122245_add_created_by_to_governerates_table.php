@@ -15,26 +15,26 @@ class AddCreatedByToGoverneratesTable extends Migration {
         Schema::table('governerates', function (Blueprint $table) {
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->boolean('is_local')->default(1)->nullable();
+            $table->boolean('is_local')->default(0)->nullable();
             $table->string('local_code')->nullable();
         });
 
         Schema::table('regions', function (Blueprint $table) {
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->boolean('is_local')->default(1)->nullable();
+            $table->boolean('is_local')->default(0)->nullable();
             $table->string('local_code')->nullable();
         });
         Schema::table('villages', function (Blueprint $table) {
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->boolean('is_local')->default(1)->nullable();
+            $table->boolean('is_local')->default(0)->nullable();
             $table->string('local_code')->nullable();
         });
         Schema::table('farmers', function (Blueprint $table) {
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade');
-            $table->boolean('is_local')->default(1)->nullable();
+            $table->boolean('is_local')->default(0)->nullable();
             $table->string('local_code')->nullable();
         });
     }
