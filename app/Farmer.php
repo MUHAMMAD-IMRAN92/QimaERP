@@ -10,7 +10,7 @@ class Farmer extends Model {
         'is_local' => 'boolean',
     ];
     protected $primaryKey = 'farmer_id';
-    protected $fillable = ['farmer_code', 'farmer_name', 'governerate_code', 'region_code', 'village_code', 'picture_id', 'idcard_picture_id', 'is_status'];
+    protected $fillable = ['farmer_code', 'farmer_name', 'governerate_code', 'region_code', 'village_code', 'picture_id', 'idcard_picture_id', 'is_status','created_by','is_local','local_code'];
 
     public function governerate() {
         return $this->belongsTo(Governerate::class, 'governerate_code', 'governerate_code');

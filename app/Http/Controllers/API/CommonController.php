@@ -12,6 +12,7 @@ use App\FileSystem;
 use App\Village;
 use App\Region;
 use App\Farmer;
+use Storage;
 
 class CommonController extends Controller {
 
@@ -28,9 +29,7 @@ class CommonController extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-
         $governerates = json_decode($request['governerates']);
-
         foreach ($governerates as $key => $governerate) {
             $systemExist = Governerate::Where('governerate_code', $governerate->governerate_code)->where('governerate_title', $governerate->governerate_title)->first();
             if (!$systemExist) {
@@ -39,13 +38,11 @@ class CommonController extends Controller {
                             'governerate_code' => $governerate->governerate_code,
                             'governerate_title' => $governerate->governerate_title,
                             'created_by' => $governerate->created_by,
-                            'is_local' => TRUE,
+                            'is_local' => FALSE,
                             'local_code' => $governerate->local_code,
                 ]);
             }
         }
-
-
         return sendSuccess('Governerate was created Successfully', []);
     }
 
@@ -67,20 +64,27 @@ class CommonController extends Controller {
     function addRegion(Request $request) {
         //::validation
         $validator = Validator::make($request->all(), [
-                    'region_code' => 'required|unique:regions,region_code',
-                    'region_title' => 'required|unique:regions,region_title',
+                    'regions' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+        $regions = json_decode($request['regions']);
+        foreach ($regions as $key => $region) {
+            $systemExist = Region::Where('region_code', $region->region_code)->where('region_title', $region->region_title)->first();
+            if (!$systemExist) {
 //::create new 
-        $region = Region::create([
-                    'region_code' => $request['region_code'],
-                    'region_title' => $request['region_title'],
-        ]);
-
-        return sendSuccess('Region was created Successfully', $region);
+                $region = Region::create([
+                            'region_code' => $region->region_code,
+                            'region_title' => $region->region_title,
+                            'created_by' => $region->created_by,
+                            'is_local' => FALSE,
+                            'local_code' => $region->local_code,
+                ]);
+            }
+        }
+        return sendSuccess('Region was created Successfully', []);
     }
 
     function regions(Request $request) {
@@ -99,32 +103,37 @@ class CommonController extends Controller {
     }
 
     function addVillage(Request $request) {
+
         //::validation
         $validator = Validator::make($request->all(), [
-                    'village_title' => 'required|unique:villages,village_title',
+                    'villages' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+        $currentVillageCode = 1;
         $lastVillage = Village::orderBy('created_at', 'desc')->first();
-
-        $villageCode = '01';
         if (isset($lastVillage) && $lastVillage) {
-            $length = strlen((string) $lastVillage->village_id);
-            if ($length == '1') {
-                $villageCode = '0' . ($lastVillage->village_id + 1);
-            } else {
-                $villageCode = ($lastVillage->village_id + 1);
+            $currentVillageCode = ($lastVillage->village_id + 1);
+        }
+        $villages = json_decode($request['villages']);
+        foreach ($villages as $key => $village) {
+            $systemExist = Village::Where('village_code', 'like', "%$village->village_code%")->where('village_title', $village->village_title)->first();
+            if (!$systemExist) {
+                $twoDigitCode = sprintf("%02d", ($currentVillageCode));
+                //::create new 
+                $village = Village::create([
+                            'village_code' => $village->village_code . '-' . $twoDigitCode,
+                            'village_title' => $village->village_title,
+                            'created_by' => $village->created_by,
+                            'is_local' => FALSE,
+                            'local_code' => $village->local_code,
+                ]);
+                $currentVillageCode++;
             }
         }
-//::create new 
-        $village = Village::create([
-                    'village_code' => $villageCode,
-                    'village_title' => $request['village_title'],
-        ]);
-
-        return sendSuccess('Village was created Successfully', $village);
+        return sendSuccess('Village was created Successfully', []);
     }
 
     function villages(Request $request) {
@@ -143,6 +152,7 @@ class CommonController extends Controller {
     }
 
     function addFarmer(Request $request) {
+
         //::validation
         $validator = Validator::make($request->all(), [
                     'farmer_name' => 'required|max:100',
@@ -157,15 +167,18 @@ class CommonController extends Controller {
         $profileImageId = null;
         $idcardImageId = null;
         if ($request->profile_picture) {
-            $file = $request->profile_picture;
-            $originalFileName = $file->getClientOriginalName();
-            $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $request->file('profile_picture')->storeAs('images', $file_name);
-            $userProfileImage = FileSystem::create([
-                        'user_file_name' => $originalFileName,
-                        'system_file_name' => $file_name,
-            ]);
-            $profileImageId = $userProfileImage->file_id;
+           $ext= (explode(".",$request['profile_picture_system_name']));
+   
+            $originalFileName = $request['profile_picture_system_name'];
+            $file_name = time() . '.' . $ext[1];
+             Storage::disk('images')->put($file_name, base64_decode($request['profile_picture']));
+           // $imageFileFromB64->file('profile_picture')->storeAs('images', $file_name);
+            die("x");
+//            $userProfileImage = FileSystem::create([
+//                        'user_file_name' => $originalFileName,
+//                        'system_file_name' => $file_name,
+//            ]);
+//            $profileImageId = $userProfileImage->file_id;
         }
 
         if ($request->idcard_picture) {
@@ -179,22 +192,13 @@ class CommonController extends Controller {
             ]);
             $idcardImageId = $userIdCardImage->file_id;
         }
-
-
         $lastFarmer = Farmer::orderBy('created_at', 'desc')->first();
-
-        $farmerCode = '001';
+        $currentFarmerCode = 1;
         if (isset($lastFarmer) && $lastFarmer) {
-            $length = strlen((string) $lastFarmer->farmer_id);
-            if ($length == '1') {
-                $farmerCode = '00' . ($lastFarmer->farmer_id + 1);
-            } elseif ($length == '2') {
-                $farmerCode = '0' . ($lastFarmer->farmer_id + 1);
-            } else {
-                $farmerCode = ($lastFarmer->farmer_id + 1);
-            }
+            $currentFarmerCode = ($lastFarmer->farmer_id + 1);
         }
-
+        var_dump(sprintf("%03d", $currentFarmerCode));
+        exit;
 //::create new 
         $farmer = Farmer::create([
                     'farmer_code' => $request['governerate_code'] . '-' . $request['region_code'] . '-' . $request['village_code'] . '-' . $farmerCode,

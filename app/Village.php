@@ -10,6 +10,6 @@ class Village extends Model {
         'is_local' => 'boolean',
     ];
     protected $primaryKey = 'village_id';
-    protected $fillable = ['village_code', 'village_title'];
+    protected $fillable = ['village_code', 'village_title', 'created_by', 'is_local', 'local_code'];
 
 }

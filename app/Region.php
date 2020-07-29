@@ -10,6 +10,6 @@ class Region extends Model {
         'is_local' => 'boolean',
     ];
     protected $primaryKey = 'region_id';
-    protected $fillable = ['region_code', 'region_title'];
+    protected $fillable = ['region_code', 'region_title','created_by','is_local','local_code'];
 
 }
