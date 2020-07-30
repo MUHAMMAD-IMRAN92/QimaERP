@@ -119,18 +119,25 @@ class CommonController extends Controller {
         }
         $villages = json_decode($request['villages']);
         foreach ($villages as $key => $village) {
-            $systemExist = Village::Where('village_code', 'like', "%$village->village_code%")->where('village_title', $village->village_title)->first();
-            if (!$systemExist) {
-                $twoDigitCode = sprintf("%02d", ($currentVillageCode));
-                //::create new 
-                $village = Village::create([
-                            'village_code' => $village->village_code . '-' . $twoDigitCode,
-                            'village_title' => $village->village_title,
-                            'created_by' => $village->created_by,
-                            'is_local' => FALSE,
-                            'local_code' => $village->local_code,
-                ]);
-                $currentVillageCode++;
+            if ($village->is_local == '1') {
+                $code = explode("-", $village->village_code);
+                $explodeCode = $code[0] . '-' . $code[1];
+                $systemExist = Village::Where('local_code', 'like', "%$explodeCode%")->where('village_title', $village->village_title)->first();
+                if (!$systemExist) {
+                    $twoDigitCode = sprintf("%02d", ($currentVillageCode));
+                    //::create new 
+                    $village = Village::create([
+                                'village_code' => $explodeCode . '-' . $twoDigitCode,
+                                'village_title' => $village->village_title,
+                                'created_by' => $village->created_by,
+                                'is_local' => FALSE,
+                                'local_code' => $village->local_code,
+                    ]);
+                    $currentVillageCode++;
+                } else {
+                    $systemExist->local_code = $systemExist->local_code . ',' . $village->local_code;
+                    $systemExist->save();
+                }
             }
         }
         return sendSuccess('Village was created Successfully', []);
@@ -167,12 +174,12 @@ class CommonController extends Controller {
         $profileImageId = null;
         $idcardImageId = null;
         if ($request->profile_picture) {
-           $ext= (explode(".",$request['profile_picture_system_name']));
-   
+            $ext = (explode(".", $request['profile_picture_system_name']));
+
             $originalFileName = $request['profile_picture_system_name'];
             $file_name = time() . '.' . $ext[1];
-             Storage::disk('images')->put($file_name, base64_decode($request['profile_picture']));
-           // $imageFileFromB64->file('profile_picture')->storeAs('images', $file_name);
+            Storage::disk('images')->put($file_name, base64_decode($request['profile_picture']));
+            // $imageFileFromB64->file('profile_picture')->storeAs('images', $file_name);
             die("x");
 //            $userProfileImage = FileSystem::create([
 //                        'user_file_name' => $originalFileName,
