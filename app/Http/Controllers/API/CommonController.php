@@ -163,60 +163,68 @@ class CommonController extends Controller {
         //::validation
         $validator = Validator::make($request->all(), [
                     'farmer_name' => 'required|max:100',
-                    'governerate_code' => 'required|exists:governerates,governerate_code',
-                    'region_code' => 'required|exists:regions,region_code',
-                    'village_code' => 'required|exists:villages,village_code',
+                    'farmer_nicn' => 'required',
+                    'created_by' => 'required',
+                    'village_code' => 'required',
+                    'local_code' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-        $profileImageId = null;
-        $idcardImageId = null;
-        if ($request->profile_picture) {
-            $ext = (explode(".", $request['profile_picture_system_name']));
 
-            $originalFileName = $request['profile_picture_system_name'];
-            $file_name = time() . '.' . $ext[1];
-            Storage::disk('images')->put($file_name, base64_decode($request['profile_picture']));
-            // $imageFileFromB64->file('profile_picture')->storeAs('images', $file_name);
-            die("x");
-//            $userProfileImage = FileSystem::create([
-//                        'user_file_name' => $originalFileName,
-//                        'system_file_name' => $file_name,
-//            ]);
-//            $profileImageId = $userProfileImage->file_id;
-        }
+        $farmer = Farmer::where('farmer_nicn', $request['farmer_nicn'])->first();
+        if (!$farmer) {
 
-        if ($request->idcard_picture) {
-            $file = $request->idcard_picture;
-            $originalFileName = $file->getClientOriginalName();
-            $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $request->file('profile_picture')->storeAs('images', $file_name);
-            $userIdCardImage = FileSystem::create([
-                        'user_file_name' => $originalFileName,
-                        'system_file_name' => $file_name,
-            ]);
-            $idcardImageId = $userIdCardImage->file_id;
-        }
-        $lastFarmer = Farmer::orderBy('created_at', 'desc')->first();
-        $currentFarmerCode = 1;
-        if (isset($lastFarmer) && $lastFarmer) {
-            $currentFarmerCode = ($lastFarmer->farmer_id + 1);
-        }
-        var_dump(sprintf("%03d", $currentFarmerCode));
-        exit;
+            $profileImageId = null;
+            $idcardImageId = null;
+            if ($request->profile_picture) {
+                $file = $request->profile_picture;
+                $originalFileName = $file->getClientOriginalName();
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $request->file('profile_picture')->storeAs('images', $file_name);
+                $userProfileImage = FileSystem::create([
+                            'user_file_name' => $originalFileName,
+                            'system_file_name' => $file_name,
+                ]);
+                $profileImageId = $userProfileImage->file_id;
+            }
+
+            if ($request->idcard_picture) {
+                $file = $request->idcard_picture;
+                $originalFileName = $file->getClientOriginalName();
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $request->file('idcard_picture')->storeAs('images', $file_name);
+                $userIdCardImage = FileSystem::create([
+                            'user_file_name' => $originalFileName,
+                            'system_file_name' => $file_name,
+                ]);
+                $idcardImageId = $userIdCardImage->file_id;
+            }
+            $lastFarmer = Farmer::orderBy('created_at', 'desc')->first();
+            $currentFarmerCode = 1;
+            if (isset($lastFarmer) && $lastFarmer) {
+                $currentFarmerCode = ($lastFarmer->farmer_id + 1);
+            }
+            $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
+
+            $village = Village::where('local_code', 'like', "%$request->village_code%")->where('created_by',$request['created_by'])->first();
 //::create new 
-        $farmer = Farmer::create([
-                    'farmer_code' => $request['governerate_code'] . '-' . $request['region_code'] . '-' . $request['village_code'] . '-' . $farmerCode,
-                    'farmer_name' => $request['farmer_name'],
-                    'governerate_code' => $request['governerate_code'],
-                    'region_code' => $request['region_code'],
-                    'village_code' => $request['village_code'],
-                    'picture_id' => $profileImageId,
-                    'idcard_picture_id' => $idcardImageId,
-        ]);
-
+            $farmer = Farmer::create([
+                        'farmer_code' => $village->village_code . '-' . $currentFarmerCode,
+                        'farmer_name' => $request['farmer_name'],
+                        'village_code' => $request['village_code'],
+                        'picture_id' => $profileImageId,
+                        'idcard_picture_id' => $idcardImageId,
+                        'farmer_nicn' => $request['farmer_nicn'],
+                        'local_code' => $request['local_code'],
+                        'is_local' => 0,
+                        'created_by' => $request['created_by'],
+            ]);
+        } else {
+            $farmer->local_code= $farmer->local_code . ',' . $request->local_code;
+            $farmer->save();
+        }
         return sendSuccess('Farmer was created Successfully', $farmer);
     }
 
