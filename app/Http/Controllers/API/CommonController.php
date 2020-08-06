@@ -47,17 +47,12 @@ class CommonController extends Controller {
     }
 
     function governerate(Request $request) {
-        $skip = 0;
-        if ($request->skip) {
-            $skip = $request->skip * 15;
-        }
-        $take = 15;
         $search = $request->search;
         $governerates = Governerate::when($search, function($q) use ($search) {
                     $q->where(function($q) use ($search) {
                         $q->where('governerate_title', 'like', "%$search%")->orwhere('governerate_code', 'like', "%$search%");
                     });
-                })->skip($skip)->take($take)->orderBy('governerate_title')->get();
+                })->orderBy('governerate_title')->get();
         return sendSuccess('Successfully retrieved Governerate', $governerates);
     }
 
@@ -88,22 +83,16 @@ class CommonController extends Controller {
     }
 
     function regions(Request $request) {
-        $skip = 0;
-        if ($request->skip) {
-            $skip = $request->skip * 15;
-        }
-        $take = 15;
         $search = $request->search;
         $regions = Region::when($search, function($q) use ($search) {
                     $q->where(function($q) use ($search) {
                         $q->where('region_title', 'like', "%$search%")->orwhere('region_code', 'like', "%$search%");
                     });
-                })->skip($skip)->take($take)->orderBy('region_title')->get();
+                })->orderBy('region_title')->get();
         return sendSuccess('Successfully retrieved region', $regions);
     }
 
     function addVillage(Request $request) {
-
         //::validation
         $validator = Validator::make($request->all(), [
                     'villages' => 'required',
@@ -144,22 +133,16 @@ class CommonController extends Controller {
     }
 
     function villages(Request $request) {
-        $skip = 0;
-        if ($request->skip) {
-            $skip = $request->skip * 15;
-        }
-        $take = 15;
         $search = $request->search;
         $villages = Village::when($search, function($q) use ($search) {
                     $q->where(function($q) use ($search) {
                         $q->where('village_title', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
                     });
-                })->skip($skip)->take($take)->orderBy('village_title')->get();
+                })->orderBy('village_title')->get();
         return sendSuccess('Successfully retrieved villages', $villages);
     }
 
     function addFarmer(Request $request) {
-
         //::validation
         $validator = Validator::make($request->all(), [
                     'farmer_name' => 'required|max:100',
@@ -207,8 +190,7 @@ class CommonController extends Controller {
                 $currentFarmerCode = ($lastFarmer->farmer_id + 1);
             }
             $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
-
-            $village = Village::where('local_code', 'like', "%$request->village_code%")->where('created_by',$request['created_by'])->first();
+            $village = Village::where('local_code', 'like', "%$request->village_code%")->where('created_by', $request['created_by'])->first();
 //::create new 
             $farmer = Farmer::create([
                         'farmer_code' => $village->village_code . '-' . $currentFarmerCode,
@@ -222,38 +204,46 @@ class CommonController extends Controller {
                         'created_by' => $request['created_by'],
             ]);
         } else {
-            $farmer->local_code= $farmer->local_code . ',' . $request->local_code;
+            $farmer->local_code = $farmer->local_code . ',' . $request->local_code;
             $farmer->save();
         }
         return sendSuccess('Farmer was created Successfully', $farmer);
     }
 
+    function farmers(Request $request) {
+        $search = $request->search;
+        $farmers = Farmer::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('farmer_code', 'like', "%$search%")->orwhere('farmer_name', 'like', "%$search%");
+                    });
+                })->orderBy('farmer_name')->get();
+        return sendSuccess('Successfully retrieved farmers', $farmers);
+    }
+
     function addContainer(Request $request) {
         //::validation
         $validator = Validator::make($request->all(), [
-                    'container_type' => ['required', Rule::in(['1', '2', '3', '4', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'])],
-                    'capacity' => 'required',
+                    'containers' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
         $containerTypeArray = containerType();
-        $selectedContainerType = $containerTypeArray[$request['container_type']];
-        $containerTypeCode = $selectedContainerType['code'];
-
-        $containerNumber = $containerTypeCode . '1';
-        $lastContainer = Container::where('container_number', 'like', "%$containerTypeCode%")->orderBy('created_at', 'desc')->first();
-        if ($lastContainer) {
-            $lastContainerNumber = $lastContainer->container_number;
-            $containerNumber = ++$lastContainerNumber;
+        $containers = json_decode($request['containers']);
+        foreach ($containers as $key => $container) {
+            $containerTypeCode = preg_replace('/[0-9]+/', '', $container->container_code);
+            $containerType = searcharray($containerTypeCode, 'code', $containerTypeArray);
+            //::create new 
+            $container = Container::create([
+                        'container_number' => $container->container_code,
+                        'container_type' => $containerType,
+                        'capacity' => $container->capacity,
+                        'created_by' => $container->created_by,
+                        'is_local' => FALSE,
+                        'local_code' => $container->local_code,
+            ]);
         }
-        //::create new 
-        $container = Container::create([
-                    'container_number' => $containerNumber,
-                    'container_type' => $request['container_type'],
-                    'capacity' => $request['capacity'],
-        ]);
         return sendSuccess('Container was created Successfully', $container);
     }
 

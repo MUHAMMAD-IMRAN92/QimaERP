@@ -109,6 +109,15 @@ function containerType() {
     return $arr;
 }
 
+function searcharray($value, $key, $array) {
+    foreach ($array as $k => $val) {
+        if ($val[$key] == $value) {
+            return $k;
+        }
+    }
+    return null;
+}
+
 function getFileExtensionForBase64($file) {
 
     $finfo = new finfo(FILEINFO_MIME_TYPE);
