@@ -48,7 +48,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::coffee buyer
         Route::get('/coffee_buyer_farmer', 'API\CoffeeBuyer@farmer');
         //::Add container
-         Route::post('/add_container', 'API\CommonController@addContainer');
-         Route::get('/containers', 'API\CommonController@containers');
+        Route::post('/add_container', 'API\CommonController@addContainer');
+        Route::get('/containers', 'API\CommonController@containers');
+        //::Batch number
+        Route::post('/add_batch_number', 'API\CommonController@addBatchNumberWithTransaction');
     });
 });

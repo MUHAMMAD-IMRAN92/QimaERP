@@ -12,6 +12,9 @@ use App\FileSystem;
 use App\Village;
 use App\Region;
 use App\Farmer;
+use App\BatchNumber;
+use App\Transaction;
+use App\TransactionDetail;
 use Storage;
 
 class CommonController extends Controller {
@@ -158,7 +161,6 @@ class CommonController extends Controller {
 
         $farmer = Farmer::where('farmer_nicn', $request['farmer_nicn'])->first();
         if (!$farmer) {
-
             $profileImageId = null;
             $idcardImageId = null;
             if ($request->profile_picture) {
@@ -190,7 +192,7 @@ class CommonController extends Controller {
                 $currentFarmerCode = ($lastFarmer->farmer_id + 1);
             }
             $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
-            $village = Village::where('local_code', 'like', "%$request->village_code%")->where('created_by', $request['created_by'])->first();
+            $village = Village::where('local_code', 'like', "%$request->village_code%")->first();
 //::create new 
             $farmer = Farmer::create([
                         'farmer_code' => $village->village_code . '-' . $currentFarmerCode,
@@ -248,18 +250,55 @@ class CommonController extends Controller {
     }
 
     function containers(Request $request) {
-        $skip = 0;
-        if ($request->skip) {
-            $skip = $request->skip * 15;
-        }
-        $take = 15;
         $containerNumber = $request->container_number;
         $containers = Container::when($containerNumber, function($q) use ($containerNumber) {
                     $q->where(function($q) use ($containerNumber) {
                         $q->where('container_number', 'like', "%$containerNumber%");
                     });
-                })->skip($skip)->take($take)->orderBy('container_number')->get();
+                })->orderBy('container_number')->get();
         return sendSuccess('Successfully retrieved containera', $containers);
+    }
+
+    function addBatchNumberWithTransaction(Request $request) {
+        //::validation
+        $validator = Validator::make($request->all(), [
+                    'batch_number' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+        $lastBID = 0;
+        $lastTID = 0;
+        $lastBatchNumber = BatchNumber::latest('batch_id')->first();
+        $lastTransactionNumber = Transaction::latest('transaction_id')->first();
+        if ($lastBatchNumber) {
+            $lastBID = $lastBatchNumber->batch_id;
+        }
+        if ($lastTransactionNumber) {
+            $lastTID = $lastTransactionNumber->batch_id;
+        }
+        $batch_numbers = json_decode($request['batch_number']);
+        $childBatchNumberArray = array();
+        $childTransactionArray = array();
+        foreach ($batch_numbers->child_batch as $key => $childBatch) {
+            $removeLocalId = explode("-", $childBatch->batch_code);
+            array_pop($removeLocalId);
+            $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->created_by;
+            $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+            $lastBID = $lastBID + 1;
+            $newBatch = BatchNumber::create([
+                        'batch_number' => $farmer->farmer_code.'-'.$lastBID,
+                        'is_parent' => 0,
+                        'created_by' => $childBatch->created_by,
+                        'is_local' => FALSE,
+                        'local_code' => $childBatch->local_code,
+            ]);
+        }
+        return sendSuccess('Village was created Successfully', $batch_numbers->child_batch);
+        var_dump($batch_numbers);
+        exit;
+        return sendSuccess('Village was created Successfully', []);
     }
 
 }
