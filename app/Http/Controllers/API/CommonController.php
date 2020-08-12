@@ -270,7 +270,9 @@ class CommonController extends Controller {
         }
         $lastBID = 0;
         $lastTID = 0;
+        //::last batch number id
         $lastBatchNumber = BatchNumber::latest('batch_id')->first();
+        //::last transaction id
         $lastTransactionNumber = Transaction::latest('transaction_id')->first();
         if ($lastBatchNumber) {
             $lastBID = $lastBatchNumber->batch_id;
@@ -279,26 +281,94 @@ class CommonController extends Controller {
             $lastTID = $lastTransactionNumber->batch_id;
         }
         $batch_numbers = json_decode($request['batch_number']);
+        //::insert child batches id
         $childBatchNumberArray = array();
+        //::insert child transactions id
         $childTransactionArray = array();
+        //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
             $removeLocalId = explode("-", $childBatch->batch_code);
+            //::remove last index of array
             array_pop($removeLocalId);
             $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->created_by;
             $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
             $lastBID = $lastBID + 1;
             $newBatch = BatchNumber::create([
-                        'batch_number' => $farmer->farmer_code.'-'.$lastBID,
+                        'batch_number' => $farmer->farmer_code . '-' . $lastBID,
                         'is_parent' => 0,
                         'created_by' => $childBatch->created_by,
                         'is_local' => FALSE,
                         'local_code' => $childBatch->local_code,
             ]);
+            //::child transactions
+            if (isset($childBatch->transactions) && $childBatch->transactions) {
+                $newTransaction = Transaction::create([
+                            'batch_number' => $newBatch->batch_number,
+                            'is_parent' => 0,
+                            'created_by' => $childBatch->transactions->created_by,
+                            'is_local' => FALSE,
+                            'local_code' => $childBatch->transactions->local_code,
+                ]);
+                //::child transactions details
+                if (isset($childBatch->transactions->transactions_detail) && $childBatch->transactions->transactions_detail) {
+                    $transactionsDetails = $childBatch->transactions->transactions_detail;
+                    foreach ($transactionsDetails as $key => $transactionsDetail) {
+                        TransactionDetail::create([
+                            'transaction_id' => $newTransaction->transaction_id,
+                            'container_number' => $transactionsDetail->container_number,
+                            'created_by' => $childBatch->transactions->created_by,
+                            'is_local' => FALSE,
+                                //  'local_code' => $transactionsDetail->local_code,
+                        ]);
+                    }
+                }
+            }
+            array_push($childBatchNumberArray, $newBatch->batch_id);
+            array_push($childTransactionArray, $newTransaction->transaction_id);
         }
-        return sendSuccess('Village was created Successfully', $batch_numbers->child_batch);
-        var_dump($batch_numbers);
-        exit;
-        return sendSuccess('Village was created Successfully', []);
+        //::add parent batch
+        $removeLocalId = explode("-", $batch_numbers->batch_code);
+        //::remove last index of array
+        array_pop($removeLocalId);
+        if ($removeLocalId[3] == '000') {
+            $parentBatchCode = implode("-", $removeLocalId) . '-' . ($lastBID + 1);
+        } else {
+
+            $farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->created_by;
+            $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+            $parentBatchCode = $farmer->farmer_code . '-' . ($lastBID + 1);
+        }
+        $parentBatch = BatchNumber::create([
+                    'batch_number' => $parentBatchCode,
+                    'is_parent' => 0,
+                    'created_by' => $batch_numbers->created_by,
+                    'is_local' => FALSE,
+                    'local_code' => $batch_numbers->local_code,
+        ]);
+        if (isset($batch_numbers->transactions) && $batch_numbers->transactions) {
+            $parentTransaction = Transaction::create([
+                        'batch_number' => $parentBatch->batch_number,
+                        'is_parent' => 0,
+                        'created_by' => $batch_numbers->transactions->created_by,
+                        'is_local' => FALSE,
+                        'local_code' => $batch_numbers->transactions->local_code,
+            ]);
+            if (isset($batch_numbers->transactions->transactions_detail) && $batch_numbers->transactions->transactions_detail) {
+                $transactionsDetails = $batch_numbers->transactions->transactions_detail;
+                foreach ($transactionsDetails as $key => $transactionsDetail) {
+                    TransactionDetail::create([
+                        'transaction_id' => $parentTransaction->transaction_id,
+                        'container_number' => $transactionsDetail->container_number,
+                        'created_by' => $batch_numbers->transactions->created_by,
+                        'is_local' => FALSE,
+                            //  'local_code' => $transactionsDetail->local_code,
+                    ]);
+                }
+            }
+        }
+        BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
+        Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
+        return sendSuccess('Transaction completed Successfully', []);
     }
 
 }
