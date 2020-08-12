@@ -20,6 +20,12 @@ class AuthController extends Controller {
         return view('admin.login');
     }
 
+     public function dashboard() {
+
+       return view('dashboard');
+       
+    }
+
     public function adminPostLogin(Request $request, $remember = true) {
         $email = $request->email;
         $password = $request->password;
@@ -30,8 +36,8 @@ class AuthController extends Controller {
     }
 
     public function adminLogout() {
-        Auth::guard('admin')->logout();
-        return redirect('admin/dashboard');
+        Auth::logout();
+        return redirect('admin/login');
     }
 
 }
