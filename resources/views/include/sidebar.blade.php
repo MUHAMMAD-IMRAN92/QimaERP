@@ -96,7 +96,7 @@
               </p>
              </a>
           	</li>  
-            <li class="nav-item"  @if($segment == 'alregion') class="active" @endif>
+            <li class="nav-item"  @if($segment == 'allregion') class="active" @endif>
              <a href="{{URL::to('')}}/admin/allregion" class="nav-link ">
               <i class="nav-icon fas fa-globe"></i>
               <p>
@@ -104,7 +104,34 @@
                 
               </p>
              </a>
-            </li>  
+            </li> 
+            <li class="nav-item"   @if($segment == 'allvillage')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/allvillage" class="nav-link ">
+              <i class="nav-icon fas fa-tree"></i>
+              <p>
+                Village
+                
+              </p>
+             </a>
+            </li> 
+             <li class="nav-item"   @if($segment == 'allfarmer')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/allfarmer" class="nav-link ">
+              <i class="nav-icon fas fa-tractor"></i>
+              <p>
+                Farmer
+                
+              </p>
+             </a>
+            </li> 
+            <li class="nav-item"   @if($segment == 'allbatchnumber')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/allbatchnumber" class="nav-link ">
+             <i class="nav-icon fas fa-sort-numeric-up-alt"></i>
+              <p>
+                Batch Number
+                
+              </p>
+             </a>
+            </li> 
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

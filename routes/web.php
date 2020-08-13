@@ -40,6 +40,19 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('addregion', 'RegionController@store');
     Route::get('editregion/{id}', 'RegionController@edit');
      Route::get('deleteregion/{id}', 'RegionController@delete');
+
+    //Village Controller
+    Route::get('allvillage', 'VillageController@index');
+
+    //Farmer Controller
+    Route::get('allfarmer', 'FarmerController@index');
+
+
+    //BatchNumber Controller
+    Route::get('allbatchnumber', 'BatchNumberController@index');
+
+
+
     Route::group(['middleware' => ['nocache', 'admin']], function () {
 
 
