@@ -296,6 +296,7 @@ class CommonController extends Controller {
             $newBatch = BatchNumber::create([
                         'batch_number' => $farmer->farmer_code . '-' . $lastBID,
                         'is_parent' => 0,
+                        'is_mixed' => 0,
                         'created_by' => $childBatch->created_by,
                         'is_local' => FALSE,
                         'local_code' => $childBatch->local_code,
@@ -305,6 +306,7 @@ class CommonController extends Controller {
                 $newTransaction = Transaction::create([
                             'batch_number' => $newBatch->batch_number,
                             'is_parent' => 0,
+                            'is_mixed' => 0,
                             'created_by' => $childBatch->transactions->created_by,
                             'is_local' => FALSE,
                             'local_code' => $childBatch->transactions->local_code,
@@ -341,6 +343,7 @@ class CommonController extends Controller {
         $parentBatch = BatchNumber::create([
                     'batch_number' => $parentBatchCode,
                     'is_parent' => 0,
+                    'is_mixed' => $batch_numbers->is_mixed,
                     'created_by' => $batch_numbers->created_by,
                     'is_local' => FALSE,
                     'local_code' => $batch_numbers->local_code,
@@ -349,6 +352,7 @@ class CommonController extends Controller {
             $parentTransaction = Transaction::create([
                         'batch_number' => $parentBatch->batch_number,
                         'is_parent' => 0,
+                        'is_mixed' => $batch_numbers->transactions->is_mixed,
                         'created_by' => $batch_numbers->transactions->created_by,
                         'is_local' => FALSE,
                         'local_code' => $batch_numbers->transactions->local_code,
