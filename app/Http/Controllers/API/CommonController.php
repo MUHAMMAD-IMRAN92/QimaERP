@@ -299,6 +299,7 @@ class CommonController extends Controller {
                         'is_mixed' => 0,
                         'created_by' => $childBatch->created_by,
                         'is_local' => FALSE,
+                        'is_mixed' => 0,
                         'local_code' => $childBatch->local_code,
             ]);
             //::child transactions
@@ -309,6 +310,7 @@ class CommonController extends Controller {
                             'is_mixed' => 0,
                             'created_by' => $childBatch->transactions->created_by,
                             'is_local' => FALSE,
+                            'is_mixed' => 0,
                             'local_code' => $childBatch->transactions->local_code,
                 ]);
                 //::child transactions details
