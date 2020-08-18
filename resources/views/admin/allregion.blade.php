@@ -44,7 +44,7 @@
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="region" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>S#</th>
@@ -93,5 +93,49 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  
+  <script>
+    let base_path
+    = '<?= asset('/') ?>';
+    $(document).ready(function () {
+        var t = $('#region').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "deferRender": true,
+            "language": {
+                "searchPlaceholder": "Search by Code And Title"
+            },
+            "ajax": {
+                url: '<?= asset('admin/getregion') ?>',
+            },
+            "columns": [
+                {"data": null},
+                
+                {"data": 'region_code'},
+                {"data": 'region_title'},
+                {"mRender": function (data, type, row) {
+                        return '<a href=' + base_path + '' + row.id + '>Edit</a>| <a href=' + base_path + '' + row.id + ' class="editor_remove" data-id="' + row.id + '">Delete</a>';
+                    }
+                }
+            ],
+            "columnDefs": [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": [0, 2],
+                }
+            ],
+            "order": [], //Initial no order.
+            "aaSorting": [],
+        });
+
+        t.on('draw.dt', function () {
+            var PageInfo = $('#region').DataTable().page.info();
+            t.column(0, {page: 'current'}).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + PageInfo.start;
+            });
+
+        }).draw();
+    });
+
+   
+</script>
 @endsection

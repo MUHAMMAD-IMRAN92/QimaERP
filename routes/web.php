@@ -26,7 +26,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('login', 'AuthController@adminPostLogin');
 
     //Governor Controller
-    Route::get('allgovernor', 'GovernorController@allgovernor'); 
+    Route::get('allgovernor', 'GovernorController@allgovernor');
+    Route::get('getgovernors', 'GovernorController@getGovernorAjax'); 
     Route::get('addnewgovernor', 'GovernorController@addnewgovernor');
     Route::get('editgovernor/{id}', 'GovernorController@edit');
     Route::post('updategovernor', 'GovernorController@update'); 
@@ -36,6 +37,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     //Region Controller
     Route::get('allregion', 'RegionController@index'); 
+    Route::get('getregion', 'RegionController@getRegionAjax');
     Route::get('addnewregion', 'RegionController@addnewregion');
     Route::post('addregion', 'RegionController@store');
     Route::get('editregion/{id}', 'RegionController@edit');
@@ -43,14 +45,15 @@ Route::group(['prefix' => 'admin'], function () {
 
     //Village Controller
     Route::get('allvillage', 'VillageController@index');
+    Route::get('getvillage', 'VillageController@getVillageAjax');
 
     //Farmer Controller
     Route::get('allfarmer', 'FarmerController@index');
-
+    Route::get('getfarmer', 'FarmerController@getFarmerAjax');
 
     //BatchNumber Controller
     Route::get('allbatchnumber', 'BatchNumberController@index');
-
+    Route::get('getbatch', 'BatchNumberController@getbatchAjax');
 
 
     Route::group(['middleware' => ['nocache', 'admin']], function () {

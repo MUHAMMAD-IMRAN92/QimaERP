@@ -18,6 +18,46 @@ class RegionController extends Controller
     	$data['governor']=Governerate::all();
     	return view('admin.addnewregion',$data);
     }
+    function getRegionAjax(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $search = $request->search['value'];
+        $orderby = 'ASC';
+        $column = 'region_id';
+//::count total record
+        $total_members = Region::count();
+        $members = Region::query();
+        //::select columns
+        $members = $members->select('region_id', 'region_code', 'region_title');
+        //::search with farmername or farmer_code or  region_code
+        $members = $members->when($search, function($q)use ($search) {
+                    $q->where('region_code', 'like', "%$search%")->orWhere('region_title', 'like', "%$search%");
+                });
+        if ($request->has('order') && !is_null($request['order'])) {
+            $orderBy = $request->get('order');
+            $orderby = 'asc';
+            if (isset($orderBy[0]['dir'])) {
+                $orderby = $orderBy[0]['dir'];
+            }
+            if (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 1) {
+                $column = 'region_code';
+            }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
+                $column = 'region_title';
+            }else {
+                $column = 'region_id';
+            }
+        }
+        $members = $members->orderBy($column, $orderby)->get();
+        $data = array(
+            'draw' => $draw,
+            'recordsTotal' => $total_members,
+            'recordsFiltered' => $total_members,
+            'data' => $members,
+        );
+        //:: return json
+        return json_encode($data);
+    }
 
     public function store(Request $request){
     	 $validatedData = $request->validate([

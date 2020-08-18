@@ -44,7 +44,7 @@
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="get_batch_number" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>S#</th>
@@ -53,21 +53,7 @@
                     
                   </tr>
                   </thead>
-                  <tbody>
-                    @foreach($batch as $row)
-                        <tr>
-                          <td>{{$row->batch_id}}</td>
-                          <td>{{$row->batch_number}}</td>
-                          
-                          <td>
-                              <a href="" class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a> 
-                           
-                              <a href="" class="btn btn-danger btn-sm trigger-btn"  ><i class="fas fa-trash-alt"></i></a>
-                          </td>
-                         
-                        </tr>
-                    @endforeach
-                  </tbody>
+                  
                   <tfoot>
                   <tr>
                     <th>S#</th>
@@ -91,5 +77,47 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  
+   <script>
+    let base_path
+    = '<?= asset('/') ?>';
+    $(document).ready(function () {
+        var t = $('#get_batch_number').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "deferRender": true,
+            "language": {
+                "searchPlaceholder": "Search"
+            },
+            "ajax": {
+                url: '<?= asset('admin/getbatch') ?>',
+            },
+            "columns": [
+                {"data": null},
+                {"data": 'batch_number'},
+                {"mRender": function (data, type, row) {
+                        return '<a href=' + base_path + '' + row.id + '>Edit</a>| <a href=' + base_path + '' + row.id + ' class="editor_remove" data-id="' + row.id + '">Delete</a>';
+                    }
+                }
+            ],
+            "columnDefs": [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": [0, 2],
+                }
+            ],
+            "order": [], //Initial no order.
+            "aaSorting": [],
+        });
+
+        t.on('draw.dt', function () {
+            var PageInfo = $('#get_batch_number').DataTable().page.info();
+            t.column(0, {page: 'current'}).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + PageInfo.start;
+            });
+
+        }).draw();
+    });
+
+   
+</script>
 @endsection

@@ -10,4 +10,47 @@ class FarmerController extends Controller
     	$data['farmer']=Farmer::all();
     	return view('admin.allfarmer',$data);
     }
+
+   function getFarmerAjax(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $search = $request->search['value'];
+        $orderby = 'ASC';
+        $column = 'farmer_id';
+//::count total record
+        $total_members = Farmer::count();
+        $members = Farmer::query();
+        //::select columns
+        $members = $members->select('farmer_id', 'farmer_code', 'farmer_name', 'village_code');
+        //::search with farmername or farmer_code or  village_code
+        $members = $members->when($search, function($q)use ($search) {
+                    $q->where('farmer_name', 'like', "%$search%")->orWhere('farmer_code', 'like', "%$search%")->orWhere('village_code', 'like', "%$search%");
+                });
+        if ($request->has('order') && !is_null($request['order'])) {
+            $orderBy = $request->get('order');
+            $orderby = 'asc';
+            if (isset($orderBy[0]['dir'])) {
+                $orderby = $orderBy[0]['dir'];
+            }
+            if (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 1) {
+                $column = 'farmer_code';
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
+                $column = 'farmer_name';
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 3) {
+                $column = 'village_code';
+            } else {
+                $column = 'farmer_id';
+            }
+        }
+        $members = $members->orderBy($column, $orderby)->get();
+        $data = array(
+            'draw' => $draw,
+            'recordsTotal' => $total_members,
+            'recordsFiltered' => $total_members,
+            'data' => $members,
+        );
+        //:: return json
+        return json_encode($data);
+    }
 }

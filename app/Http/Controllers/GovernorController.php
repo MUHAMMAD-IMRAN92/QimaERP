@@ -16,6 +16,47 @@ class GovernorController extends Controller
     	return view('admin.addnewgovernor');
     }
 
+    function getGovernorAjax(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $search = $request->search['value'];
+        $orderby = 'ASC';
+        $column = 'governerate_id';
+//::count total record
+        $total_members = Governerate::count();
+        $members = Governerate::query();
+        //::select columns
+        $members = $members->select('governerate_id', 'governerate_code', 'governerate_title');
+        //::search with farmername or farmer_code or  governerate_code
+        $members = $members->when($search, function($q)use ($search) {
+                    $q->where('governerate_code', 'like', "%$search%")->orWhere('governerate_title', 'like', "%$search%");
+                });
+        if ($request->has('order') && !is_null($request['order'])) {
+            $orderBy = $request->get('order');
+            $orderby = 'asc';
+            if (isset($orderBy[0]['dir'])) {
+                $orderby = $orderBy[0]['dir'];
+            }
+            if (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 1) {
+                $column = 'governerate_code';
+            }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
+                $column = 'governerate_title';
+            }else {
+                $column = 'governerate_id';
+            }
+        }
+        $members = $members->orderBy($column, $orderby)->get();
+        $data = array(
+            'draw' => $draw,
+            'recordsTotal' => $total_members,
+            'recordsFiltered' => $total_members,
+            'data' => $members,
+        );
+        //:: return json
+        return json_encode($data);
+    }
+
     public function store(Request $request){
     	 $validatedData = $request->validate([
         'governerate_code' => 'required|unique:governerates',
