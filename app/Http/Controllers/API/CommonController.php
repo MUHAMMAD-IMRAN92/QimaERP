@@ -310,6 +310,7 @@ class CommonController extends Controller {
                             'is_mixed' => 0,
                             'created_by' => $childBatch->transactions->created_by,
                             'is_local' => FALSE,
+                            'transaction_type' => $childBatch->transactions->transaction_type,
                             'is_mixed' => 0,
                             'local_code' => $childBatch->transactions->local_code,
                 ]);
@@ -322,7 +323,7 @@ class CommonController extends Controller {
                             'container_number' => $transactionsDetail->container_number,
                             'created_by' => $childBatch->transactions->created_by,
                             'is_local' => FALSE,
-                                //  'local_code' => $transactionsDetail->local_code,
+                            'weight' => $transactionsDetail->container_weight,
                         ]);
                     }
                 }
@@ -357,6 +358,7 @@ class CommonController extends Controller {
                         'is_mixed' => $batch_numbers->transactions->is_mixed,
                         'created_by' => $batch_numbers->transactions->created_by,
                         'is_local' => FALSE,
+                        'transaction_type' => $batch_numbers->transactions->transaction_type,
                         'local_code' => $batch_numbers->transactions->local_code,
             ]);
             if (isset($batch_numbers->transactions->transactions_detail) && $batch_numbers->transactions->transactions_detail) {
@@ -367,7 +369,7 @@ class CommonController extends Controller {
                         'container_number' => $transactionsDetail->container_number,
                         'created_by' => $batch_numbers->transactions->created_by,
                         'is_local' => FALSE,
-                            //  'local_code' => $transactionsDetail->local_code,
+                        'weight' => $transactionsDetail->container_weight,
                     ]);
                 }
             }
@@ -375,6 +377,36 @@ class CommonController extends Controller {
         BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
         Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
         return sendSuccess('Transaction completed Successfully', []);
+    }
+
+    function batches(Request $request) {
+        $search = $request->search;
+        $batches = BatchNumber::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('batch_number', 'like', "%$search%");
+                    });
+                })->get();
+        return sendSuccess('Successfully retrieved batches', $batches);
+    }
+
+    function transactions(Request $request) {
+        $search = $request->search;
+        $transactions = Transaction::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('batch_number', 'like', "%$search%");
+                    });
+                })->get();
+        return sendSuccess('Successfully retrieved transactions', $transactions);
+    }
+
+    function transactionsDetails(Request $request) {
+        $search = $request->search;
+        $transactionsDetails = TransactionDetail::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('container_number', 'like', "%$search%");
+                    });
+                })->get();
+        return sendSuccess('Successfully retrieved transactions details', $transactionsDetails);
     }
 
 }
