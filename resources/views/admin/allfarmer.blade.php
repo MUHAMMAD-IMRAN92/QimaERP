@@ -44,41 +44,25 @@
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="allfarmer" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                    <th>S#</th>
+                    <th>S#</th> 
                     <th>Farmer Code</th>
                     <th>Farmer Name</th>
                     <th>Village Code</th>
-                    <th>Action</th>
-                    
+                    <th>Action</th> 
                   </tr>
                   </thead>
-                  <tbody>
-                    @foreach($farmer as $row)
-                        <tr>
-                          <td>{{$row->farmer_id}}</td>
-                          <td>{{$row->farmer_code}}</td>
-                          <td>{{$row->farmer_name}}</td>
-                          <td>{{$row->village_code}}</td>
-                          <td>
-                              <a href="" class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a> 
-                           
-                              <a href="" class="btn btn-danger btn-sm trigger-btn"  ><i class="fas fa-trash-alt"></i></a>
-                          </td>
-                         
-                        </tr>
-                    @endforeach
-                  </tbody>
+                 
                   <tfoot>
                   <tr>
                     <th>S#</th>
+                    
                     <th>Farmer Code</th>
                     <th>Farmer Name</th>
                     <th>Village Code</th>
-                    <th>Action</th>
-                    
+                    <th>Action</th> 
                   </tr>
                   </tfoot>
                 </table>
@@ -96,5 +80,50 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  
+  <script>
+    let base_path
+    = '<?= asset('/') ?>';
+    $(document).ready(function () {
+        var t = $('#allfarmer').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "deferRender": true,
+            "language": {
+                "searchPlaceholder": "Search"
+            },
+            "ajax": {
+                url: '<?= asset('admin/getfarmer') ?>',
+            },
+            "columns": [
+                {"data": null},
+                
+                {"data": 'farmer_code'},
+                {"data": 'farmer_name'},
+                {"data": 'village_code'},
+                {"mRender": function (data, type, row) {
+                        return '<a href=' + base_path + '' + row.id + '>Edit</a>| <a href=' + base_path + '' + row.id + ' class="editor_remove" data-id="' + row.id + '">Delete</a>';
+                    }
+                }
+            ],
+            "columnDefs": [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": [0, 2],
+                }
+            ],
+            "order": [], //Initial no order.
+            "aaSorting": [],
+        });
+
+        t.on('draw.dt', function () {
+            var PageInfo = $('#allfarmer').DataTable().page.info();
+            t.column(0, {page: 'current'}).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1 + PageInfo.start;
+            });
+
+        }).draw();
+    });
+
+   
+</script>
 @endsection
