@@ -15,6 +15,7 @@ use App\Farmer;
 use App\BatchNumber;
 use App\Transaction;
 use App\TransactionDetail;
+use App\TransactionLog;
 use Storage;
 
 class CommonController extends Controller {
@@ -296,6 +297,7 @@ class CommonController extends Controller {
             $newBatch = BatchNumber::create([
                         'batch_number' => $farmer->farmer_code . '-' . $lastBID,
                         'is_parent' => 0,
+                        'is_mixed' => 0,
                         'created_by' => $childBatch->created_by,
                         'is_local' => FALSE,
                         'is_mixed' => 0,
@@ -306,11 +308,23 @@ class CommonController extends Controller {
                 $newTransaction = Transaction::create([
                             'batch_number' => $newBatch->batch_number,
                             'is_parent' => 0,
+                            'is_mixed' => 0,
                             'created_by' => $childBatch->transactions->created_by,
                             'is_local' => FALSE,
+                            'transaction_type' => $childBatch->transactions->transaction_type,
                             'is_mixed' => 0,
                             'local_code' => $childBatch->transactions->local_code,
+                            'transaction_status' => $childBatch->transactions->transaction_status,
                 ]);
+                if (isset($childBatch->transactions->transaction_log) && $childBatch->transactions->transaction_log) {
+                    $transactionLog = TransactionLog::create([
+                                'transaction_id' => $newTransaction->transaction_id,
+                                'action' => $childBatch->transactions->transaction_log->action,
+                                'created_by' => $childBatch->transactions->transaction_log->created_by,
+                                'sent_to' => $childBatch->transactions->transaction_log->sent_to,
+                                'local_created_at' => $childBatch->transactions->transaction_log->local_created_at,
+                    ]);
+                }
                 //::child transactions details
                 if (isset($childBatch->transactions->transactions_detail) && $childBatch->transactions->transactions_detail) {
                     $transactionsDetails = $childBatch->transactions->transactions_detail;
@@ -320,7 +334,7 @@ class CommonController extends Controller {
                             'container_number' => $transactionsDetail->container_number,
                             'created_by' => $childBatch->transactions->created_by,
                             'is_local' => FALSE,
-                                //  'local_code' => $transactionsDetail->local_code,
+                            'weight' => $transactionsDetail->container_weight,
                         ]);
                     }
                 }
@@ -355,8 +369,23 @@ class CommonController extends Controller {
                         'is_mixed' => $batch_numbers->transactions->is_mixed,
                         'created_by' => $batch_numbers->transactions->created_by,
                         'is_local' => FALSE,
+                        'transaction_type' => $batch_numbers->transactions->transaction_type,
                         'local_code' => $batch_numbers->transactions->local_code,
+                        'transaction_status' => $batch_numbers->transactions->transaction_status,
             ]);
+
+
+            if (isset($batch_numbers->transactions->transaction_log) && $batch_numbers->transactions->transaction_log) {
+                $transactionLog = TransactionLog::create([
+                            'transaction_id' => $parentTransaction->transaction_id,
+                            'action' => $batch_numbers->transactions->transaction_log->action,
+                            'created_by' => $batch_numbers->transactions->transaction_log->created_by,
+                            'sent_to' => $batch_numbers->transactions->transaction_log->sent_to,
+                            'local_created_at' => $batch_numbers->transactions->transaction_log->local_created_at,
+                ]);
+            }
+
+
             if (isset($batch_numbers->transactions->transactions_detail) && $batch_numbers->transactions->transactions_detail) {
                 $transactionsDetails = $batch_numbers->transactions->transactions_detail;
                 foreach ($transactionsDetails as $key => $transactionsDetail) {
@@ -365,7 +394,7 @@ class CommonController extends Controller {
                         'container_number' => $transactionsDetail->container_number,
                         'created_by' => $batch_numbers->transactions->created_by,
                         'is_local' => FALSE,
-                            //  'local_code' => $transactionsDetail->local_code,
+                        'weight' => $transactionsDetail->container_weight,
                     ]);
                 }
             }
@@ -373,6 +402,84 @@ class CommonController extends Controller {
         BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
         Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
         return sendSuccess('Transaction completed Successfully', []);
+    }
+
+    function batches(Request $request) {
+        $search = $request->search;
+        $batches = BatchNumber::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('batch_number', 'like', "%$search%");
+                    });
+                })->get();
+        return sendSuccess('Successfully retrieved batches', $batches);
+    }
+
+    function transactions(Request $request) {
+        $search = $request->search;
+        $transactions = Transaction::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('batch_number', 'like', "%$search%");
+                    });
+                })->get();
+        return sendSuccess('Successfully retrieved transactions', $transactions);
+    }
+
+    function transactionsDetails(Request $request) {
+        $search = $request->search;
+        $transactionsDetails = TransactionDetail::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('container_number', 'like', "%$search%");
+                    });
+                })->get();
+        return sendSuccess('Successfully retrieved transactions details', $transactionsDetails);
+    }
+
+    function sentTransactions(Request $request) {
+        //::validation
+        $validator = Validator::make($request->all(), [
+                    'transactions' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+        $sentTransactions = json_decode($request['transactions']);
+        foreach ($sentTransactions as $key => $sentTransaction) {
+            $localTransactionCode = $sentTransaction->reference_id . '_' . $sentTransaction->created_by . '-T';
+            $alreadyExistTransaction = Transaction::where('local_code', 'like', "$localTransactionCode%")->where('created_by', $sentTransaction->created_by)->first();
+
+            $transaction = Transaction::create([
+                        'batch_number' => $alreadyExistTransaction->batch_number,
+                        'is_parent' => $sentTransaction->is_parent,
+                        'is_mixed' => $sentTransaction->is_mixed,
+                        'created_by' => $sentTransaction->created_by,
+                        'is_local' => FALSE,
+                        'transaction_type' => $sentTransaction->transaction_type,
+                        'local_code' => $sentTransaction->local_code,
+                        'transaction_status' => $sentTransaction->transaction_status,
+                        'reference_id' => $alreadyExistTransaction->transaction_id,
+            ]);
+
+            $transactionLog = TransactionLog::create([
+                        'transaction_id' => $transaction->transaction_id,
+                        'action' => $sentTransaction->transaction_log->action,
+                        'created_by' => $sentTransaction->transaction_log->created_by,
+                        'sent_to' => $sentTransaction->transaction_log->sent_to,
+                        'local_created_at' => $sentTransaction->transaction_log->local_created_at,
+            ]);
+
+            $transactionContainers = $sentTransaction->transactions_detail;
+            foreach ($transactionContainers as $key => $transactionContainer) {
+                TransactionDetail::create([
+                    'transaction_id' => $transaction->transaction_id,
+                    'container_number' => $transactionContainer->container_number,
+                    'created_by' => $sentTransaction->transaction_log->created_by,
+                    'is_local' => FALSE,
+                    'weight' => $transactionContainer->container_weight,
+                ]);
+            }
+        }
+        return sendSuccess('Transactions sent successfully', []);
     }
 
 }

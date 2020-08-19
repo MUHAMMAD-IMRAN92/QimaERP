@@ -52,5 +52,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/containers', 'API\CommonController@containers');
         //::Batch number
         Route::post('/add_batch_number', 'API\CommonController@addBatchNumberWithTransaction');
+        Route::get('/batches', 'API\CommonController@batches');
+
+        //::transactions
+        Route::get('/transactions', 'API\CommonController@transactions');
+        Route::get('/transactions_details', 'API\CommonController@transactionsDetails');
+        //::Sent Transactions
+         Route::post('/sent_transaction', 'API\CommonController@sentTransactions');
     });
 });
