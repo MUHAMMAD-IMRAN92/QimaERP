@@ -92,7 +92,7 @@
                 {"data": 'governerate_code'},
                 {"data": 'governerate_title'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + '' + row.id + '>Edit</a>| <a href=' + base_path + '' + row.id + ' class="editor_remove" data-id="' + row.id + '">Delete</a>';
+                        return '<a href=' + base_path + 'admin/editgovernor/' +  row.governerate_id + '>Edit</a>| <a href=' + base_path + 'admin/deletegovernor/' + row.governerate_id + ' class="editor_remove" data-id="' + row.governerate_id + '">Delete</a>';
                     }
                 }
             ],
