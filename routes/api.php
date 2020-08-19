@@ -57,5 +57,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::transactions
         Route::get('/transactions', 'API\CommonController@transactions');
         Route::get('/transactions_details', 'API\CommonController@transactionsDetails');
+        //::Sent Transactions
+         Route::post('/sent_transaction', 'API\CommonController@sentTransactions');
     });
 });
