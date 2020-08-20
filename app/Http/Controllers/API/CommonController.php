@@ -16,6 +16,7 @@ use App\BatchNumber;
 use App\Transaction;
 use App\TransactionDetail;
 use App\TransactionLog;
+use App\Center;
 use Storage;
 
 class CommonController extends Controller {
@@ -434,52 +435,18 @@ class CommonController extends Controller {
         return sendSuccess('Successfully retrieved transactions details', $transactionsDetails);
     }
 
-    function sentTransactions(Request $request) {
-        //::validation
-        $validator = Validator::make($request->all(), [
-                    'transactions' => 'required',
-        ]);
-        if ($validator->fails()) {
-            $errors = implode(', ', $validator->errors()->all());
-            return sendError($errors, 400);
-        }
-        $sentTransactions = json_decode($request['transactions']);
-        foreach ($sentTransactions as $key => $sentTransaction) {
-            $localTransactionCode = $sentTransaction->reference_id . '_' . $sentTransaction->created_by . '-T';
-            $alreadyExistTransaction = Transaction::where('local_code', 'like', "$localTransactionCode%")->where('created_by', $sentTransaction->created_by)->first();
-
-            $transaction = Transaction::create([
-                        'batch_number' => $alreadyExistTransaction->batch_number,
-                        'is_parent' => $sentTransaction->is_parent,
-                        'is_mixed' => $sentTransaction->is_mixed,
-                        'created_by' => $sentTransaction->created_by,
-                        'is_local' => FALSE,
-                        'transaction_type' => $sentTransaction->transaction_type,
-                        'local_code' => $sentTransaction->local_code,
-                        'transaction_status' => $sentTransaction->transaction_status,
-                        'reference_id' => $alreadyExistTransaction->transaction_id,
-            ]);
-
-            $transactionLog = TransactionLog::create([
-                        'transaction_id' => $transaction->transaction_id,
-                        'action' => $sentTransaction->transaction_log->action,
-                        'created_by' => $sentTransaction->transaction_log->created_by,
-                        'sent_to' => $sentTransaction->transaction_log->sent_to,
-                        'local_created_at' => $sentTransaction->transaction_log->local_created_at,
-            ]);
-
-            $transactionContainers = $sentTransaction->transactions_detail;
-            foreach ($transactionContainers as $key => $transactionContainer) {
-                TransactionDetail::create([
-                    'transaction_id' => $transaction->transaction_id,
-                    'container_number' => $transactionContainer->container_number,
-                    'created_by' => $sentTransaction->transaction_log->created_by,
-                    'is_local' => FALSE,
-                    'weight' => $transactionContainer->container_weight,
-                ]);
-            }
-        }
-        return sendSuccess('Transactions sent successfully', []);
+    
+        function centers(Request $request) {
+        $search = $request->search;
+        $centers = Center::when($search, function($q) use ($search) {
+                    $q->where(function($q) use ($search) {
+                        $q->where('center_code', 'like', "%$search%");
+                    });
+                })->get();
+        return sendSuccess('Successfully retrieved centers', $centers);
     }
+
+    
+   
 
 }
