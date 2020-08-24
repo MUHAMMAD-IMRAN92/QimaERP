@@ -3,27 +3,48 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\BatchNumber;
-class BatchNumberController extends Controller
+use App\Transaction;
+use App\TransactionDetail;
+class TransectionController extends Controller
 {
     public function index(){
-    	$data['batch']=BatchNumber::where('is_parent', '0')->get();
-    	return view('admin.allbatchnumber',$data);
+    	$data['transaction']=Transaction::where('is_parent', '0')->get();
+    	return view('admin.alltransection',$data);
     }
+    public function detail($id){
+    	// dd($id)
+    	$data['TransactionChild']=Transaction::where('is_parent', $id)->get();
+    	// $child = '';
+    	// foreach ($data['TransactionChild'] as  $transIdget) 
+    	// {
+    		
+    	// 	$child .=TransactionDetail::where('transaction_id', $transIdget->transaction_id)->get();
+    	// 	//echo "<pre>",print_r($data['TransactionDetail']);
+    	// }
+    	// // dd($asss);
+    	// $data['childs'] = $child;
+    	// print_r($data['childs']);
+    	$data['transaction']=Transaction::find($id);
 
-    function getbatchAjax(Request $request) {
+    	$data['TransactionDetail']=TransactionDetail::where('transaction_id', $id)->get();
+    	// dd($data['TransactionChild']);
+    	return view('admin.transactiondetail',$data);
+
+    }
+    function getTransectionAjax(Request $request) {
         $draw = $request->get('draw');
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
         $orderby = 'ASC';
-        $column = 'batch_id';
+        $column = 'transaction_id';
 //::count total record
-        $total_members = BatchNumber::count();
-        $members = BatchNumber::query();
+        $total_members = Transaction::count();
+        $members = Transaction::query();
+        $members = Transaction::query();
         //::select columns
-        $members = $members->select('batch_id', 'batch_number');
-        //::search with farmername or farmer_code or  village_code
+        $members = $members->select('transaction_id', 'batch_number');
+        //::search with batch number
         $members = $members->when($search, function($q)use ($search) {
                     $q->where('batch_number', 'like', "%$search%");
                 });

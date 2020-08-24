@@ -40,7 +40,7 @@ class FarmerController extends Controller
             } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 3) {
                 $column = 'village_code';
             } else {
-                $column = 'farmer_id';
+                $column = 'farmer_code';
             }
         }
         $members = $members->orderBy($column, $orderby)->get();

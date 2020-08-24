@@ -38,7 +38,7 @@ class VillageController extends Controller
             }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
                 $column = 'village_title';
             }else {
-                $column = 'village_id';
+                $column = 'village_code';
             }
         }
         $members = $members->orderBy($column, $orderby)->get();

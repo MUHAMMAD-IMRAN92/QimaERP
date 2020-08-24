@@ -45,7 +45,7 @@ class RegionController extends Controller
             }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
                 $column = 'region_title';
             }else {
-                $column = 'region_id';
+                $column = 'region_code';
             }
         }
         $members = $members->orderBy($column, $orderby)->get();

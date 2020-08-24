@@ -133,6 +133,24 @@
               </p>
              </a>
             </li> 
+            <li class="nav-item"   @if($segment == 'allcenter')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/allcenter" class="nav-link ">
+             <i class="nav-icon fab fa-centercode"></i>
+              <p>
+               Center
+                
+              </p>
+             </a>
+            </li>
+            <li class="nav-item"   @if($segment == 'alltransection')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/alltransection" class="nav-link ">
+             <i class="nav-icon fas fa-exchange-alt"></i>
+              <p>
+               Transaction
+                
+              </p>
+             </a>
+            </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
