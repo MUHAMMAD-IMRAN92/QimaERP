@@ -79,6 +79,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::-------------------------------------------------
         //::Center Manager Routes
         //::center manager received transactions
+        Route::get('/get_center_manager_coffee', 'API\CenterManagerController@centerManagerCoffee');
+        Route::get('/get_center_manager_received_coffee', 'API\CenterManagerController@centerManagerReceivedCoffee');
         Route::post('/centers_manager_received_transaction', 'API\CenterManagerController@receivedTransactions');
     });
 });

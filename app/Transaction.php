@@ -20,4 +20,9 @@ class Transaction extends Model {
     public function childTransation() {
         return $this->hasMany(Transaction::class, 'is_parent', 'transaction_id');
     }
+
+    public function transactionLog() {
+        return $this->hasOne(TransactionLog::class, 'transaction_id', 'transaction_id');
+    }
+
 }
