@@ -68,7 +68,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::coffee buyer manager
         Route::get('/coffee_buyer_manager_farmer', 'API\CoffeeBuyerManager@farmer');
         //::Centers
-        Route::get('/centers', 'API\CommonController@centers');
+        Route::get('/centers', 'API\CoffeeBuyerManager@centers');
 
         //::Sent Transactions To Coffee Buyer Manager
         Route::post('/sent_transaction', 'API\CoffeeBuyerManager@sentTransactions');
