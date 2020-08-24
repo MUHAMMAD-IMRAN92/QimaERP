@@ -6,19 +6,43 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use App\TransactionDetail;
+use App\TransactionLog;
+use App\BatchNumber;
+use App\Transaction;
 use App\Governerate;
-use App\Container;
 use App\FileSystem;
+use App\Container;
+use App\LoginUser;
 use App\Village;
 use App\Region;
 use App\Farmer;
-use App\BatchNumber;
-use App\Transaction;
-use App\TransactionDetail;
-use App\TransactionLog;
+use App\Center;
+use App\User;
 use Storage;
 
 class CommonController extends Controller {
+
+    private $userId;
+    private $user;
+
+    public function __construct() {
+        set_time_limit(0);
+        $headers = getallheaders();
+        $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
+        if ($checksession) {
+            $user = User::where('user_id',$checksession->user_id)->with('roles')->first();
+            if ($user) {
+                $this->user = $user;
+                $this->userId = $user->user_id;
+            } else {
+                return sendError('Session Expired', 404);
+            }
+        } else {
+            return sendError('Session Expired', 404);
+        }
+      
+    }
 
     /**
      * add new governorate.
@@ -146,73 +170,6 @@ class CommonController extends Controller {
         return sendSuccess('Successfully retrieved villages', $villages);
     }
 
-    function addFarmer(Request $request) {
-        //::validation
-        $validator = Validator::make($request->all(), [
-                    'farmer_name' => 'required|max:100',
-                    'farmer_nicn' => 'required',
-                    'created_by' => 'required',
-                    'village_code' => 'required',
-                    'local_code' => 'required',
-        ]);
-        if ($validator->fails()) {
-            $errors = implode(', ', $validator->errors()->all());
-            return sendError($errors, 400);
-        }
-
-        $farmer = Farmer::where('farmer_nicn', $request['farmer_nicn'])->first();
-        if (!$farmer) {
-            $profileImageId = null;
-            $idcardImageId = null;
-            if ($request->profile_picture) {
-                $file = $request->profile_picture;
-                $originalFileName = $file->getClientOriginalName();
-                $file_name = time() . '.' . $file->getClientOriginalExtension();
-                $request->file('profile_picture')->storeAs('images', $file_name);
-                $userProfileImage = FileSystem::create([
-                            'user_file_name' => $originalFileName,
-                            'system_file_name' => $file_name,
-                ]);
-                $profileImageId = $userProfileImage->file_id;
-            }
-
-            if ($request->idcard_picture) {
-                $file = $request->idcard_picture;
-                $originalFileName = $file->getClientOriginalName();
-                $file_name = time() . '.' . $file->getClientOriginalExtension();
-                $request->file('idcard_picture')->storeAs('images', $file_name);
-                $userIdCardImage = FileSystem::create([
-                            'user_file_name' => $originalFileName,
-                            'system_file_name' => $file_name,
-                ]);
-                $idcardImageId = $userIdCardImage->file_id;
-            }
-            $lastFarmer = Farmer::orderBy('created_at', 'desc')->first();
-            $currentFarmerCode = 1;
-            if (isset($lastFarmer) && $lastFarmer) {
-                $currentFarmerCode = ($lastFarmer->farmer_id + 1);
-            }
-            $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
-            $village = Village::where('local_code', 'like', "%$request->village_code%")->first();
-//::create new 
-            $farmer = Farmer::create([
-                        'farmer_code' => $village->village_code . '-' . $currentFarmerCode,
-                        'farmer_name' => $request['farmer_name'],
-                        'village_code' => $request['village_code'],
-                        'picture_id' => $profileImageId,
-                        'idcard_picture_id' => $idcardImageId,
-                        'farmer_nicn' => $request['farmer_nicn'],
-                        'local_code' => $request['local_code'],
-                        'is_local' => 0,
-                        'created_by' => $request['created_by'],
-            ]);
-        } else {
-            $farmer->local_code = $farmer->local_code . ',' . $request->local_code;
-            $farmer->save();
-        }
-        return sendSuccess('Farmer was created Successfully', $farmer);
-    }
-
     function farmers(Request $request) {
         $search = $request->search;
         $farmers = Farmer::when($search, function($q) use ($search) {
@@ -260,160 +217,6 @@ class CommonController extends Controller {
         return sendSuccess('Successfully retrieved containera', $containers);
     }
 
-    function addBatchNumberWithTransaction(Request $request) {
-        //::validation
-        $validator = Validator::make($request->all(), [
-                    'batch_number' => 'required',
-        ]);
-        if ($validator->fails()) {
-            $errors = implode(', ', $validator->errors()->all());
-            return sendError($errors, 400);
-        }
-        $lastBID = 0;
-        $lastTID = 0;
-        //::last batch number id
-        $lastBatchNumber = BatchNumber::latest('batch_id')->first();
-        //::last transaction id
-        $lastTransactionNumber = Transaction::latest('transaction_id')->first();
-        if ($lastBatchNumber) {
-            $lastBID = $lastBatchNumber->batch_id;
-        }
-        if ($lastTransactionNumber) {
-            $lastTID = $lastTransactionNumber->batch_id;
-        }
-        $batch_numbers = json_decode($request['batch_number']);
-        //::insert child batches id
-        $childBatchNumberArray = array();
-        //::insert child transactions id
-        $childTransactionArray = array();
-        //::Add child batch number
-        foreach ($batch_numbers->child_batch as $key => $childBatch) {
-            $removeLocalId = explode("-", $childBatch->batch_code);
-            //::remove last index of array
-            array_pop($removeLocalId);
-            $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->created_by;
-            $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
-            $lastBID = $lastBID + 1;
-            $newBatch = BatchNumber::create([
-                        'batch_number' => $farmer->farmer_code . '-' . $lastBID,
-                        'is_parent' => 0,
-                        'is_mixed' => 0,
-                        'created_by' => $childBatch->created_by,
-                        'is_local' => FALSE,
-                        'is_mixed' => 0,
-                        'local_code' => $childBatch->local_code,
-            ]);
-            //::child transactions
-            if (isset($childBatch->transactions) && $childBatch->transactions) {
-                $newTransaction = Transaction::create([
-                            'batch_number' => $newBatch->batch_number,
-                            'is_parent' => 0,
-                            'is_mixed' => 0,
-                            'created_by' => $childBatch->transactions->created_by,
-                            'is_local' => FALSE,
-                            'transaction_type' => $childBatch->transactions->transaction_type,
-                            'is_mixed' => 0,
-                            'local_code' => $childBatch->transactions->local_code,
-                            'transaction_status' => $childBatch->transactions->transaction_status,
-                ]);
-                if (isset($childBatch->transactions->transaction_log) && $childBatch->transactions->transaction_log) {
-                    $transactionLog = TransactionLog::create([
-                                'transaction_id' => $newTransaction->transaction_id,
-                                'action' => $childBatch->transactions->transaction_log->action,
-                                'created_by' => $childBatch->transactions->transaction_log->created_by,
-                                'sent_to' => $childBatch->transactions->transaction_log->sent_to,
-                                'local_created_at' => $childBatch->transactions->transaction_log->local_created_at,
-                    ]);
-                }
-                //::child transactions details
-                if (isset($childBatch->transactions->transactions_detail) && $childBatch->transactions->transactions_detail) {
-                    $transactionsDetails = $childBatch->transactions->transactions_detail;
-                    foreach ($transactionsDetails as $key => $transactionsDetail) {
-                        TransactionDetail::create([
-                            'transaction_id' => $newTransaction->transaction_id,
-                            'container_number' => $transactionsDetail->container_number,
-                            'created_by' => $childBatch->transactions->created_by,
-                            'is_local' => FALSE,
-                            'weight' => $transactionsDetail->container_weight,
-                        ]);
-                    }
-                }
-            }
-            array_push($childBatchNumberArray, $newBatch->batch_id);
-            array_push($childTransactionArray, $newTransaction->transaction_id);
-        }
-        //::add parent batch
-        $removeLocalId = explode("-", $batch_numbers->batch_code);
-        //::remove last index of array
-        array_pop($removeLocalId);
-        if ($removeLocalId[3] == '000') {
-            $parentBatchCode = implode("-", $removeLocalId) . '-' . ($lastBID + 1);
-        } else {
-
-            $farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->created_by;
-            $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
-            $parentBatchCode = $farmer->farmer_code . '-' . ($lastBID + 1);
-        }
-        $parentBatch = BatchNumber::create([
-                    'batch_number' => $parentBatchCode,
-                    'is_parent' => 0,
-                    'is_mixed' => $batch_numbers->is_mixed,
-                    'created_by' => $batch_numbers->created_by,
-                    'is_local' => FALSE,
-                    'local_code' => $batch_numbers->local_code,
-        ]);
-        if (isset($batch_numbers->transactions) && $batch_numbers->transactions) {
-            $parentTransaction = Transaction::create([
-                        'batch_number' => $parentBatch->batch_number,
-                        'is_parent' => 0,
-                        'is_mixed' => $batch_numbers->transactions->is_mixed,
-                        'created_by' => $batch_numbers->transactions->created_by,
-                        'is_local' => FALSE,
-                        'transaction_type' => $batch_numbers->transactions->transaction_type,
-                        'local_code' => $batch_numbers->transactions->local_code,
-                        'transaction_status' => $batch_numbers->transactions->transaction_status,
-            ]);
-
-
-            if (isset($batch_numbers->transactions->transaction_log) && $batch_numbers->transactions->transaction_log) {
-                $transactionLog = TransactionLog::create([
-                            'transaction_id' => $parentTransaction->transaction_id,
-                            'action' => $batch_numbers->transactions->transaction_log->action,
-                            'created_by' => $batch_numbers->transactions->transaction_log->created_by,
-                            'sent_to' => $batch_numbers->transactions->transaction_log->sent_to,
-                            'local_created_at' => $batch_numbers->transactions->transaction_log->local_created_at,
-                ]);
-            }
-
-
-            if (isset($batch_numbers->transactions->transactions_detail) && $batch_numbers->transactions->transactions_detail) {
-                $transactionsDetails = $batch_numbers->transactions->transactions_detail;
-                foreach ($transactionsDetails as $key => $transactionsDetail) {
-                    TransactionDetail::create([
-                        'transaction_id' => $parentTransaction->transaction_id,
-                        'container_number' => $transactionsDetail->container_number,
-                        'created_by' => $batch_numbers->transactions->created_by,
-                        'is_local' => FALSE,
-                        'weight' => $transactionsDetail->container_weight,
-                    ]);
-                }
-            }
-        }
-        BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
-        Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
-        return sendSuccess('Transaction completed Successfully', []);
-    }
-
-    function batches(Request $request) {
-        $search = $request->search;
-        $batches = BatchNumber::when($search, function($q) use ($search) {
-                    $q->where(function($q) use ($search) {
-                        $q->where('batch_number', 'like', "%$search%");
-                    });
-                })->get();
-        return sendSuccess('Successfully retrieved batches', $batches);
-    }
-
     function transactions(Request $request) {
         $search = $request->search;
         $transactions = Transaction::when($search, function($q) use ($search) {
@@ -432,54 +235,6 @@ class CommonController extends Controller {
                     });
                 })->get();
         return sendSuccess('Successfully retrieved transactions details', $transactionsDetails);
-    }
-
-    function sentTransactions(Request $request) {
-        //::validation
-        $validator = Validator::make($request->all(), [
-                    'transactions' => 'required',
-        ]);
-        if ($validator->fails()) {
-            $errors = implode(', ', $validator->errors()->all());
-            return sendError($errors, 400);
-        }
-        $sentTransactions = json_decode($request['transactions']);
-        foreach ($sentTransactions as $key => $sentTransaction) {
-            $localTransactionCode = $sentTransaction->reference_id . '_' . $sentTransaction->created_by . '-T';
-            $alreadyExistTransaction = Transaction::where('local_code', 'like', "$localTransactionCode%")->where('created_by', $sentTransaction->created_by)->first();
-
-            $transaction = Transaction::create([
-                        'batch_number' => $alreadyExistTransaction->batch_number,
-                        'is_parent' => $sentTransaction->is_parent,
-                        'is_mixed' => $sentTransaction->is_mixed,
-                        'created_by' => $sentTransaction->created_by,
-                        'is_local' => FALSE,
-                        'transaction_type' => $sentTransaction->transaction_type,
-                        'local_code' => $sentTransaction->local_code,
-                        'transaction_status' => $sentTransaction->transaction_status,
-                        'reference_id' => $alreadyExistTransaction->transaction_id,
-            ]);
-
-            $transactionLog = TransactionLog::create([
-                        'transaction_id' => $transaction->transaction_id,
-                        'action' => $sentTransaction->transaction_log->action,
-                        'created_by' => $sentTransaction->transaction_log->created_by,
-                        'sent_to' => $sentTransaction->transaction_log->sent_to,
-                        'local_created_at' => $sentTransaction->transaction_log->local_created_at,
-            ]);
-
-            $transactionContainers = $sentTransaction->transactions_detail;
-            foreach ($transactionContainers as $key => $transactionContainer) {
-                TransactionDetail::create([
-                    'transaction_id' => $transaction->transaction_id,
-                    'container_number' => $transactionContainer->container_number,
-                    'created_by' => $sentTransaction->transaction_log->created_by,
-                    'is_local' => FALSE,
-                    'weight' => $transactionContainer->container_weight,
-                ]);
-            }
-        }
-        return sendSuccess('Transactions sent successfully', []);
     }
 
 }

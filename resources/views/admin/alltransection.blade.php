@@ -42,6 +42,7 @@
                   <tr>
                     <th>S#</th>
                     <th>Code</th>
+                    <th>Status</th>
                     <th>Action</th>
                     
                   </tr>
@@ -52,6 +53,7 @@
                       <tr>
                         <td>{{$row->transaction_id}}</td>
                         <td>{{$row->batch_number}}</td>
+                        <td>{{$row->transaction_status}}</td>
                         <td><a href="transactiondetail/{{$row->transaction_id}}" class="btn btn-info btn-sm"><i class="fa fa-info-circle"></i></a> </td>
                       </tr>
                     @endforeach
@@ -61,6 +63,7 @@
                  <tr>
                     <th>S#</th>
                     <th>Code</th>
+                    <th>Status</th>
                     <th>Action</th>
                     
                   </tr>

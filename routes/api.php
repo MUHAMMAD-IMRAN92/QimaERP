@@ -30,6 +30,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
     Route::post('/login', 'API\AuthController@login');
 // Logged In users
     Route::group(['middleware' => ['checkSession']], function () {
+//::Common Routes
         //::governerate
         Route::post('/add_governerate', 'API\CommonController@addGovernerate');
         Route::get('/governerate', 'API\CommonController@governerate');
@@ -40,24 +41,44 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::post('/add_village', 'API\CommonController@addVillage');
         Route::get('/villages', 'API\CommonController@villages');
 
-        //::farmer
-        Route::post('/add_farmer', 'API\CommonController@addFarmer');
+        //::Get All Farmer
         Route::get('/farmers', 'API\CommonController@farmers');
-        //::coffee buyer manager
-        Route::get('/coffee_buyer_manager_farmer', 'API\CoffeeBuyerManager@farmer');
-        //::coffee buyer
-        Route::get('/coffee_buyer_farmer', 'API\CoffeeBuyer@farmer');
+
         //::Add container
         Route::post('/add_container', 'API\CommonController@addContainer');
         Route::get('/containers', 'API\CommonController@containers');
-        //::Batch number
-        Route::post('/add_batch_number', 'API\CommonController@addBatchNumberWithTransaction');
-        Route::get('/batches', 'API\CommonController@batches');
-
         //::transactions
         Route::get('/transactions', 'API\CommonController@transactions');
         Route::get('/transactions_details', 'API\CommonController@transactionsDetails');
-        //::Sent Transactions
-         Route::post('/sent_transaction', 'API\CommonController@sentTransactions');
+        //::--------------------------------------------
+        //::Coffee buyer Routes
+        //::Get coffee buyer farmer
+        Route::get('/coffee_buyer_farmer', 'API\CoffeeBuyer@farmer');
+        //::Get all batches
+        Route::get('/batches', 'API\CoffeeBuyer@batches');
+        //::add farmer
+        Route::post('/add_farmer', 'API\CoffeeBuyer@addFarmer');
+        //::Add Coffee with batch number
+        Route::post('/coffee_buyer_add_coffee', 'API\CoffeeBuyer@addCoffeeWithBatchNumber');
+        Route::post('/coffee_buyer_add_coffee_without_batch_number', 'API\CoffeeBuyer@addCoffeeWithOutBatchNumber');
+//::Fetch Coffee Transactions
+        Route::get('/get_coffee_buyer_transactions', 'API\CoffeeBuyer@coffeeBuyerCoffee');
+        //::-------------------------------------------------
+        //::Coffee Buyer Manager Routes
+        //::coffee buyer manager
+        Route::get('/coffee_buyer_manager_farmer', 'API\CoffeeBuyerManager@farmer');
+        //::Centers
+        Route::get('/centers', 'API\CoffeeBuyerManager@centers');
+
+        //::Sent Transactions To Coffee Buyer Manager
+        Route::post('/sent_transaction', 'API\CoffeeBuyerManager@sentTransactions');
+        Route::get('/get_coffee_buyer_manager_coffee', 'API\CoffeeBuyerManager@coffeeBuyerManagerCoffee');
+        Route::get('/get_coffee_buyer_manager_sent_coffee', 'API\CoffeeBuyerManager@coffeeBuyerManagerSentCoffeeTransaction');
+        Route::post('/coffee_buyer_manager_approved_farmer', 'API\CoffeeBuyerManager@approvedFarmer');
+
+        //::-------------------------------------------------
+        //::Center Manager Routes
+        //::center manager received transactions
+        Route::post('/centers_manager_received_transaction', 'API\CenterManagerController@receivedTransactions');
     });
 });

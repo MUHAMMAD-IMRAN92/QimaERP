@@ -46,7 +46,7 @@
                       <tr>
                         <td >{{$row->batch_number}}
                           <table>
-                        @foreach($row->transactiondetail as $child)
+                        @foreach($row->transactionDetail as $child)
                             <tr>
                               <td>
                                 Id: {{$child->transaction_detail_id}}
@@ -57,6 +57,7 @@
                               <td>
                                 Weight: {{$child->weight}}
                               </td>
+                              
                             </tr>
                           @endforeach</td> 
                         </table>
