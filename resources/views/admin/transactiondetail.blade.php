@@ -34,43 +34,82 @@
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="transactionchild" class="table table-bordered table-striped">
-                  <thead>
+                <table class="table table-bordered table-striped">
+                 {{--  <thead>
                   <tr>
                     <th >Basket</th>
                   </tr>
-                  </thead>
+                  </thea> --}}
                  <tbody>
                     <p><b>Batch Number</b>: {{$transaction->batch_number}}</p>
+                            
                     @foreach($TransactionChild as $row)
+                    <?php  $removeLocalId = explode("-", $row['batch_number']);
+                             //::remove last index of array
+                                  array_pop($removeLocalId);
+                            $farmerCode = implode("-", $removeLocalId);
+                           ?>
                       <tr>
-                        <td >{{$row->batch_number}}
-                          <table>
+                        
+                        <td >
+                          <table  class="table table-bordered table-striped">
+                              
+                                <tr>
+                                  <th>Basket</th>
+                                  <th>Container</th>
+                                  <th>Weight</th>
+                                  <th>Farmer Name</th>
+                                </tr>
+                              
                         @foreach($row->transactionDetail as $child)
+
                             <tr>
                               <td>
-                                Id: {{$child->transaction_detail_id}}
+                                <b>{{$row->batch_number}}</b>
                               </td>
                               <td>
-                                Container: {{$child->container_number}}
+                               {{$child->container_number}}
                               </td>
                               <td>
-                                Weight: {{$child->weight}}
+                               {{$child->weight}} kg
+                              </td>
+                               <td>
+                               {{--  @foreach($farmer as $far)
+                                @foreach($far as $wq)
+                                      @if( $farmerCode==$wq->farmer_code)
+                                        {{$wq->farmer_name}}
+                                      @endif
+                                @endforeach
+                            @endforeach --}}
+                            @foreach($Farmer as $far)
+                                    @if( $farmerCode==$far->farmer_code)
+                                        {{$far->farmer_name}}<br> {{$far->farmer_id}}
+                                      @endif
+                            @endforeach
                               </td>
                               
                             </tr>
-                          @endforeach</td> 
+                          @endforeach
+                           
+                               
+                              
+                        
                         </table>
-                          
+                        </td> 
                       </tr>
                     @endforeach
                   
                  </tbody>
-                  <tfoot>
+                  {{-- <tfoot>
                  <tr>
                     <th>Basket</th>
                   </tr>
-                  </tfoot>
+                  </tfoot> --}}
+                </table>
+              </div>
+              <div class="card-body">
+                <table class="table table-bordered table-striped">
+
                 </table>
               </div>
               <!-- /.card-body -->

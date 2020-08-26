@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Transaction;
 use App\TransactionDetail;
+use App\Farmer;
 class TransectionController extends Controller
 {
     public function index(){
@@ -14,6 +15,32 @@ class TransectionController extends Controller
     public function detail($id){
     	// dd($id)
     	$data['TransactionChild']=Transaction::where('is_parent', $id)->get();
+    	$data['Transaction']=Transaction::where('is_parent', $id)->select('batch_number')->get();
+
+   //  		$i=1;
+   //  		$farmer=array();
+			// foreach ($data['Transaction'] as $value) {
+			// 	$removeLocalId = explode("-", $value['batch_number']);
+			// 	   //::remove last index of array
+   //          	array_pop($removeLocalId);
+			// 	$farmerCode = implode("-", $removeLocalId);
+   //        		$farmer[]=Farmer::where('farmer_code', $farmerCode)->get();
+			// 	// var_dump($farmerCode);
+			// 	// die();
+			//   // if ($i % 1 === 0) {
+			//   //       $farmer[]=Farmer::where('farmer_code', substr($value['batch_number'],0,-2))->get();
+
+			//   //   }
+			//   //  $i++;
+			// }
+   //  					$data['farmer']=$farmer;
+    	$data['Farmer']=Farmer::all();
+			// 
+			
+			// $data['farmer']=Farmer::where('farmer_code', substr($value['batch_number'],0,-2))->get();
+			// dd($data['farmer']);
+			
+			// dd($data['farmer']);
     	// $child = '';
     	// foreach ($data['TransactionChild'] as  $transIdget) 
     	// {
@@ -26,7 +53,7 @@ class TransectionController extends Controller
     	// print_r($data['childs']);
     	$data['transaction']=Transaction::find($id);
 
-    	$data['TransactionDetail']=TransactionDetail::where('transaction_id', $id)->get();
+    	$data['TransactionDetail']=TransactionDetail::where('transaction_id', $id)->with('transection')->get();
     	// dd($data['TransactionChild']);
     	return view('admin.transactiondetail',$data);
 
