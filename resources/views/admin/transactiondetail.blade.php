@@ -58,7 +58,7 @@
                                   <th>Basket</th>
                                   <th>Container</th>
                                   <th>Weight</th>
-                                  <th>Farmer Name</th>
+                                  <th>Farmer </th>
                                 </tr>
                               
                         @foreach($row->transactionDetail as $child)
@@ -84,7 +84,7 @@
                             @foreach($Farmer as $far)
                                     @if( $farmerCode==$far->farmer_code)
                                         {{$far->farmer_name}}<br> {{$far->farmer_id}}
-                                      @endif
+                                    @endif
                             @endforeach
                               </td>
                               
