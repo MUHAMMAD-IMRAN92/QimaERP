@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', 'All Governor')
+@section('title', 'All Center')
 @section('content')
      <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -8,12 +8,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Add Governor</h1>
+            <h1>Add Center</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Add Governor</li>
+              <li class="breadcrumb-item active">Add Center</li>
             </ol>
           </div>
         </div>
@@ -34,7 +34,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="POST" action="{{URL::to('')}}/admin/addcenter">
+              <form role="form" method="POST" action="{{URL::to('/admin/storecenter')}}">
                 {{--  @if ($errors->any())
                   <div class="alert alert-danger">
                       <ul>
@@ -52,19 +52,26 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Code</label>
-                    <input type="text" id="governerate_code" class="form-control " id="exampleInputEmail1" name="governerate_code" placeholder="Enter Code" @error('governerate_code') is-invalid @enderror>
-                    @error('governerate_code')
+                    <input type="text" id="center_code" class="form-control " id="exampleInputEmail1" name="center_code" placeholder="Enter Code" @error('center_code') is-invalid @enderror>
+                    @error('center_code')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Title</label>
-                    <input type="text" id="governerate_title" class="form-control" id="exampleInputPassword1" name="governerate_title" placeholder="Title"  @error('governerate_title') is-invalid @enderror>
-                     @error('governerate_title')
+                    <input type="text" id="center_name" class="form-control" id="exampleInputPassword1" name="center_name" placeholder="Title"  @error('center_name') is-invalid @enderror>
+                     @error('center_name')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
                   </div>
-                 
+                 <div class="form-group">
+                   <label for="country_name">All Governor</label>
+                    <select class="form-control input-add-inception" name="center_manager_id">
+                       @foreach($user as $row)
+                      <option value="{{$row->user_id}}">{{$row->email}}</option>
+                      @endforeach
+                    </select>
+                  </div>
                 
                 </div>
                 <!-- /.card-body -->

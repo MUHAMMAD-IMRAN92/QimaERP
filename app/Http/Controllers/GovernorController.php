@@ -43,7 +43,7 @@ class GovernorController extends Controller
             }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
                 $column = 'governerate_title';
             }else {
-                $column = 'governerate_id';
+                $column = 'governerate_code';
             }
         }
         $members = $members->orderBy($column, $orderby)->get();

@@ -36,7 +36,7 @@ class BatchNumberController extends Controller
             if (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 1) {
                 $column = 'batch_number';
             }else {
-                $column = 'batch_id';
+                $column = 'batch_number';
             }
         }
         $members = $members->orderBy($column, $orderby)->get();

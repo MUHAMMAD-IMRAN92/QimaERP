@@ -55,7 +55,16 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('allbatchnumber', 'BatchNumberController@index');
     Route::get('getbatch', 'BatchNumberController@getbatchAjax');
 
+    //Center Controller
+    Route::get('allcenter', 'CenterController@index');
+    Route::get('addcenter', 'CenterController@addnewcenter');
+    Route::post('storecenter', 'CenterController@storecenter');
+    Route::get('getcenter', 'CenterController@getCenterAjax');
 
+    //Transection Controller
+    Route::get('alltransection', 'TransectionController@index');
+    Route::get('transactiondetail/{id}', 'TransectionController@detail');
+    Route::get('gettransection', 'TransectionController@getTransectionAjax');
     Route::group(['middleware' => ['nocache', 'admin']], function () {
 
 

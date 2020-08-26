@@ -1,24 +1,17 @@
 @extends('layouts.default')
-@section('title', 'All Farmers')
+@section('title', 'All Transection')
 @section('content')
     
- 
+
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    @if(Session::has('message'))
-                  <div class="alert alert-success" role="alert">
-                  <b>{{Session::get('message')}}</b>
-                  <button type="button" class="close" data-dismiss="alert">&times;</button>
-                  </div>
-                  @endif
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
-
           <div class="col-sm-6">
-            <h1>Add New Batch Number 
-              <a href="" class="btn btn-add rounded-circle"> 
+            <h1>Transections Information 
+              <a href="{{url('/admin/addcenter')}}" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
             </h1>
@@ -26,7 +19,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">All Farmer</li>
+              <li class="breadcrumb-item active">All Centers</li>
             </ol>
           </div>
         </div>
@@ -44,20 +37,20 @@
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="get_batch_number" class="table table-bordered table-striped">
+                <table id="transections" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>S#</th>
-                    <th>Batch Number</th>
+                    <th>Code</th>
                     <th>Action</th>
                     
                   </tr>
                   </thead>
-                  
+                 
                   <tfoot>
-                  <tr>
+                 <tr>
                     <th>S#</th>
-                    <th>Batch Number</th>
+                    <th>Code</th>
                     <th>Action</th>
                     
                   </tr>
@@ -81,21 +74,23 @@
     let base_path
     = '<?= asset('/') ?>';
     $(document).ready(function () {
-        var t = $('#get_batch_number').DataTable({
+        var t = $('#transections').DataTable({
             "processing": true,
             "serverSide": true,
             "deferRender": true,
             "language": {
-                "searchPlaceholder": "Search"
+                "searchPlaceholder": "Search by Code"
             },
             "ajax": {
-                url: '<?= asset('admin/getbatch') ?>',
+                url: '<?= asset('admin/gettransection') ?>',
             },
             "columns": [
                 {"data": null},
+                
                 {"data": 'batch_number'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + '' + row.id + '>Edit</a>| <a href=' + base_path + '' + row.id + ' class="editor_remove" data-id="' + row.id + '">Delete</a>';
+
+                        return '<a href=' + base_path + 'admin/editgovernor/' +  row.transaction_id + '>Edit</a>| <a href=' + base_path + 'admin/deletegovernor/' + row.transaction_id + ' class="editor_remove" data-id="' + row.transaction_id + '">Delete</a>';
                     }
                 }
             ],
@@ -110,7 +105,7 @@
         });
 
         t.on('draw.dt', function () {
-            var PageInfo = $('#get_batch_number').DataTable().page.info();
+            var PageInfo = $('#transections').DataTable().page.info();
             t.column(0, {page: 'current'}).nodes().each(function (cell, i) {
                 cell.innerHTML = i + 1 + PageInfo.start;
             });
