@@ -17,7 +17,7 @@
         <div class="row mb-2">
 
           <div class="col-sm-6">
-            <h1>Add New Farmer 
+            <h1>Add New Batch Number 
               <a href="" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
