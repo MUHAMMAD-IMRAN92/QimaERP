@@ -24,9 +24,5 @@ class Transaction extends Model {
         return $this->hasMany(Transaction::class, 'is_parent', 'transaction_id');
     }
 
-    function farmer(){
-        return $this->hasOne(farmer::class,'farmer_code','batch_number');
-        }
-
 
 }
