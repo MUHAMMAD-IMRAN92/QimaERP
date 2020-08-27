@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', 'All Transection')
+@section('title', 'All Container')
 @section('content')
     
 
@@ -10,8 +10,8 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Transections Information 
-              <a href="{{url('/admin/addcontainer')}}" class="btn btn-add rounded-circle"> 
+            <h1>Conatiners Information 
+              <a href="{{url('admin/addcontainer')}}" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
             </h1>
@@ -19,7 +19,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">All Transections</li>
+              <li class="breadcrumb-item active">All Conatiners</li>
             </ol>
           </div>
         </div>
@@ -49,14 +49,14 @@
                   </thead>
                  <tbody>
                    
-                    @foreach($transaction as $row)
+                   
                       <tr>
-                        <td>{{$row->transaction_id}}</td>
-                        <td>{{$row->batch_number}}</td>
-                        <td>{{$row->transaction_status}}</td>
-                        <td><a href="transactiondetail/{{$row->transaction_id}}" class="btn btn-info btn-sm"><i class="fa fa-info-circle"></i></a> </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><a href="transactiondetail/" class="btn btn-info btn-sm"><i class="fa fa-info-circle"></i></a> </td>
                       </tr>
-                    @endforeach
+                   
                   
                  </tbody>
                   <tfoot>

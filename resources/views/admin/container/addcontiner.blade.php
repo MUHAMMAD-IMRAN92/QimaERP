@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', 'All Center')
+@section('title', 'Add Container')
 @section('content')
      <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -8,12 +8,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Add Center</h1>
+            <h1>Add Container</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Add Center</li>
+              <li class="breadcrumb-item active">Add Container</li>
             </ol>
           </div>
         </div>
@@ -34,7 +34,8 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="POST" action="{{URL::to('/admin/storecenter')}}">
+              <form role="form" method="POST" action="{{URL::to('')}}/admin/addregion">
+                
                 {{--  @if ($errors->any())
                   <div class="alert alert-danger">
                       <ul>
@@ -44,35 +45,49 @@
                                   <span aria-hidden="true">&times;</span>
                                 </button>
                               </li>
+
                           @endforeach
                       </ul>
+                      
                   </div>
               @endif --}}
                 {{ csrf_field() }}
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Code</label>
-                    <input type="text" id="center_code" class="form-control " id="exampleInputEmail1" name="center_code" placeholder="Enter Code" @error('center_code') is-invalid @enderror>
-                    @error('center_code')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Title</label>
-                    <input type="text" id="center_name" class="form-control" id="exampleInputPassword1" name="center_name" placeholder="Title"  @error('center_name') is-invalid @enderror>
-                     @error('center_name')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror
-                  </div>
-                 <div class="form-group">
-                   <label for="country_name">All Center Manager</label>
-                    <select  class="form-control " name="center_manager_id">
-                       @foreach($user as $row)
-                      <option value="{{$row->user_id}}">{{$row->email}}</option>
-                      @endforeach
+                   <label for="country_name">Type</label>
+                   
+                    <select class="form-control input-add-inception" name="container_type">
+                      <option value="1">Basket</option>
+                      <option value="2">Drying Tables</option>
+                      <option value="3">Special Process barrel</option>
+                      <option value="4">Drying Machine (Future)</option>
+                      <option value="5">Dry Coffee Bag</option>
+                      <option value="6">Pre Defect removal Export Coffee (Size 1 and Size 2) bag</option>
+                      <option value="7">Defect Free Export coffee (Size 1 and Size 2) bag</option>
+                      <option value="8">Peaberry Coffee Bag</option>
+                      <option value="9">Grade 2 Coffee (small and big beans)</option>
+                      <option value="10">Grade 3 (defect) Coffee</option>
+                      <option value="11">Grade 1 husk  Bag</option>
+                      <option value="12">Grade 2 husk Bag</option>
+                      <option value="13">Grade 3 husk bag</option>
+                      <option value="14">5kg Vacuum Bag for export</option>
+                      <option value="15">15kg Premium Bag for export</option>
+                      <option value="16">10kg Shipping Box</option>
+                      <option value="17">30kg Shipping Box</option>
+                      <option value="18">Sample Bag 1</option>
+                     
                     </select>
                   </div>
-                
+                    
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Capacity</label>
+                    <input type="text" id="capacity" class="form-control" id="exampleInputPassword1" name="capacity" placeholder="Capacity" @error('capacity') is-invalid @enderror>
+                    @error('capacity')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                  </div>
+                 
+                 </div>
                 </div>
                 <!-- /.card-body -->
 

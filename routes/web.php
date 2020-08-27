@@ -65,7 +65,16 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('alltransection', 'TransectionController@index');
     Route::get('transactiondetail/{id}', 'TransectionController@detail');
     Route::get('gettransection', 'TransectionController@getTransectionAjax');
+
+    //Container Controller
+    Route::get('allcontainer', 'ContainerController@index');
+    Route::get('addcontainer', 'ContainerController@addcontainer');
+    
+
+
+
     Route::group(['middleware' => ['nocache', 'admin']], function () {
+
 
 
     });
