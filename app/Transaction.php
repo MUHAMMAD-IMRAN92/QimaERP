@@ -9,9 +9,6 @@ class Transaction extends Model {
     protected $primaryKey = 'transaction_id';
     protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status'];
 
-
- 
-
     public function transactionDetail() {
         return $this->hasMany(TransactionDetail::class, 'transaction_id', 'transaction_id');
     }
@@ -24,5 +21,8 @@ class Transaction extends Model {
         return $this->hasMany(Transaction::class, 'is_parent', 'transaction_id');
     }
 
+    public function transactionLog() {
+        return $this->hasMany(TransactionLog::class, 'transaction_id', 'transaction_id');
+    }
 
 }
