@@ -28,6 +28,11 @@ class CenterController extends Controller
     	$center->center_manager_id=$request->center_manager_id;
     	 // dd($center);
     	$center->save();
+
+        // $userId=[$request->center_manager_id];
+        // dd($userId);
+        // $centerid=$center->center_id;
+        // User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
     	return redirect('admin/allcenter');
     }
 
