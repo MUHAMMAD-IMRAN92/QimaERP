@@ -192,7 +192,7 @@ class CommonController extends Controller {
         $containerTypeArray = containerType();
         $containers = json_decode($request['containers']);
         foreach ($containers as $key => $container) {
-            $containerTypeCode = preg_replace('/[0-9]+/', '', $container->container_code);
+            $containerTypeCode = preg_replace('/[0-9]+/', '', $container->container_number);
             $containerType = searcharray($containerTypeCode, 'code', $containerTypeArray);
             //::create new 
             $container = Container::create([
