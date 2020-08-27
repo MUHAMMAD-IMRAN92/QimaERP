@@ -14,7 +14,15 @@ class BatchNumber extends Model {
     }
 
     public function transaction() {
-        return $this->hasMany(Transaction::class,'batch_number', 'batch_number');
+        return $this->hasMany(Transaction::class, 'batch_number', 'batch_number');
+    }
+
+    public function sent_transaction() {
+        return $this->hasMany(Transaction::class, 'batch_number', 'batch_number');
+    }
+
+    public function center_manager_received_transaction() {
+        return $this->hasMany(Transaction::class, 'batch_number', 'batch_number');
     }
 
 }

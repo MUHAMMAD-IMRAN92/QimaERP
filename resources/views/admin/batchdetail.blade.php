@@ -29,11 +29,9 @@
                 <div class="card">
                     <!-- /.card-header -->
                     <div class="card-body">
-
-
                         <div class="col-12">
                             <div class="bs-example">
-                                <ul class="nav nav-tabs">
+                                <ul class="nav nav-tabs" id="custom_tab">
                                     <li class="nav-item">
                                         <a href="#coffee_buyer" class="nav-link active" data-toggle="tab">Coffee Buyer</a>
                                     </li>
@@ -132,12 +130,81 @@
 
                                     </div>
                                     <div class="tab-pane fade" id="coffee_buyer_manager">
+                                        <?php foreach ($batch->sent_transaction as $key => $trans) { ?>
+                                            <div class="card">
+                                                <!-- /.card-header -->
+                                                <div class="card-body">
 
-                                        <p>Vestibulum nec erat eu nulla rhoncus fringilla ut non neque. Vivamus nibh urna, ornare id gravida ut, mollis a magna. Aliquam porttitor condimentum nisi, eu viverra ipsum porta ut. Nam hendrerit bibendum turpis, sed molestie mi fermentum id. Aenean volutpat velit sem. Sed consequat ante in rutrum convallis. Nunc facilisis leo at faucibus adipiscing.</p>
+                                                    <table class="table table-bordered table-striped">
+                                                        <tbody>
+                                                        <p><b>Batch Number</b>: {{$trans->batch_number}}</p>
+
+                                                        <tr>
+                                                            <th>Container</th>
+                                                            <th>Weight</th>
+                                                        </tr>
+
+                                                        </tbody>
+
+
+                                                        @foreach($trans->transactionDetail as $child)
+
+                                                        <tr>
+
+                                                            <td>
+                                                                {{$child->container_number}}
+                                                            </td>
+                                                            <td>
+                                                                {{$child->weight}} kg
+                                                            </td>
+
+
+                                                        </tr>
+                                                        @endforeach
+                                                    </table>
+                                                </div> 
+                                            </div>
+                                        <?php }
+                                        ?>
+
                                     </div>
                                     <div class="tab-pane fade" id="center_manager">
+                                        <?php foreach ($batch->center_manager_received_transaction as $key => $trans) { ?>
+                                            <div class="card">
+                                                <!-- /.card-header -->
+                                                <div class="card-body">
 
-                                        <p>Donec vel placerat quam, ut euismod risus. Sed a mi suscipit, elementum sem a, hendrerit velit. Donec at erat magna. Sed dignissim orci nec eleifend egestas. Donec eget mi consequat massa vestibulum laoreet. Mauris et ultrices nulla, malesuada volutpat ante. Fusce ut orci lorem. Donec molestie libero in tempus imperdiet. Cum sociis natoque penatibus et magnis.</p>
+                                                    <table class="table table-bordered table-striped">
+                                                        <tbody>
+                                                        <p><b>Batch Number</b>: {{$trans->batch_number}}</p>
+
+                                                        <tr>
+                                                            <th>Container</th>
+                                                            <th>Weight</th>
+                                                        </tr>
+
+                                                        </tbody>
+
+
+                                                        @foreach($trans->transactionDetail as $child)
+
+                                                        <tr>
+
+                                                            <td>
+                                                                {{$child->container_number}}
+                                                            </td>
+                                                            <td>
+                                                                {{$child->weight}} kg
+                                                            </td>
+
+
+                                                        </tr>
+                                                        @endforeach
+                                                    </table>
+                                                </div> 
+                                            </div>
+                                        <?php }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
