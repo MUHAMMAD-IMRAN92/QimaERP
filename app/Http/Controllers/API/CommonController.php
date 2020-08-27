@@ -196,7 +196,7 @@ class CommonController extends Controller {
             $containerType = searcharray($containerTypeCode, 'code', $containerTypeArray);
             //::create new 
             $container = Container::create([
-                        'container_number' => $container->container_code,
+                        'container_number' => $container->container_number,
                         'container_type' => $containerType,
                         'capacity' => $container->capacity,
                         'created_by' => $container->created_by,
