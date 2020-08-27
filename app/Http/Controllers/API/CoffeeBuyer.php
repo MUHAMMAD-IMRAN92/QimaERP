@@ -298,47 +298,46 @@ class CoffeeBuyer extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-        $transactionIds = array();
+        $newTransactionid = null;
         $transactions = json_decode($request['transaction']);
-        foreach ($transactions as $key => $transaction) {
+      //  return sendSuccess('Coffee was added Successfully', $transactions->transactions_detail);
+        if (isset($transactions->transactions) && $transactions->transactions) {
             $newTransaction = Transaction::create([
-                        'batch_number' => $transaction->batch_number,
+                        'batch_number' => $transactions->transactions->batch_number,
                         'is_parent' => 0,
                         'is_mixed' => 0,
-                        'created_by' => $transaction->created_by,
+                        'created_by' => $transactions->transactions->created_by,
                         'is_local' => FALSE,
-                        'transaction_type' => $transaction->transaction_type,
+                        'transaction_type' => $transactions->transactions->transaction_type,
                         'is_mixed' => 0,
-                        'local_code' => $transaction->local_code,
-                        'transaction_status' => $transaction->transaction_status,
+                        'local_code' => $transactions->transactions->local_code,
+                        'transaction_status' => 'created',
             ]);
-            if (isset($transaction->transaction_log) && $transaction->transaction_log) {
-                $transactionLog = TransactionLog::create([
-                            'transaction_id' => $newTransaction->transaction_id,
-                            'action' => $transaction->transaction_log->action,
-                            'created_by' => $transaction->transaction_log->created_by,
-                            'entity_id' => $transaction->transaction_log->entity_id,
-                            'type' => $transaction->transaction_log->type,
-                            'local_created_at' => $transaction->transaction_log->local_created_at,
+            $newTransactionid = $newTransaction->transaction_id;
+            $transactionLog = TransactionLog::create([
+                        'transaction_id' => $newTransaction->transaction_id,
+                        'action' => 'created',
+                        'created_by' => $transactions->transactions->created_by,
+                        'entity_id' => $transactions->transactions->created_by,
+                        'type' => 'coffee_buyer',
+                        'local_created_at' => $transactions->transactions->created_at,
+            ]);
+        }
+        //::child transactions details
+        if (isset($transactions->transactions_detail) && $transactions->transactions_detail) {
+            $transactionsDetails = $transactions->transactions_detail;
+            foreach ($transactionsDetails as $key => $transactionsDetail) {
+                TransactionDetail::create([
+                    'transaction_id' => $newTransactionid,
+                    'container_number' => $transactionsDetail->container_number,
+                    'created_by' => $transactionsDetail->created_by,
+                    'is_local' => FALSE,
+                    'weight' => $transactionsDetail->container_weight,
                 ]);
             }
-            //::child transactions details
-            if (isset($transaction->transactions_detail) && $transaction->transactions_detail) {
-                $transactionsDetails = $transaction->transactions_detail;
-                foreach ($transactionsDetails as $key => $transactionsDetail) {
-                    TransactionDetail::create([
-                        'transaction_id' => $newTransaction->transaction_id,
-                        'container_number' => $transactionsDetail->container_number,
-                        'created_by' => $transaction->created_by,
-                        'is_local' => FALSE,
-                        'weight' => $transactionsDetail->container_weight,
-                    ]);
-                }
-            }
-
-            array_push($transactionIds, $newTransaction->transaction_id);
         }
-        $currentBatch = Transaction::whereIn('transaction_id', $transactionIds)->with('transactionDetail')->get();
+
+        $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->get();
         return sendSuccess('Coffee was added Successfully', $currentBatch);
     }
 
