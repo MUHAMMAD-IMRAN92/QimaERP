@@ -25,4 +25,12 @@ class Transaction extends Model {
         return $this->hasMany(TransactionLog::class, 'transaction_id', 'transaction_id');
     }
 
+    public function sent_transaction() {
+        return $this->hasOne(Transaction::class, 'reference_id', 'transaction_id');
+    }
+
+    public function center_manager_received_transaction() {
+        return $this->hasOne(Transaction::class, 'reference_id', 'transaction_id');
+    }
+
 }

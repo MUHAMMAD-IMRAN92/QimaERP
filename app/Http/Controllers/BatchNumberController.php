@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\BatchNumber;
+use App\Transaction;
 
 class BatchNumberController extends Controller {
 
@@ -52,20 +53,40 @@ class BatchNumberController extends Controller {
     }
 
     public function show(Request $request, $id) {
-        $data['batch'] = BatchNumber::where('batch_number', $id)->with(['transaction' => function ($query) {
-                        $query->where('is_parent', 0)->where('transaction_status', 'created')->with('childTransation.transactionDetail', 'transactionDetail');
-                    }])->with(['sent_transaction' => function ($query) {
-                        $query->where('is_parent', 0)->where('transaction_status', 'sent')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
-                                    $query->where('action', 'sent')->where('type', 'center');
-                                });
-                    }])->with(['center_manager_received_transaction' => function ($query) {
-                        $query->where('is_parent', 0)->where('transaction_status', 'received')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
-                                    $query->where('action', 'received')->where('type', 'center');
-                                });
-                    }])->first();
+        $data['batch'] = BatchNumber::where('batch_number', $id)->first();
+        $data['transations_data'] = Transaction::where('batch_number', $id)
+                        ->where('is_parent', 0)
+                        ->where('transaction_status', 'created')
+                        ->with('childTransation.transactionDetail', 'transactionDetail')
+                        ->with(['sent_transaction' => function ($query) {
+                                $query->where('is_parent', 0)->where('transaction_status', 'sent')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
+                                            $query->where('action', 'sent')->where('type', 'center');
+                                        });
+                                $query->with(['center_manager_received_transaction' => function ($query) {
+                                        $query->where('is_parent', 0)->where('transaction_status', 'received')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
+                                                    $query->where('action', 'received')->where('type', 'center');
+                                                });
+                                    }]);
+                            }])->get();
         //return sendSuccess('Successfully retrieved farmers', $data['batch']);
 
         return view('admin.batchdetail', $data);
     }
 
+//    public function show(Request $request, $id) {
+//        $data['batch'] = BatchNumber::where('batch_number', $id)->with(['transaction' => function ($query) {
+//                        $query->where('is_parent', 0)->where('transaction_status', 'created')->with('childTransation.transactionDetail', 'transactionDetail');
+//                    }])->with(['sent_transaction' => function ($query) {
+//                        $query->where('is_parent', 0)->where('transaction_status', 'sent')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
+//                                    $query->where('action', 'sent')->where('type', 'center');
+//                                });
+//                    }])->with(['center_manager_received_transaction' => function ($query) {
+//                        $query->where('is_parent', 0)->where('transaction_status', 'received')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
+//                                    $query->where('action', 'received')->where('type', 'center');
+//                                });
+//                    }])->first();
+//        return sendSuccess('Successfully retrieved farmers', $data['batch']);
+//
+//        return view('admin.batchdetail', $data);
+//    }
 }
