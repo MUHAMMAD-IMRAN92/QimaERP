@@ -164,14 +164,14 @@ class CoffeeBuyer extends Controller {
             $lastTID = $lastTransactionNumber->batch_id;
         }
         $batch_numbers = json_decode($request['batch_number']);
-
+           
         //::insert child batches id
         $childBatchNumberArray = array();
         //::insert child transactions id
         $childTransactionArray = array();
         //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
-            die("xzccccccc");
+         
             $removeLocalId = explode("-", $childBatch->batch->batch_code);
             $lastBID = ($lastBID + 1);
             //::remove last index of array
@@ -179,7 +179,6 @@ class CoffeeBuyer extends Controller {
 
            // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
             $farmerCode = implode("-", $removeLocalId);
-            var_dump($farmerCode);exit;
            // $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
             $farmer = Farmer::where('farmer_code', $farmerCode)->first();
             $newBatch = BatchNumber::create([
