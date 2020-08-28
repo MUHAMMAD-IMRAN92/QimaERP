@@ -176,7 +176,8 @@ class CoffeeBuyer extends Controller {
             //::remove last index of array
             array_pop($removeLocalId);
 
-            $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
+           // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
+            $farmerCode = implode("-", $removeLocalId);
            // $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
             $farmer = Farmer::where('farmer_code', $farmerCode)->first();
             $newBatch = BatchNumber::create([
