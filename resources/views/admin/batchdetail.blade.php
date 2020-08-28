@@ -2,7 +2,15 @@
 @section('title', 'Transection Detail')
 @section('content')
 
-
+<?php
+$activeTab = 1;
+if (count($batch->sent_transaction) > 0) {
+    $activeTab = 2;
+}
+if (count($batch->center_manager_received_transaction) > 0) {
+    $activeTab = 3;
+}
+?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -21,29 +29,32 @@
             </div>
         </div><!-- /.container-fluid -->
     </section>
-
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="card">
+                <div class="card col-lg-12">
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="col-12">
                             <div class="bs-example">
                                 <ul class="nav nav-tabs" id="custom_tab">
                                     <li class="nav-item">
-                                        <a href="#coffee_buyer" class="nav-link active" data-toggle="tab">Coffee Buyer</a>
+                                        <a href="#coffee_buyer" class="nav-link <?= $activeTab == 1 ? 'active' : ''; ?>" data-toggle="tab">Coffee Buyer</a>
                                     </li>
+                                    @if($activeTab >= 2)
                                     <li class="nav-item">
-                                        <a href="#coffee_buyer_manager" class="nav-link" data-toggle="tab">Coffee Buyer Manager</a>
+                                        <a href="#coffee_buyer_manager" class="nav-link <?= $activeTab == 2 ? 'active' : ''; ?>" data-toggle="tab">Coffee Buyer Manager</a>
                                     </li>
+                                    @endif
+                                    @if($activeTab >= 3)
                                     <li class="nav-item">
-                                        <a href="#center_manager" class="nav-link" data-toggle="tab">Center Manager</a>
+                                        <a href="#center_manager" class="nav-link <?= $activeTab == 3 ? 'active' : ''; ?>" data-toggle="tab">Center Manager</a>
                                     </li>
+                                    @endif
                                 </ul>
                                 <div class="tab-content">
-                                    <div class="tab-pane fade show active" id="coffee_buyer">
+                                    <div class="tab-pane fade <?= $activeTab == 1 ? 'show active' : ''; ?>" id="coffee_buyer">
 
                                         <?php
                                         foreach ($batch->transaction as $key => $trans) {
@@ -55,7 +66,7 @@
                                                         <?php foreach ($trans->childTransation as $key => $child_transation) {
                                                             ?>
 
-                                                            <table class="table table-bordered table-striped">
+                                                            <table class="table table-bordered">
                                                                 <tbody>
                                                                 <p><b>Batch Number</b>: {{$child_transation->batch_number}}</p>
 
@@ -94,7 +105,7 @@
                                                     <!-- /.card-header -->
                                                     <div class="card-body">
 
-                                                        <table class="table table-bordered table-striped">
+                                                        <table class="table table-bordered">
                                                             <tbody>
                                                             <p><b>Batch Number</b>: {{$trans->batch_number}}</p>
 
@@ -129,13 +140,13 @@
                                         ?>
 
                                     </div>
-                                    <div class="tab-pane fade" id="coffee_buyer_manager">
+                                    <div class="tab-pane fade <?= $activeTab == 2 ? 'show active' : ''; ?>" id="coffee_buyer_manager">
                                         <?php foreach ($batch->sent_transaction as $key => $trans) { ?>
                                             <div class="card">
                                                 <!-- /.card-header -->
                                                 <div class="card-body">
 
-                                                    <table class="table table-bordered table-striped">
+                                                    <table class="table table-bordered">
                                                         <tbody>
                                                         <p><b>Batch Number</b>: {{$trans->batch_number}}</p>
 
@@ -168,13 +179,13 @@
                                         ?>
 
                                     </div>
-                                    <div class="tab-pane fade" id="center_manager">
+                                    <div class="tab-pane fade <?= $activeTab == 3 ? 'show active' : ''; ?>" id="center_manager">
                                         <?php foreach ($batch->center_manager_received_transaction as $key => $trans) { ?>
                                             <div class="card">
                                                 <!-- /.card-header -->
                                                 <div class="card-body">
 
-                                                    <table class="table table-bordered table-striped">
+                                                    <table class="table table-bordered">
                                                         <tbody>
                                                         <p><b>Batch Number</b>: {{$trans->batch_number}}</p>
 
