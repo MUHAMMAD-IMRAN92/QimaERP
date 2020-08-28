@@ -5,7 +5,7 @@
 }
 
 .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
-    border-color: #ffffff #000 #fff #fff !important;
+/*    border-color: #ffffff #000 #fff #fff !important;*/
 }
 #custom_tab li.nav-item a {
     color: #000;
