@@ -171,7 +171,7 @@ class CoffeeBuyer extends Controller {
         $childTransactionArray = array();
         //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
-         
+         die("in if");
             $removeLocalId = explode("-", $childBatch->batch->batch_code);
             $lastBID = ($lastBID + 1);
             //::remove last index of array
@@ -236,7 +236,7 @@ class CoffeeBuyer extends Controller {
         if ($removeLocalId[3] == '000') {
             $parentBatchCode = implode("-", $removeLocalId) . '-' . ($lastBID + 1);
         } else {
-
+     die("else");
             //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
             $farmerCode = implode("-", $removeLocalId);
            // $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
