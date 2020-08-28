@@ -143,7 +143,6 @@ class CoffeeBuyer extends Controller {
     }
 
     function addCoffeeWithBatchNumber(Request $request) {
-        die("zxc");
         //::validation
         $validator = Validator::make($request->all(), [
                     'batch_number' => 'required',
@@ -172,6 +171,7 @@ class CoffeeBuyer extends Controller {
         $childTransactionArray = array();
         //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
+            die("xzccccccc");
             $removeLocalId = explode("-", $childBatch->batch->batch_code);
             $lastBID = ($lastBID + 1);
             //::remove last index of array
