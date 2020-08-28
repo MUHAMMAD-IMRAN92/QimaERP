@@ -19,3 +19,6 @@
     color: #000;
     margin-bottom: 25px;
 }
+#custom_tab li.nav-item a:last-child {
+  border: none;
+}
