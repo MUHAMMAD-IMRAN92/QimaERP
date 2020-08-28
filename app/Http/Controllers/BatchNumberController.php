@@ -63,7 +63,9 @@ class BatchNumberController extends Controller {
                                             $query->where('action', 'sent')->where('type', 'center');
                                         });
                                 $query->with(['center_manager_received_transaction' => function ($query) {
-                                        $query->where('is_parent', 0)->where('transaction_status', 'received')->with('transactionDetail');
+                                        $query->where('is_parent', 0)->where('transaction_status', 'received')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
+                                                    $query->where('action', 'received')->where('type', 'center');
+                                                });
                                     }]);
                             }])->get();
         return sendSuccess('Successfully retrieved farmers', $data['transations_data']);
