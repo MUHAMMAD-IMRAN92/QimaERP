@@ -240,6 +240,7 @@ class CommonController extends Controller {
     }
 
     function allBatches(Request $request) {
+        die("vcx");
         $batches = BatchNumber::where('is_parent', 0)->get();
         return sendSuccess('Successfully retrieved batches', $batches);
     }
