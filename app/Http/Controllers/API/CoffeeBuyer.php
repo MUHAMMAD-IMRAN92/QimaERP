@@ -143,6 +143,7 @@ class CoffeeBuyer extends Controller {
     }
 
     function addCoffeeWithBatchNumber(Request $request) {
+        die("zxc");
         //::validation
         $validator = Validator::make($request->all(), [
                     'batch_number' => 'required',
