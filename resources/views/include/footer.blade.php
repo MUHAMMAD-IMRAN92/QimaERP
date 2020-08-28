@@ -14,10 +14,12 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-
-<!-- jQuery -->
-<script src="{{asset('public/plugins/jquery/jquery.min.js')}}"></script>
-<!-- jQuery UI 1.11.4 -->
+ <script type="text/javascript">
+    $(document).ready(function() {
+    $('.managerselect2s4').select2();
+});
+  </script>
+<script src="{{asset('public/plugins/select2/js/select2.min.js')}}"></script>
 <script src="{{asset('public/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>

@@ -28,6 +28,8 @@
   <link rel="stylesheet" href="{{asset('public/plugins/summernote/summernote-bs4.css')}}">
   <link rel="stylesheet" href="{{asset('public/css/custom.css')}}">
   <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="{{asset('public/plugins/select2/css/select2.min.css')}}" />
+  
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 </head>

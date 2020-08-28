@@ -65,9 +65,9 @@
                     @enderror
                   </div>
                  <div class="form-group">
-                   <label for="country_name">All Center Manager</label>
-                    <select  class="form-control " name="center_manager_id">
-                       @foreach($user as $row)
+                   <label for="country_name">All Center</label>
+                    <select  class="form-control managerselect2s4" name="center_manager_id"  multiple="multiple">
+                      @foreach($user as $row)
                       <option value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach
                     </select>
@@ -96,5 +96,5 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  
+ 
 @endsection
