@@ -54,6 +54,7 @@ Route::group(['prefix' => 'admin'], function () {
     //BatchNumber Controller
     Route::get('allbatchnumber', 'BatchNumberController@index');
     Route::get('getbatch', 'BatchNumberController@getbatchAjax');
+     Route::get('batchdetail/{id}', 'BatchNumberController@show');
 
     //Center Controller
     Route::get('allcenter', 'CenterController@index');

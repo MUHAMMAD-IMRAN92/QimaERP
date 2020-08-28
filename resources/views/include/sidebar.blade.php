@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="{{asset('public/plugins/daterangepicker/daterangepicker.css')}}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{asset('public/plugins/summernote/summernote-bs4.css')}}">
+  <link rel="stylesheet" href="{{asset('public/css/custom.css')}}">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="{{asset('public/plugins/select2/css/select2.min.css')}}" />
   
@@ -58,10 +59,10 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+<!--    <a href="index3.html" class="brand-link">
       <img src="{{URL::to('')}}/public/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-    </a>
+    </a>-->
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -71,7 +72,7 @@
           <img src="{{URL::to('')}}/public/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">QIMA</a>
         </div>
       </div>
 

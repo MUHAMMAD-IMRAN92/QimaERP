@@ -34,7 +34,11 @@
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
+
                 <table class="table table-bordered ">
+
+                <table class="table table-bordered table-striped">
+
                  <tbody>
                     <p><b>Batch Number</b>: {{$transaction->batch_number}}</p>
                             
@@ -69,6 +73,7 @@
                                {{$child->weight}} kg
                               </td>
                                <td>
+
                             @foreach($Farmer as $far)
                                     @if( $farmerCode==$far->farmer_code)
                                         {{$far->farmer_name}}<br> {{$far->farmer_id}}

@@ -31,7 +31,7 @@ class CommonController extends Controller {
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
         if ($checksession) {
-            $user = User::where('user_id',$checksession->user_id)->with('roles')->first();
+            $user = User::where('user_id', $checksession->user_id)->with('roles')->first();
             if ($user) {
                 $this->user = $user;
                 $this->userId = $user->user_id;
@@ -41,7 +41,6 @@ class CommonController extends Controller {
         } else {
             return sendError('Session Expired', 404);
         }
-      
     }
 
     /**
@@ -191,20 +190,23 @@ class CommonController extends Controller {
         }
         $containerTypeArray = containerType();
         $containers = json_decode($request['containers']);
+        $containersId = array();
         foreach ($containers as $key => $container) {
-            $containerTypeCode = preg_replace('/[0-9]+/', '', $container->container_code);
+            $containerTypeCode = preg_replace('/[0-9]+/', '', $container->container_number);
             $containerType = searcharray($containerTypeCode, 'code', $containerTypeArray);
             //::create new 
-            $container = Container::create([
-                        'container_number' => $container->container_code,
+            $newcontainer = Container::create([
+                        'container_number' => $container->container_number,
                         'container_type' => $containerType,
                         'capacity' => $container->capacity,
                         'created_by' => $container->created_by,
                         'is_local' => FALSE,
                         'local_code' => $container->local_code,
             ]);
+            array_push($containersId, $newcontainer->container_id);
         }
-        return sendSuccess('Container was created Successfully', $container);
+        $containersListing = Container::whereIn('container_id', $containersId)->get();
+        return sendSuccess('Container was created Successfully', $containersListing);
     }
 
     function containers(Request $request) {

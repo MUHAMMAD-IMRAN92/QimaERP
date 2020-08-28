@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\BatchNumber;
-class BatchNumberController extends Controller
-{
-    public function index(){
-    	$data['batch']=BatchNumber::where('is_parent', '0')->get();
-    	return view('admin.allbatchnumber',$data);
+
+class BatchNumberController extends Controller {
+
+    public function index() {
+        $data['batch'] = BatchNumber::where('is_parent', '0')->get();
+        return view('admin.allbatchnumber', $data);
     }
 
     function getbatchAjax(Request $request) {
@@ -25,8 +26,8 @@ class BatchNumberController extends Controller
         $members = $members->select('batch_id', 'batch_number');
         //::search with farmername or farmer_code or  village_code
         $members = $members->when($search, function($q)use ($search) {
-                    $q->where('batch_number', 'like', "%$search%");
-                });
+            $q->where('batch_number', 'like', "%$search%");
+        });
         if ($request->has('order') && !is_null($request['order'])) {
             $orderBy = $request->get('order');
             $orderby = 'asc';
@@ -35,11 +36,11 @@ class BatchNumberController extends Controller
             }
             if (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 1) {
                 $column = 'batch_number';
-            }else {
+            } else {
                 $column = 'batch_number';
             }
         }
-        $members = $members->orderBy($column, $orderby)->get();
+        $members = $members->where('is_parent', '0')->orderBy($column, $orderby)->get();
         $data = array(
             'draw' => $draw,
             'recordsTotal' => $total_members,
@@ -49,4 +50,22 @@ class BatchNumberController extends Controller
         //:: return json
         return json_encode($data);
     }
+
+    public function show(Request $request, $id) {
+        $data['batch'] = BatchNumber::where('batch_number', $id)->with(['transaction' => function ($query) {
+                        $query->where('is_parent', 0)->where('transaction_status', 'created')->with('childTransation.transactionDetail', 'transactionDetail');
+                    }])->with(['sent_transaction' => function ($query) {
+                        $query->where('is_parent', 0)->where('transaction_status', 'sent')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
+                                    $query->where('action', 'sent')->where('type', 'center');
+                                });
+                    }])->with(['center_manager_received_transaction' => function ($query) {
+                        $query->where('is_parent', 0)->where('transaction_status', 'received')->with('transactionDetail')->whereHas('transactionLog', function ($query) {
+                                    $query->where('action', 'received')->where('type', 'center');
+                                });
+                    }])->first();
+        //return sendSuccess('Successfully retrieved farmers', $data['batch']);
+
+        return view('admin.batchdetail', $data);
+    }
+
 }
