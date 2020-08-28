@@ -68,7 +68,7 @@ class BatchNumberController extends Controller {
                                                 });
                                     }]);
                             }])->get();
-        return sendSuccess('Successfully retrieved farmers', $data['batch']);
+        return sendSuccess('Successfully retrieved farmers', $data['transations_data']);
 
         return view('admin.batchdetail', $data);
     }
