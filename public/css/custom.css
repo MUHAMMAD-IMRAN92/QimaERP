@@ -22,3 +22,7 @@
 #custom_tab li.nav-item a:last-child {
   border: none;
 }
+#custom_tab a.nav-link.active:last-child {
+    color: #fff !important;
+    border-right: 1px solid #040404;
+}
