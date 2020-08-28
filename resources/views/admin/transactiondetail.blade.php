@@ -34,12 +34,7 @@
             <div class="card">
               <!-- /.card-header -->
               <div class="card-body">
-                <table class="table table-bordered table-striped">
-                 {{--  <thead>
-                  <tr>
-                    <th >Basket</th>
-                  </tr>
-                  </thea> --}}
+                <table class="table table-bordered ">
                  <tbody>
                     <p><b>Batch Number</b>: {{$transaction->batch_number}}</p>
                             
@@ -52,7 +47,7 @@
                       <tr>
                         
                         <td >
-                          <table  class="table table-bordered table-striped">
+                          <table  class="table ">
                               
                                 <tr>
                                   <th>Basket</th>
@@ -74,13 +69,6 @@
                                {{$child->weight}} kg
                               </td>
                                <td>
-                               {{--  @foreach($farmer as $far)
-                                @foreach($far as $wq)
-                                      @if( $farmerCode==$wq->farmer_code)
-                                        {{$wq->farmer_name}}
-                                      @endif
-                                @endforeach
-                            @endforeach --}}
                             @foreach($Farmer as $far)
                                     @if( $farmerCode==$far->farmer_code)
                                         {{$far->farmer_name}}<br> {{$far->farmer_id}}
@@ -90,26 +78,11 @@
                               
                             </tr>
                           @endforeach
-                           
-                               
-                              
-                        
                         </table>
                         </td> 
                       </tr>
                     @endforeach
-                  
                  </tbody>
-                  {{-- <tfoot>
-                 <tr>
-                    <th>Basket</th>
-                  </tr>
-                  </tfoot> --}}
-                </table>
-              </div>
-              <div class="card-body">
-                <table class="table table-bordered table-striped">
-
                 </table>
               </div>
               <!-- /.card-body -->

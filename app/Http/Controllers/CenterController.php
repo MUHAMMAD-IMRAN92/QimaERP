@@ -25,14 +25,14 @@ class CenterController extends Controller
     	$center = new Center;
     	$center->center_code=$request->center_code;
     	$center->center_name=$request->center_name;
-    	$center->center_manager_id=$request->center_manager_id;
+    	// $center->center_manager_id=$request->center_manager_id;
     	 // dd($center);
     	$center->save();
 
-        // $userId=[$request->center_manager_id];
+        $userId=[$request->center_manager_id];
         // dd($userId);
-        // $centerid=$center->center_id;
-        // User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
+        $centerid=$center->center_id;
+        User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
     	return redirect('admin/allcenter');
     }
 
