@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Conatiners Information 
+            <h1>Containers Information 
               <a href="{{url('admin/addcontainer')}}" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
@@ -19,7 +19,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">All Conatiners</li>
+              <li class="breadcrumb-item active">All Containers</li>
             </ol>
           </div>
         </div>
@@ -40,32 +40,27 @@
                 <table id="myTable" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                    <th>S#</th>
-                    <th>Code</th>
-                    <th>Status</th>
+                    <th>Container Number</th>
+                    <th>Capacity</th>
                     <th>Action</th>
-                    
                   </tr>
                   </thead>
                  <tbody>
                    
-                   
+                    @foreach($container as $row)
                       <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><a href="transactiondetail/" class="btn btn-info btn-sm"><i class="fa fa-info-circle"></i></a> </td>
+                        <td>{{$row->container_number}}</td>
+                        <td>{{$row->capacity}}</td>
+                        <td><a href="" class="btn btn-info btn-sm"><i class="fa fa-info-circle"></i></a> </td>
                       </tr>
-                   
+                    @endforeach
                   
                  </tbody>
                   <tfoot>
                  <tr>
-                    <th>S#</th>
-                    <th>Code</th>
-                    <th>Status</th>
+                    <th>Container Number</th>
+                    <th>Capacity</th>
                     <th>Action</th>
-                    
                   </tr>
                   </tfoot>
                 </table>

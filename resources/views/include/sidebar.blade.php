@@ -153,6 +153,15 @@
                 
               </p>
              </a>
+            
+            <li class="nav-item"   @if($segment == 'addcontainer'|| $segment == 'allcontainer')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/allcontainer" class="nav-link ">
+             <i class="nav-icon fas fa-shopping-basket"></i>
+              <p>
+               Container
+                
+              </p>
+             </a>
             </li>
         </ul>
       </nav>
