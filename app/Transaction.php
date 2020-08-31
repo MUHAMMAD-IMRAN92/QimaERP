@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model {
 
     protected $primaryKey = 'transaction_id';
-    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status'];
+    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status', 'is_server_id', 'is_new', 'sent_to'];
+    protected $casts = [
+        'is_local' => 'boolean',
+        'is_mixed' => 'boolean',
+        'is_new' => 'boolean',
+    ];
 
     public function transactionDetail() {
         return $this->hasMany(TransactionDetail::class, 'transaction_id', 'transaction_id');
