@@ -239,4 +239,9 @@ class CommonController extends Controller {
         return sendSuccess('Successfully retrieved transactions details', $transactionsDetails);
     }
 
+    function allBatches(Request $request) {
+        $batches = BatchNumber::where('is_parent', 0)->get();
+        return sendSuccess('Successfully retrieved batches', $batches);
+    }
+
 }

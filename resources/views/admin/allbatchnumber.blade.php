@@ -95,7 +95,7 @@
                 {"data": null},
                 {"data": 'batch_number'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/batchdetail/' +  row.batch_number + '>View</a>';
+                        return '<a class="btn btn-info btn-sm" href=' + base_path + 'admin/batchdetail/' +  row.batch_number + '><i class="fa fa-info-circle"></i></a>';
                     }
                 }
             ],

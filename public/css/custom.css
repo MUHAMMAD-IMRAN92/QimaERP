@@ -5,11 +5,24 @@
 }
 
 .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
-    border-color: #ffffff #ffffff #dee2e6 !important;
+/*    border-color: #ffffff #000 #fff #fff !important;*/
 }
 #custom_tab li.nav-item a {
     color: #000;
+    border-right: 1px solid #040404;
 }
 #custom_tab a.nav-link.active {
     color: #fff !important;
+    border-right: 1px solid #040404;
 }
+#custom_tab li.nav-item a {
+    color: #000;
+    margin-bottom: 25px;
+}
+/*#custom_tab li.nav-item a:last-child {
+  border: none;
+}
+#custom_tab a.nav-link.active:last-child {
+    color: #fff !important;
+    border-right: 1px solid #040404;
+}*/
