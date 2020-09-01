@@ -170,11 +170,11 @@ class CoffeeBuyer extends Controller {
             $lastTID = $lastTransactionNumber->batch_id;
         }
         $batch_numbers = json_decode($request['batch_number']);
-
         //::insert child batches id
         $childBatchNumberArray = array();
         //::insert child transactions id
         $childTransactionArray = array();
+          $season = Season::where('status', 0)->first();
         //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
             $removeLocalId = explode("-", $childBatch->batch->batch_number);
@@ -189,7 +189,6 @@ class CoffeeBuyer extends Controller {
             } else {
                 $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
             }
-            $season = Season::where('status', 0)->first();
             $newBatch = BatchNumber::create([
                         'batch_number' => $farmer->farmer_code . '-' . $lastBID,
                         'is_parent' => 0,
@@ -247,6 +246,7 @@ class CoffeeBuyer extends Controller {
         }
         //::add parent batch
         $removeLocalId = explode("-", $batch_numbers->batch->batch_number);
+
         //::remove last index of array
         array_pop($removeLocalId);
         if ($removeLocalId[3] == '000') {
@@ -269,6 +269,8 @@ class CoffeeBuyer extends Controller {
                     'is_local' => FALSE,
                     'local_code' => $batch_numbers->batch->local_code,
                     'is_server_id' => $batch_numbers->batch->is_server_id,
+                    'season_id' => $season->season_id,
+                    'season_status' => $season->status,
         ]);
         if (isset($batch_numbers->transactions) && isset($batch_numbers->transactions->transaction) && $batch_numbers->transactions->transaction) {
             $parentTransaction = Transaction::create([

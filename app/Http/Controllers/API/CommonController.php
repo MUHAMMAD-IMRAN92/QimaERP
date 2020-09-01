@@ -19,6 +19,7 @@ use App\Region;
 use App\Farmer;
 use App\Center;
 use App\User;
+use App\Season;
 use Storage;
 
 class CommonController extends Controller {
@@ -240,7 +241,9 @@ class CommonController extends Controller {
     }
 
     function allBatches(Request $request) {
-        $batches = BatchNumber::where('is_parent', 0)->get();
+        $season = Season::where('status', 0)->first();
+        var_dump($season);exit;
+        $batches = BatchNumber::where('is_parent', 0)->where('season_id', $season->season_id)->get();
         return sendSuccess('Successfully retrieved batches', $batches);
     }
 
