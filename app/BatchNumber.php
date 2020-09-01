@@ -11,6 +11,7 @@ class BatchNumber extends Model {
     protected $casts = [
           'is_local' => 'boolean',
           'is_mixed' => 'boolean',
+          'is_server_id' => 'boolean',
     ];
 
     public function childBatchNumber() {

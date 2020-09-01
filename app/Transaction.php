@@ -12,6 +12,7 @@ class Transaction extends Model {
         'is_local' => 'boolean',
         'is_mixed' => 'boolean',
         'is_new' => 'boolean',
+        'is_server_id' => 'boolean',
     ];
 
     public function transactionDetail() {
