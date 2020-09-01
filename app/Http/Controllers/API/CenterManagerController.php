@@ -46,7 +46,6 @@ class CenterManagerController extends Controller {
             return sendError($errors, 400);
         }
         $sentTransaction = json_decode($request['transactions']);
-        //return sendSuccess('Successfully retrieved farmers', $sentTransactions);
         $alreadyReciviedCoffee = null;
         $reciviedCoffee = null;
         if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
@@ -64,6 +63,9 @@ class CenterManagerController extends Controller {
                             'local_code' => $sentTransaction->transaction->local_code,
                             'transaction_status' => 'received',
                             'reference_id' => $sentTransaction->transaction->reference_id,
+                            'is_server_id' => 1,
+                            'is_new' => $sentTransaction->transaction->is_new,
+                            'sent_to' => $sentTransaction->transaction->sent_to,
                 ]);
 
                 $transactionLog = TransactionLog::create([
@@ -82,38 +84,59 @@ class CenterManagerController extends Controller {
                         'container_number' => $transactionContainer->container_number,
                         'created_by' => $transactionContainer->created_by,
                         'is_local' => FALSE,
-                        'weight' => $transactionContainer->container_weight,
+                        'container_weight' => $transactionContainer->container_weight,
+                        'weight_unit' => $transactionContainer->weight_unit,
                     ]);
                 }
                 $reciviedCoffee = $transaction->transaction_id;
             }
         }
-        $currentlyReceivedCoffee = Transaction::where('transaction_id', $reciviedCoffee)->with('transactionDetail')->get();
-
-        $data = ['received_coffee' => $currentlyReceivedCoffee, 'already_received_coffee' => $alreadyReciviedCoffee];
+        $currentlyReceivedCoffee = Transaction::where('transaction_id', $reciviedCoffee)->with('transactionDetail')->first();
         if ($alreadyReciviedCoffee) {
+            $data = ['already_received_coffee' => $alreadyReciviedCoffee];
+
             return sendError('Coffee already received', 406, $data);
         }
+        $transactionDeatil = $currentlyReceivedCoffee->transactionDetail;
+        $currentlyReceivedCoffee->makeHidden('transactionDetail');
+        $recCoffee = ['transaction' => $currentlyReceivedCoffee, 'transactionDetails' => $transactionDeatil];
+        $data = ['received_coffee' => $recCoffee];
+
         return sendSuccess('Transactions received successfully', $data);
     }
 
     function centerManagerCoffee(Request $request) {
         $centerId = $this->user->table_id;
+        $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->doesntHave('isReference')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'sent')->where('type', 'center')->where('entity_id', $centerId);
                 })->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
-
-        return sendSuccess('Center manager received coffee', $transactions);
+        foreach ($transactions as $key => $transaction) {
+            $transactionDetail = $transaction->transactionDetail;
+            $transaction->makeHidden('transactionDetail');
+            $transaction->makeHidden('childTransation');
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
+            array_push($allTransactions, $data);
+        }
+        return sendSuccess('Center manager received coffee', $allTransactions);
     }
 
     function centerManagerReceivedCoffee(Request $request) {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
+        $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->doesntHave('isReference')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
                 })->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
 
-        return sendSuccess('Center manager received coffee', $transactions);
+        foreach ($transactions as $key => $transaction) {
+            $transactionDetail = $transaction->transactionDetail;
+            $transaction->makeHidden('transactionDetail');
+            $transaction->makeHidden('childTransation');
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
+            array_push($allTransactions, $data);
+        }
+        return sendSuccess('Center manager received coffee', $allTransactions);
     }
 
 }
