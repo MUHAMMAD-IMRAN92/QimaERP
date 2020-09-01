@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Season extends Model
 {
-    protected $primaryKey = 'center_id';
+    protected $primaryKey = 'season_id';
 }

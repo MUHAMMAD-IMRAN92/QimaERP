@@ -14,6 +14,7 @@ use App\LoginUser;
 use App\Village;
 use App\Farmer;
 use App\User;
+use App\Season;
 use Storage;
 
 class CoffeeBuyer extends Controller {
@@ -188,6 +189,7 @@ class CoffeeBuyer extends Controller {
             } else {
                 $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
             }
+            $season = Season::where('status', 0)->first();
             $newBatch = BatchNumber::create([
                         'batch_number' => $farmer->farmer_code . '-' . $lastBID,
                         'is_parent' => 0,
@@ -197,6 +199,8 @@ class CoffeeBuyer extends Controller {
                         'is_mixed' => 0,
                         'local_code' => $childBatch->batch->local_code,
                         'is_server_id' => $childBatch->batch->is_server_id,
+                        'season_id' => $season->season_id,
+                        'season_status' => $season->status,
             ]);
             //::child transactions
             if (isset($childBatch->transactions) && isset($childBatch->transactions->transaction) && $childBatch->transactions->transaction) {

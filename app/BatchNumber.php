@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BatchNumber extends Model {
 
     protected $primaryKey = 'batch_id';
-    protected $fillable = ['batch_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed','is_server_id'];
+    protected $fillable = ['batch_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed','is_server_id','season_id','season_status'];
     protected $casts = [
           'is_local' => 'boolean',
           'is_mixed' => 'boolean',
