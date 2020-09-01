@@ -350,7 +350,7 @@ class CoffeeBuyer extends Controller {
         $currentBatchData->makeHidden('latestTransation');
         //  $currentBatchData->makeHidden('transaction');
         $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail];
-    
+
         $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
         return sendSuccess('Coffee was added Successfully', $data);
 
@@ -423,8 +423,27 @@ class CoffeeBuyer extends Controller {
     }
 
     function coffeeBuyerCoffee(Request $request) {
+        $allTransactions = array();
+
         $transactions = Transaction::where('is_parent', 0)->where('created_by', $this->userId)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
-        return sendSuccess('Transactions retrieved successfully', $transactions);
+        foreach ($transactions as $key => $transaction) {
+            $childTransactions = array();
+            if ($transaction->childTransation) {
+                foreach ($transaction->childTransation as $key => $childTransation) {
+                    $childTransationDetail = $childTransation->transactionDetail;
+                    $childTransation->makeHidden('transactionDetail');
+                    $childData = ['transactions' => $childTransation, 'transactions_detail' => $childTransationDetail];
+                    array_push($childTransactions, $childData);
+                }
+            }
+            $transactionDetail = $transaction->transactionDetail;
+            $transaction->makeHidden('transactionDetail');
+            $transaction->makeHidden('childTransation');
+            $data = ['transactions' => $transaction, 'child_transation' => $childTransactions, 'transactions_detail' => $transactionDetail];
+            array_push($allTransactions, $data);
+        }
+
+        return sendSuccess('Transactions retrieved successfully', $allTransactions);
     }
 
 }
