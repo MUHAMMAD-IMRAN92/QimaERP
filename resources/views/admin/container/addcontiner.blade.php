@@ -5,6 +5,15 @@
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
+      @if(session()->has('message'))
+          <div class="alert alert-danger">
+              {{ session()->get('message') }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+
+      @endif
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
@@ -34,51 +43,29 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="POST" action="{{URL::to('')}}/admin/addregion">
-                
-                {{--  @if ($errors->any())
-                  <div class="alert alert-danger">
-                      <ul>
-                          @foreach ($errors->all() as $error)
-                              <li>{{ $error }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </li>
-
-                          @endforeach
-                      </ul>
-                      
-                  </div>
-              @endif --}}
+              <form role="form" method="POST" action="{{URL::to('')}}/admin/storecontainer">
                 {{ csrf_field() }}
                 <div class="card-body">
                   <div class="form-group">
                    <label for="country_name">Type</label>
                    
-                    <select class="form-control input-add-inception" name="container_type">
-                      <option value="1">Basket</option>
-                      <option value="2">Drying Tables</option>
-                      <option value="3">Special Process barrel</option>
-                      <option value="4">Drying Machine (Future)</option>
-                      <option value="5">Dry Coffee Bag</option>
-                      <option value="6">Pre Defect removal Export Coffee (Size 1 and Size 2) bag</option>
-                      <option value="7">Defect Free Export coffee (Size 1 and Size 2) bag</option>
-                      <option value="8">Peaberry Coffee Bag</option>
-                      <option value="9">Grade 2 Coffee (small and big beans)</option>
-                      <option value="10">Grade 3 (defect) Coffee</option>
-                      <option value="11">Grade 1 husk  Bag</option>
-                      <option value="12">Grade 2 husk Bag</option>
-                      <option value="13">Grade 3 husk bag</option>
-                      <option value="14">5kg Vacuum Bag for export</option>
-                      <option value="15">15kg Premium Bag for export</option>
-                      <option value="16">10kg Shipping Box</option>
-                      <option value="17">30kg Shipping Box</option>
-                      <option value="18">Sample Bag 1</option>
-                     
+                    <select class="form-control " id="container_type" name="container_type">
+                      @foreach($array as $row)
+                      <option value="{{$row['code']}}">{{$row['type']}}</option>
+                      @endforeach
                     </select>
                   </div>
-                    
+                  <div class="form-group">
+                    <label for="codetype">Code</label>
+                    <input type="text" id="codetype" class="form-control" name="codetype" readonly="readonly">
+                  </div> 
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Number</label>
+                    <input type="text" id="number" class="form-control" id="number" name="number" placeholder="number" @error('number') is-invalid @enderror onClick="checkPrice()">
+                    @error('number')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+                  </div> 
                   <div class="form-group">
                     <label for="exampleInputPassword1">Capacity</label>
                     <input type="text" id="capacity" class="form-control" id="exampleInputPassword1" name="capacity" placeholder="Capacity" @error('capacity') is-invalid @enderror>
@@ -111,5 +98,11 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  
+  <script type="text/javascript">
+    var select = document.getElementById('container_type');
+      var input = document.getElementById('codetype');
+      select.onchange = function() {
+          input.value = select.value;
+      }
+  </script>
 @endsection

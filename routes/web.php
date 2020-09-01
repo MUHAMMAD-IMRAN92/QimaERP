@@ -70,9 +70,12 @@ Route::group(['prefix' => 'admin'], function () {
     //Container Controller
     Route::get('allcontainer', 'ContainerController@index');
     Route::get('addcontainer', 'ContainerController@addcontainer');
+    Route::post('storecontainer', 'ContainerController@store');
     
-
-
+    //Season Controller
+    Route::get('allseason', 'SeasonController@index');
+    Route::get('addseason', 'SeasonController@addseason');
+    Route::post('addseason', 'SeasonController@store');
 
     Route::group(['middleware' => ['nocache', 'admin']], function () {
 

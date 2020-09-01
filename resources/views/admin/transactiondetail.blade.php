@@ -51,7 +51,7 @@
                           <table  class="table ">
                               
                                 <tr>
-                                  <th>Basket</th>
+                                  <th>Batch Number</th>
                                   <th>Container</th>
                                   <th>Weight</th>
                                   <th>Farmer </th>
@@ -98,7 +98,7 @@
                   <thead>
                   <tr>
                     <th>S#</th>
-                    <th>Basket</th>
+                    <th>Batch Number</th>
                     <th>Weight</th>
                   </tr>
                   </thead>
@@ -116,7 +116,7 @@
                   <tfoot>
                  <tr>
                     <th>S#</th>
-                    <th>Basket</th>
+                    <th>Batch Number</th>
                     <th>Weight</th>
                   </tr>
                   </tfoot>
