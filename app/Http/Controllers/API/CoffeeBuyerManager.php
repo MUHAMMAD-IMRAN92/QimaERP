@@ -64,19 +64,6 @@ class CoffeeBuyerManager extends Controller {
     }
 
     function sentTransactions(Request $request) {
-        $alreadySentCoffee = null;
-        $currentlySentCoffee = Transaction::where('transaction_id', 2)->with('transactionDetail')->first();
-
-
-        if ($alreadySentCoffee) {
-            $data = ['already_sent_coffee' => $alreadySentCoffee];
-            return sendError('Coffee already sent', 406, $data);
-        }
-        $transactionsDetail = $currentlySentCoffee->transactionDetail;
-        $currentlySentCoffee->makeHidden('transactionDetail');
-        $sentCoffee = ['transactions' => $currentlySentCoffee, 'transactions_detail' => $transactionsDetail];
-        $data = ['sent_coffee' => $sentCoffee];
-        return sendSuccess('Coffee sent successfully', $data);
         //::validation
         $validator = Validator::make($request->all(), [
                     'transactions' => 'required',
@@ -131,12 +118,18 @@ class CoffeeBuyerManager extends Controller {
                 $sentCoffeeArray = $transaction->transaction_id;
             }
         }
-        $currentlySentCoffee = Transaction::where('transaction_id', $sentCoffeeArray)->with('transactionDetail')->get();
+        $currentlySentCoffee = Transaction::where('transaction_id', $sentCoffeeArray)->with('transactionDetail', 'log')->first();
 
-        $data = ['sent_coffee' => $currentlySentCoffee, 'already_sent_coffee' => $alreadySentCoffee];
         if ($alreadySentCoffee) {
+            $data = ['already_sent_coffee' => $alreadySentCoffee];
             return sendError('Coffee already sent', 406, $data);
         }
+        $transactionsDetail = $currentlySentCoffee->transactionDetail;
+        $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
+        $currentlySentCoffee->makeHidden('transactionDetail');
+        $currentlySentCoffee->makeHidden('log');
+        $sentCoffee = ['transactions' => $currentlySentCoffee, 'transactions_detail' => $transactionsDetail];
+        $data = ['sent_coffee' => $sentCoffee];
         return sendSuccess('Coffee sent successfully', $data);
     }
 
@@ -151,13 +144,40 @@ class CoffeeBuyerManager extends Controller {
     }
 
     function coffeeBuyerManagerCoffee(Request $request) {
+        $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
-        return sendSuccess('Transactions retrieved successfully', $transactions);
+        foreach ($transactions as $key => $transaction) {
+            $childTransactions = array();
+            if ($transaction->childTransation) {
+                foreach ($transaction->childTransation as $key => $childTransation) {
+                    $childTransationDetail = $childTransation->transactionDetail;
+                    $childTransation->makeHidden('transactionDetail');
+                    $childData = ['transactions' => $childTransation, 'transactions_detail' => $childTransationDetail];
+                    array_push($childTransactions, $childData);
+                }
+            }
+            $transactionDetail = $transaction->transactionDetail;
+            $transaction->makeHidden('transactionDetail');
+            $transaction->makeHidden('childTransation');
+            $data = ['transactions' => $transaction, 'child_transation' => $childTransactions, 'transactions_detail' => $transactionDetail];
+            array_push($allTransactions, $data);
+        }
+
+        return sendSuccess('Transactions retrieved successfully', $allTransactions);
     }
 
     function coffeeBuyerManagerSentCoffeeTransaction(Request $request) {
+        $allTransactions = array();
         $transactions = Transaction::where('created_by', $this->userId)->where('transaction_status', 'sent')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
-        return sendSuccess('Transactions retrieved successfully', $transactions);
+
+        foreach ($transactions as $key => $transaction) {
+            $transactionDetail = $transaction->transactionDetail;
+            $transaction->makeHidden('transactionDetail');
+            $transaction->makeHidden('childTransation');
+            $data = ['transactions' => $transaction, 'transactions_detail' => $transactionDetail];
+            array_push($allTransactions, $data);
+        }
+        return sendSuccess('Transactions retrieved successfully', $allTransactions);
     }
 
     function approvedFarmer(Request $request) {

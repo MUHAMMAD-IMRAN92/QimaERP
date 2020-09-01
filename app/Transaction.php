@@ -30,6 +30,9 @@ class Transaction extends Model {
     public function transactionLog() {
         return $this->hasMany(TransactionLog::class, 'transaction_id', 'transaction_id');
     }
+    public function log() {
+        return $this->hasOne(TransactionLog::class, 'transaction_id', 'transaction_id');
+    }
 
     public function sent_transaction() {
         return $this->hasOne(Transaction::class, 'reference_id', 'transaction_id');
