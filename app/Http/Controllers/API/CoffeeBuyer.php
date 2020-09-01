@@ -177,7 +177,7 @@ class CoffeeBuyer extends Controller {
         $childTransactionArray = array();
         //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
-            $removeLocalId = explode("-", $childBatch->batch->batch_code);
+            $removeLocalId = explode("-", $childBatch->batch->batch_number);
             $lastBID = ($lastBID + 1);
             //::remove last index of array
             array_pop($removeLocalId);
@@ -246,7 +246,7 @@ class CoffeeBuyer extends Controller {
             array_push($childTransactionArray, $newTransaction->transaction_id);
         }
         //::add parent batch
-        $removeLocalId = explode("-", $batch_numbers->batch->batch_code);
+        $removeLocalId = explode("-", $batch_numbers->batch->batch_number);
         //::remove last index of array
         array_pop($removeLocalId);
         if ($removeLocalId[3] == '000') {
@@ -350,6 +350,7 @@ class CoffeeBuyer extends Controller {
         $currentBatchData->makeHidden('latestTransation');
         //  $currentBatchData->makeHidden('transaction');
         $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail];
+    
         $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
         return sendSuccess('Coffee was added Successfully', $data);
 

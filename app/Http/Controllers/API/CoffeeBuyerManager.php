@@ -64,6 +64,19 @@ class CoffeeBuyerManager extends Controller {
     }
 
     function sentTransactions(Request $request) {
+        $alreadySentCoffee = null;
+        $currentlySentCoffee = Transaction::where('transaction_id', 2)->with('transactionDetail')->first();
+
+
+        if ($alreadySentCoffee) {
+            $data = ['already_sent_coffee' => $alreadySentCoffee];
+            return sendError('Coffee already sent', 406, $data);
+        }
+        $transactionsDetail = $currentlySentCoffee->transactionDetail;
+        $currentlySentCoffee->makeHidden('transactionDetail');
+        $sentCoffee = ['transactions' => $currentlySentCoffee, 'transactions_detail' => $transactionsDetail];
+        $data = ['sent_coffee' => $sentCoffee];
+        return sendSuccess('Coffee sent successfully', $data);
         //::validation
         $validator = Validator::make($request->all(), [
                     'transactions' => 'required',
@@ -90,6 +103,9 @@ class CoffeeBuyerManager extends Controller {
                             'local_code' => $sentTransaction->transactions->local_code,
                             'transaction_status' => 'sent',
                             'reference_id' => $sentTransaction->transactions->reference_id,
+                            'is_server_id' => 1,
+                            'is_new' => $sentTransaction->transactions->is_new,
+                            'sent_to' => $sentTransaction->transactions->sent_to,
                 ]);
 
                 $transactionLog = TransactionLog::create([
@@ -108,7 +124,8 @@ class CoffeeBuyerManager extends Controller {
                         'container_number' => $transactionContainer->container_number,
                         'created_by' => $sentTransaction->transactions->created_by,
                         'is_local' => FALSE,
-                        'weight' => $transactionContainer->container_weight,
+                        'container_weight' => $transactionContainer->container_weight,
+                        'weight_unit' => $transactionContainer->weight_unit,
                     ]);
                 }
                 $sentCoffeeArray = $transaction->transaction_id;
