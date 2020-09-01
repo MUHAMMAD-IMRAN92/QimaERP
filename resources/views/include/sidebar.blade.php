@@ -163,6 +163,17 @@
               </p>
              </a>
             </li>
+
+            <li class="nav-item"   @if($segment == 'addseason')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/allseason" class="nav-link ">
+              <i class="fal fa-trees"></i>
+             <i class="nav-icon fas fa-tree"></i>
+              <p>
+               Season
+                
+              </p>
+             </a>
+            </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

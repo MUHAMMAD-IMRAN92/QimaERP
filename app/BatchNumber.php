@@ -16,6 +16,9 @@ class BatchNumber extends Model {
     public function transaction() {
         return $this->hasMany(Transaction::class, 'batch_number', 'batch_number');
     }
+    public function season() {
+        return $this->hasMany(Season::class, 'season_id', 'season_id');
+    }
 
     public function sent_transaction() {
         return $this->hasMany(Transaction::class, 'batch_number', 'batch_number');

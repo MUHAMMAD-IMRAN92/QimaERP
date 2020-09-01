@@ -22,10 +22,10 @@ class FarmerController extends Controller
         $total_members = Farmer::count();
         $members = Farmer::query();
         //::select columns
-        $members = $members->select('farmer_id', 'farmer_code', 'farmer_name', 'village_code');
+        $members = $members->select('farmer_id', 'farmer_code', 'farmer_name', 'village_code', 'farmer_nicn');
         //::search with farmername or farmer_code or  village_code
         $members = $members->when($search, function($q)use ($search) {
-                    $q->where('farmer_name', 'like', "%$search%")->orWhere('farmer_code', 'like', "%$search%")->orWhere('village_code', 'like', "%$search%");
+                    $q->where('farmer_name', 'like', "%$search%")->orWhere('farmer_code', 'like', "%$search%")->orWhere('village_code', 'like', "%$search%")->orWhere('farmer_nicn', 'like', "%$search%");
                 });
         if ($request->has('order') && !is_null($request['order'])) {
             $orderBy = $request->get('order');
@@ -39,6 +39,9 @@ class FarmerController extends Controller
                 $column = 'farmer_name';
             } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 3) {
                 $column = 'village_code';
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 3) {
+                $column = 'farmer_nicn';
+            
             } else {
                 $column = 'farmer_code';
             }

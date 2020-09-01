@@ -50,6 +50,7 @@
                     <th>S#</th> 
                     <th>Farmer Code</th>
                     <th>Farmer Name</th>
+                    <th>Farmer Cnic</th>
                     <th>Village Code</th>
                     <th>Action</th> 
                   </tr>
@@ -61,6 +62,7 @@
                     
                     <th>Farmer Code</th>
                     <th>Farmer Name</th>
+                    <th>Farmer Cnic</th>
                     <th>Village Code</th>
                     <th>Action</th> 
                   </tr>
@@ -100,6 +102,7 @@
                 {"data": 'farmer_code'},
                 {"data": 'farmer_name'},
                 {"data": 'village_code'},
+                {"data": 'farmer_nicn'},
                 {"mRender": function (data, type, row) {
                         return '<a href=' + base_path + '' + row.id + '>Edit</a>| <a href=' + base_path + '' + row.id + ' class="editor_remove" data-id="' + row.id + '">Delete</a>';
                     }
