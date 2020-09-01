@@ -164,7 +164,7 @@ class CoffeeBuyer extends Controller {
             $lastTID = $lastTransactionNumber->batch_id;
         }
         $batch_numbers = json_decode($request['batch_number']);
-           
+
         //::insert child batches id
         $childBatchNumberArray = array();
         //::insert child transactions id
@@ -176,10 +176,13 @@ class CoffeeBuyer extends Controller {
             //::remove last index of array
             array_pop($removeLocalId);
 
-           // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
+            // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
             $farmerCode = implode("-", $removeLocalId);
-           // $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
-            $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+            if ($childBatch->batch->is_server_id == 1) {
+                $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+            } else {
+                $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+            }
             $newBatch = BatchNumber::create([
                         'batch_number' => $farmer->farmer_code . '-' . $lastBID,
                         'is_parent' => 0,
@@ -188,6 +191,7 @@ class CoffeeBuyer extends Controller {
                         'is_local' => FALSE,
                         'is_mixed' => 0,
                         'local_code' => $childBatch->batch->local_code,
+                        'is_server_id' => $childBatch->batch->is_server_id,
             ]);
             //::child transactions
             if (isset($childBatch->transactions) && isset($childBatch->transactions->transaction) && $childBatch->transactions->transaction) {
@@ -201,6 +205,9 @@ class CoffeeBuyer extends Controller {
                             'is_mixed' => 0,
                             'local_code' => $childBatch->transactions->transaction->local_code,
                             'transaction_status' => 'created',
+                            'is_server_id' => $childBatch->transactions->transaction->is_server_id,
+                            'is_new' => $childBatch->transactions->transaction->is_new,
+                            'sent_to' => $childBatch->transactions->transaction->sent_to,
                 ]);
 
                 $transactionLog = TransactionLog::create([
@@ -220,7 +227,8 @@ class CoffeeBuyer extends Controller {
                             'container_number' => $transactionsDetail->container_number,
                             'created_by' => $transactionsDetail->created_by,
                             'is_local' => FALSE,
-                            'weight' => $transactionsDetail->container_weight,
+                            'container_weight' => $transactionsDetail->container_weight,
+                            'weight_unit' => $transactionsDetail->weight_unit,
                         ]);
                     }
                 }
@@ -237,8 +245,11 @@ class CoffeeBuyer extends Controller {
         } else {
             //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
             $farmerCode = implode("-", $removeLocalId);
-           // $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
-               $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+            if ($batch_numbers->batch->is_server_id == 1) {
+                $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+            } else {
+                $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+            }
             $parentBatchCode = $farmer->farmer_code . '-' . ($lastBID + 1);
         }
         $parentBatch = BatchNumber::create([
@@ -248,6 +259,7 @@ class CoffeeBuyer extends Controller {
                     'created_by' => $batch_numbers->batch->created_by,
                     'is_local' => FALSE,
                     'local_code' => $batch_numbers->batch->local_code,
+                    'is_server_id' => $batch_numbers->batch->is_server_id,
         ]);
         if (isset($batch_numbers->transactions) && isset($batch_numbers->transactions->transaction) && $batch_numbers->transactions->transaction) {
             $parentTransaction = Transaction::create([
@@ -259,6 +271,9 @@ class CoffeeBuyer extends Controller {
                         'transaction_type' => $batch_numbers->transactions->transaction->transaction_type,
                         'local_code' => $batch_numbers->transactions->transaction->local_code,
                         'transaction_status' => 'created',
+                        'is_server_id' => $batch_numbers->transactions->transaction->is_server_id,
+                        'is_new' => $batch_numbers->transactions->transaction->is_new,
+                        'sent_to' => $batch_numbers->transactions->transaction->sent_to,
             ]);
 
 
@@ -281,15 +296,56 @@ class CoffeeBuyer extends Controller {
                         'container_number' => $transactionsDetail->container_number,
                         'created_by' => $transactionsDetail->created_by,
                         'is_local' => FALSE,
-                        'weight' => $transactionsDetail->container_weight,
+                        'container_weight' => $transactionsDetail->container_weight,
+                        'weight_unit' => $transactionsDetail->weight_unit,
                     ]);
                 }
             }
         }
         BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
         Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
-        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
-        return sendSuccess('Coffee was added Successfully', $currentBatch);
+
+        $patentTransactions = null;
+        $patentTransactionsDetail = null;
+        $childBatches = array();
+        $currentBatchData = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.latestTransation.transactionDetail')->with('latestTransation.transactionDetail')->first();
+        if ($currentBatchData->is_mixed == 1) {
+            if (isset($currentBatchData->childBatchNumber) && $currentBatchData->childBatchNumber) {
+                foreach ($currentBatchData->childBatchNumber as $key => $childBatchNumber) {
+                    $childPatentTransactions = null;
+                    $childPatentTransactionsDetail = null;
+                    if (isset($childBatchNumber->latestTransation) && $childBatchNumber->latestTransation) {
+                        if (isset($childBatchNumber->latestTransation->transactionDetail) && $childBatchNumber->latestTransation->transactionDetail) {
+                            $childPatentTransactionsDetail = $childBatchNumber->latestTransation->transactionDetail;
+                            $childBatchNumber->latestTransation->makeHidden('transactionDetail');
+                        }
+                        $childPatentTransactions = $childBatchNumber->latestTransation;
+                        $childBatchNumber->makeHidden('latestTransation');
+                    }
+                    $childtransactionData = ['transaction' => $childPatentTransactions, 'transactions_detail' => $childPatentTransactionsDetail];
+                    $dataPush = ['batch' => $childBatchNumber, 'transactions' => $childtransactionData];
+                    array_push($childBatches, $dataPush);
+                }
+            }
+            $currentBatchData->makeHidden('childBatchNumber');
+        } else {
+            $currentBatchData->makeHidden('childBatchNumber');
+        }
+        if (isset($currentBatchData->latestTransation) && $currentBatchData->latestTransation) {
+            if (isset($currentBatchData->latestTransation->transactionDetail) && $currentBatchData->latestTransation->transactionDetail) {
+                $patentTransactionsDetail = $currentBatchData->latestTransation->transactionDetail;
+                $currentBatchData->latestTransation->makeHidden('transactionDetail');
+            }
+            $patentTransactions = $currentBatchData->latestTransation;
+        }
+        $currentBatchData->makeHidden('latestTransation');
+        //  $currentBatchData->makeHidden('transaction');
+        $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail];
+        $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
+        return sendSuccess('Coffee was added Successfully', $data);
+
+//        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
+//        return sendSuccess('Coffee was added Successfully', $currentBatch);
     }
 
     function addCoffeeWithOutBatchNumber(Request $request) {
@@ -303,10 +359,15 @@ class CoffeeBuyer extends Controller {
         }
         $newTransactionid = null;
         $transactions = json_decode($request['transaction']);
-      //  return sendSuccess('Coffee was added Successfully', $transactions->transactions_detail);
+
         if (isset($transactions->transactions) && $transactions->transactions) {
+            $batchCode = $transactions->transactions->batch_number;
+            if ($transactions->transactions->is_server_id == 0) {
+                $currentBatch = BatchNumber::where('local_code', 'like', "$batchCode%")->first();
+                $batchCode = $currentBatch->batch_number;
+            }
             $newTransaction = Transaction::create([
-                        'batch_number' => $transactions->transactions->batch_number,
+                        'batch_number' => $batchCode,
                         'is_parent' => 0,
                         'is_mixed' => 0,
                         'created_by' => $transactions->transactions->created_by,
@@ -335,13 +396,20 @@ class CoffeeBuyer extends Controller {
                     'container_number' => $transactionsDetail->container_number,
                     'created_by' => $transactionsDetail->created_by,
                     'is_local' => FALSE,
-                    'weight' => $transactionsDetail->container_weight,
+                    'container_weight' => $transactionsDetail->container_weight,
+                    'weight_unit' => $transactionsDetail->weight_unit,
                 ]);
             }
         }
 
-        $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->get();
-        return sendSuccess('Coffee was added Successfully', $currentBatch);
+        $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->first();
+        $transationsDetail = $currentBatch->transactionDetail;
+        $currentBatch->makeHidden('transactionDetail');
+        $transations = $currentBatch;
+        $data = ['transactions' => $transations, 'transactions_detail' => $transationsDetail];
+        return sendSuccess('Coffee was added Successfully', $data);
+
+        return sendSuccess('Coffee was added Successfully', $transationsDetail);
     }
 
     function coffeeBuyerCoffee(Request $request) {
