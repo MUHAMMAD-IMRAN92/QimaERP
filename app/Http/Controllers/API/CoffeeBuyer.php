@@ -174,7 +174,7 @@ class CoffeeBuyer extends Controller {
         $childBatchNumberArray = array();
         //::insert child transactions id
         $childTransactionArray = array();
-          $season = Season::where('status', 0)->first();
+        $season = Season::where('status', 0)->first();
         //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
             $removeLocalId = explode("-", $childBatch->batch->batch_number);
@@ -215,7 +215,7 @@ class CoffeeBuyer extends Controller {
                             'transaction_status' => 'created',
                             'is_server_id' => $childBatch->transactions->transaction->is_server_id,
                             'is_new' => $childBatch->transactions->transaction->is_new,
-                            'sent_to' => $childBatch->transactions->transaction->sent_to,
+                            'sent_to' => 2,
                 ]);
 
                 $transactionLog = TransactionLog::create([
@@ -284,7 +284,7 @@ class CoffeeBuyer extends Controller {
                         'transaction_status' => 'created',
                         'is_server_id' => $batch_numbers->transactions->transaction->is_server_id,
                         'is_new' => $batch_numbers->transactions->transaction->is_new,
-                        'sent_to' => $batch_numbers->transactions->transaction->sent_to,
+                        'sent_to' => 2,
             ]);
 
 
@@ -388,6 +388,9 @@ class CoffeeBuyer extends Controller {
                         'is_mixed' => 0,
                         'local_code' => $transactions->transactions->local_code,
                         'transaction_status' => 'created',
+                        'is_server_id' => $transactions->transactions->is_server_id,
+                        'is_new' => $transactions->transactions->is_new,
+                        'sent_to' => 2,
             ]);
             $newTransactionid = $newTransaction->transaction_id;
             $transactionLog = TransactionLog::create([
