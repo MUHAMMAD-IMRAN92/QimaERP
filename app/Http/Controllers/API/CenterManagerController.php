@@ -65,9 +65,8 @@ class CenterManagerController extends Controller {
                             'reference_id' => $sentTransaction->transaction->reference_id,
                             'is_server_id' => 1,
                             'is_new' => $sentTransaction->transaction->is_new,
-                            'sent_to' => $sentTransaction->transaction->sent_to,
+                            'sent_to' => 0,
                             'is_sent' => 1,
-                            'sent_to' => 3,
                 ]);
 
                 $transactionLog = TransactionLog::create([
