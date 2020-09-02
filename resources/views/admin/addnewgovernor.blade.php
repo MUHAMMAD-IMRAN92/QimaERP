@@ -34,7 +34,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="POST" action="{{URL::to('')}}/admin/addcenter">
+              <form role="form" method="POST" action="{{URL::to('')}}/admin/addgovernor">
                 {{--  @if ($errors->any())
                   <div class="alert alert-danger">
                       <ul>
@@ -49,19 +49,19 @@
                   </div>
               @endif --}}
                 {{ csrf_field() }}
-                <div class="card-body">
+                <div class="card-body col-md-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Code</label>
                     <input type="text" id="governerate_code" class="form-control " id="exampleInputEmail1" name="governerate_code" placeholder="Enter Code" @error('governerate_code') is-invalid @enderror>
                     @error('governerate_code')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                        <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Title</label>
                     <input type="text" id="governerate_title" class="form-control" id="exampleInputPassword1" name="governerate_title" placeholder="Title"  @error('governerate_title') is-invalid @enderror>
                      @error('governerate_title')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                         <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
                  

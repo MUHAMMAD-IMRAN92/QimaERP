@@ -104,7 +104,7 @@
                 {"data": 'village_code'},
                 {"data": 'farmer_nicn'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + '' + row.id + '>Edit</a>| <a href=' + base_path + '' + row.id + ' class="editor_remove" data-id="' + row.id + '">Delete</a>';
+                        return '<a href=' + base_path + '' + row.season_id + '>Edit</a>| <a href=' + base_path + '' + row.season_id + ' class="editor_remove" data-id="' + row.season_id + '">Delete</a>';
                     }
                 }
             ],

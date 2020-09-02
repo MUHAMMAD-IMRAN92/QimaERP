@@ -5,6 +5,14 @@
  
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+    @if(session()->has('update'))
+    <div class="alert alert-success">
+        {{ session()->get('update') }}
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+    </div>
+    @endif
     @if(Session::has('message'))
                   <div class="alert alert-success" role="alert">
                   <b>{{Session::get('message')}}</b>
@@ -18,7 +26,7 @@
 
           <div class="col-sm-6">
             <h1>Add New Village 
-              <a href="" class="btn btn-add rounded-circle"> 
+              <a href="{{URL::to('')}}/admin/addnewvillage" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
             </h1>
@@ -99,7 +107,7 @@
                 {"data": 'village_code'},
                 {"data": 'village_title'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + '' + row.id + '>Edit</a>| <a href=' + base_path + '' + row.id + ' class="editor_remove" data-id="' + row.id + '">Delete</a>';
+                        return '<a href=' + base_path + 'admin/editvillage/' + row.village_id + '>Edit</a>| <a href=' + base_path + '' + row.village_id + ' class="editor_remove" data-id="' + row.village_id + '">Delete</a>';
                     }
                 }
             ],

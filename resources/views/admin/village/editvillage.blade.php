@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', 'All Center')
+@section('title', 'All Village')
 @section('content')
      <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -8,12 +8,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Add Center</h1>
+            <h1>Edit Village</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Add Center</li>
+              <li class="breadcrumb-item active">Edit Village</li>
             </ol>
           </div>
         </div>
@@ -30,11 +30,11 @@
             <div class="card card-primary">
 
               <div class="card-header">
-                <h3 class="card-title">Add</h3>
+                <h3 class="card-title">Edit</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="POST" action="{{URL::to('/admin/storecenter')}}">
+              <form role="form" method="POST" action="{{URL::to('')}}/admin/updatevillage">
                 {{--  @if ($errors->any())
                   <div class="alert alert-danger">
                       <ul>
@@ -49,33 +49,21 @@
                   </div>
               @endif --}}
                 {{ csrf_field() }}
-                <div class="card-body">
+                <input type="hidden" name="village_id" value="{{$village->village_id}}">
+                <div class="card-body col-md-6">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Code</label>
-                    <input type="text" id="center_code" class="form-control " id="exampleInputEmail1" name="center_code" placeholder="Enter Code" @error('center_code') is-invalid @enderror>
-                    @error('center_code')
-                       <span  class="text-danger">{{ $message }}</span>
-                    @enderror
+                    <label for="exampleInputPassword1"> Code</label>
+                    <input type="text" id="village_title" class="form-control" id="exampleInputPassword1" name="village_title" placeholder="Title" value="{{$village->village_code}}" readonly="readonly">
+                   
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Title</label>
-                    <input type="text" id="center_name" class="form-control" id="exampleInputPassword1" name="center_name" placeholder="Title"  @error('center_name') is-invalid @enderror>
-                     @error('center_name')
-                       <span  class="text-danger">{{ $message }}</span>
+                    <input type="text" id="village_title" value="{{$village->village_title}}" class="form-control" id="exampleInputPassword1" name="village_title" placeholder="Title"  @error('village_title') is-invalid @enderror>
+                     @error('village_title')
+                        <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
-                 <div class="form-group">
-                   <label for="country_name">All Center</label>
-                    <select  class="form-control managerselect2s4" name="center_manager_id"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
-                      @foreach($user as $row)
-                      <option value="{{$row->user_id}}">{{$row->email}}</option>
-                      @endforeach
-                       @error('center_manager_id')
-                       <span  class="text-danger">{{ $message }}</span>
-                    @enderror
-                    </select>
-
-                  </div>
+                 
                 
                 </div>
                 <!-- /.card-body -->
@@ -100,5 +88,5 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
- 
+  
 @endsection

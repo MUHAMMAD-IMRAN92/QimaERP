@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\User;
 use App\LoginUser;
+use App\Farmer;
+use App\Village;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller {
@@ -21,8 +23,9 @@ class AuthController extends Controller {
     }
 
      public function dashboard() {
-
-       return view('dashboard');
+        $data['farmer'] = Farmer::orderBy('farmer_id', 'asc')->take(10)->get();
+        $data['village'] = Village::orderBy('village_id', 'asc')->take(10)->get();
+        return view('dashboard',$data);
        
     }
 
