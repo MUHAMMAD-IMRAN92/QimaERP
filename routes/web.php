@@ -41,11 +41,16 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('addnewregion', 'RegionController@addnewregion');
     Route::post('addregion', 'RegionController@store');
     Route::get('editregion/{id}', 'RegionController@edit');
-     Route::get('deleteregion/{id}', 'RegionController@delete');
+    Route::get('deleteregion/{id}', 'RegionController@delete');
+
 
     //Village Controller
     Route::get('allvillage', 'VillageController@index');
     Route::get('getvillage', 'VillageController@getVillageAjax');
+    Route::get('addnewvillage', 'VillageController@addnewvillage');
+    Route::post('addvillage', 'VillageController@store');
+    Route::get('editvillage/{id}', 'VillageController@edit');
+    Route::post('updatevillage', 'VillageController@update');
 
     //Farmer Controller
     Route::get('allfarmer', 'FarmerController@index');
@@ -76,7 +81,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('allseason', 'SeasonController@index');
     Route::get('addseason', 'SeasonController@addseason');
     Route::post('addseason', 'SeasonController@store');
+    Route::get('editseason/{id}', 'SeasonController@edit');
+    Route::post('updateseason', 'SeasonController@update');
+    Route::get('deleteseason/{id}', 'SeasonController@delete');
+    Route::get('seasonend/{id}', 'SeasonController@seasonend');
 
+
+    Route::get('getseason', 'SeasonController@getSeasonAjax');
     Route::group(['middleware' => ['nocache', 'admin']], function () {
 
 

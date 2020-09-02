@@ -29,9 +29,9 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                <h3>{{App\Farmer::count()}}</h3>
 
-                <p>New Orders</p>
+                <p>Farmers</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -44,9 +44,9 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Bounce Rate</p>
+                {{-- <h3>53<sup style="font-size: 20px">%</sup></h3> --}}
+                <h3>{{App\Village::count()}}</h3>
+                <p>Villages</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -91,5 +91,78 @@
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Farmer </h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>                  
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Farmer Code</th>
+                      <th>Farmer Name</th>
+                      <th>Village Code</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($farmer as  $row)
+                    <tr>
+                      <td>{{$row->farmer_id}}</td>
+                      <td>{{$row->farmer_code}}</td>
+                      <td>{{$row->farmer_name}}</td>
+                      <td>{{$row->village_code}}</td>
+                    </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+             
+            </div>
+
+            
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Village </h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>                  
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Village Code</th>
+                      <th>Village Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($village as  $row)
+                    <tr>
+                      <td>{{$row->village_id}}</td>
+                      <td>{{$row->village_code}}</td>
+                      <td>{{$row->village_title}}</td>
+                    </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+             
+            </div>
+            
+            
+          </div>
+         
+        </div>
+      </div>
+    </section>
   </div>
   @endsection

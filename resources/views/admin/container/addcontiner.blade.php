@@ -57,20 +57,23 @@
                   </div>
                   <div class="form-group">
                     <label for="codetype">Code</label>
-                    <input type="text" id="codetype" class="form-control" name="codetype" readonly="readonly">
+                    <input type="text" id="codetype" class="form-control" name="codetype" readonly="readonly" @error('codetype') is-invalid @enderror>
+                    @error('codetype')
+                        <span  class="text-danger">{{ $message }}</span>
+                    @enderror
                   </div> 
                   <div class="form-group">
                     <label for="exampleInputPassword1">Number</label>
                     <input type="text" id="number" class="form-control" id="number" name="number" placeholder="number" @error('number') is-invalid @enderror onClick="checkPrice()">
                     @error('number')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                        <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div> 
                   <div class="form-group">
                     <label for="exampleInputPassword1">Capacity</label>
                     <input type="text" id="capacity" class="form-control" id="exampleInputPassword1" name="capacity" placeholder="Capacity" @error('capacity') is-invalid @enderror>
                     @error('capacity')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                        <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
                  

@@ -67,14 +67,14 @@
                     <label for="exampleInputEmail1">Region Code</label>
                     <input type="text" id="region_code" class="form-control" id="exampleInputEmail1" name="region_code" placeholder="Enter Code" @error('region_code') is-invalid @enderror>
                     @error('region_code')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                         <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Region Title</label>
                     <input type="text" id="region_title" class="form-control" id="exampleInputPassword1" name="region_title" placeholder="Title" @error('region_title') is-invalid @enderror>
                     @error('region_title')
-                        <div class="alert alert-danger">{{ $message }}</div>
+                         <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
                  

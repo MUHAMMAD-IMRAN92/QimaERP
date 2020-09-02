@@ -10,7 +10,7 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1>Transections Information 
-              <a href="{{url('/admin/addcontainer')}}" class="btn btn-add rounded-circle"> 
+              <a href="" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
             </h1>

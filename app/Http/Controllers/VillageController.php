@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Village;
+use App\Region;
 class VillageController extends Controller
 {
     public function index(){
     	$data['village']=Village::all();
-    	return view('admin.allvillage',$data);
+    	return view('admin.village.allvillage',$data);
     }
 
     function getVillageAjax(Request $request) {
@@ -50,5 +51,51 @@ class VillageController extends Controller
         );
         //:: return json
         return json_encode($data);
+    }
+
+    public function addnewvillage(){
+        $data['region']=Region::all();
+        return view('admin.village.addvillage',$data);
+    }
+
+    public function store(Request $request){
+
+         $validatedData = $request->validate([
+        'region_code' => 'required',
+        'village_title' => 'required',
+            ]);
+
+        $currentVillageCode = 1;
+        $lastVillage = Village::orderBy('created_at', 'q')->first();
+        if (isset($lastVillage) && $lastVillage) {
+            $currentVillageCode = ($lastVillage->village_id + 1);
+        }
+        // dd( $currentVillageCode);
+        $twoDigitCode = sprintf("%02d", ($currentVillageCode));
+        // dd($twoDigitCode);
+        // $last= $twoDigitCode+1;
+        $village=new Village();
+        $village->village_code=$request->region_code.'-'.$twoDigitCode;
+        $village->village_title=$request->village_title;
+        // dd($village->village_id);
+        $village->save();
+        return redirect('admin/allvillage');
+
+
+    }
+
+    public function edit($id){
+        // dd($id);
+        $data['village']=Village::find($id);
+        return view('admin.village.editvillage',$data);
+    }
+
+
+    public function update(Request $request){
+        $updatevillage= Village::find($request->village_id);
+        $updatevillage->village_title=$request->village_title;
+        // dd($updatevillage);
+        $updatevillage->update();
+        return redirect('admin/allvillage')->with('update', 'Village Update Successfully!');
     }
 }

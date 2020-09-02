@@ -22,11 +22,18 @@ class ContainerController extends Controller
     }
 
     public function store(Request $request){
+
+         $checkcontainer= Container::where('container_number',$request->codetype.$request->number)->first();
+            if(!$checkcontainer){
+                
+            
     	// dd($request->all());
-    	if(Container::where('container_number', '=', $request->codetype.$request->number)->first()){
-	    	//  $validatedData = $request->validate([
-		    //     'region_code' => 'required|unique:containers',
-		    // ]);
+    	// if(Container::where('container_number', '=', $request->codetype.$request->number)->first()){
+	    	 $validatedData = $request->validate([
+		        'region_code' => 'required',
+                'number' => 'required',
+                'capacity' => 'required',
+		    ]);
 			$current_timestamp = Carbon::now()->timestamp;
 			// dd($current_timestamp);
 	    	// dd($request->all());
