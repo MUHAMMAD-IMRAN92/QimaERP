@@ -14,6 +14,7 @@ use App\LoginUser;
 use App\Village;
 use App\Farmer;
 use App\User;
+use App\Season;
 use Storage;
 
 class CoffeeBuyer extends Controller {
@@ -41,23 +42,28 @@ class CoffeeBuyer extends Controller {
 
     function farmer(Request $request) {
         $farmerName = $request->farmer_name;
-        $governerateCode = $request->governerate_code;
-        $regionCode = $request->region_code;
+        $villageCode = $request->village_code;
+        $farmerCode = $request->farmer_code;
+        $farmerNicn = $request->farmer_nicn;
         $user_image = asset('storage/app/images/demo_user_image.png');
         $user_image_path = asset('storage/app/images/');
         $farmers = Farmer::when($farmerName, function($q) use ($farmerName) {
                     $q->where(function($q) use ($farmerName) {
                         $q->where('farmer_name', 'like', "%$farmerName%");
                     });
-                })->when($governerateCode, function($q) use ($governerateCode) {
-                    $q->where(function($q) use ($governerateCode) {
-                        $q->where('governerate_code', 'like', "%$governerateCode%");
+                })->when($villageCode, function($q) use ($villageCode) {
+                    $q->where(function($q) use ($villageCode) {
+                        $q->where('village_code', 'like', "%$villageCode%");
                     });
-                })->when($regionCode, function($q) use ($regionCode) {
-                    $q->where(function($q) use ($regionCode) {
-                        $q->where('region_code', 'like', "%$regionCode%");
+                })->when($farmerCode, function($q) use ($farmerCode) {
+                    $q->where(function($q) use ($farmerCode) {
+                        $q->where('farmer_code', 'like', "%$farmerCode%");
                     });
-                })->where('is_status', 1)->with('governerate', 'region', 'village')->with(['profileImage' => function($query) use($user_image, $user_image_path) {
+                })->when($farmerNicn, function($q) use ($farmerNicn) {
+                    $q->where(function($q) use ($farmerNicn) {
+                        $q->where('farmer_nicn', 'like', "%$farmerNicn%");
+                    });
+                })->where('is_status', 1)->with('village')->with(['profileImage' => function($query) use($user_image, $user_image_path) {
                         $query->select('file_id', 'system_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`system_file_name`),IFNULL(`system_file_name`,'" . $user_image . "')) as system_file_name"));
                     }])->with(['idcardImage' => function($query) use($user_image, $user_image_path) {
                         $query->select('file_id', 'system_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`system_file_name`),IFNULL(`system_file_name`,'" . $user_image . "')) as system_file_name"));
@@ -151,27 +157,29 @@ class CoffeeBuyer extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+
         $lastBID = 0;
         $lastTID = 0;
         //::last batch number id
-        $lastBatchNumber = BatchNumber::latest('batch_id')->first();
+        $lastBatchNumber = BatchNumber::orderBy('created_at', 'desc')->first();
         //::last transaction id
-        $lastTransactionNumber = Transaction::latest('transaction_id')->first();
+        $lastTransactionNumber = Transaction::orderBy('created_at', 'desc')->first();
         if ($lastBatchNumber) {
             $lastBID = $lastBatchNumber->batch_id;
         }
         if ($lastTransactionNumber) {
-            $lastTID = $lastTransactionNumber->batch_id;
+            $lastTID = $lastTransactionNumber->transaction_id;
         }
         $batch_numbers = json_decode($request['batch_number']);
-
         //::insert child batches id
         $childBatchNumberArray = array();
         //::insert child transactions id
         $childTransactionArray = array();
+        $season = Season::where('status', 0)->first();
+
         //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
-            $removeLocalId = explode("-", $childBatch->batch->batch_code);
+            $removeLocalId = explode("-", $childBatch->batch->batch_number);
             $lastBID = ($lastBID + 1);
             //::remove last index of array
             array_pop($removeLocalId);
@@ -192,6 +200,8 @@ class CoffeeBuyer extends Controller {
                         'is_mixed' => 0,
                         'local_code' => $childBatch->batch->local_code,
                         'is_server_id' => $childBatch->batch->is_server_id,
+                        'season_id' => $season->season_id,
+                        'season_status' => $season->status,
             ]);
             //::child transactions
             if (isset($childBatch->transactions) && isset($childBatch->transactions->transaction) && $childBatch->transactions->transaction) {
@@ -207,7 +217,7 @@ class CoffeeBuyer extends Controller {
                             'transaction_status' => 'created',
                             'is_server_id' => $childBatch->transactions->transaction->is_server_id,
                             'is_new' => $childBatch->transactions->transaction->is_new,
-                            'sent_to' => $childBatch->transactions->transaction->sent_to,
+                            'sent_to' => 2,
                 ]);
 
                 $transactionLog = TransactionLog::create([
@@ -237,8 +247,10 @@ class CoffeeBuyer extends Controller {
             array_push($childTransactionArray, $newTransaction->transaction_id);
         }
         //::add parent batch
-        $removeLocalId = explode("-", $batch_numbers->batch->batch_code);
+        $removeLocalId = explode("-", $batch_numbers->batch->batch_number);
+
         //::remove last index of array
+
         array_pop($removeLocalId);
         if ($removeLocalId[3] == '000') {
             $parentBatchCode = implode("-", $removeLocalId) . '-' . ($lastBID + 1);
@@ -260,6 +272,8 @@ class CoffeeBuyer extends Controller {
                     'is_local' => FALSE,
                     'local_code' => $batch_numbers->batch->local_code,
                     'is_server_id' => $batch_numbers->batch->is_server_id,
+                    'season_id' => $season->season_id,
+                    'season_status' => $season->status,
         ]);
         if (isset($batch_numbers->transactions) && isset($batch_numbers->transactions->transaction) && $batch_numbers->transactions->transaction) {
             $parentTransaction = Transaction::create([
@@ -273,7 +287,7 @@ class CoffeeBuyer extends Controller {
                         'transaction_status' => 'created',
                         'is_server_id' => $batch_numbers->transactions->transaction->is_server_id,
                         'is_new' => $batch_numbers->transactions->transaction->is_new,
-                        'sent_to' => $batch_numbers->transactions->transaction->sent_to,
+                        'sent_to' => 2,
             ]);
 
 
@@ -341,7 +355,10 @@ class CoffeeBuyer extends Controller {
         $currentBatchData->makeHidden('latestTransation');
         //  $currentBatchData->makeHidden('transaction');
         $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail];
+
         $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
+        $lastBID = 0;
+        $lastTID = 0;
         return sendSuccess('Coffee was added Successfully', $data);
 
 //        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
@@ -376,6 +393,9 @@ class CoffeeBuyer extends Controller {
                         'is_mixed' => 0,
                         'local_code' => $transactions->transactions->local_code,
                         'transaction_status' => 'created',
+                        'is_server_id' => $transactions->transactions->is_server_id,
+                        'is_new' => $transactions->transactions->is_new,
+                        'sent_to' => 2,
             ]);
             $newTransactionid = $newTransaction->transaction_id;
             $transactionLog = TransactionLog::create([
@@ -413,8 +433,27 @@ class CoffeeBuyer extends Controller {
     }
 
     function coffeeBuyerCoffee(Request $request) {
+        $allTransactions = array();
+
         $transactions = Transaction::where('is_parent', 0)->where('created_by', $this->userId)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
-        return sendSuccess('Transactions retrieved successfully', $transactions);
+        foreach ($transactions as $key => $transaction) {
+            $childTransactions = array();
+            if ($transaction->childTransation) {
+                foreach ($transaction->childTransation as $key => $childTransation) {
+                    $childTransationDetail = $childTransation->transactionDetail;
+                    $childTransation->makeHidden('transactionDetail');
+                    $childData = ['transactions' => $childTransation, 'transactions_detail' => $childTransationDetail];
+                    array_push($childTransactions, $childData);
+                }
+            }
+            $transactionDetail = $transaction->transactionDetail;
+            $transaction->makeHidden('transactionDetail');
+            $transaction->makeHidden('childTransation');
+            $data = ['transactions' => $transaction, 'child_transaction' => $childTransactions, 'transactions_detail' => $transactionDetail];
+            array_push($allTransactions, $data);
+        }
+
+        return sendSuccess('Transactions retrieved successfully', $allTransactions);
     }
 
 }

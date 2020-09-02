@@ -19,6 +19,7 @@ use App\Region;
 use App\Farmer;
 use App\Center;
 use App\User;
+use App\Season;
 use Storage;
 
 class CommonController extends Controller {
@@ -48,6 +49,7 @@ class CommonController extends Controller {
      * @return \Illuminate\Http\Response
      */
     function addGovernerate(Request $request) {
+     
         //::validation
         $validator = Validator::make($request->all(), [
                     'governerates' => 'required',
@@ -74,6 +76,8 @@ class CommonController extends Controller {
     }
 
     function governerate(Request $request) {
+          $test= Governerate::where('governerate_id' ,'>' ,0)->pluck('governerate_id')->toArray();
+       var_dump($test);exit;
         $search = $request->search;
         $governerates = Governerate::when($search, function($q) use ($search) {
                     $q->where(function($q) use ($search) {
@@ -240,8 +244,16 @@ class CommonController extends Controller {
     }
 
     function allBatches(Request $request) {
-        $batches = BatchNumber::where('is_parent', 0)->get();
-        return sendSuccess('Successfully retrieved batches', $batches);
+        $season = Season::where('status', 0)->first();
+        $allBatches = array();
+        $batches = BatchNumber::where('is_parent', 0)->where('season_id', $season->season_id)->with('childBatches')->get();
+        foreach ($batches as $key => $batche) {
+            $childBatch = $batche->childBatches;
+            $batche->makeHidden('childBatches');
+            $batchData = ['batch' => $batche, 'child_batches' =>$childBatch];
+            array_push($allBatches, $batchData);
+        }
+        return sendSuccess('Successfully retrieved batches', $allBatches);
     }
 
 }
