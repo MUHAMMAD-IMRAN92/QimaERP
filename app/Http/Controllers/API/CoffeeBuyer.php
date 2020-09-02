@@ -167,7 +167,7 @@ class CoffeeBuyer extends Controller {
             $lastBID = $lastBatchNumber->batch_id;
         }
         if ($lastTransactionNumber) {
-            $lastTID = $lastTransactionNumber->batch_id;
+            $lastTID = $lastTransactionNumber->transaction_id;
         }
         $batch_numbers = json_decode($request['batch_number']);
         //::insert child batches id
@@ -248,6 +248,7 @@ class CoffeeBuyer extends Controller {
         $removeLocalId = explode("-", $batch_numbers->batch->batch_number);
 
         //::remove last index of array
+        
         array_pop($removeLocalId);
         if ($removeLocalId[3] == '000') {
             $parentBatchCode = implode("-", $removeLocalId) . '-' . ($lastBID + 1);
