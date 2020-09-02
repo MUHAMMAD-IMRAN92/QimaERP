@@ -77,7 +77,6 @@ class CoffeeBuyerManager extends Controller {
         $alreadySentCoffee = array();
         $sentCoffeeArray = array();
         foreach ($sentTransactions as $key => $sentTransaction) {
-
             if (isset($sentTransaction->transactions) && $sentTransaction->transactions) {
                 $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                 if ($alreadyExistTransaction) {
@@ -137,7 +136,7 @@ class CoffeeBuyerManager extends Controller {
         }
         $data = array_merge($dataArray, $alreadySentCoffee);
         if ($alreadySentCoffee > 0) {
-            return sendSuccess('Coffee sent successfully', $data);
+            return sendSuccess('Some transactions have already been sent.', $data);
         }
         return sendSuccess('Coffee sent successfully', $data);
     }
