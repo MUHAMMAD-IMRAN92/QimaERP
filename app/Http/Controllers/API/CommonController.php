@@ -49,6 +49,7 @@ class CommonController extends Controller {
      * @return \Illuminate\Http\Response
      */
     function addGovernerate(Request $request) {
+     
         //::validation
         $validator = Validator::make($request->all(), [
                     'governerates' => 'required',
@@ -75,6 +76,8 @@ class CommonController extends Controller {
     }
 
     function governerate(Request $request) {
+          $test= Governerate::where('governerate_id' ,'>' ,0)->pluck('governerate_id')->toArray();
+       var_dump($test);exit;
         $search = $request->search;
         $governerates = Governerate::when($search, function($q) use ($search) {
                     $q->where(function($q) use ($search) {

@@ -160,9 +160,9 @@ class CoffeeBuyer extends Controller {
         $lastBID = 0;
         $lastTID = 0;
         //::last batch number id
-        $lastBatchNumber = BatchNumber::latest('batch_id')->first();
+        $lastBatchNumber = BatchNumber::orderBy('created_at', 'desc')->first();
         //::last transaction id
-        $lastTransactionNumber = Transaction::latest('transaction_id')->first();
+        $lastTransactionNumber = Transaction::orderBy('created_at', 'desc')->first();
         if ($lastBatchNumber) {
             $lastBID = $lastBatchNumber->batch_id;
         }
