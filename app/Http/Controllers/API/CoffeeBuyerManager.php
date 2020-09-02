@@ -186,7 +186,7 @@ class CoffeeBuyerManager extends Controller {
             $data = ['transactions' => $transaction, 'transactions_detail' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Transactions retrieved successfully', $allTransactions);
+        return sendSuccess('Transactions retrieved successfully!', $allTransactions);
     }
 
     function approvedFarmer(Request $request) {
