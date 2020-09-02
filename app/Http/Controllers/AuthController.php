@@ -23,8 +23,8 @@ class AuthController extends Controller {
     }
 
      public function dashboard() {
-        $data['farmer'] = Farmer::orderBy('farmer_id', 'asc')->take(10)->get();
-        $data['village'] = Village::orderBy('village_id', 'asc')->take(10)->get();
+        $data['farmer'] = Farmer::orderBy('farmer_id', 'asc')->offset(0)->limit(10)->get();
+        $data['village'] = Village::orderBy('village_id', 'asc')->offset(0)->limit(10)->get();
         return view('dashboard',$data);
        
     }
