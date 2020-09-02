@@ -92,7 +92,7 @@ class CoffeeBuyerManager extends Controller {
                             'reference_id' => $sentTransaction->transactions->reference_id,
                             'is_server_id' => 1,
                             'is_new' => $sentTransaction->transactions->is_new,
-                            'sent_to' => $sentTransaction->transactions->sent_to,
+                            'sent_to' => 3
                 ]);
 
                 $transactionLog = TransactionLog::create([
