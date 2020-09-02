@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model {
 
     protected $primaryKey = 'transaction_id';
-    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status', 'is_server_id', 'is_new', 'sent_to'];
+    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status', 'is_server_id', 'is_new', 'sent_to', 'is_sent'];
     protected $casts = [
         'is_local' => 'boolean',
         'is_mixed' => 'boolean',
         'is_new' => 'boolean',
         'is_server_id' => 'boolean',
+        'is_sent' => 'boolean',
     ];
 
     public function transactionDetail() {
@@ -30,6 +31,7 @@ class Transaction extends Model {
     public function transactionLog() {
         return $this->hasMany(TransactionLog::class, 'transaction_id', 'transaction_id');
     }
+
     public function log() {
         return $this->hasOne(TransactionLog::class, 'transaction_id', 'transaction_id');
     }

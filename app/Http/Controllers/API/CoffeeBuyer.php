@@ -157,6 +157,7 @@ class CoffeeBuyer extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+
         $lastBID = 0;
         $lastTID = 0;
         //::last batch number id
@@ -175,6 +176,7 @@ class CoffeeBuyer extends Controller {
         //::insert child transactions id
         $childTransactionArray = array();
         $season = Season::where('status', 0)->first();
+
         //::Add child batch number
         foreach ($batch_numbers->child_batch as $key => $childBatch) {
             $removeLocalId = explode("-", $childBatch->batch->batch_number);
