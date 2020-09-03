@@ -158,15 +158,15 @@ class CoffeeBuyer extends Controller {
             return sendError($errors, 400);
         }
 
-        $lastBID = 0;
+        // $lastBID = 0;
         $lastTID = 0;
         //::last batch number id
-        $lastBatchNumber = BatchNumber::orderBy('created_at', 'desc')->first();
+        //  $lastBatchNumber = BatchNumber::orderBy('created_at', 'desc')->first();
         //::last transaction id
         $lastTransactionNumber = Transaction::orderBy('created_at', 'desc')->first();
-        if ($lastBatchNumber) {
-            $lastBID = $lastBatchNumber->batch_id;
-        }
+//        if ($lastBatchNumber) {
+//            $lastBID = $lastBatchNumber->batch_id;
+//        }
         if ($lastTransactionNumber) {
             $lastTID = $lastTransactionNumber->transaction_id;
         }
@@ -181,8 +181,13 @@ class CoffeeBuyer extends Controller {
             $childTransactionArray = array();
             //::Add child batch number
             foreach ($batch_numbers->child_batch as $key => $childBatch) {
+                $newLastBID = 1;
+                $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
+                if ($lastBatchNumber) {
+                    $newLastBID = ($lastBatchNumber->batch_id + 1);
+                }
                 $removeLocalId = explode("-", $childBatch->batch->batch_number);
-                $lastBID = ($lastBID + 1);
+
                 //::remove last index of array
                 array_pop($removeLocalId);
 
@@ -194,7 +199,7 @@ class CoffeeBuyer extends Controller {
                     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
                 }
                 $newBatch = BatchNumber::create([
-                            'batch_number' => $farmer->farmer_code . '-' . $lastBID,
+                            'batch_number' => $farmer->farmer_code . '-' . $newLastBID,
                             'is_parent' => 0,
                             'is_mixed' => 0,
                             'created_by' => $childBatch->batch->created_by,
@@ -250,12 +255,15 @@ class CoffeeBuyer extends Controller {
             }
             //::add parent batch
             $removeLocalId = explode("-", $batch_numbers->batch->batch_number);
-
             //::remove last index of array
-            $lastBID = ($lastBID + 1);
+            $newLastBID = 1;
+            $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
+            if ($lastBatchNumber) {
+                $newLastBID = ($lastBatchNumber->batch_id + 1);
+            }
             array_pop($removeLocalId);
             if ($removeLocalId[3] == '000') {
-                $parentBatchCode = implode("-", $removeLocalId) . '-' . ($lastBID);
+                $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
             } else {
                 //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                 $farmerCode = implode("-", $removeLocalId);
@@ -264,7 +272,7 @@ class CoffeeBuyer extends Controller {
                 } else {
                     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
                 }
-                $parentBatchCode = $farmer->farmer_code . '-' . ($lastBID);
+                $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
             }
             $parentBatch = BatchNumber::create([
                         'batch_number' => $parentBatchCode,
