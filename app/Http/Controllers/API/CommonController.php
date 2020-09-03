@@ -49,7 +49,7 @@ class CommonController extends Controller {
      * @return \Illuminate\Http\Response
      */
     function addGovernerate(Request $request) {
-     
+
         //::validation
         $validator = Validator::make($request->all(), [
                     'governerates' => 'required',
@@ -76,8 +76,7 @@ class CommonController extends Controller {
     }
 
     function governerate(Request $request) {
-          $test= Governerate::where('governerate_id' ,'>' ,0)->pluck('governerate_id')->toArray();
-       var_dump($test);exit;
+
         $search = $request->search;
         $governerates = Governerate::when($search, function($q) use ($search) {
                     $q->where(function($q) use ($search) {
@@ -198,16 +197,21 @@ class CommonController extends Controller {
         foreach ($containers as $key => $container) {
             $containerTypeCode = preg_replace('/[0-9]+/', '', $container->container_number);
             $containerType = searcharray($containerTypeCode, 'code', $containerTypeArray);
-            //::create new 
-            $newcontainer = Container::create([
-                        'container_number' => $container->container_number,
-                        'container_type' => $containerType,
-                        'capacity' => $container->capacity,
-                        'created_by' => $container->created_by,
-                        'is_local' => FALSE,
-                        'local_code' => $container->local_code,
-            ]);
-            array_push($containersId, $newcontainer->container_id);
+            $alreadyContainer = Container::where('container_number', $container->container_number)->first();
+            if (!$alreadyContainer) {
+                //::create new 
+                $newcontainer = Container::create([
+                            'container_number' => $container->container_number,
+                            'container_type' => $containerType,
+                            'capacity' => $container->capacity,
+                            'created_by' => $container->created_by,
+                            'is_local' => FALSE,
+                            'local_code' => $container->local_code,
+                ]);
+                array_push($containersId, $newcontainer->container_id);
+            } else {
+                array_push($containersId, $alreadyContainer->container_id);
+            }
         }
         $containersListing = Container::whereIn('container_id', $containersId)->get();
         return sendSuccess('Container was created Successfully', $containersListing);
@@ -250,7 +254,7 @@ class CommonController extends Controller {
         foreach ($batches as $key => $batche) {
             $childBatch = $batche->childBatches;
             $batche->makeHidden('childBatches');
-            $batchData = ['batch' => $batche, 'child_batches' =>$childBatch];
+            $batchData = ['batch' => $batche, 'child_batches' => $childBatch];
             array_push($allBatches, $batchData);
         }
         return sendSuccess('Successfully retrieved batches', $allBatches);
