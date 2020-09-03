@@ -209,6 +209,8 @@ class CommonController extends Controller {
                             'local_code' => $container->local_code,
                 ]);
                 array_push($containersId, $newcontainer->container_id);
+            } else {
+                array_push($containersId, $alreadyContainer->container_id);
             }
         }
         $containersListing = Container::whereIn('container_id', $containersId)->get();
