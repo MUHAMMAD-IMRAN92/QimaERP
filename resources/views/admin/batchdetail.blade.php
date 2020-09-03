@@ -130,7 +130,7 @@
                                                                     {{$child->container_number}}
                                                                 </td>
                                                                 <td>
-                                                                    {{$child->weight}} kg
+                                                                    {{$child->container_weight}} kg
                                                                 </td>
 
 
@@ -172,7 +172,7 @@
                                                                     {{$child->container_number}}
                                                                 </td>
                                                                 <td>
-                                                                    {{$child->weight}} kg
+                                                                    {{$child->container_weight}} kg
                                                                 </td>
 
 
@@ -209,7 +209,7 @@
                                                                     {{$child->container_number}}
                                                                 </td>
                                                                 <td>
-                                                                    {{$child->weight}} kg
+                                                                    {{$child->container_weight}} kg
                                                                 </td>
 
 
