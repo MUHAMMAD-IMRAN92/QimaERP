@@ -45,64 +45,67 @@ class CenterManagerController extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-        $sentTransaction = json_decode($request['transactions']);
-        $alreadyReciviedCoffee = null;
-        $reciviedCoffee = null;
-        if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
-            $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transaction->reference_id)->first();
-            if ($alreadyExistTransaction) {
-                $alreadyReciviedCoffee = $sentTransaction;
-            } else {
-                $transaction = Transaction::create([
-                            'batch_number' => $sentTransaction->transaction->batch_number,
-                            'is_parent' => $sentTransaction->transaction->is_parent,
-                            'is_mixed' => $sentTransaction->transaction->is_mixed,
-                            'created_by' => $sentTransaction->transaction->created_by,
-                            'is_local' => FALSE,
-                            'transaction_type' => $sentTransaction->transaction->transaction_type,
-                            'local_code' => $sentTransaction->transaction->local_code,
-                            'transaction_status' => 'received',
-                            'reference_id' => $sentTransaction->transaction->reference_id,
-                            'is_server_id' => 1,
-                            'is_new' => $sentTransaction->transaction->is_new,
-                            'sent_to' => 0,
-                            'is_sent' => 1,
-                ]);
-
-                $transactionLog = TransactionLog::create([
-                            'transaction_id' => $transaction->transaction_id,
-                            'action' => 'received',
-                            'created_by' => $sentTransaction->transaction->created_by,
-                            'entity_id' => $sentTransaction->transaction->center_id,
-                            'local_created_at' => $sentTransaction->transaction->created_at,
-                            'type' => 'center',
-                ]);
-
-                $transactionContainers = $sentTransaction->transactionDetails;
-                foreach ($transactionContainers as $key => $transactionContainer) {
-                    TransactionDetail::create([
-                        'transaction_id' => $transaction->transaction_id,
-                        'container_number' => $transactionContainer->container_number,
-                        'created_by' => $transactionContainer->created_by,
-                        'is_local' => FALSE,
-                        'container_weight' => $transactionContainer->container_weight,
-                        'weight_unit' => $transactionContainer->weight_unit,
+        $sentTransactions = json_decode($request['transactions']);
+        $alreadyReciviedCoffee = array();
+        $reciviedCoffee = array();
+        foreach ($sentTransactions as $key => $sentTransaction) {
+            if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+                $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transaction->reference_id)->first();
+                if ($alreadyExistTransaction) {
+                    $sentTransaction->transaction->already_received = true;
+                    array_push($alreadyReciviedCoffee, $sentTransaction);
+                } else {
+                    $transaction = Transaction::create([
+                                'batch_number' => $sentTransaction->transaction->batch_number,
+                                'is_parent' => $sentTransaction->transaction->is_parent,
+                                'is_mixed' => $sentTransaction->transaction->is_mixed,
+                                'created_by' => $sentTransaction->transaction->created_by,
+                                'is_local' => FALSE,
+                                'transaction_type' => $sentTransaction->transaction->transaction_type,
+                                'local_code' => $sentTransaction->transaction->local_code,
+                                'transaction_status' => 'received',
+                                'reference_id' => $sentTransaction->transaction->reference_id,
+                                'is_server_id' => 1,
+                                'is_new' => 0,
+                                'sent_to' => 4,
+                                'is_sent' => 1,
                     ]);
+                    $transactionLog = TransactionLog::create([
+                                'transaction_id' => $transaction->transaction_id,
+                                'action' => 'received',
+                                'created_by' => $sentTransaction->transaction->created_by,
+                                'entity_id' => $sentTransaction->transaction->center_id,
+                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                                'type' => 'center',
+                    ]);
+                    $transactionContainers = $sentTransaction->transactionDetails;
+                    foreach ($transactionContainers as $key => $transactionContainer) {
+                        TransactionDetail::create([
+                            'transaction_id' => $transaction->transaction_id,
+                            'container_number' => $transactionContainer->container_number,
+                            'created_by' => $transactionContainer->created_by,
+                            'is_local' => FALSE,
+                            'container_weight' => $transactionContainer->container_weight,
+                            'weight_unit' => $transactionContainer->weight_unit,
+                        ]);
+                    }
+                    array_push($reciviedCoffee, $transaction->transaction_id);
                 }
-                $reciviedCoffee = $transaction->transaction_id;
             }
         }
-        $currentlyReceivedCoffee = Transaction::where('transaction_id', $reciviedCoffee)->with('transactionDetail')->first();
-        if ($alreadyReciviedCoffee) {
-            $data = ['already_received_coffee' => $alreadyReciviedCoffee];
-
-            return sendError('Coffee already received', 406, $data);
+        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail')->get();
+        $dataArray = array();
+        foreach ($currentlyReceivedCoffees as $key => $currentlyReceivedCoffee) {
+            $transactionDeatil = $currentlyReceivedCoffee->transactionDetail;
+            $currentlyReceivedCoffee->makeHidden('transactionDetail');
+            $currentlyReceivedCoffee->already_received = FALSE;
+            $recCoffee = ['transaction' => $currentlyReceivedCoffee, 'transactionDetails' => $transactionDeatil];
+            array_push($dataArray, $recCoffee);
         }
-        $transactionDeatil = $currentlyReceivedCoffee->transactionDetail;
-        $currentlyReceivedCoffee->makeHidden('transactionDetail');
-        $recCoffee = ['transaction' => $currentlyReceivedCoffee, 'transactionDetails' => $transactionDeatil];
-        $data = ['received_coffee' => $recCoffee];
-
+        $data = array_merge($dataArray, $alreadyReciviedCoffee);
+        if (count($alreadyReciviedCoffee) > 0) {
+            return sendSuccess('Some transactions have already been recivied.', $data);
+        }
         return sendSuccess('Transactions received successfully', $data);
     }
 
