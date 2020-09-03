@@ -67,7 +67,7 @@
                                {{$child->container_number}}
                               </td>
                               <td>
-                               {{$child->weight}} kg
+                               {{$child->container_weight}} kg
                               </td>
                                <td>
 
@@ -108,7 +108,7 @@
                       <tr>
                         <td>{{$row->transaction_detail_id}}</td>
                         <td>{{$row->container_number}}</td>
-                        <td>{{$row->weight}}</td>
+                        <td>{{$row->container_weight}} kg</td>
                       </tr>
                     @endforeach
                   
