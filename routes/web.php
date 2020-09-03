@@ -83,8 +83,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('addseason', 'SeasonController@store');
     Route::get('editseason/{id}', 'SeasonController@edit');
     Route::post('updateseason', 'SeasonController@update');
-    Route::get('deleteseason/{id}', 'SeasonController@delete');
-    Route::get('seasonend/{id}', 'SeasonController@seasonend');
+    // Route::get('deleteseason/{id}', 'SeasonController@delete');
+    Route::get('seasonclose/{id}', 'SeasonController@seasonclose');
 
 
     Route::get('getseason', 'SeasonController@getSeasonAjax');

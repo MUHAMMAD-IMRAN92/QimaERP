@@ -5,6 +5,14 @@
  
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+     @if(session()->has('close'))
+    <div class="alert alert-success">
+        {{ session()->get('close') }}
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+    </div>
+    @endif
     @if(session()->has('destroy'))
     <div class="alert alert-success">
         {{ session()->get('destroy') }}
@@ -114,7 +122,8 @@
                 {"data": 'start_date'},
                 {"data": 'end_date'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/editseason/' + row.season_id + '>Edit </a>| <a href=' + base_path + 'admin/deleteseason/' + row.season_id + ' class="editor_remove" data-id="' + row.season_id + '">Delete</a> | <a href=' + base_path + 'admin/seasonend/' + row.season_id + '>Season Close</a>';
+                        return '<a href=' + base_path + 'admin/editseason/' + row.season_id + '>Edit </a>| \
+                        <a href=' + base_path + 'admin/seasonclose/' + row.season_id + ' class="season_close" data-id="' + row.season_id + '">Season Close</a>';
                     }
                 }
             ],
@@ -136,6 +145,24 @@
 
         }).draw();
     });
+
+
+    $('#season_table').on('click', 'a.season_close', function (e) {
+        e.preventDefault();
+        if (confirm('You want to close the season?')) {
+            var id = $(this).data('id');
+            window.location.href = base_path + 'admin/seasonclose/' + id;
+//            $(this).closest('tr').remove();
+//            var id = $(this).data('id');
+//            $.ajax({
+//                type: "GET",
+//                url: base_path + 'admin/deletecities/' + id
+//
+//            });
+//            location.reload();
+        }
+    });
+
 
    
 </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 use App\Season;
+use App\BatchNumber;
 class SeasonController extends Controller
 {
     public function index(){
@@ -108,21 +109,24 @@ class SeasonController extends Controller
     }
 
     public function delete($id){
+        die();
     	$destroy = Season::find($id);
     	// dd($destroy);
     	$destroy->delete();
     	return redirect()->back()->with('destroy', 'Season deleted Successfully!');
     }
 
-    public function seasonend($id){
-
+    public function seasonclose($id){
+        // dd($id);
         $seasonend= Season::find($id);
-        $seasonend->status='1';
+        $seasonend->status=1;
+        $seasonend->save();
+        $conatiner=BatchNumber::where('season_id',$id)->get();
+        foreach($conatiner as $member) {
+                $member->season_status = 1;
+                $member->save();
+            }
+        return redirect()->back()->with('close', 'Season Close Successfully!');
 
-        // dd($seasonend);
-        $conatiner=Container::where('season_id',$id);
-        $conatiner->season_status='1';
-
-      
     }
 }
