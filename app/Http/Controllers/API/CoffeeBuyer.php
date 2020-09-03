@@ -373,7 +373,7 @@ class CoffeeBuyer extends Controller {
             $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
             array_push($dataArray, $data);
         }
-        return sendSuccess('Coffee was added Successfully', $data);
+        return sendSuccess('Coffee was added Successfully', $dataArray);
 
 //        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
 //        return sendSuccess('Coffee was added Successfully', $currentBatch);
