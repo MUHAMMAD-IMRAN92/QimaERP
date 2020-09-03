@@ -50,8 +50,8 @@
                     <th>S#</th> 
                     <th>Farmer Code</th>
                     <th>Farmer Name</th>
-                    <th>Farmer Cnic</th>
                     <th>Village Code</th>
+                    <th>Farmer Cnic</th>
                     <th>Action</th> 
                   </tr>
                   </thead>
@@ -62,8 +62,8 @@
                     
                     <th>Farmer Code</th>
                     <th>Farmer Name</th>
-                    <th>Farmer Cnic</th>
                     <th>Village Code</th>
+                    <th>Farmer Cnic</th>
                     <th>Action</th> 
                   </tr>
                   </tfoot>
