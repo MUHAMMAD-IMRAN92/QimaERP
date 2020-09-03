@@ -114,7 +114,7 @@
                 {"data": 'start_date'},
                 {"data": 'end_date'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/editseason/' + row.season_id + '>Edit</a>| <a href=' + base_path + 'admin/deleteseason/' + row.season_id + ' class="editor_remove" data-id="' + row.season_id + '">Delete</a> | <a href=' + base_path + 'admin/seasonend/' + row.season_id + '>Season End</a>';
+                        return '<a href=' + base_path + 'admin/editseason/' + row.season_id + '>Edit </a>| <a href=' + base_path + 'admin/deleteseason/' + row.season_id + ' class="editor_remove" data-id="' + row.season_id + '">Delete</a> | <a href=' + base_path + 'admin/seasonend/' + row.season_id + '>Season Close</a>';
                     }
                 }
             ],
