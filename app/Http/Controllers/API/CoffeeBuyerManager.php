@@ -136,7 +136,7 @@ class CoffeeBuyerManager extends Controller {
             array_push($dataArray, $sentCoffee);
         }
         $data = array_merge($dataArray, $alreadySentCoffee);
-        if ($alreadySentCoffee > 0) {
+        if (count($alreadySentCoffee) > 0) {
             return sendSuccess('Some transactions have already been sent.', $data);
         }
         return sendSuccess('Coffee sent successfully', $data);
@@ -186,7 +186,7 @@ class CoffeeBuyerManager extends Controller {
             $data = ['transactions' => $transaction, 'transactions_detail' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Transactions retrieved successfully', $allTransactions);
+        return sendSuccess('Transactions retrieved successfully!', $allTransactions);
     }
 
     function approvedFarmer(Request $request) {
