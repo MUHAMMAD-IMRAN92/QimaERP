@@ -52,7 +52,7 @@
                       <tr>
                         <td>{{$row->transaction_id}}</td>
                         <td>{{$row->batch_number}}</td>
-                        <td>{{$row->transaction_status}}</td>
+                        <td>{{ucfirst($row->transaction_status)}}</td>
                         <td><a href="transactiondetail/{{$row->transaction_id}}" class="btn btn-info btn-sm"><i class="fa fa-info-circle"></i></a> </td>
                       </tr>
                     @endforeach
