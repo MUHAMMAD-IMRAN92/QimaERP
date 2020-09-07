@@ -187,7 +187,6 @@ class CoffeeBuyer extends Controller {
                     $newLastBID = ($lastBatchNumber->batch_id + 1);
                 }
                 $removeLocalId = explode("-", $childBatch->batch->batch_number);
-
                 //::remove last index of array
                 array_pop($removeLocalId);
 
