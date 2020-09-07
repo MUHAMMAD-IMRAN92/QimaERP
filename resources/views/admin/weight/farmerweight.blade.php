@@ -53,7 +53,7 @@
                     @foreach($farmer as $row)
                     @php
                     $farmer=$row->farmer_code;
-                    $totalweight = App\transactionDetail::whereHas('transection', function($q) use($farmer){
+                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($farmer){
                             $q->Where('batch_number','LIKE', "$farmer%");
                         })->sum('container_weight');
                     @endphp
@@ -63,7 +63,7 @@
                           <td>{{$row->farmer_name}}</td>
                           <td>{{$row->village_code}}</td>
                           <td>{{$row->farmer_nicn}}</td>
-                          <td>{{$totalweight}}</td>
+                          <td>{{$totalweight}} kg</td>
                         </tr>
                     @endforeach
                   </tbody>

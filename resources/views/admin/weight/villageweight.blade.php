@@ -52,7 +52,7 @@
                     @foreach($village as $row)
                     @php
                     $village=$row->village_code;
-                    $totalweight = App\transactionDetail::whereHas('transection', function($q) use($village){
+                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($village){
                             $q->where('is_parent', 0)
                             ->Where('batch_number','LIKE', "$village%");
                         })->sum('container_weight');
@@ -61,7 +61,7 @@
                           <td>{{$row->village_id}}</td>
                           <td><a href="{{URL::to('')}}/admin/villageweightcode/{{$row->village_id}}">{{$row->village_code}}</a></td>
                           <td>{{$row->village_title}}</td>
-                          <td>{{$totalweight}}</td>
+                          <td>{{$totalweight}} kg</td>
                          
                         </tr>
                     @endforeach
