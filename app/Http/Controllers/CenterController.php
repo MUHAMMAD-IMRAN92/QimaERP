@@ -76,4 +76,30 @@ class CenterController extends Controller
         //:: return json
         return json_encode($data);
     }
+
+    public function edit($id){
+
+        $data['center']=Center::find($id);
+        $data['user'] = User::role('Center Manager')->get();
+        return view('admin.center.editcenter',$data);
+        // dd($center);
+    }
+
+
+    public function update(Request $request){
+        $validatedData = $request->validate([
+        'center_name' => 'required',
+        'center_manager_id' => 'required',
+    ]);
+        $centerupdate=Center::find($request->center_id);
+        $centerupdate->center_code=$request->center_code;
+        $centerupdate->center_name=$request->center_name;
+        $centerupdate->save();
+
+        $userId=[$request->center_manager_id];
+        // dd($userId);
+        $centerid=$centerupdate->center_id;
+        User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
+        return redirect('admin/allcenter');
+    }
 }
