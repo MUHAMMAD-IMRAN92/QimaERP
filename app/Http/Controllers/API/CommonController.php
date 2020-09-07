@@ -250,7 +250,7 @@ class CommonController extends Controller {
     function allBatches(Request $request) {
         $season = Season::where('status', 0)->first();
         $allBatches = array();
-        $batches = BatchNumber::where('is_parent', 0)->where('season_id', $season->season_id)->with('childBatches')->get();
+        $batches = BatchNumber::where('is_parent', 0)->where('season_id', $season->season_id)->with('childBatches')->where('season_status', 0)->get();
         foreach ($batches as $key => $batche) {
             $childBatch = $batche->childBatches;
             $batche->makeHidden('childBatches');
