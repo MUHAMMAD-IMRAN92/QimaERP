@@ -66,6 +66,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('addcenter', 'CenterController@addnewcenter');
     Route::post('storecenter', 'CenterController@storecenter');
     Route::get('getcenter', 'CenterController@getCenterAjax');
+    Route::get('editcenter/{id}', 'CenterController@edit');
+    Route::post('updatecenter', 'CenterController@update');
+    
 
     //Transection Controller
     Route::get('alltransection', 'TransectionController@index');
@@ -85,6 +88,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('updateseason', 'SeasonController@update');
     // Route::get('deleteseason/{id}', 'SeasonController@delete');
     Route::get('seasonclose/{id}', 'SeasonController@seasonclose');
+
+
+    //Weight Controller
+    Route::get('governorweight', 'WeightController@governorweight');
+    Route::get('governorweightcode/{id}', 'WeightController@governorweightcode');
+    Route::get('regionweightcode/{id}', 'WeightController@regionweightcode');
+    Route::get('villageweightcode/{id}', 'WeightController@villageweightcode');
 
 
     Route::get('getseason', 'SeasonController@getSeasonAjax');

@@ -10,8 +10,8 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Centers Information 
-              <a href="{{url('/admin/addcenter')}}" class="btn btn-add rounded-circle"> 
+            <h1>Governor Weight Information 
+              <a href="{{url('')}}" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
             </h1>
@@ -19,7 +19,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">All Centers</li>
+              <li class="breadcrumb-item active">Governor Weight Information </li>
             </ol>
           </div>
         </div>
@@ -43,18 +43,32 @@
                     <th>S#</th>
                     <th>Code</th>
                     <th>Title</th>
-                    <th>Action</th>
-                    
+                    <th>Total Weight</th>
                   </tr>
                   </thead>
-                 
+                  <tbody>
+                    @foreach($governor as $row)
+                    @php
+                    $gov=$row->governerate_code;
+                    $totalweight = App\transactionDetail::whereHas('transection', function($q) use($gov){
+                            $q->where('is_parent', 0)
+                            ->Where('batch_number','LIKE', "$gov%");
+                        })->sum('container_weight');
+                    @endphp
+                    <tr>
+                      <td>{{$row->governerate_id}} </td>
+                      <td><a href="{{URL::to('')}}/admin/governorweightcode/{{$row->governerate_id}}">{{$row->governerate_code}}</a> </td>
+                      <td>{{$row->governerate_title}} </td>
+                      <td>{{$totalweight}}</td>
+                    </tr>
+                    @endforeach
+                  </tbody>
                   <tfoot>
                  <tr>
                     <th>S#</th>
                     <th>Code</th>
                     <th>Title</th>
-                    <th>Action</th>
-                    
+                    <th>Total Weight</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -72,49 +86,9 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-   <script>
-    let base_path
-    = '<?= asset('/') ?>';
-    $(document).ready(function () {
-        var t = $('#centers').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "deferRender": true,
-            "language": {
-                "searchPlaceholder": "Search by Code And Title"
-            },
-            "ajax": {
-                url: '<?= asset('admin/getcenter') ?>',
-            },
-            "columns": [
-                {"data": null},
-                
-                {"data": 'center_code'},
-                {"data": 'center_name'},
-                {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/editcenter/' +  row.center_id + '>Edit</a>| <a href=' + base_path + '' + row.center_id + ' class="editor_remove" data-id="' + row.center_id + '">Delete</a>';
-                    }
-                }
-            ],
-            "columnDefs": [{
-                    "searchable": false,
-                    "orderable": false,
-                    "targets": [0, 2],
-                }
-            ],
-            "order": [], //Initial no order.
-            "aaSorting": [],
-        });
-
-        t.on('draw.dt', function () {
-            var PageInfo = $('#centers').DataTable().page.info();
-            t.column(0, {page: 'current'}).nodes().each(function (cell, i) {
-                cell.innerHTML = i + 1 + PageInfo.start;
-            });
-
-        }).draw();
-    });
-
-   
-</script>
+  <script type="text/javascript">
+    $(document).ready( function () {
+    $('#centers').DataTable();
+} );
+  </script>
 @endsection

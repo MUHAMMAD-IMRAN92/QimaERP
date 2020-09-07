@@ -174,6 +174,16 @@
               </p>
              </a>
             </li>
+            <li class="nav-item"   @if($segment == 'governorweight')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/governorweight" class="nav-link ">
+              <i class="fal fa-trees"></i>
+             <i class="nav-icon fas fa-weight"></i>
+              <p>
+               Total Weight
+                
+              </p>
+             </a>
+            </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
