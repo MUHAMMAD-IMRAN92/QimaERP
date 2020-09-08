@@ -19,7 +19,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Governor Weight Information </li>
+              <li class="breadcrumb-item active">Governor Weight </li>
             </ol>
           </div>
         </div>
@@ -50,7 +50,7 @@
                     @foreach($governor as $row)
                     @php
                     $gov=$row->governerate_code;
-                    $totalweight = App\transactionDetail::whereHas('transection', function($q) use($gov){
+                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($gov){
                             $q->where('is_parent', 0)
                             ->Where('batch_number','LIKE', "$gov%");
                         })->sum('container_weight');
@@ -59,7 +59,7 @@
                       <td>{{$row->governerate_id}} </td>
                       <td><a href="{{URL::to('')}}/admin/governorweightcode/{{$row->governerate_id}}">{{$row->governerate_code}}</a> </td>
                       <td>{{$row->governerate_title}} </td>
-                      <td>{{$totalweight}}</td>
+                      <td>{{$totalweight}} kg</td>
                     </tr>
                     @endforeach
                   </tbody>
