@@ -66,7 +66,7 @@
                   </div>
                  <div class="form-group">
                    <label for="country_name">All Center</label>
-                    <select  class="form-control managerselect2s4" name="center_manager_id"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
+                    <select  class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
                       @foreach($user as $row)
                       <option value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach
