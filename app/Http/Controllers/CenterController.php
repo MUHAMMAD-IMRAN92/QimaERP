@@ -95,6 +95,7 @@ class CenterController extends Controller
 
         $data['center']=Center::find($id);
         $data['user'] = User::role('Center Manager')->get();
+        $data['center_users'] = CenterUser::where('center_id',$id)->where('role_name','Center Manager')->pluck('user_id')->toArray();
         return view('admin.center.editcenter',$data);
         // dd($center);
     }

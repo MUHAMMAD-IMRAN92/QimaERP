@@ -67,13 +67,11 @@
                   </div>
                  <div class="form-group">
                    <label for="country_name">All Center</label>
-                    @php
-                      $manager=$user->pluck('user_id')->toArray();
-                    @endphp
-                    <select  class="form-control managerselect2s4" name="center_manager_id"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
+                 
+                    <select  class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
                       
                       @foreach($user as $row)
-                      <option @if (in_array($row->user_id, $manager)) selected @endif value="{{$row->user_id}}">{{$row->email}}</option>
+                      <option @if (in_array($row->user_id, $center_users)) selected @endif value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach
                        @error('center_manager_id')
                        <span  class="text-danger">{{ $message }}</span>
