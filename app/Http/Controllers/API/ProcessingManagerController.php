@@ -38,7 +38,7 @@ class ProcessingManagerController extends Controller {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
         $allTransactions = array();
-        $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->doesntHave('isReference')->whereHas('transactionLog', function($q) use($centerId) {
+        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'received')->doesntHave('isReference')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
                 })->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
 
