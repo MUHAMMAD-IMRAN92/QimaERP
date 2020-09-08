@@ -60,19 +60,19 @@
                   <div class="form-group">
                     <label for="exampleInputPassword1">Title</label>
                     <input type="text" id="center_name" class="form-control" id="exampleInputPassword1" name="center_name" placeholder="Title"  @error('center_name') is-invalid @enderror>
-                     @error('center_name')
+                    @error('center_name')
                        <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
                  <div class="form-group">
                    <label for="country_name">All Center</label>
-                    <select  class="form-control managerselect2s4" name="center_manager_id"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
+                    <select  class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
                       @foreach($user as $row)
                       <option value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach
-                       @error('center_manager_id')
+                      @error('center_manager_id')
                        <span  class="text-danger">{{ $message }}</span>
-                    @enderror
+                      @enderror
                     </select>
 
                   </div>

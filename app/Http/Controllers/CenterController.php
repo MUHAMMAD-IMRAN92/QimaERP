@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Center;
+use App\CenterUser;
 class CenterController extends Controller
 {
     public function index(){
@@ -29,10 +30,23 @@ class CenterController extends Controller
     	 // dd($center);
     	$center->save();
 
-        $userId=[$request->center_manager_id];
-        // dd($userId);
+        $userId=$request->center_manager_id;
         $centerid=$center->center_id;
-        User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
+
+        foreach ($userId as $rowid) {
+            $centeruser = New CenterUser;
+            $centeruser->center_id=$centerid;
+            $centeruser->user_id=$rowid;
+            $centeruser->role_name='Center Manager';
+            $centeruser->save();
+        }
+
+        // $centeruser = new CenterUser;
+        // $centeruser->center_id=$centerid
+        // $centeruser->user_id=$userId;
+        // $centeruser->role_name='Center Manager';
+        // $centeruser->save();
+        // User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
     	return redirect('admin/allcenter');
     }
 
