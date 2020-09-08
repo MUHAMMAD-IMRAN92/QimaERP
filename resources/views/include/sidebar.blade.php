@@ -91,6 +91,24 @@
               </p>
              </a>
           	</li>  
+            <li class="nav-item has-treeview {{ (request()->segment(1) == 'allusers' ) ? 'menu-open' : '' }}">
+                                <a href="{{url('admin/allusers')}}" class="nav-link {{ (request()->segment(1) == 'allusers') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-user"></i>
+                                    <p>
+                                        Users Settings
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview pl-2 nav-dropdown">
+                                    <li class="nav-item">
+                                        <a href="{{url('admin/allusers')}}" class="nav-link {{ (request()->segment(1) == 'allusers') ? 'active' : '' }}">
+                                            <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                            <p>Users</p>
+                                        </a>
+                                    </li>
+                                    
+                                </ul>
+                            </li>
           	 <li class="nav-item"  @if($segment == 'allgovernor' || $segment == 'editgovernor') class="active" @endif>
              <a href="{{URL::to('')}}/admin/allgovernor" class="nav-link ">
               <i class="nav-icon fas fa-user-alt"></i>

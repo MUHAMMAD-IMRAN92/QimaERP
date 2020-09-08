@@ -110,10 +110,17 @@ class CenterController extends Controller
         $centerupdate->center_name=$request->center_name;
         $centerupdate->save();
 
-        $userId=[$request->center_manager_id];
+        $userId=$request->center_manager_id;
         // dd($userId);
         $centerid=$centerupdate->center_id;
-        User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
+        foreach ($userId as $rowid) {
+            $centeruser = New CenterUser;
+            $centeruser->center_id=$centerid;
+            $centeruser->user_id=$rowid;
+            $centeruser->role_name='Center Manager';
+            $centeruser->save();
+        }
+        // User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
         return redirect('admin/allcenter');
     }
 }

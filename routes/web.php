@@ -96,6 +96,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('regionweightcode/{id}', 'WeightController@regionweightcode');
     Route::get('villageweightcode/{id}', 'WeightController@villageweightcode');
 
+    //User Controller
+    Route::get('allusers', 'UserController@index'); 
+    Route::get('getuser', 'UserController@getUserAjax');
+    Route::get('adduser', 'UserController@adduser');
 
     Route::get('getseason', 'SeasonController@getSeasonAjax');
     Route::group(['middleware' => ['nocache', 'admin']], function () {
