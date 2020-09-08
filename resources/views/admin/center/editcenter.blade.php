@@ -74,7 +74,7 @@
                       <option @if (in_array($row->user_id, $center_users)) selected @endif value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach
                        @error('center_manager_id')
-                       <span  class="text-danger">{{ $message }}</span>
+                       <span class="text-danger">{{ $message }}</span>
                     @enderror
                     </select>
 

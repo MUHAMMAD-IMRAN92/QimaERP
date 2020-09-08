@@ -398,6 +398,7 @@ class CoffeeBuyer extends Controller {
                     $currentBatch = BatchNumber::where('local_code', 'like', "$batchCode%")->first();
                     $batchCode = $currentBatch->batch_number;
                 }
+                die("cvxczv");
                 $newTransaction = Transaction::create([
                             'batch_number' => $batchCode,
                             'is_parent' => 0,
