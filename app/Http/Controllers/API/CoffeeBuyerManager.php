@@ -77,7 +77,7 @@ class CoffeeBuyerManager extends Controller {
         $alreadySentCoffee = array();
         $sentCoffeeArray = array();
         foreach ($sentTransactions as $key => $sentTransaction) {
-           
+
             if (isset($sentTransaction->transactions) && $sentTransaction->transactions) {
                 $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                 if ($alreadyExistTransaction) {
@@ -105,7 +105,7 @@ class CoffeeBuyerManager extends Controller {
                                 'action' => 'sent',
                                 'created_by' => $sentTransaction->transactions->created_by,
                                 'entity_id' => $sentTransaction->transactions->center_id,
-                                'local_created_at' =>  date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
+                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
                                 'type' => 'center',
                     ]);
 
@@ -156,6 +156,7 @@ class CoffeeBuyerManager extends Controller {
     function coffeeBuyerManagerCoffee(Request $request) {
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
+
         foreach ($transactions as $key => $transaction) {
             $childTransactions = array();
             if ($transaction->childTransation) {
@@ -178,8 +179,11 @@ class CoffeeBuyerManager extends Controller {
 
     function coffeeBuyerManagerSentCoffeeTransaction(Request $request) {
         $allTransactions = array();
-        $transactions = Transaction::where('created_by', $this->userId)->where('transaction_status', 'sent')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
-
+        $transactions = Transaction::where('created_by', $this->userId)->where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('transactionDetail', function($q) {
+                    $q->where('container_status', 0);
+                }, '>', 0)->with(['transactionDetail' => function($query) {
+                        $query->where('container_status', 0);
+                    }])->with('log')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->makeHidden('transactionDetail');
