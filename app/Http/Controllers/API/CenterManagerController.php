@@ -121,13 +121,13 @@ class CenterManagerController extends Controller {
                     $q->where('container_status', 0);
                 }, '>', 0)->with(['transactionDetail' => function($query) {
                         $query->where('container_status', 0);
-                    }])->with('transactionLog')->orderBy('transaction_id', 'desc')->get();
+                    }])->with('log')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
-            $transaction->center_id = $transaction->transactionLog->entity_id;
+            $transaction->center_id = $transaction->log->entity_id;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
-            $transaction->makeHidden('transactionLog');
+            $transaction->makeHidden('log');
 
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
@@ -136,19 +136,20 @@ class CenterManagerController extends Controller {
     }
 
     function centerManagerReceivedCoffee(Request $request) {
+
         $userId = $this->userId;
         $centerId = $this->user->table_id;
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
-                })->with('transactionDetail')->with('transactionLog')->orderBy('transaction_id', 'desc')->get();
+                })->with('transactionDetail')->with('log')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
-            $transaction->center_id = $transaction->transactionLog->entity_id;
+            $transaction->center_id = $transaction->log->entity_id;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
-            $transaction->makeHidden('transactionLog');
+            $transaction->makeHidden('log');
 
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
