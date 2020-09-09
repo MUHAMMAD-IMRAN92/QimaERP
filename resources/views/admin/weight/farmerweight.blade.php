@@ -12,9 +12,9 @@
 
           <div class="col-sm-6">
             <h1>Farmer Weight
-              <a href="" class="btn btn-add rounded-circle"> 
+              {{-- <a href="" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
-              </a>
+              </a> --}}
             </h1>
           </div>
           <div class="col-sm-6">
@@ -27,6 +27,50 @@
       </div><!-- /.container-fluid -->
     </section>
 
+     <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            
+            <!-- /.card -->
+
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table  class="table table-bordered table-striped">
+                  <thead>
+                    @php
+                    $row=$village->village_code;
+                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($row){
+                            $q->where('is_parent', 0)
+                            ->Where('batch_number','LIKE', "$row%");
+                        })->sum('container_weight');
+                    @endphp
+                  <tr>
+                    <th>Village Code</th>
+                    <th>Village Title</th>
+                    <th>Village Weight</th> 
+                  </tr>
+                  </thead>
+                  <tbody>
+                   <tr>
+                     <td>{{$village->village_code}}</td>
+                     <td>{{$village->village_title}}</td>
+                     <td>{{$totalweight}}</td>
+                   </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">

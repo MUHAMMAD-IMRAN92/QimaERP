@@ -107,7 +107,7 @@
                 {"data": 'last_name'},
                 {"data": 'email'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/edituser/' +  row.user_id + '>Edit</a>| <a href=' + base_path + '' + row.user_id + ' class="editor_remove" data-id="' + row.user_id + '">Delete</a>';
+                        return '<a href=' + base_path + 'admin/edituser/' +  row.user_id + '>Edit</a> | <a href=' + base_path + '' + row.user_id + ' class="editor_remove" data-id="' + row.user_id + '">Delete</a>';
                     }
                 }
             ],
