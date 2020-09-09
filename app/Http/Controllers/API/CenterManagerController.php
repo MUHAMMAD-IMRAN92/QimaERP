@@ -89,6 +89,7 @@ class CenterManagerController extends Controller {
                         'container_weight' => $transactionContainer->container_weight,
                         'weight_unit' => $transactionContainer->weight_unit,
                         'center_id' => $transactionContainer->center_id,
+                        'reference_id' => $transactionContainer->reference_id,
                     ]);
 
                     TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
