@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use App\TransactionDetail;
 use App\TransactionLog;
@@ -51,6 +52,13 @@ class ProcessingManagerController extends Controller {
             array_push($allTransactions, $data);
         }
         return sendSuccess('Processor manager received coffee', $allTransactions);
+    }
+
+    function fetchProcessorRole(Request $request) {
+        $userId = $this->userId;
+        $centerId = $this->user->table_id;
+        $role = Role::whereIn('name', ['Special Processing', 'Coffee Drying'])->select('name')->get();
+        return sendSuccess('Processor manager received coffee', $role);
     }
 
 }

@@ -85,5 +85,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::post('/centers_manager_received_transaction', 'API\CenterManagerController@receivedTransactions');
         //::Processor Manager
         Route::get('/get_processor_manager_coffee', 'API\ProcessingManagerController@getProcessingManager');
+        Route::get('/get_processor_role', 'API\ProcessingManagerController@fetchProcessorRole');
     });
 });
