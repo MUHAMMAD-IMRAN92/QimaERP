@@ -121,11 +121,14 @@ class CenterManagerController extends Controller {
                     $q->where('container_status', 0);
                 }, '>', 0)->with(['transactionDetail' => function($query) {
                         $query->where('container_status', 0);
-                    }])->orderBy('transaction_id', 'desc')->get();
+                    }])->with('transactionLog')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
+            $transaction->center_id = $transaction->transactionLog->entity_id;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
+            $transaction->makeHidden('transactionLog');
+
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
@@ -138,12 +141,15 @@ class CenterManagerController extends Controller {
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
-                })->with('transactionDetail')->orderBy('transaction_id', 'desc')->get();
+                })->with('transactionDetail')->with('transactionLog')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
+            $transaction->center_id = $transaction->transactionLog->entity_id;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
+            $transaction->makeHidden('transactionLog');
+
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
