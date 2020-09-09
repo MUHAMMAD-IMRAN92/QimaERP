@@ -16,7 +16,7 @@ class ProcessingManagerController extends Controller {
     private $userId;
     private $user;
 
-    public function __construct() {
+        public function __construct() {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
