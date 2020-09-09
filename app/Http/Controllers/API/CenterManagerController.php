@@ -88,6 +88,7 @@ class CenterManagerController extends Controller {
                         'is_local' => FALSE,
                         'container_weight' => $transactionContainer->container_weight,
                         'weight_unit' => $transactionContainer->weight_unit,
+                        'center_id' => $transactionContainer->center_id,
                     ]);
 
                     TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
@@ -134,10 +135,12 @@ class CenterManagerController extends Controller {
     function centerManagerReceivedCoffee(Request $request) {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
+        var_dump($centerId);
+        exit;
         $allTransactions = array();
-        $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->doesntHave('isReference')->whereHas('transactionLog', function($q) use($centerId) {
+        $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
-                })->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
+                })->with('transactionDetail')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
