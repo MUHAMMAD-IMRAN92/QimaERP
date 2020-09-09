@@ -135,8 +135,6 @@ class CenterManagerController extends Controller {
     function centerManagerReceivedCoffee(Request $request) {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
-        var_dump($centerId);
-        exit;
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
