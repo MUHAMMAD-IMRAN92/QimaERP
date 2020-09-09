@@ -46,12 +46,22 @@
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{URL::to('')}}/admin/dashboard" class="nav-link">Home</a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{URL::to('')}}/admin/logout" class="nav-link">Logout</a>
-      </li>
+    
+
       
     </ul>
-
+    <ul class="navbar-nav ml-auto">
+     <li class="nav-item dropdown ">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{Auth::User()->first_name}}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{url('admin/resetpassword')}}/{{Auth::User()->user_id}}">Reset Password</a>
+          <div class="dropdown-divider"></div>
+           <a href="{{URL::to('')}}/admin/logout" class="nav-link">Logout</a>
+        </div>
+      </li>
+    </ul>
    
   </nav>
   <!-- /.navbar -->

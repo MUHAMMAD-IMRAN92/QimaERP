@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+
 use App\User;
+use Hash;
+use DB;
+use Auth;
 class UserController extends Controller
 {
     
@@ -58,7 +63,94 @@ class UserController extends Controller
 
 
     public function adduser(){
-
-    	return view('admin.user.addnewuser');
+    	$data['role'] = Role::get();
+    	return view('admin.user.addnewuser',$data);
     }
+
+    public function store(Request $request){
+    	$validatedData = $request->validate([
+        'first_name' => 'required',
+        'last_name' => 'required',
+        'email' => 'required|unique:users',
+        'password' => 'required',
+    ]);
+    	 // dd($request->all());
+    	$user=new User;
+    	$user->first_name=$request->first_name;
+    	$user->last_name=$request->last_name;
+    	$user->email=$request->email;
+    	$user->password=Hash::make($request->password);
+    	// dd($user);
+    	$user->save();
+    	DB::table('model_has_roles')->insert([
+            'role_id' =>$request->role_id,
+            'model_id' => $user->user_id,
+            'model_type' => 'App\User'
+        ]);
+    	return redirect('admin/allusers')->with('message','User Create Successfully');
+    }
+
+    public function edit($id){
+    	$data['role'] = Role::get();
+    	$data['user'] = User::find($id);
+    	return view('admin.user.edituser',$data);
+    }
+
+    public function update(Request $request){
+		// dd($request->all());
+		$updateuser=User::find($request->user_id);
+		$updateuser->first_name=$request->first_name;
+    	$updateuser->last_name=$request->last_name;
+    	$updateuser->email=$request->email;
+    	$updateuser->update();
+
+    	DB::table('model_has_roles')->where('model_id',$request->user_id)->delete();
+
+
+        $updateuser->assignRole($request->input('roles'));
+
+        return redirect('admin/allusers')->with('update','User Update Successfully');
+    }
+
+    public function resetpassword($id){
+
+    $data['reset']=User::find($id);
+    // dd($data['reset']);
+    return view('admin.user.resetpassword',$data);
+    }
+
+    public function updatepassword(Request $request){
+ 			// $pass=hash::make($request->password);
+ 			// dd($pass);
+		 $user = User::find($request->user_id);
+           $hashedPassword = Auth::user()->password;
+     
+           if (Hash::check($request->oldpassword , $hashedPassword )) {
+     
+             if (!Hash::check($request->newpassword , $hashedPassword)) {
+     
+                  $user =User::find(Auth::user()->user_id);
+                  $user->password = bcrypt($request->newpassword);
+                  User::where( 'user_id' , Auth::user()->user_id)->update( array( 'password' =>  $user->password));
+     
+                  session()->flash('message','password updated successfully');
+                  return redirect()->back();
+                }
+     
+                else{
+                      session()->flash('new','new password can not be the old password!');
+                      return redirect()->back();
+                    }
+     
+               }
+     
+              else{
+                   session()->flash('old','old password doesnt matched ');
+                   return redirect()->back();
+                 }
+
+
+         $user->update();
+        return redirect('view');
+        }
 }

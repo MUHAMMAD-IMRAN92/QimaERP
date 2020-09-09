@@ -5,6 +5,18 @@
 
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+    @if (\Session::has('message'))
+    <div class="alert alert-success">
+       <p>{{ \Session::get('message') }}<button type="button" class="close" data-dismiss="alert">&times;</button></p>
+       
+    </div>
+  @endif
+  @if (\Session::has('update'))
+      <div class="alert alert-success">
+         <p>{{ \Session::get('update') }}<button type="button" class="close" data-dismiss="alert">&times;</button></p>
+         
+      </div>
+  @endif
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -95,7 +107,7 @@
                 {"data": 'last_name'},
                 {"data": 'email'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + '' +  row.user_id + '>Edit</a>| <a href=' + base_path + '' + row.user_id + ' class="editor_remove" data-id="' + row.user_id + '">Delete</a>';
+                        return '<a href=' + base_path + 'admin/edituser/' +  row.user_id + '>Edit</a>| <a href=' + base_path + '' + row.user_id + ' class="editor_remove" data-id="' + row.user_id + '">Delete</a>';
                     }
                 }
             ],

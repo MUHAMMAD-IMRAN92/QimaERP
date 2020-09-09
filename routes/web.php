@@ -100,7 +100,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('allusers', 'UserController@index'); 
     Route::get('getuser', 'UserController@getUserAjax');
     Route::get('adduser', 'UserController@adduser');
-
+    Route::post('storeuser', 'UserController@store');
+    Route::get('edituser/{id}', 'UserController@edit');
+    Route::post('updateuser', 'UserController@update');
+    //adminpasswordreset
+    Route::get('resetpassword/{id}', 'UserController@resetpassword');
+    Route::post('updatepassword', 'UserController@updatepassword');
+    
     Route::get('getseason', 'SeasonController@getSeasonAjax');
     Route::group(['middleware' => ['nocache', 'admin']], function () {
 
