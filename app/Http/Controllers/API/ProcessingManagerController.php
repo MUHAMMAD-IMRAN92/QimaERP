@@ -16,7 +16,7 @@ class ProcessingManagerController extends Controller {
     private $userId;
     private $user;
 
-        public function __construct() {
+    public function __construct() {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
@@ -38,14 +38,15 @@ class ProcessingManagerController extends Controller {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'received')->doesntHave('isReference')->whereHas('transactionLog', function($q) use($centerId) {
+        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'received')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
-                })->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
+                })->with('transactionDetail')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
+            $transaction->center_id = $transaction->log->entity_id;
             $transaction->makeHidden('transactionDetail');
-            $transaction->makeHidden('childTransation');
+            $transaction->makeHidden('log');
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }

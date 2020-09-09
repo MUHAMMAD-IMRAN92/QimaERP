@@ -49,48 +49,51 @@ class CenterManagerController extends Controller {
         $alreadyReciviedCoffee = array();
         $reciviedCoffee = array();
         foreach ($sentTransactions as $key => $sentTransaction) {
-            if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
-                $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transaction->reference_id)->first();
-                if ($alreadyExistTransaction) {
-                    $sentTransaction->transaction->already_received = true;
-                    array_push($alreadyReciviedCoffee, $sentTransaction);
-                } else {
-                    $transaction = Transaction::create([
-                                'batch_number' => $sentTransaction->transaction->batch_number,
-                                'is_parent' => $sentTransaction->transaction->is_parent,
-                                'is_mixed' => $sentTransaction->transaction->is_mixed,
-                                'created_by' => $sentTransaction->transaction->created_by,
-                                'is_local' => FALSE,
-                                'transaction_type' => $sentTransaction->transaction->transaction_type,
-                                'local_code' => $sentTransaction->transaction->local_code,
-                                'transaction_status' => 'received',
-                                'reference_id' => $sentTransaction->transaction->reference_id,
-                                'is_server_id' => 1,
-                                'is_new' => 0,
-                                'sent_to' => 4,
-                                'is_sent' => 1,
-                    ]);
-                    $transactionLog = TransactionLog::create([
-                                'transaction_id' => $transaction->transaction_id,
-                                'action' => 'received',
-                                'created_by' => $sentTransaction->transaction->created_by,
-                                'entity_id' => $sentTransaction->transaction->center_id,
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
-                                'type' => 'center',
-                    ]);
-                    $transactionContainers = $sentTransaction->transactionDetails;
-                    foreach ($transactionContainers as $key => $transactionContainer) {
-                        TransactionDetail::create([
-                            'transaction_id' => $transaction->transaction_id,
-                            'container_number' => $transactionContainer->container_number,
-                            'created_by' => $transactionContainer->created_by,
-                            'is_local' => FALSE,
-                            'container_weight' => $transactionContainer->container_weight,
-                            'weight_unit' => $transactionContainer->weight_unit,
-                        ]);
-                    }
-                    array_push($reciviedCoffee, $transaction->transaction_id);
+            $transationRef = array();
+            foreach ($sentTransaction->transactionDetails as $key => $transactionDetailsvalue) {
+                if (!in_array($transactionDetailsvalue->reference_id, $transationRef)) {
+                    array_push($transationRef, $transactionDetailsvalue->reference_id);
                 }
+            }
+            if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+                $transaction = Transaction::create([
+                            'batch_number' => $sentTransaction->transaction->batch_number,
+                            'is_parent' => $sentTransaction->transaction->is_parent,
+                            'is_mixed' => $sentTransaction->transaction->is_mixed,
+                            'created_by' => $sentTransaction->transaction->created_by,
+                            'is_local' => FALSE,
+                            'transaction_type' => $sentTransaction->transaction->transaction_type,
+                            'local_code' => $sentTransaction->transaction->local_code,
+                            'transaction_status' => 'received',
+                            'reference_id' => implode(",", $transationRef),
+                            'is_server_id' => 1,
+                            'is_new' => 0,
+                            'sent_to' => 4,
+                            'is_sent' => 1,
+                ]);
+                $transactionLog = TransactionLog::create([
+                            'transaction_id' => $transaction->transaction_id,
+                            'action' => 'received',
+                            'created_by' => $sentTransaction->transaction->created_by,
+                            'entity_id' => $sentTransaction->transaction->center_id,
+                            'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                            'type' => 'center',
+                ]);
+                $transactionContainers = $sentTransaction->transactionDetails;
+                foreach ($transactionContainers as $key => $transactionContainer) {
+                    TransactionDetail::create([
+                        'transaction_id' => $transaction->transaction_id,
+                        'container_number' => $transactionContainer->container_number,
+                        'created_by' => $transactionContainer->created_by,
+                        'is_local' => FALSE,
+                        'container_weight' => $transactionContainer->container_weight,
+                        'weight_unit' => $transactionContainer->weight_unit,
+                        'center_id' => $transactionContainer->center_id,
+                    ]);
+
+                    TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                }
+                array_push($reciviedCoffee, $transaction->transaction_id);
             }
         }
         $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail')->get();
@@ -112,13 +115,20 @@ class CenterManagerController extends Controller {
     function centerManagerCoffee(Request $request) {
         $centerId = $this->user->table_id;
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->doesntHave('isReference')->whereHas('transactionLog', function($q) use($centerId) {
+        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'sent')->where('type', 'center')->where('entity_id', $centerId);
-                })->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
+                })->whereHas('transactionDetail', function($q) use($centerId) {
+                    $q->where('container_status', 0);
+                }, '>', 0)->with(['transactionDetail' => function($query) {
+                        $query->where('container_status', 0);
+                    }])->with('log')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
+            $transaction->center_id = $transaction->log->entity_id;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
+            $transaction->makeHidden('log');
+
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
@@ -126,17 +136,21 @@ class CenterManagerController extends Controller {
     }
 
     function centerManagerReceivedCoffee(Request $request) {
+
         $userId = $this->userId;
         $centerId = $this->user->table_id;
         $allTransactions = array();
-        $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->doesntHave('isReference')->whereHas('transactionLog', function($q) use($centerId) {
+        $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
-                })->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
+                })->with('transactionDetail')->with('log')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
+            $transaction->center_id = $transaction->log->entity_id;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
+            $transaction->makeHidden('log');
+
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }

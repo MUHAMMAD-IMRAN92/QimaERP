@@ -44,4 +44,6 @@ class Transaction extends Model {
         return $this->hasOne(Transaction::class, 'reference_id', 'transaction_id');
     }
 
+   
+
 }
