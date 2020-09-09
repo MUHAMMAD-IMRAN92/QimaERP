@@ -18,9 +18,9 @@
 
           <div class="col-sm-6">
             <h1>Region Weight 
-              <a href="" class="btn btn-add rounded-circle"> 
+              {{-- <a href="" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
-              </a>
+              </a> --}}
             </h1>
           </div>
           <div class="col-sm-6">
@@ -32,7 +32,50 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            
+            <!-- /.card -->
 
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table  class="table table-bordered ">
+                  <thead>
+                  <tr>
+                    <th>Governor Code</th>
+                    <th>Governor Title</th>
+                    <th>Governor Weight</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                     @php
+                    $gov=$governore->governerate_code;
+                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($gov){
+                            $q->where('is_parent', 0)
+                            ->Where('batch_number','LIKE', "$gov%");
+                        })->sum('container_weight');
+                    @endphp
+                   <tr>
+                     <td>{{$governore->governerate_code}}</td>
+                     <td>{{$governore->governerate_title}}</td>
+                     <td>{{$totalweight}}</td>
+                   </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
