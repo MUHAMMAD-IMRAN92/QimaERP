@@ -119,6 +119,7 @@ class CoffeeBuyerManager extends Controller {
                             'container_weight' => $transactionContainer->container_weight,
                             'weight_unit' => $transactionContainer->weight_unit,
                             'center_id' => $transactionContainer->center_id,
+                            'reference_id' => 0,
                         ]);
                     }
                     array_push($sentCoffeeArray, $transaction->transaction_id);
