@@ -9,11 +9,11 @@ class GovernorController extends Controller
 {
     public function allgovernor(){
     	$data['governors']=Governerate::all();
-    	return view('admin.allgovernor',$data);
+    	return view('admin.governor.allgovernor',$data);
     }
 
     public function addnewgovernor(){
-    	return view('admin.addnewgovernor');
+    	return view('admin.governor.addnewgovernor');
     }
 
     function getGovernorAjax(Request $request) {
@@ -74,7 +74,7 @@ class GovernorController extends Controller
     public function edit($id){
     	// dd($id);
     	$data['governor'] = Governerate::find($id);
-    	return view('admin/editgovernor',$data);
+    	return view('admin.governor.editgovernor',$data);
     }
     public function update(Request $request){
     	$updategovernor = Governerate::find($request->governor_id);

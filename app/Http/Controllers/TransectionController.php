@@ -10,7 +10,7 @@ class TransectionController extends Controller
 {
     public function index(){
     	$data['transaction']=Transaction::where('is_parent', '0')->get();
-    	return view('admin.alltransection',$data);
+    	return view('admin.transaction.alltransection',$data);
     }
     public function detail($id){
     	// dd($id)
@@ -55,7 +55,7 @@ class TransectionController extends Controller
 
     	$data['TransactionDetail']=TransactionDetail::where('transaction_id', $id)->with('transection')->get();
     	// dd($data['TransactionChild']);
-    	return view('admin.transactiondetail',$data);
+    	return view('admin.transaction.transactiondetail',$data);
 
     }
     function getTransectionAjax(Request $request) {

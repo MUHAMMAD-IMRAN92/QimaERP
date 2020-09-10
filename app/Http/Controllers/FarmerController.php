@@ -8,7 +8,7 @@ class FarmerController extends Controller
 {
     public function index(){
     	$data['farmer']=Farmer::all();
-    	return view('admin.allfarmer',$data);
+    	return view('admin.farmer.allfarmer',$data);
     }
 
    function getFarmerAjax(Request $request) {
