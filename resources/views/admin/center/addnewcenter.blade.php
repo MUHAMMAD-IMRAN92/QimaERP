@@ -1,6 +1,11 @@
 @extends('layouts.default')
 @section('title', 'All Center')
 @section('content')
+<style type="text/css">
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #007BFF !important;
+    border: 1px solid #007BFF;
+}</style>
      <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -66,7 +71,7 @@
                   </div>
                  <div class="form-group">
                    <label for="country_name">All Center</label>
-                    <select  class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
+                    <select   class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
                       @foreach($user as $row)
                       <option value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach
