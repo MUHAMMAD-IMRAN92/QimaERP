@@ -10,7 +10,7 @@ class BatchNumberController extends Controller {
 
     public function index() {
         $data['batch'] = BatchNumber::where('is_parent', '0')->get();
-        return view('admin.allbatchnumber', $data);
+        return view('admin.batch.allbatchnumber', $data);
     }
 
     function getbatchAjax(Request $request) {
@@ -70,7 +70,7 @@ class BatchNumberController extends Controller {
                             }])->get();
         ///return sendSuccess('Successfully retrieved farmers', $data['transations_data']);
 
-        return view('admin.batchdetail', $data);
+        return view('admin.batch.batchdetail', $data);
     }
 
 //    public function show(Request $request, $id) {

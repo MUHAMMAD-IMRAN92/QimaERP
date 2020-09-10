@@ -11,12 +11,12 @@ class RegionController extends Controller
 {
     public function index(){
     	$data['region']=Region::all();
-    	return view('admin.allregion',$data);
+    	return view('admin.region.allregion',$data);
     }
 
     public function addnewregion(){
     	$data['governor']=Governerate::all();
-    	return view('admin.addnewregion',$data);
+    	return view('admin.region.addnewregion',$data);
     }
     function getRegionAjax(Request $request) {
         $draw = $request->get('draw');
@@ -77,7 +77,7 @@ class RegionController extends Controller
      public function edit($id){
      	// $data['governor']=Governerate::all();
     	$data['region']=Region::find($id);
-    	return view('admin.editregion',$data);
+    	return view('admin.region.editregion',$data);
     }
      public function delete($id){
      	$region = Region::find($id);

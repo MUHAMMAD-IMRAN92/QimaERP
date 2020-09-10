@@ -10,12 +10,12 @@ class CenterController extends Controller
 {
     public function index(){
 
-    	return view('admin.allcenter');
+    	return view('admin.center.allcenter');
     }
 
     public function addnewcenter(){
     	$data['user'] = User::role('Center Manager')->get();
-    	return view('admin.addnewcenter',$data);
+    	return view('admin.center.addnewcenter',$data);
     }
 
     public function storecenter(Request $request){
