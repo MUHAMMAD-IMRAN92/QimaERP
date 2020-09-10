@@ -46,6 +46,7 @@ class ProcessingManagerController extends Controller {
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
+            $transaction->is_sent = 0;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
