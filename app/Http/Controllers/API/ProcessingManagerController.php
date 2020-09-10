@@ -41,7 +41,11 @@ class ProcessingManagerController extends Controller {
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'received')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
-                })->with('transactionDetail')->orderBy('transaction_id', 'desc')->get();
+                })->whereHas('transactionDetail', function($q) use($centerId) {
+                    $q->where('container_status', 0);
+                }, '>', 0)->with(['transactionDetail' => function($query) {
+                        $query->where('container_status', 0);
+                    }])->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
@@ -59,7 +63,7 @@ class ProcessingManagerController extends Controller {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
         $role = Role::whereIn('name', ['Special Processing', 'Coffee Drying'])->select('name')->get();
-        return sendSuccess('Processor manager received coffee', $role);
+        return sendSuccess('Processor manager coffee', $role);
     }
 
     function sentToSpecialProcessingAndCoffeeDrying(Request $request) {
@@ -82,6 +86,11 @@ class ProcessingManagerController extends Controller {
                 }
             }
             if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+                if ($sentTransaction->transaction->sent_to == 5) {
+                    $type = 'special_processing';
+                } else {
+                    $type = 'coffee_drying';
+                }
                 $transaction = Transaction::create([
                             'batch_number' => $sentTransaction->transaction->batch_number,
                             'is_parent' => $sentTransaction->transaction->is_parent,
@@ -103,7 +112,7 @@ class ProcessingManagerController extends Controller {
                             'created_by' => $sentTransaction->transaction->created_by,
                             'entity_id' => $sentTransaction->transaction->center_id,
                             'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
-                            'type' => 'center',
+                            'type' => $type,
                 ]);
                 $transactionContainers = $sentTransaction->transactionDetails;
                 foreach ($transactionContainers as $key => $transactionContainer) {
@@ -134,6 +143,54 @@ class ProcessingManagerController extends Controller {
         }
         $data = array_merge($dataArray, $alreadyReciviedCoffee);
         return sendSuccess('Transactions sent successfully', $data);
+    }
+
+    function getSendSpecialProcessingCoffee(Request $request) {
+        $userId = $this->userId;
+        $centerId = $this->user->table_id;
+        $allTransactions = array();
+        $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
+                    $q->where('action', 'sent')->where('type', 'special_processing')->where('entity_id', $centerId);
+                })->whereHas('transactionDetail', function($q) use($centerId) {
+                    $q->where('container_status', 1);
+                }, '>', 0)->with(['transactionDetail' => function($query) {
+                        $query->where('container_status', 1);
+                    }])->orderBy('transaction_id', 'desc')->get();
+
+        foreach ($transactions as $key => $transaction) {
+            $transactionDetail = $transaction->transactionDetail;
+            $transaction->center_id = $transaction->log->entity_id;
+            $transaction->is_sent = 0;
+            $transaction->makeHidden('transactionDetail');
+            $transaction->makeHidden('log');
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
+            array_push($allTransactions, $data);
+        }
+        return sendSuccess('Processor manager coffee', $allTransactions);
+    }
+
+    function getSendCoffeeDrying(Request $request) {
+        $userId = $this->userId;
+        $centerId = $this->user->table_id;
+        $allTransactions = array();
+        $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
+                    $q->where('action', 'sent')->where('type', 'coffee_drying')->where('entity_id', $centerId);
+                })->whereHas('transactionDetail', function($q) use($centerId) {
+                    $q->where('container_status', 1);
+                }, '>', 0)->with(['transactionDetail' => function($query) {
+                        $query->where('container_status', 1);
+                    }])->orderBy('transaction_id', 'desc')->get();
+
+        foreach ($transactions as $key => $transaction) {
+            $transactionDetail = $transaction->transactionDetail;
+            $transaction->center_id = $transaction->log->entity_id;
+            $transaction->is_sent = 0;
+            $transaction->makeHidden('transactionDetail');
+            $transaction->makeHidden('log');
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
+            array_push($allTransactions, $data);
+        }
+        return sendSuccess('Processor manager coffee', $allTransactions);
     }
 
 }
