@@ -20,72 +20,72 @@ Route::get('/', function () {
 
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::get('dashboard', 'AuthController@dashboard');
+    Route::get('dashboard', 'AuthController@dashboard')->middleware('auth');
     Route::get('logout', 'AuthController@adminLogout');
     Route::get('login', 'AuthController@adminLogin');
     Route::post('login', 'AuthController@adminPostLogin');
 
     //Governor Controller
-    Route::get('allgovernor', 'GovernorController@allgovernor');
+    Route::get('allgovernor', 'GovernorController@allgovernor')->middleware('auth');
     Route::get('getgovernors', 'GovernorController@getGovernorAjax'); 
-    Route::get('addnewgovernor', 'GovernorController@addnewgovernor');
-    Route::get('editgovernor/{id}', 'GovernorController@edit');
+    Route::get('addnewgovernor', 'GovernorController@addnewgovernor')->middleware('auth');
+    Route::get('editgovernor/{id}', 'GovernorController@edit')->middleware('auth');
     Route::post('updategovernor', 'GovernorController@update'); 
-    Route::get('deletegovernor/{id}', 'GovernorController@delete'); 
-    Route::post('addgovernor', 'GovernorController@store'); 
+    Route::get('deletegovernor/{id}', 'GovernorController@delete')->middleware('auth'); 
+    Route::post('addgovernor', 'GovernorController@store')->middleware('auth'); 
 
 
     //Region Controller
-    Route::get('allregion', 'RegionController@index'); 
+    Route::get('allregion', 'RegionController@index')->middleware('auth'); 
     Route::get('getregion', 'RegionController@getRegionAjax');
-    Route::get('addnewregion', 'RegionController@addnewregion');
-    Route::post('addregion', 'RegionController@store');
-    Route::get('editregion/{id}', 'RegionController@edit');
-    Route::get('deleteregion/{id}', 'RegionController@delete');
+    Route::get('addnewregion', 'RegionController@addnewregion')->middleware('auth');
+    Route::post('addregion', 'RegionController@store')->middleware('auth');
+    Route::get('editregion/{id}', 'RegionController@edit')->middleware('auth');
+    Route::get('deleteregion/{id}', 'RegionController@delete')->middleware('auth');
 
 
     //Village Controller
-    Route::get('allvillage', 'VillageController@index');
+    Route::get('allvillage', 'VillageController@index')->middleware('auth');
     Route::get('getvillage', 'VillageController@getVillageAjax');
-    Route::get('addnewvillage', 'VillageController@addnewvillage');
-    Route::post('addvillage', 'VillageController@store');
-    Route::get('editvillage/{id}', 'VillageController@edit');
+    Route::get('addnewvillage', 'VillageController@addnewvillage')->middleware('auth');
+    Route::post('addvillage', 'VillageController@store')->middleware('auth');
+    Route::get('editvillage/{id}', 'VillageController@edit')->middleware('auth');
     Route::post('updatevillage', 'VillageController@update');
 
     //Farmer Controller
-    Route::get('allfarmer', 'FarmerController@index');
+    Route::get('allfarmer', 'FarmerController@index')->middleware('auth');
     Route::get('getfarmer', 'FarmerController@getFarmerAjax');
 
     //BatchNumber Controller
-    Route::get('allbatchnumber', 'BatchNumberController@index');
+    Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');
     Route::get('getbatch', 'BatchNumberController@getbatchAjax');
-     Route::get('batchdetail/{id}', 'BatchNumberController@show');
+     Route::get('batchdetail/{id}', 'BatchNumberController@show')->middleware('auth');
 
     //Center Controller
-    Route::get('allcenter', 'CenterController@index');
-    Route::get('addcenter', 'CenterController@addnewcenter');
-    Route::post('storecenter', 'CenterController@storecenter');
+    Route::get('allcenter', 'CenterController@index')->middleware('auth');
+    Route::get('addcenter', 'CenterController@addnewcenter')->middleware('auth');
+    Route::post('storecenter', 'CenterController@storecenter')->middleware('auth');
     Route::get('getcenter', 'CenterController@getCenterAjax');
-    Route::get('editcenter/{id}', 'CenterController@edit');
+    Route::get('editcenter/{id}', 'CenterController@edit')->middleware('auth');
     Route::post('updatecenter', 'CenterController@update');
     
 
     //Transection Controller
-    Route::get('alltransection', 'TransectionController@index');
-    Route::get('transactiondetail/{id}', 'TransectionController@detail');
+    Route::get('alltransection', 'TransectionController@index')->middleware('auth');
+    Route::get('transactiondetail/{id}', 'TransectionController@detail')->middleware('auth');
     Route::get('gettransection', 'TransectionController@getTransectionAjax');
 
     //Container Controller
-    Route::get('allcontainer', 'ContainerController@index');
-    Route::get('addcontainer', 'ContainerController@addcontainer');
-    Route::post('storecontainer', 'ContainerController@store');
+    Route::get('allcontainer', 'ContainerController@index')->middleware('auth');
+    Route::get('addcontainer', 'ContainerController@addcontainer')->middleware('auth');
+    Route::post('storecontainer', 'ContainerController@store')->middleware('auth');
     
     //Season Controller
-    Route::get('allseason', 'SeasonController@index');
+    Route::get('allseason', 'SeasonController@index')->middleware('auth');
     Route::get('getseason', 'SeasonController@getSeasonAjax');
-    Route::get('addseason', 'SeasonController@addseason');
-    Route::post('addseason', 'SeasonController@store');
-    Route::get('editseason/{id}', 'SeasonController@edit');
+    Route::get('addseason', 'SeasonController@addseason')->middleware('auth');
+    Route::post('addseason', 'SeasonController@store')->middleware('auth');
+    Route::get('editseason/{id}', 'SeasonController@edit')->middleware('auth');
     Route::post('updateseason', 'SeasonController@update');
     // Route::get('deleteseason/{id}', 'SeasonController@delete');
     Route::get('seasonclose/{id}', 'SeasonController@seasonclose');
