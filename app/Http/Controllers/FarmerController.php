@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Farmer;
+use App\FileSystem;
 class FarmerController extends Controller
 {
     public function index(){
@@ -55,5 +56,44 @@ class FarmerController extends Controller
         );
         //:: return json
         return json_encode($data);
+    }
+
+    public function Edit($id){
+       
+        $data['farmer']=Farmer::find($id);
+        return view('admin.farmer.editfarmer',$data);
+    }
+
+    public function update(Request $request){
+            if ($request->profile_picture) {
+                $file = $request->profile_picture;
+                $originalFileName = $file->getClientOriginalName();
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $request->file('profile_picture')->storeAs('images', $file_name);
+                $userProfileImage = FileSystem::create([
+                            'user_file_name' => $originalFileName,
+                            'system_file_name' => $file_name,
+                ]);
+                $profileImageId = $userProfileImage->file_id;
+            }
+            if ($request->idcard_picture) {
+                $file = $request->idcard_picture;
+                $originalFileName = $file->getClientOriginalName();
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $request->file('idcard_picture')->storeAs('images', $file_name);
+                $userIdCardImage = FileSystem::create([
+                            'user_file_name' => $originalFileName,
+                            'system_file_name' => $file_name,
+                ]);
+                $idcardImageId = $userIdCardImage->file_id;
+            }
+        $updatefarmer=Farmer::find($request->farmer_id);
+        // dd($updatefarmer);
+        $updatefarmer->farmer_name=$request->farmer_name;
+        $updatefarmer->farmer_nicn=$request->farmer_nicn;
+        $updatefarmer->picture_id=$profileImageId;
+        $updatefarmer->idcard_picture_id= $idcardImageId;
+        $updatefarmer->save();
+        return view('admin.farmer.allfarmer')->with('update','farmer detail update Successfully');
     }
 }

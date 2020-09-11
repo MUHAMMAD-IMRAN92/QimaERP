@@ -55,6 +55,9 @@ Route::group(['prefix' => 'admin'], function () {
     //Farmer Controller
     Route::get('allfarmer', 'FarmerController@index')->middleware('auth');
     Route::get('getfarmer', 'FarmerController@getFarmerAjax');
+    Route::get('editfarmer/{id}', 'FarmerController@edit');
+    Route::post('updatefarmer', 'FarmerController@update');
+
 
     //BatchNumber Controller
     Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');
