@@ -82,19 +82,17 @@ class CoffeeBuyer extends Controller {
     }
 
     function addFarmer(Request $request) {
+        die("xv");
         //::validation
         $validator = Validator::make($request->all(), [
-                    'farmer_name' => 'required|max:100',
-                    'farmer_nicn' => 'required',
-                    'created_by' => 'required',
-                    'village_code' => 'required',
-                    'local_code' => 'required',
+                    'farmers' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-
+        $farmers = json_decode($request['farmers']);
+        return sendSuccess('Farmer was created Successfully', $farmers);
         $farmer = Farmer::where('farmer_nicn', $request['farmer_nicn'])->first();
         if (!$farmer) {
             $profileImageId = null;
@@ -106,7 +104,6 @@ class CoffeeBuyer extends Controller {
                 $request->file('profile_picture')->storeAs('images', $file_name);
                 $userProfileImage = FileSystem::create([
                             'user_file_name' => $originalFileName,
-                            'system_file_name' => $file_name,
                 ]);
                 $profileImageId = $userProfileImage->file_id;
             }
@@ -118,7 +115,6 @@ class CoffeeBuyer extends Controller {
                 $request->file('idcard_picture')->storeAs('images', $file_name);
                 $userIdCardImage = FileSystem::create([
                             'user_file_name' => $originalFileName,
-                            'system_file_name' => $file_name,
                 ]);
                 $idcardImageId = $userIdCardImage->file_id;
             }
