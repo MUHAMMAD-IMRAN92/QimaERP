@@ -60,6 +60,25 @@ class CoffeeBuyerManager extends Controller {
                     }])->with(['idcardImage' => function($query) use($user_image, $user_image_path) {
                         $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                     }])->orderBy('farmer_name')->get();
+
+        foreach ($farmers as $key => $farmer) {
+            $farmer->farmer_id_card_picture = null;
+            $farmer->farmer_picture = null;
+            if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
+                $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
+            }
+            if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
+                $farmer->farmer_picture = $farmer->profileImage->user_file_name;
+            }
+            $farmer->farmer_village = $farmer->village_code;
+            $farmer->farmer_id_card_no = $farmer->farmer_nicn;
+            $farmer->makeHidden('idcardImage');
+            $farmer->makeHidden('profileImage');
+            $farmer->makeHidden('village_code');
+            $farmer->makeHidden('farmer_nicn');
+            $farmer->makeHidden('idcard_picture_id');
+            $farmer->makeHidden('picture_id');
+        }
         return sendSuccess('Successfully retrieved farmers', $farmers);
     }
 
