@@ -100,7 +100,7 @@ class CoffeeBuyer extends Controller {
                 if ($farmer->farmer_picture) {
                     $destinationPath = 'storage/app/images/';
                     $file = base64_decode($farmer->farmer_picture);
-                    $file_name = time() . '.' . getFileExtensionForBase64($file);
+                    $file_name = time() . getFileExtensionForBase64($file);
                     file_put_contents($destinationPath . $file_name, $file);
                     $userProfileImage = FileSystem::create([
                                 'user_file_name' => $file_name,
@@ -111,7 +111,7 @@ class CoffeeBuyer extends Controller {
                 if ($farmer->farmer_id_card_picture) {
                     $destinationPath = 'storage/app/images/';
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
-                    $id_card_file_name = time() . '.' . getFileExtensionForBase64($idfile);
+                    $id_card_file_name = time() . getFileExtensionForBase64($idfile);
                     file_put_contents($destinationPath . $id_card_file_name, $idfile);
                     $userIdCardImage = FileSystem::create([
                                 'user_file_name' => $id_card_file_name,
