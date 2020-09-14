@@ -56,9 +56,9 @@ class CoffeeBuyerManager extends Controller {
                         $q->where('farmer_code', 'like', "%$farmerCode%");
                     });
                 })->with('governerate', 'region', 'village')->with(['profileImage' => function($query) use($user_image, $user_image_path) {
-                        $query->select('file_id', 'system_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`system_file_name`),IFNULL(`system_file_name`,'" . $user_image . "')) as system_file_name"));
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                     }])->with(['idcardImage' => function($query) use($user_image, $user_image_path) {
-                        $query->select('file_id', 'system_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`system_file_name`),IFNULL(`system_file_name`,'" . $user_image . "')) as system_file_name"));
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                     }])->orderBy('farmer_name')->get();
         return sendSuccess('Successfully retrieved farmers', $farmers);
     }
