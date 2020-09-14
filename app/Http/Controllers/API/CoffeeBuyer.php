@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\TransactionDetail;
+use App\TransactionInvoice;
 use App\TransactionLog;
 use App\BatchNumber;
 use App\Transaction;
@@ -346,8 +347,6 @@ class CoffeeBuyer extends Controller {
                             'is_new' => $batch_numbers->transactions->transaction->is_new,
                             'sent_to' => 2,
                 ]);
-
-
                 $transactionLog = TransactionLog::create([
                             'transaction_id' => $parentTransaction->transaction_id,
                             'action' => 'created',
@@ -356,9 +355,6 @@ class CoffeeBuyer extends Controller {
                             'type' => 'coffee_buyer',
                             'local_created_at' => $batch_numbers->transactions->transaction->created_at,
                 ]);
-
-
-
                 if (isset($batch_numbers->transactions->transactions_detail) && $batch_numbers->transactions->transactions_detail) {
                     $transactionsDetails = $batch_numbers->transactions->transactions_detail;
                     foreach ($transactionsDetails as $key => $transactionsDetail) {
@@ -372,6 +368,29 @@ class CoffeeBuyer extends Controller {
                         ]);
                     }
                 }
+
+                if (isset($batch_numbers->transactions->transactions_invoices) && $batch_numbers->transactions->transactions_invoices) {
+                    $transactionsInvoices = $batch_numbers->transactions->transactions_invoices;
+                    $i = 1;
+                    foreach ($transactionsInvoices as $key => $transactionsInvoice) {
+
+                        if ($transactionsInvoice->invoice_image) {
+                            $destinationPath = 'storage/app/images/';
+                            $file = base64_decode($transactionsInvoice->invoice_image);
+                            $file_name = time() . $i . getFileExtensionForBase64($file);
+                            file_put_contents($destinationPath . $file_name, $file);
+                            $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $file_name,
+                            ]);
+                            TransactionInvoice::create([
+                                'transaction_id' => $parentTransaction->transaction_id,
+                                'created_by' => $transactionsInvoice->created_by,
+                                'invoice_id' => $userProfileImage->file_id,
+                            ]);
+                        }
+                        $i++;
+                    }
+                }
             }
             array_push($batchesArray, $parentBatch->batch_id);
             BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
@@ -379,7 +398,13 @@ class CoffeeBuyer extends Controller {
         }
 
         $dataArray = array();
-        $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesArray)->with('childBatchNumber.latestTransation.transactionDetail')->with('latestTransation.transactionDetail')->get();
+        $user_image = asset('storage/app/images/demo_user_image.png');
+        $user_image_path = asset('storage/app/images/');
+        $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesArray)->with('childBatchNumber.latestTransation.transactionDetail')->with(['latestTransation' => function($query) use($user_image, $user_image_path) {
+                        $query->with('transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
+                                $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+                            }]);
+                    }])->get();
         foreach ($currentBatchesData as $key => $currentBatchData) {
             $patentTransactions = null;
             $patentTransactionsDetail = null;
@@ -409,21 +434,31 @@ class CoffeeBuyer extends Controller {
             if (isset($currentBatchData->latestTransation) && $currentBatchData->latestTransation) {
                 if (isset($currentBatchData->latestTransation->transactionDetail) && $currentBatchData->latestTransation->transactionDetail) {
                     $patentTransactionsDetail = $currentBatchData->latestTransation->transactionDetail;
+
+
                     $currentBatchData->latestTransation->makeHidden('transactionDetail');
                 }
                 $patentTransactions = $currentBatchData->latestTransation;
+                if (isset($patentTransactions->transactions_invoices)) {
+                    foreach ($patentTransactions->transactions_invoices as $key => $transactions_invoices) {
+                        $transactions_invoices->invoice_image = '';
+                        if (isset($transactions_invoices->invoice)) {
+                            $transactions_invoices->invoice_image = $transactions_invoices->invoice->user_file_name;
+                        }
+                        $transactions_invoices->makeHidden('invoice');
+                    }
+                }
             }
+            $transactions_invoices = $patentTransactions->transactions_invoices;
+            $currentBatch->makeHidden('transactions_invoices');
             $currentBatchData->makeHidden('latestTransation');
             //  $currentBatchData->makeHidden('transaction');
-            $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail];
+            $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail, 'transactions_invoices' => $transactions_invoices];
 
             $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
             array_push($dataArray, $data);
         }
         return sendSuccess('Coffee was added Successfully', $dataArray);
-
-//        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
-//        return sendSuccess('Coffee was added Successfully', $currentBatch);
     }
 
     function addCoffeeWithOutBatchNumber(Request $request) {
@@ -485,11 +520,49 @@ class CoffeeBuyer extends Controller {
                 }
             }
 
-            $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->first();
+            if (isset($transactions->transactions_invoices) && $transactions->transactions_invoices) {
+                $transactionsInvoices = $transactions->transactions_invoices;
+                $i = 1;
+                foreach ($transactionsInvoices as $key => $transactionsInvoice) {
+
+                    if ($transactionsInvoice->invoice_image) {
+                        $destinationPath = 'storage/app/images/';
+                        $file = base64_decode($transactionsInvoice->invoice_image);
+                        $file_name = time() . $i . getFileExtensionForBase64($file);
+                        file_put_contents($destinationPath . $file_name, $file);
+                        $userProfileImage = FileSystem::create([
+                                    'user_file_name' => $file_name,
+                        ]);
+                        TransactionInvoice::create([
+                            'transaction_id' => $newTransaction->transaction_id,
+                            'created_by' => $transactionsInvoice->created_by,
+                            'invoice_id' => $userProfileImage->file_id,
+                        ]);
+                    }
+                    $i++;
+                }
+            }
+            $user_image = asset('storage/app/images/demo_user_image.png');
+            $user_image_path = asset('storage/app/images/');
+            $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
+                            $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+                        }])->first();
             $transationsDetail = $currentBatch->transactionDetail;
+            if (isset($currentBatch->transactions_invoices)) {
+                foreach ($currentBatch->transactions_invoices as $key => $transactions_invoices) {
+                    $transactions_invoices->invoice_image = '';
+                    if (isset($transactions_invoices->invoice)) {
+                        $transactions_invoices->invoice_image = $transactions_invoices->invoice->user_file_name;
+                    }
+                    $transactions_invoices->makeHidden('invoice');
+                }
+            }
             $currentBatch->makeHidden('transactionDetail');
+            $transactions_invoices = $currentBatch->transactions_invoices;
+            $currentBatch->makeHidden('transactions_invoices');
             $transations = $currentBatch;
-            $data = ['transactions' => $transations, 'transactions_detail' => $transationsDetail];
+
+            $data = ['transactions' => $transations, 'transactions_detail' => $transationsDetail, 'transactions_invoices' => $transactions_invoices];
             array_push($allTransactions, $data);
         }
         return sendSuccess('Coffee was added Successfully', $allTransactions);
@@ -497,8 +570,11 @@ class CoffeeBuyer extends Controller {
 
     function coffeeBuyerCoffee(Request $request) {
         $allTransactions = array();
-
-        $transactions = Transaction::where('is_parent', 0)->where('created_by', $this->userId)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
+        $user_image = asset('storage/app/images/demo_user_image.png');
+        $user_image_path = asset('storage/app/images/');
+        $transactions = Transaction::where('is_parent', 0)->where('created_by', $this->userId)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+                    }])->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
             $childTransactions = array();
             if ($transaction->childTransation) {
@@ -509,10 +585,21 @@ class CoffeeBuyer extends Controller {
                     array_push($childTransactions, $childData);
                 }
             }
+            if (isset($transaction->transactions_invoices)) {
+                foreach ($transaction->transactions_invoices as $key => $transactions_invoices) {
+                    $transactions_invoices->invoice_image = '';
+                    if (isset($transactions_invoices->invoice)) {
+                        $transactions_invoices->invoice_image = $transactions_invoices->invoice->user_file_name;
+                    }
+                    $transactions_invoices->makeHidden('invoice');
+                }
+            }
             $transactionDetail = $transaction->transactionDetail;
+            $transactions_invoices = $transaction->transactions_invoices;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
-            $data = ['transactions' => $transaction, 'child_transaction' => $childTransactions, 'transactions_detail' => $transactionDetail];
+            $transaction->makeHidden('transactions_invoices');
+            $data = ['transactions' => $transaction, 'child_transaction' => $childTransactions, 'transactions_detail' => $transactionDetail, 'transactions_invoices' => $transactions_invoices];
             array_push($allTransactions, $data);
         }
 
