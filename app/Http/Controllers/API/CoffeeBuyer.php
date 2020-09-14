@@ -63,15 +63,15 @@ class CoffeeBuyer extends Controller {
                     $q->where(function($q) use ($farmerNicn) {
                         $q->where('farmer_nicn', 'like', "%$farmerNicn%");
                     });
-                })->where('is_status', 1)->with('village')->with(['profileImage' => function($query) use($user_image, $user_image_path) {
+                })->where('is_status', 1)->with(['profileImage' => function($query) use($user_image, $user_image_path) {
                         $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                     }])->with(['idcardImage' => function($query) use($user_image, $user_image_path) {
                         $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                     }])->orderBy('farmer_name')->get();
 
         foreach ($farmers as $key => $farmer) {
-            $farmer->farmer_id_card_picture = null;
-            $farmer->farmer_picture = null;
+            $farmer->farmer_id_card_picture = '';
+            $farmer->farmer_picture = '';
             if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
                 $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
             }
@@ -175,8 +175,8 @@ class CoffeeBuyer extends Controller {
                     }])->get();
 
         foreach ($farmers as $key => $farmer) {
-            $farmer->farmer_id_card_picture = null;
-            $farmer->farmer_picture = null;
+            $farmer->farmer_id_card_picture = '';
+            $farmer->farmer_picture = '';
             if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
                 $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
             }

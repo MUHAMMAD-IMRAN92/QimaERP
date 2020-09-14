@@ -62,8 +62,8 @@ class CoffeeBuyerManager extends Controller {
                     }])->orderBy('farmer_name')->get();
 
         foreach ($farmers as $key => $farmer) {
-            $farmer->farmer_id_card_picture = null;
-            $farmer->farmer_picture = null;
+            $farmer->farmer_id_card_picture = '';
+            $farmer->farmer_picture = '';
             if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
                 $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
             }
