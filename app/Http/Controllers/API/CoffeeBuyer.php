@@ -92,6 +92,8 @@ class CoffeeBuyer extends Controller {
         }
         $formaersId = array();
         $farmers = json_decode($request['farmers']);
+        $i = 1;
+        $x = 500;
         foreach ($farmers as $key => $farmer) {
             $alreadyFarmer = Farmer::where('farmer_nicn', $farmer->farmer_id_card_no)->first();
             if (!$alreadyFarmer) {
@@ -100,7 +102,7 @@ class CoffeeBuyer extends Controller {
                 if ($farmer->farmer_picture) {
                     $destinationPath = 'storage/app/images/';
                     $file = base64_decode($farmer->farmer_picture);
-                    $file_name = time() . getFileExtensionForBase64($file);
+                    $file_name = time() . $i . getFileExtensionForBase64($file);
                     file_put_contents($destinationPath . $file_name, $file);
                     $userProfileImage = FileSystem::create([
                                 'user_file_name' => $file_name,
@@ -111,7 +113,7 @@ class CoffeeBuyer extends Controller {
                 if ($farmer->farmer_id_card_picture) {
                     $destinationPath = 'storage/app/images/';
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
-                    $id_card_file_name = time() . getFileExtensionForBase64($idfile);
+                    $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
                     file_put_contents($destinationPath . $id_card_file_name, $idfile);
                     $userIdCardImage = FileSystem::create([
                                 'user_file_name' => $id_card_file_name,
@@ -142,6 +144,8 @@ class CoffeeBuyer extends Controller {
                 $alreadyFarmer->save();
             }
             array_push($formaersId, $alreadyFarmer->farmer_id);
+            $i++;
+            $x++;
         }
         $user_image = asset('storage/app/images/demo_user_image.png');
         $user_image_path = asset('storage/app/images/');
