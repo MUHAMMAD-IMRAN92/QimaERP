@@ -69,9 +69,9 @@
               <form class="form-horizontal" role="form" method="POST" action="{{URL::to('/admin/updatecenterrole')}}">
                 {{ csrf_field() }}
                 <input type="hidden" name="center_id" value="{{$detail->center_id}}">
-                <div class="form-group col-sm-2 col-md-8" >
-                 <label for="exampleInputEmail1">Code</label>
-                    <select  class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
+                <div class="form-group row" style="margin-top: 28px;margin-left: 11px;">
+                  <div class="col-md-2"> <label for="exampleInputEmail1">Add Roles</label></div>
+                  <div class="col-md-8">  <select  class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
                        @foreach($role as $row)
                       <optgroup label="{{ $row->name }}">
                           @foreach($row->users as $sub)
@@ -83,15 +83,19 @@
                      {{--  @foreach($user as $row)
                       <option @if (in_array($row->user_id, $userId)) selected @endif value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach --}}
-                        @error('center_manager_id')
+                       
+                    </select>
+                     @error('center_manager_id')
                           <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    </select>
+                  </div>
+                
+                  
 
                   </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-dark">Update</button>
+                  <button type="submit" class="btn btn-dark text-center" style="margin-left: auto;margin-right: auto;display: block;">Update</button>
                   
                 </div>
                 <!-- /.card-footer -->

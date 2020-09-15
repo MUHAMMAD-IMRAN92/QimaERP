@@ -67,7 +67,7 @@
                           @endforeach
                     </select>
                   </div>
-                 <div class="form-group">
+                 {{-- <div class="form-group">
                    <label for="country_name">User Roles</label>
                     <select   class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
                       @foreach($role as $row)
@@ -78,15 +78,15 @@
                           @endforeach
                       </optgroup>
                       @endforeach
-                    {{--   @foreach($user as $row)
+                      @foreach($user as $row)
                       <option value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach
                       @error('center_manager_id')
                        <span  class="text-danger">{{ $message }}</span>
-                      @enderror --}}
+                      @enderror
                     </select>
 
-                  </div>
+                  </div> --}}
                 
                 </div>
                 <!-- /.card-body -->
