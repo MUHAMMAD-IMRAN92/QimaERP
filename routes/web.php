@@ -67,7 +67,10 @@ Route::group(['prefix' => 'admin'], function () {
     //Center Controller
     Route::get('allcenter', 'CenterController@index')->middleware('auth');
     Route::get('addcenter', 'CenterController@addnewcenter')->middleware('auth');
+    Route::post('updatecenterrole', 'CenterController@updatecenterrole')->middleware('auth');
+    Route::get('Addcenterdetail', 'CenterController@Addcenterdetail')->middleware('auth');
     Route::post('storecenter', 'CenterController@storecenter')->middleware('auth');
+    Route::get('centerdetail/{id}', 'CenterController@centerdetail')->middleware('auth');
     Route::get('getcenter', 'CenterController@getCenterAjax');
     Route::get('editcenter/{id}', 'CenterController@edit')->middleware('auth');
     Route::post('updatecenter', 'CenterController@update');

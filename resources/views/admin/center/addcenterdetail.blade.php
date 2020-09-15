@@ -1,6 +1,15 @@
 @extends('layouts.default')
 @section('title', 'All Center')
 @section('content')
+<style type="text/css">
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #007BFF !important;
+    border: 1px solid #007BFF;
+}
+.select2-container .select2-selection--single {
+    height: 39px;
+}
+</style>
      <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -8,12 +17,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Edit Center</h1>
+            <h1> Center Detail</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Edit Center</li>
+              <li class="breadcrumb-item active"> Center Detail</li>
             </ol>
           </div>
         </div>
@@ -30,12 +39,11 @@
             <div class="card card-primary">
 
               <div class="card-header">
-                <h3 class="card-title">Edit</h3>
+                <h3 class="card-title">Add</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="POST" action="{{URL::to('/admin/updatecenter')}}">
-                <input type="hidden" value="{{$center->center_id}}" name="center_id">
+              <form role="form" method="POST" action="{{URL::to('/admin/addcenterroles')}}">
                 {{--  @if ($errors->any())
                   <div class="alert alert-danger">
                       <ul>
@@ -52,33 +60,33 @@
                 {{ csrf_field() }}
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Code</label>
-                    <input type="text" id="center_code" class="form-control " id="exampleInputEmail1" name="center_code" placeholder="Enter Code" value="{{$center->center_code}}" @error('center_code') is-invalid @enderror readonly="readonly">
-                    @error('center_code')
-                       <span  class="text-danger">{{ $message }}</span>
-                    @enderror
+                    <label for="exampleInputEmail1">Center</label>
+                   <select   class="form-control managerselect2s4" name="center_id"  @error('center_id') is-invalid @enderror>
+                          @foreach($Center as $row)
+                           <option value="{{ $row->center_id }}">{{ $row->center_name  }}</option>
+                          @endforeach
+                    </select>
                   </div>
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Title</label>
-                    <input type="text" id="center_name" class="form-control" id="exampleInputPassword1" name="center_name" placeholder="Title" value="{{$center->center_name}}"   @error('center_name') is-invalid @enderror>
-                     @error('center_name')
-                       <span  class="text-danger">{{ $message }}</span>
-                    @enderror
-                  </div>
-                 {{-- <div class="form-group">
-                   <label for="country_name">All Center</label>
-                 
-                    <select  class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
-                      
-                      @foreach($user as $row)
-                      <option @if (in_array($row->user_id, $center_users)) selected @endif value="{{$row->user_id}}">{{$row->email}}</option>
+                 <div class="form-group">
+                   <label for="country_name">User Roles</label>
+                    <select   class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
+                      @foreach($role as $row)
+                      <optgroup label="{{ $row->name }}">
+                          @foreach($row->users as $sub)
+                          
+                              <option value="{{ $sub->user_id }}">{{ $sub->email  }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{isset( $sub->center_user)? $sub->center_user->center->center_name :''}}</option>
+                          @endforeach
+                      </optgroup>
                       @endforeach
-                       @error('center_manager_id')
-                       <span class="text-danger">{{ $message }}</span>
-                    @enderror
+                    {{--   @foreach($user as $row)
+                      <option value="{{$row->user_id}}">{{$row->email}}</option>
+                      @endforeach
+                      @error('center_manager_id')
+                       <span  class="text-danger">{{ $message }}</span>
+                      @enderror --}}
                     </select>
 
-                  </div> --}}
+                  </div>
                 
                 </div>
                 <!-- /.card-body -->

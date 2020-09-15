@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Center;
 use App\CenterUser;
+use Spatie\Permission\Models\Role;
 class CenterController extends Controller
 {
     public function index(){
@@ -13,9 +14,55 @@ class CenterController extends Controller
     	return view('admin.center.allcenter');
     }
 
+    public function Addcenterdetail(){
+        $data['Center']=Center::all();
+        $data['role'] = Role::with('users.center_user.center')->whereNotIn('name', ['Coffee Buyer','Super Admin','Coffee Buying Manager'])->get();
+        return view('admin.center.addcenterdetail',$data);
+    }
+
     public function addnewcenter(){
-    	$data['user'] = User::role('Center Manager')->get();
+    	$data['role'] = Role::with('users.center_user.center')->whereNotIn('name', ['Coffee Buyer','Super Admin','Coffee Buying Manager'])->get();
     	return view('admin.center.addnewcenter',$data);
+    }
+
+    public function centerdetail($id){
+        $data['detail']=Center::find($id);
+        $data['userrole']=User::whereHas('center_user', function($q) use($id) {
+                    $q->where('center_id','=', $id);
+                })->with('roles')->get();
+        // $data['role'] = Role::whereDoesntHave("users", function($subQuery) {
+        //                 $subQuery->whereIn('name', ['Coffee Buyer','Super Admin','Coffee Buying Manager']);
+        //               })->get();
+
+        $data['role'] = Role::with('users.center_user.center')->whereNotIn('name', ['Coffee Buyer','Super Admin','Coffee Buying Manager'])->get();
+        // $data['center_users'] = CenterUser::where('center_id',$id)->where('role_name','Center Manager')->pluck('user_id')->toArray();
+        return view('admin.center.centerdetail',$data);
+        // dd($data['detail']);
+    }
+
+    public function updatecenterrole(Request $request){
+        //  dd($request->all());
+        // if(CenterUser::where('user_id',$request->center_manager_id)){
+        //     echo "id match";
+        // }else{
+        //     echo "pass";
+        // }
+       
+        $userId=$request->center_manager_id;
+        $centerid=$request->center_id;
+       
+        // print_r($data);exit();
+            CenterUser::where('center_id',$request->center_id)->delete();
+            foreach ($userId as $rowid) {
+                $data = User::where('user_id',$rowid)->with('roles')->first();
+                $centeruser =New CenterUser;
+                $centeruser->center_id=$centerid;
+                $centeruser->user_id=$rowid;
+                $centeruser->role_name=$data->roles['0']->name;
+                $centeruser->save();
+                // dd($centeruser);
+            }
+        return redirect()->back();
     }
 
     public function storecenter(Request $request){
@@ -30,16 +77,16 @@ class CenterController extends Controller
     	 // dd($center);
     	$center->save();
 
-        $userId=$request->center_manager_id;
-        $centerid=$center->center_id;
+        // $userId=$request->center_manager_id;
+        // $centerid=$center->center_id;
 
-        foreach ($userId as $rowid) {
-            $centeruser = New CenterUser;
-            $centeruser->center_id=$centerid;
-            $centeruser->user_id=$rowid;
-            $centeruser->role_name='Center Manager';
-            $centeruser->save();
-        }
+        // foreach ($userId as $rowid) {
+        //     $centeruser = New CenterUser;
+        //     $centeruser->center_id=$centerid;
+        //     $centeruser->user_id=$rowid;
+        //     $centeruser->role_name='Center Manager';
+        //     $centeruser->save();
+        // }
 
         // $centeruser = new CenterUser;
         // $centeruser->center_id=$centerid
@@ -102,6 +149,7 @@ class CenterController extends Controller
 
 
     public function update(Request $request){
+
         $validatedData = $request->validate([
         'center_name' => 'required',
         'center_manager_id' => 'required',
@@ -111,16 +159,16 @@ class CenterController extends Controller
         $centerupdate->center_name=$request->center_name;
         $centerupdate->save();
 
-        $userId=$request->center_manager_id;
-        // dd($userId);
-        $centerid=$centerupdate->center_id;
-        foreach ($userId as $rowid) {
-            $centeruser = New CenterUser;
-            $centeruser->center_id=$centerid;
-            $centeruser->user_id=$rowid;
-            $centeruser->role_name='Center Manager';
-            $centeruser->save();
-        }
+        // $userId=$request->center_manager_id;
+        // // dd($userId);
+        // $centerid=$centerupdate->center_id;
+        // foreach ($userId as $rowid) {
+        //     $centeruser = New CenterUser;
+        //     $centeruser->center_id=$centerid;
+        //     $centeruser->user_id=$rowid;
+        //     $centeruser->role_name='Center Manager';
+        //     $centeruser->save();
+        // }
         // User::whereIn('user_id', $userId)->update(['table_id' => $centerid ,'table_name' => 'center']);
         return redirect('admin/allcenter');
     }

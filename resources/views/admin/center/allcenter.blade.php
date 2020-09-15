@@ -92,7 +92,7 @@
                 {"data": 'center_code'},
                 {"data": 'center_name'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/editcenter/' +  row.center_id + '>Edit</a>| <a href=' + base_path + '' + row.center_id + ' class="editor_remove" data-id="' + row.center_id + '">Delete</a>';
+                        return '<a href=' + base_path + 'admin/editcenter/' +  row.center_id + '>Edit</a>| <a href=' + base_path + 'admin/centerdetail/' + row.center_id + ' data-id="' + row.center_id + '">Detail</a>';
                     }
                 }
             ],

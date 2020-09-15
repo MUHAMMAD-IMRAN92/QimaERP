@@ -5,15 +5,15 @@
  
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    @if(Session::has('message'))
+                  @if(Session::has('message'))
                   <div class="alert alert-success" role="alert">
                   <b>{{Session::get('message')}}</b>
                   <button type="button" class="close" data-dismiss="alert">&times;</button>
                   </div>
                   @endif
-                  @if(Session::has('update'))
+                  @if(Session::has('updatefarmer'))
                   <div class="alert alert-success" role="alert">
-                  <b>{{Session::get('update')}}</b>
+                  <b>{{Session::get('updatefarmer')}}</b>
                   <button type="button" class="close" data-dismiss="alert">&times;</button>
                   </div>
                   @endif

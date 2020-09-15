@@ -65,35 +65,76 @@ class FarmerController extends Controller
     }
 
     public function update(Request $request){
+        $validatedData = $request->validate([
+                'farmer_nicn' => 'required|unique:farmers',
+                    ]);
+        if($request->picture_id != ''){
+            $updateprofile=FileSystem::find($request->picture_id);
+            if ($request->profile_picture) {
+                $file = $request->profile_picture;
+                $originalFileName = $file->getClientOriginalName();
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $request->file('profile_picture')->storeAs('images', $file_name);
+                $updateprofile->user_file_name = $file_name;
+            }
+            $updateprofile->save();
+             $profileImageId = $updateprofile->file_id;
+
+        }else{
+
             if ($request->profile_picture) {
                 $file = $request->profile_picture;
                 $originalFileName = $file->getClientOriginalName();
                 $file_name = time() . '.' . $file->getClientOriginalExtension();
                 $request->file('profile_picture')->storeAs('images', $file_name);
                 $userProfileImage = FileSystem::create([
-                            'user_file_name' => $originalFileName,
-                            'system_file_name' => $file_name,
+                            'user_file_name' => $file_name,
                 ]);
                 $profileImageId = $userProfileImage->file_id;
             }
+
+
+        }
+            if($request->idcard_picture_id != ''){
+
+            $updateid=FileSystem::find($request->idcard_picture_id);
             if ($request->idcard_picture) {
                 $file = $request->idcard_picture;
                 $originalFileName = $file->getClientOriginalName();
                 $file_name = time() . '.' . $file->getClientOriginalExtension();
                 $request->file('idcard_picture')->storeAs('images', $file_name);
+                $updateid->user_file_name = $file_name;
+            }
+            $updateid->save();
+             $idcardImageId = $updateid->file_id;
+
+            }else{
+                if ($request->idcard_picture) {
+                $file = $request->idcard_picture;
+                $originalFileName = $file->getClientOriginalName();
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $request->file('idcard_picture')->storeAs('images', $file_name);
                 $userIdCardImage = FileSystem::create([
-                            'user_file_name' => $originalFileName,
-                            'system_file_name' => $file_name,
+                            'user_file_name' => $file_name,
                 ]);
                 $idcardImageId = $userIdCardImage->file_id;
             }
+
+            }
+            
         $updatefarmer=Farmer::find($request->farmer_id);
         // dd($updatefarmer);
         $updatefarmer->farmer_name=$request->farmer_name;
         $updatefarmer->farmer_nicn=$request->farmer_nicn;
-        $updatefarmer->picture_id=$profileImageId;
-        $updatefarmer->idcard_picture_id= $idcardImageId;
+        if (FileSystem::find($request->profile_picture)) {
+             $updatefarmer->picture_id=$profileImageId;
+        }
+       
+        if (FileSystem::find($request->idcard_picture)) {
+             $updatefarmer->idcard_picture_id= $idcardImageId;
+        }
+       
         $updatefarmer->save();
-        return view('admin.farmer.allfarmer')->with('update','farmer detail update Successfully');
+        return view('admin.farmer.allfarmer')->with('updatefarmer','farmer detail update Successfully');
     }
 }
