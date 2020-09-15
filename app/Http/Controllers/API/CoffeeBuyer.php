@@ -450,9 +450,9 @@ class CoffeeBuyer extends Controller {
                 }
             }
             $transactions_invoices = $patentTransactions->transactions_invoices;
-            $currentBatch->makeHidden('transactions_invoices');
+            $currentBatchData->makeHidden('transactions_invoices');
             $currentBatchData->makeHidden('latestTransation');
-            //  $currentBatchData->makeHidden('transaction');
+            $patentTransactions->makeHidden('transactions_invoices');
             $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail, 'transactions_invoices' => $transactions_invoices];
 
             $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
