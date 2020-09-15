@@ -65,7 +65,7 @@ class CenterController extends Controller
                 $centeruser->save();
                 // dd($centeruser);
             }
-        return redirect()->back();
+        return redirect()->back()->with('message','Role Updated Successfully');
     }
 
     public function storecenter(Request $request){
