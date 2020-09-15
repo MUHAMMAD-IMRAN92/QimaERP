@@ -71,7 +71,7 @@
                 <input type="hidden" name="center_id" value="{{$detail->center_id}}">
                 <div class="form-group row" style="margin-top: 28px;margin-left: 11px;">
                   <div class="col-md-2"> <label for="exampleInputEmail1">Add Roles</label></div>
-                  <div class="col-md-8">  <select  class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
+                  <div class="col-md-8">  <select  class="form-control managerselect2s4" name="role[]"  multiple="multiple" @error('role') is-invalid @enderror>
                        @foreach($role as $row)
                       <optgroup label="{{ $row->name }}">
                           @foreach($row->users as $sub)
@@ -85,7 +85,7 @@
                       @endforeach --}}
                        
                     </select>
-                     @error('center_manager_id')
+                     @error('role')
                           <span class="text-danger">{{ $message }}</span>
                         @enderror
                   </div>

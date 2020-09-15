@@ -48,10 +48,10 @@ class CenterController extends Controller
         //     echo "pass";
         // }
         $validatedData = $request->validate([
-                'center_manager_id' => 'required',
+                'role' => 'required',
                     ]);
        
-        $userId=$request->center_manager_id;
+        $userId=$request->role;
         $centerid=$request->center_id;
        
         // print_r($data);exit();
