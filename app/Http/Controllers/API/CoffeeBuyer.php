@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\TransactionDetail;
+use App\TransactionInvoice;
 use App\TransactionLog;
 use App\BatchNumber;
 use App\Transaction;
@@ -63,11 +64,30 @@ class CoffeeBuyer extends Controller {
                     $q->where(function($q) use ($farmerNicn) {
                         $q->where('farmer_nicn', 'like', "%$farmerNicn%");
                     });
-                })->where('is_status', 1)->with('village')->with(['profileImage' => function($query) use($user_image, $user_image_path) {
-                        $query->select('file_id', 'system_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`system_file_name`),IFNULL(`system_file_name`,'" . $user_image . "')) as system_file_name"));
+                })->where('is_status', 1)->with(['profileImage' => function($query) use($user_image, $user_image_path) {
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                     }])->with(['idcardImage' => function($query) use($user_image, $user_image_path) {
-                        $query->select('file_id', 'system_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`system_file_name`),IFNULL(`system_file_name`,'" . $user_image . "')) as system_file_name"));
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                     }])->orderBy('farmer_name')->get();
+
+        foreach ($farmers as $key => $farmer) {
+            $farmer->farmer_id_card_picture = '';
+            $farmer->farmer_picture = '';
+            if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
+                $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
+            }
+            if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
+                $farmer->farmer_picture = $farmer->profileImage->user_file_name;
+            }
+            $farmer->farmer_village = $farmer->village_code;
+            $farmer->farmer_id_card_no = $farmer->farmer_nicn;
+            $farmer->makeHidden('idcardImage');
+            $farmer->makeHidden('profileImage');
+            $farmer->makeHidden('village_code');
+            $farmer->makeHidden('farmer_nicn');
+            $farmer->makeHidden('idcard_picture_id');
+            $farmer->makeHidden('picture_id');
+        }
         return sendSuccess('Successfully retrieved farmers', $farmers);
     }
 
@@ -82,7 +102,6 @@ class CoffeeBuyer extends Controller {
     }
 
     function addFarmer(Request $request) {
-        die("xv");
         //::validation
         $validator = Validator::make($request->all(), [
                     'farmers' => 'required',
@@ -91,57 +110,91 @@ class CoffeeBuyer extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+        $formaersId = array();
         $farmers = json_decode($request['farmers']);
-        return sendSuccess('Farmer was created Successfully', $farmers);
-        $farmer = Farmer::where('farmer_nicn', $request['farmer_nicn'])->first();
-        if (!$farmer) {
-            $profileImageId = null;
-            $idcardImageId = null;
-            if ($request->profile_picture) {
-                $file = $request->profile_picture;
-                $originalFileName = $file->getClientOriginalName();
-                $file_name = time() . '.' . $file->getClientOriginalExtension();
-                $request->file('profile_picture')->storeAs('images', $file_name);
-                $userProfileImage = FileSystem::create([
-                            'user_file_name' => $originalFileName,
-                ]);
-                $profileImageId = $userProfileImage->file_id;
-            }
+        $i = 1;
+        $x = 500;
+        foreach ($farmers as $key => $farmer) {
+            $alreadyFarmer = Farmer::where('farmer_nicn', $farmer->farmer_id_card_no)->first();
+            if (!$alreadyFarmer) {
+                $profileImageId = null;
+                $idcardImageId = null;
+                if ($farmer->farmer_picture) {
+                    $destinationPath = 'storage/app/images/';
+                    $file = base64_decode($farmer->farmer_picture);
+                    $file_name = time() . $i . getFileExtensionForBase64($file);
+                    file_put_contents($destinationPath . $file_name, $file);
+                    $userProfileImage = FileSystem::create([
+                                'user_file_name' => $file_name,
+                    ]);
+                    $profileImageId = $userProfileImage->file_id;
+                }
 
-            if ($request->idcard_picture) {
-                $file = $request->idcard_picture;
-                $originalFileName = $file->getClientOriginalName();
-                $file_name = time() . '.' . $file->getClientOriginalExtension();
-                $request->file('idcard_picture')->storeAs('images', $file_name);
-                $userIdCardImage = FileSystem::create([
-                            'user_file_name' => $originalFileName,
-                ]);
-                $idcardImageId = $userIdCardImage->file_id;
-            }
-            $lastFarmer = Farmer::orderBy('created_at', 'desc')->first();
-            $currentFarmerCode = 1;
-            if (isset($lastFarmer) && $lastFarmer) {
-                $currentFarmerCode = ($lastFarmer->farmer_id + 1);
-            }
-            $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
-            $village = Village::where('local_code', 'like', "%$request->village_code%")->first();
+                if ($farmer->farmer_id_card_picture) {
+                    $destinationPath = 'storage/app/images/';
+                    $idfile = base64_decode($farmer->farmer_id_card_picture);
+                    $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
+                    file_put_contents($destinationPath . $id_card_file_name, $idfile);
+                    $userIdCardImage = FileSystem::create([
+                                'user_file_name' => $id_card_file_name,
+                    ]);
+                    $idcardImageId = $userIdCardImage->file_id;
+                }
+                $lastFarmer = Farmer::orderBy('created_at', 'desc')->first();
+                $currentFarmerCode = 1;
+                if (isset($lastFarmer) && $lastFarmer) {
+                    $currentFarmerCode = ($lastFarmer->farmer_id + 1);
+                }
+                $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
+                $village = Village::where('village_code', 'like', "%$farmer->farmer_village%")->first();
 //::create new 
-            $farmer = Farmer::create([
-                        'farmer_code' => $village->village_code . '-' . $currentFarmerCode,
-                        'farmer_name' => $request['farmer_name'],
-                        'village_code' => $request['village_code'],
-                        'picture_id' => $profileImageId,
-                        'idcard_picture_id' => $idcardImageId,
-                        'farmer_nicn' => $request['farmer_nicn'],
-                        'local_code' => $request['local_code'],
-                        'is_local' => 0,
-                        'created_by' => $request['created_by'],
-            ]);
-        } else {
-            $farmer->local_code = $farmer->local_code . ',' . $request->local_code;
-            $farmer->save();
+                $alreadyFarmer = Farmer::create([
+                            'farmer_code' => $village->village_code . '-' . $currentFarmerCode,
+                            'farmer_name' => $farmer->farmer_name,
+                            'village_code' => $farmer->farmer_village,
+                            'picture_id' => $profileImageId,
+                            'idcard_picture_id' => $idcardImageId,
+                            'farmer_nicn' => $farmer->farmer_id_card_no,
+                            'local_code' => $farmer->local_code,
+                            'is_local' => 0,
+                            'created_by' => $farmer->created_id,
+                ]);
+            } else {
+                $alreadyFarmer->local_code = $alreadyFarmer->local_code . ',' . $farmer->local_code;
+                $alreadyFarmer->save();
+            }
+            array_push($formaersId, $alreadyFarmer->farmer_id);
+            $i++;
+            $x++;
         }
-        return sendSuccess('Farmer was created Successfully', $farmer);
+        $user_image = asset('storage/app/images/demo_user_image.png');
+        $user_image_path = asset('storage/app/images/');
+        $farmers = Farmer::whereIn('farmer_id', $formaersId)->with(['profileImage' => function($query) use($user_image, $user_image_path) {
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+                    }])->with(['idcardImage' => function($query) use($user_image, $user_image_path) {
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+                    }])->get();
+
+        foreach ($farmers as $key => $farmer) {
+            $farmer->farmer_id_card_picture = '';
+            $farmer->farmer_picture = '';
+            if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
+                $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
+            }
+            if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
+                $farmer->farmer_picture = $farmer->profileImage->user_file_name;
+            }
+            $farmer->farmer_village = $farmer->village_code;
+            $farmer->farmer_id_card_no = $farmer->farmer_nicn;
+            $farmer->makeHidden('idcardImage');
+            $farmer->makeHidden('profileImage');
+            $farmer->makeHidden('village_code');
+            $farmer->makeHidden('farmer_nicn');
+            $farmer->makeHidden('idcard_picture_id');
+            $farmer->makeHidden('picture_id');
+        }
+
+        return sendSuccess('Farmer was created Successfully', $farmers);
     }
 
     function addCoffeeWithBatchNumber(Request $request) {
@@ -294,8 +347,6 @@ class CoffeeBuyer extends Controller {
                             'is_new' => $batch_numbers->transactions->transaction->is_new,
                             'sent_to' => 2,
                 ]);
-
-
                 $transactionLog = TransactionLog::create([
                             'transaction_id' => $parentTransaction->transaction_id,
                             'action' => 'created',
@@ -304,9 +355,6 @@ class CoffeeBuyer extends Controller {
                             'type' => 'coffee_buyer',
                             'local_created_at' => $batch_numbers->transactions->transaction->created_at,
                 ]);
-
-
-
                 if (isset($batch_numbers->transactions->transactions_detail) && $batch_numbers->transactions->transactions_detail) {
                     $transactionsDetails = $batch_numbers->transactions->transactions_detail;
                     foreach ($transactionsDetails as $key => $transactionsDetail) {
@@ -320,6 +368,29 @@ class CoffeeBuyer extends Controller {
                         ]);
                     }
                 }
+
+                if (isset($batch_numbers->transactions->transactions_invoices) && $batch_numbers->transactions->transactions_invoices) {
+                    $transactionsInvoices = $batch_numbers->transactions->transactions_invoices;
+                    $i = 1;
+                    foreach ($transactionsInvoices as $key => $transactionsInvoice) {
+
+                        if ($transactionsInvoice->invoice_image) {
+                            $destinationPath = 'storage/app/images/';
+                            $file = base64_decode($transactionsInvoice->invoice_image);
+                            $file_name = time() . $i . getFileExtensionForBase64($file);
+                            file_put_contents($destinationPath . $file_name, $file);
+                            $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $file_name,
+                            ]);
+                            TransactionInvoice::create([
+                                'transaction_id' => $parentTransaction->transaction_id,
+                                'created_by' => $transactionsInvoice->created_by,
+                                'invoice_id' => $userProfileImage->file_id,
+                            ]);
+                        }
+                        $i++;
+                    }
+                }
             }
             array_push($batchesArray, $parentBatch->batch_id);
             BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
@@ -327,7 +398,13 @@ class CoffeeBuyer extends Controller {
         }
 
         $dataArray = array();
-        $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesArray)->with('childBatchNumber.latestTransation.transactionDetail')->with('latestTransation.transactionDetail')->get();
+        $user_image = asset('storage/app/images/demo_user_image.png');
+        $user_image_path = asset('storage/app/images/');
+        $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesArray)->with('childBatchNumber.latestTransation.transactionDetail')->with(['latestTransation' => function($query) use($user_image, $user_image_path) {
+                        $query->with('transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
+                                $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+                            }]);
+                    }])->get();
         foreach ($currentBatchesData as $key => $currentBatchData) {
             $patentTransactions = null;
             $patentTransactionsDetail = null;
@@ -345,7 +422,8 @@ class CoffeeBuyer extends Controller {
                             $childPatentTransactions = $childBatchNumber->latestTransation;
                             $childBatchNumber->makeHidden('latestTransation');
                         }
-                        $childtransactionData = ['transaction' => $childPatentTransactions, 'transactions_detail' => $childPatentTransactionsDetail];
+                        $invoiceEmptyArray = array();
+                        $childtransactionData = ['transaction' => $childPatentTransactions, 'transactions_detail' => $childPatentTransactionsDetail, 'transactions_invoices' => $invoiceEmptyArray];
                         $dataPush = ['batch' => $childBatchNumber, 'transactions' => $childtransactionData];
                         array_push($childBatches, $dataPush);
                     }
@@ -357,21 +435,31 @@ class CoffeeBuyer extends Controller {
             if (isset($currentBatchData->latestTransation) && $currentBatchData->latestTransation) {
                 if (isset($currentBatchData->latestTransation->transactionDetail) && $currentBatchData->latestTransation->transactionDetail) {
                     $patentTransactionsDetail = $currentBatchData->latestTransation->transactionDetail;
+
+
                     $currentBatchData->latestTransation->makeHidden('transactionDetail');
                 }
                 $patentTransactions = $currentBatchData->latestTransation;
+                if (isset($patentTransactions->transactions_invoices)) {
+                    foreach ($patentTransactions->transactions_invoices as $key => $transactions_invoices) {
+                        $transactions_invoices->invoice_image = '';
+                        if (isset($transactions_invoices->invoice)) {
+                            $transactions_invoices->invoice_image = $transactions_invoices->invoice->user_file_name;
+                        }
+                        $transactions_invoices->makeHidden('invoice');
+                    }
+                }
             }
+            $transactions_invoices = $patentTransactions->transactions_invoices;
+            $currentBatchData->makeHidden('transactions_invoices');
             $currentBatchData->makeHidden('latestTransation');
-            //  $currentBatchData->makeHidden('transaction');
-            $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail];
+            $patentTransactions->makeHidden('transactions_invoices');
+            $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail, 'transactions_invoices' => $transactions_invoices];
 
             $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
             array_push($dataArray, $data);
         }
         return sendSuccess('Coffee was added Successfully', $dataArray);
-
-//        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
-//        return sendSuccess('Coffee was added Successfully', $currentBatch);
     }
 
     function addCoffeeWithOutBatchNumber(Request $request) {
@@ -433,11 +521,49 @@ class CoffeeBuyer extends Controller {
                 }
             }
 
-            $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->first();
+            if (isset($transactions->transactions_invoices) && $transactions->transactions_invoices) {
+                $transactionsInvoices = $transactions->transactions_invoices;
+                $i = 1;
+                foreach ($transactionsInvoices as $key => $transactionsInvoice) {
+
+                    if ($transactionsInvoice->invoice_image) {
+                        $destinationPath = 'storage/app/images/';
+                        $file = base64_decode($transactionsInvoice->invoice_image);
+                        $file_name = time() . $i . getFileExtensionForBase64($file);
+                        file_put_contents($destinationPath . $file_name, $file);
+                        $userProfileImage = FileSystem::create([
+                                    'user_file_name' => $file_name,
+                        ]);
+                        TransactionInvoice::create([
+                            'transaction_id' => $newTransaction->transaction_id,
+                            'created_by' => $transactionsInvoice->created_by,
+                            'invoice_id' => $userProfileImage->file_id,
+                        ]);
+                    }
+                    $i++;
+                }
+            }
+            $user_image = asset('storage/app/images/demo_user_image.png');
+            $user_image_path = asset('storage/app/images/');
+            $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
+                            $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+                        }])->first();
             $transationsDetail = $currentBatch->transactionDetail;
+            if (isset($currentBatch->transactions_invoices)) {
+                foreach ($currentBatch->transactions_invoices as $key => $transactions_invoices) {
+                    $transactions_invoices->invoice_image = '';
+                    if (isset($transactions_invoices->invoice)) {
+                        $transactions_invoices->invoice_image = $transactions_invoices->invoice->user_file_name;
+                    }
+                    $transactions_invoices->makeHidden('invoice');
+                }
+            }
             $currentBatch->makeHidden('transactionDetail');
+            $transactions_invoices = $currentBatch->transactions_invoices;
+            $currentBatch->makeHidden('transactions_invoices');
             $transations = $currentBatch;
-            $data = ['transactions' => $transations, 'transactions_detail' => $transationsDetail];
+
+            $data = ['transactions' => $transations, 'transactions_detail' => $transationsDetail, 'transactions_invoices' => $transactions_invoices];
             array_push($allTransactions, $data);
         }
         return sendSuccess('Coffee was added Successfully', $allTransactions);
@@ -445,22 +571,37 @@ class CoffeeBuyer extends Controller {
 
     function coffeeBuyerCoffee(Request $request) {
         $allTransactions = array();
-
-        $transactions = Transaction::where('is_parent', 0)->where('created_by', $this->userId)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
+        $user_image = asset('storage/app/images/demo_user_image.png');
+        $user_image_path = asset('storage/app/images/');
+        $transactions = Transaction::where('is_parent', 0)->where('created_by', $this->userId)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+                    }])->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
             $childTransactions = array();
             if ($transaction->childTransation) {
                 foreach ($transaction->childTransation as $key => $childTransation) {
                     $childTransationDetail = $childTransation->transactionDetail;
                     $childTransation->makeHidden('transactionDetail');
-                    $childData = ['transactions' => $childTransation, 'transactions_detail' => $childTransationDetail];
+                    $transactions_invoices = array();
+                    $childData = ['transactions' => $childTransation, 'transactions_detail' => $childTransationDetail, 'transactions_invoices' => $transactions_invoices];
                     array_push($childTransactions, $childData);
                 }
             }
+            if (isset($transaction->transactions_invoices)) {
+                foreach ($transaction->transactions_invoices as $key => $transactions_invoices) {
+                    $transactions_invoices->invoice_image = '';
+                    if (isset($transactions_invoices->invoice)) {
+                        $transactions_invoices->invoice_image = $transactions_invoices->invoice->user_file_name;
+                    }
+                    $transactions_invoices->makeHidden('invoice');
+                }
+            }
             $transactionDetail = $transaction->transactionDetail;
+            $transactions_invoices = $transaction->transactions_invoices;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
-            $data = ['transactions' => $transaction, 'child_transaction' => $childTransactions, 'transactions_detail' => $transactionDetail];
+            $transaction->makeHidden('transactions_invoices');
+            $data = ['transactions' => $transaction, 'child_transaction' => $childTransactions, 'transactions_detail' => $transactionDetail, 'transactions_invoices' => $transactions_invoices];
             array_push($allTransactions, $data);
         }
 
