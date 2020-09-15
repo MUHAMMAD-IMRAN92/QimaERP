@@ -422,7 +422,8 @@ class CoffeeBuyer extends Controller {
                             $childPatentTransactions = $childBatchNumber->latestTransation;
                             $childBatchNumber->makeHidden('latestTransation');
                         }
-                        $childtransactionData = ['transaction' => $childPatentTransactions, 'transactions_detail' => $childPatentTransactionsDetail];
+                        $invoiceEmptyArray = array();
+                        $childtransactionData = ['transaction' => $childPatentTransactions, 'transactions_detail' => $childPatentTransactionsDetail, 'transactions_invoices' => $invoiceEmptyArray];
                         $dataPush = ['batch' => $childBatchNumber, 'transactions' => $childtransactionData];
                         array_push($childBatches, $dataPush);
                     }
@@ -581,7 +582,8 @@ class CoffeeBuyer extends Controller {
                 foreach ($transaction->childTransation as $key => $childTransation) {
                     $childTransationDetail = $childTransation->transactionDetail;
                     $childTransation->makeHidden('transactionDetail');
-                    $childData = ['transactions' => $childTransation, 'transactions_detail' => $childTransationDetail];
+                    $transactions_invoices = array();
+                    $childData = ['transactions' => $childTransation, 'transactions_detail' => $childTransationDetail, 'transactions_invoices' => $transactions_invoices];
                     array_push($childTransactions, $childData);
                 }
             }
