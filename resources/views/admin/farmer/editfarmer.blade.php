@@ -92,7 +92,7 @@
            
             </div>
             <!-- /.card -->
-           @if(isset($farmer->profileImage)?$farmer->profileImage->user_file_name : '')
+          
             <div class="col-md-6 ">
             <!-- general form elements -->
             <div class="card card-primary">
@@ -121,7 +121,7 @@
             </div>
             <!-- /.card -->
             </div>
-            @endif
+          
           </div>
          
         </div>
