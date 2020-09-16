@@ -99,13 +99,17 @@
                 <div class="card-body">
                   
                     
-                
+                @if( isset($farmer->profileImage)?$farmer->profileImage->user_file_name : '')
                   <div class="form-group" style="text-align: center;">
                     <label for="customFile">Farmer Image</label><br>
                    
                     <img class="img-thumbnail" style="height: 195px;margin-bottom: 10px" src="{{URL::to('')}}/storage/app/images/{{isset($farmer->profileImage)?$farmer->profileImage->user_file_name : ''}}">
                   </div> 
-              
+                @else
+                  <h5 class="d-flex justify-content-center">No Profile Image Found </h5>
+                @endif
+
+                @if(isset($farmer->idcardImage->user_file_name)?$farmer->idcardImage->user_file_name : '')
                 
                   <div class="form-group" style="text-align: center;">
                     
@@ -114,7 +118,9 @@
                     <img class="img-thumbnail"  style="height: 141px;width: 200px; margin-bottom: 10px" src="{{URL::to('')}}/storage/app/images/{{isset($farmer->idcardImage->user_file_name)?$farmer->idcardImage->user_file_name : ''}}">
                   
                   </div> 
-                  
+                @else
+                  <h5 class="d-flex justify-content-center" style="margin-top: 100px">No Id Image Found</h5>
+                @endif
                  
                 </div>
                 <!-- /.card-body -->
