@@ -50,7 +50,7 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="users" class="table table-bordered table-striped">
-                  <thead>
+                  <thead >
                   <tr>
                     <th>S#</th>
                     <th>First Name</th>
