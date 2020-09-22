@@ -159,9 +159,7 @@ class ProcessingManagerController extends Controller {
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
-                })->whereHas('transactionDetail', function($q) use($centerId) {
-                    $q->where('container_status', 1);
-                }, '>', 0)->with(['transactionDetail' => function($query) {
+                })->with(['transactionDetail' => function($query) {
                         $query->where('container_status', 1);
                     }])->orderBy('transaction_id', 'desc')->get();
 
