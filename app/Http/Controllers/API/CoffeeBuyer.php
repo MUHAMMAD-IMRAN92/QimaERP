@@ -478,10 +478,12 @@ class CoffeeBuyer extends Controller {
             $newTransactionid = null;
             if (isset($transactions->transactions) && $transactions->transactions) {
                 $batchCode = $transactions->transactions->batch_number;
-                if ($transactions->transactions->is_server_id == 0) {
+
+                if ($transactions->transactions->is_server_id == FALSE) {
                     $currentBatch = BatchNumber::where('local_code', 'like', "$batchCode%")->first();
                     $batchCode = $currentBatch->batch_number;
                 }
+      
                 $newTransaction = Transaction::create([
                             'batch_number' => $batchCode,
                             'is_parent' => 0,
