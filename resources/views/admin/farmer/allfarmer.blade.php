@@ -5,9 +5,15 @@
  
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    @if(Session::has('message'))
+                  @if(Session::has('message'))
                   <div class="alert alert-success" role="alert">
                   <b>{{Session::get('message')}}</b>
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  </div>
+                  @endif
+                  @if(Session::has('updatefarmer'))
+                  <div class="alert alert-success" role="alert">
+                  <b>{{Session::get('updatefarmer')}}</b>
                   <button type="button" class="close" data-dismiss="alert">&times;</button>
                   </div>
                   @endif
@@ -104,7 +110,7 @@
                 {"data": 'village_code'},
                 {"data": 'farmer_nicn'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + '' + row.season_id + '>Edit</a>| <a href=' + base_path + '' + row.season_id + ' class="editor_remove" data-id="' + row.season_id + '">Delete</a>';
+                        return '<a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + '>Edit</a>| <a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + ' class="editor_remove" data-id="' + row.farmer_id + '">Delete</a>';
                     }
                 }
             ],

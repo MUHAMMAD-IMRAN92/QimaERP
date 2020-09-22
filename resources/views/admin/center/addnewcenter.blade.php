@@ -69,9 +69,17 @@
                        <span  class="text-danger">{{ $message }}</span>
                     @enderror
                   </div>
-                 <div class="form-group">
-                   <label for="country_name">All Center</label>
+                 {{-- <div class="form-group">
+                   <label for="country_name">User Roles</label>
                     <select   class="form-control managerselect2s4" name="center_manager_id[]"  multiple="multiple" @error('center_manager_id') is-invalid @enderror>
+                      @foreach($role as $row)
+                      <optgroup label="{{ $row->name }}">
+                          @foreach($row->users as $sub)
+                          
+                              <option value="{{ $sub->user_id }}">{{ $sub->email  }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{isset( $sub->center_user)?$sub->center_user->center->center_name :''}}</option>
+                          @endforeach
+                      </optgroup>
+                      @endforeach
                       @foreach($user as $row)
                       <option value="{{$row->user_id}}">{{$row->email}}</option>
                       @endforeach
@@ -80,7 +88,7 @@
                       @enderror
                     </select>
 
-                  </div>
+                  </div> --}}
                 
                 </div>
                 <!-- /.card-body -->

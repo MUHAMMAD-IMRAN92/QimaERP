@@ -167,9 +167,24 @@
              <i class="nav-icon fab fa-centercode"></i>
               <p>
                Center
-                
+                <i class="fas fa-angle-left right"></i>
               </p>
              </a>
+             <ul class="nav nav-treeview pl-2 nav-dropdown">
+                                    <li class="nav-item">
+                                        <a href="{{url('admin/allcenter')}}" class="nav-link {{ (request()->segment(1) == 'allcenter') ? 'active' : '' }}">
+                                            <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                            <p>All Center</p>
+                                        </a>
+                                    </li>
+                                  {{--   <li class="nav-item">
+                                        <a href="{{url('admin/centerdetail')}}" class="nav-link {{ (request()->segment(1) == 'centerdetail') ? 'active' : '' }}">
+                                            <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                            <p>Center Detail</p>
+                                        </a>
+                                    </li> --}}
+                                    
+                                </ul>
             </li>
             <li class="nav-item"   @if($segment == 'alltransection')class="active" @endif>
              <a href="{{URL::to('')}}/admin/alltransection" class="nav-link ">

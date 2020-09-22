@@ -1,6 +1,12 @@
 @extends('layouts.default')
 @section('title', 'Homepage')
 @section('content')
+<style type="text/css">
+  .small-box>.inner{
+        background-color: white;
+    color: black;
+  }
+</style>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
