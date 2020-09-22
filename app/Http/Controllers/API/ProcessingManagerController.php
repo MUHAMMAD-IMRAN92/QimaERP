@@ -113,7 +113,7 @@ class ProcessingManagerController extends Controller {
                     $transactionLog = TransactionLog::create([
                                 'transaction_id' => $transaction->transaction_id,
                                 'action' => 'sent',
-                                'created_by' => $sentTransaction->transaction->created_by,
+                                'created_by' => $this->userId,
                                 'entity_id' => $sentTransaction->transaction->center_id,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
                                 'type' => $type,
@@ -159,9 +159,7 @@ class ProcessingManagerController extends Controller {
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
-                })->with(['transactionDetail' => function($query) {
-                        $query->where('container_status', 1);
-                    }])->orderBy('transaction_id', 'desc')->get();
+                })->with('transactionDetail')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
