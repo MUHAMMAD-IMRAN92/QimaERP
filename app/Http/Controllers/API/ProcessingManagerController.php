@@ -79,6 +79,7 @@ class ProcessingManagerController extends Controller {
         $alreadyReciviedCoffee = array();
         $reciviedCoffee = array();
         foreach ($sentTransactions as $key => $sentTransaction) {
+
             $transationRef = array();
             foreach ($sentTransaction->transactionDetails as $key => $transactionDetailsvalue) {
                 if (!in_array($transactionDetailsvalue->reference_id, $transationRef)) {
@@ -97,7 +98,7 @@ class ProcessingManagerController extends Controller {
                             'is_mixed' => $sentTransaction->transaction->is_mixed,
                             'created_by' => $sentTransaction->transaction->created_by,
                             'is_local' => FALSE,
-                            'transaction_type' => $sentTransaction->transaction->transaction_type,
+                            'transaction_type' => 2,
                             'local_code' => $sentTransaction->transaction->local_code,
                             'transaction_status' => 'sent',
                             'reference_id' => implode(",", $transationRef),
@@ -145,12 +146,12 @@ class ProcessingManagerController extends Controller {
         return sendSuccess('Transactions sent successfully', $data);
     }
 
-    function getSendSpecialProcessingCoffee(Request $request) {
+    function getSendSpecialProcessingAndDryingCoffee(Request $request) {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
-                    $q->where('action', 'sent')->where('type', 'special_processing')->where('entity_id', $centerId);
+                    $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
                 })->whereHas('transactionDetail', function($q) use($centerId) {
                     $q->where('container_status', 1);
                 }, '>', 0)->with(['transactionDetail' => function($query) {
