@@ -207,6 +207,7 @@ class CoffeeBuyerManager extends Controller {
                         $query->where('container_status', 0);
                     }])->with('log')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
+            $transaction->center_name = $transaction->log->center_name;
             $transactionDetail = $transaction->transactionDetail;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
