@@ -48,6 +48,7 @@ class ProcessingManagerController extends Controller {
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
+            $transaction->center_name = $transaction->log->center_name;
             $transaction->is_sent = 0;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
@@ -115,6 +116,7 @@ class ProcessingManagerController extends Controller {
                                 'action' => 'sent',
                                 'created_by' => $this->userId,
                                 'entity_id' => $sentTransaction->transaction->center_id,
+                                'center_name' => $sentTransaction->transaction->center_name,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
                                 'type' => $type,
                     ]);
@@ -137,12 +139,14 @@ class ProcessingManagerController extends Controller {
                 }
             }
         }
-        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail')->get();
+        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail', 'log')->get();
         $dataArray = array();
         foreach ($currentlyReceivedCoffees as $key => $currentlyReceivedCoffee) {
             $transactionDeatil = $currentlyReceivedCoffee->transactionDetail;
             $currentlyReceivedCoffee->makeHidden('transactionDetail');
+            $currentlyReceivedCoffee->center_name = $currentlyReceivedCoffee->log->center_name;
             $currentlyReceivedCoffee->already_received = FALSE;
+            $currentlyReceivedCoffee->makeHidden('log');
             $recCoffee = ['transaction' => $currentlyReceivedCoffee, 'transactionDetails' => $transactionDeatil];
             array_push($dataArray, $recCoffee);
         }
@@ -164,6 +168,7 @@ class ProcessingManagerController extends Controller {
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
+            $transaction->center_name = $transaction->log->center_name;
             $transaction->is_sent = 0;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
@@ -188,6 +193,7 @@ class ProcessingManagerController extends Controller {
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
+            $transaction->center_name = $transaction->log->center_name;
             $transaction->is_sent = 0;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
