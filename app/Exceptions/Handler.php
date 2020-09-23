@@ -6,15 +6,15 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Support\Facades\Response;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
+
     /**
      * A list of the exception types that are not reported.
      *
      * @var array
      */
     protected $dontReport = [
-        //
+            //
     ];
 
     /**
@@ -35,8 +35,7 @@ class Handler extends ExceptionHandler
      *
      * @throws \Exception
      */
-    public function report(Throwable $exception)
-    {
+    public function report(Throwable $exception) {
         parent::report($exception);
     }
 
@@ -49,13 +48,17 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-     public function render($request, Throwable $exception) {
+    public function render($request, Throwable $exception) {
+
         $segment = \Illuminate\Support\Facades\Request::segment(1);
         if ($segment == 'api') {
-
+            //var_dump($exception);exit;
             $message = $exception->getMessage();
+            $message = explode(";", $exception->errorInfo[2]);
+            \Log::error($message);
             return Response::json(array('status' => 'error', 'message' => $message, 'data' => []), 499);
         }
         return parent::render($request, $exception);
     }
+
 }
