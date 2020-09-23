@@ -76,6 +76,7 @@ class CenterManagerController extends Controller {
                             'action' => 'received',
                             'created_by' => $sentTransaction->transaction->created_by,
                             'entity_id' => $sentTransaction->transaction->center_id,
+                            'center_name' => $sentTransaction->transaction->center_name,
                             'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
                             'type' => 'center',
                 ]);
@@ -97,12 +98,14 @@ class CenterManagerController extends Controller {
                 array_push($reciviedCoffee, $transaction->transaction_id);
             }
         }
-        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail')->get();
+        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail', 'log')->get();
         $dataArray = array();
         foreach ($currentlyReceivedCoffees as $key => $currentlyReceivedCoffee) {
             $transactionDeatil = $currentlyReceivedCoffee->transactionDetail;
             $currentlyReceivedCoffee->makeHidden('transactionDetail');
+            $currentlyReceivedCoffee->center_name = $transaction->log->center_name;
             $currentlyReceivedCoffee->already_received = FALSE;
+            $currentlyReceivedCoffee->makeHidden('log');
             $recCoffee = ['transaction' => $currentlyReceivedCoffee, 'transactionDetails' => $transactionDeatil];
             array_push($dataArray, $recCoffee);
         }
@@ -126,6 +129,7 @@ class CenterManagerController extends Controller {
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
+            $transaction->center_name = $transaction->log->center_name;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
             $transaction->makeHidden('log');
@@ -148,6 +152,7 @@ class CenterManagerController extends Controller {
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
+            $transaction->center_name = $transaction->log->center_name;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
             $transaction->makeHidden('log');
