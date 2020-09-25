@@ -271,7 +271,11 @@ class CoffeeBuyer extends Controller {
                     $batchNumber = BatchNumber::where('local_code', 'like', "$bat%")->first();
                 }
                 if(!$batchNumber){
-                    return {"status":"error","message","Batch number ".$bat." Not found","data":[]};
+                    $error_data['status'] = "error"; 
+                    $error_data['message'] = "Batch number ".$bat." Not found";
+                    $error_data['data'] = [];
+                     
+                    return json_encode($error_data);
                 }
                 $parentTransaction = Transaction::create([
                             'batch_number' => $batchNumber->batch_number,
