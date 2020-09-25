@@ -262,7 +262,7 @@ class CoffeeBuyer extends Controller {
                 array_push($childTransactionArray, $newTransaction->transaction_id);
             }
             //::add parent batch
-            return $batch_numbers;
+            return print_r($batch_numbers,true);
             if (isset($batch_numbers->transactions) && isset($batch_numbers->transactions->transaction) && $batch_numbers->transactions->transaction) {
                 if ($batch_numbers->transactions->transaction->is_server_id == 1) {
                     $batchNumber = BatchNumber::where('batch_number', $batch_numbers->transactions->transaction->batch_number)->first();
