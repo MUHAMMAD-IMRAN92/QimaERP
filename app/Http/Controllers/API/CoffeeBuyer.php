@@ -206,86 +206,47 @@ class CoffeeBuyer extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-
-        // $lastBID = 0;
-        $lastTID = 0;
-        //::last batch number id
-        //  $lastBatchNumber = BatchNumber::orderBy('created_at', 'desc')->first();
-        //::last transaction id
-        $lastTransactionNumber = Transaction::orderBy('created_at', 'desc')->first();
-//        if ($lastBatchNumber) {
-//            $lastBID = $lastBatchNumber->batch_id;
-//        }
-        if ($lastTransactionNumber) {
-            $lastTID = $lastTransactionNumber->transaction_id;
-        }
         $batches_numbers = json_decode($request['batch_number']);
-
-        $season = Season::where('status', 0)->first();
-        $batchesArray = array();
+        $transationArray = array();
         foreach ($batches_numbers as $key => $batch_numbers) {
-            //::insert child batches id
-            $childBatchNumberArray = array();
             //::insert child transactions id
             $childTransactionArray = array();
             //::Add child batch number
-            foreach ($batch_numbers->child_batch as $key => $childBatch) {
-                $newLastBID = 1;
-                $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
-                if ($lastBatchNumber) {
-                    $newLastBID = ($lastBatchNumber->batch_id + 1);
-                }
-                $removeLocalId = explode("-", $childBatch->batch->batch_number);
-                //::remove last index of array
-                array_pop($removeLocalId);
-
-                // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
-                $farmerCode = implode("-", $removeLocalId);
-                if ($childBatch->batch->is_server_id == 1) {
-                    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+            foreach ($batch_numbers->child_transactions as $key => $childBatch) {
+                if ($childBatch->transaction->is_server_id == 1) {
+                    $TbatchNumber = BatchNumber::where('batch_number', $childBatch->transaction->batch_number)->first();
                 } else {
-                    $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+                    $bat = $childBatch->transaction->batch_number;
+                    $TbatchNumber = BatchNumber::where('local_code', 'like', "$bat%")->first();
                 }
-                $newBatch = BatchNumber::create([
-                            'batch_number' => $farmer->farmer_code . '-' . $newLastBID,
-                            'is_parent' => 0,
-                            'is_mixed' => 0,
-                            'created_by' => $childBatch->batch->created_by,
-                            'is_local' => FALSE,
-                            'is_mixed' => 0,
-                            'local_code' => $childBatch->batch->local_code,
-                            'is_server_id' => $childBatch->batch->is_server_id,
-                            'season_id' => $season->season_id,
-                            'season_status' => $season->status,
-                ]);
                 //::child transactions
-                if (isset($childBatch->transactions) && isset($childBatch->transactions->transaction) && $childBatch->transactions->transaction) {
+                if (isset($childBatch->transaction) && isset($childBatch->transaction) && $childBatch->transaction) {
                     $newTransaction = Transaction::create([
-                                'batch_number' => $newBatch->batch_number,
+                                'batch_number' => $TbatchNumber->batch_number,
                                 'is_parent' => 0,
                                 'is_mixed' => 0,
-                                'created_by' => $childBatch->transactions->transaction->created_by,
+                                'created_by' => $childBatch->transaction->created_by,
                                 'is_local' => FALSE,
-                                'transaction_type' => $childBatch->transactions->transaction->transaction_type,
+                                'transaction_type' => $childBatch->transaction->transaction_type,
                                 'is_mixed' => 0,
-                                'local_code' => $childBatch->transactions->transaction->local_code,
+                                'local_code' => $childBatch->transaction->local_code,
                                 'transaction_status' => 'created',
-                                'is_server_id' => $childBatch->transactions->transaction->is_server_id,
-                                'is_new' => $childBatch->transactions->transaction->is_new,
+                                'is_server_id' => $childBatch->transaction->is_server_id,
+                                'is_new' => $childBatch->transaction->is_new,
                                 'sent_to' => 2,
                     ]);
 
                     $transactionLog = TransactionLog::create([
                                 'transaction_id' => $newTransaction->transaction_id,
                                 'action' => 'created',
-                                'created_by' => $childBatch->transactions->transaction->created_by,
-                                'entity_id' => $childBatch->transactions->transaction->created_by,
+                                'created_by' => $childBatch->transaction->created_by,
+                                'entity_id' => $childBatch->transaction->created_by,
                                 'type' => 'coffee_buyer',
-                                'local_created_at' => $childBatch->transactions->transaction->created_at,
+                                'local_created_at' => $childBatch->transaction->created_at,
                     ]);
                     //::child transactions details
-                    if (isset($childBatch->transactions->transactions_detail) && $childBatch->transactions->transactions_detail) {
-                        $transactionsDetails = $childBatch->transactions->transactions_detail;
+                    if (isset($childBatch->transactions_detail) && $childBatch->transactions_detail) {
+                        $transactionsDetails = $childBatch->transactions_detail;
                         foreach ($transactionsDetails as $key => $transactionsDetail) {
                             TransactionDetail::create([
                                 'transaction_id' => $newTransaction->transaction_id,
@@ -298,44 +259,19 @@ class CoffeeBuyer extends Controller {
                         }
                     }
                 }
-                array_push($childBatchNumberArray, $newBatch->batch_id);
                 array_push($childTransactionArray, $newTransaction->transaction_id);
             }
             //::add parent batch
-            $removeLocalId = explode("-", $batch_numbers->batch->batch_number);
-            //::remove last index of array
-            $newLastBID = 1;
-            $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
-            if ($lastBatchNumber) {
-                $newLastBID = ($lastBatchNumber->batch_id + 1);
-            }
-            array_pop($removeLocalId);
-            if ($removeLocalId[3] == '000') {
-                $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
-            } else {
-                //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
-                $farmerCode = implode("-", $removeLocalId);
-                if ($batch_numbers->batch->is_server_id == 1) {
-                    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
-                } else {
-                    $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
-                }
-                $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
-            }
-            $parentBatch = BatchNumber::create([
-                        'batch_number' => $parentBatchCode,
-                        'is_parent' => 0,
-                        'is_mixed' => $batch_numbers->batch->is_mixed,
-                        'created_by' => $batch_numbers->batch->created_by,
-                        'is_local' => FALSE,
-                        'local_code' => $batch_numbers->batch->local_code,
-                        'is_server_id' => $batch_numbers->batch->is_server_id,
-                        'season_id' => $season->season_id,
-                        'season_status' => $season->status,
-            ]);
+
             if (isset($batch_numbers->transactions) && isset($batch_numbers->transactions->transaction) && $batch_numbers->transactions->transaction) {
+                if ($batch_numbers->transactions->transaction->is_server_id == 1) {
+                    $batchNumber = BatchNumber::where('batch_number', $batch_numbers->transactions->transaction->batch_number)->first();
+                } else {
+                    $bat = $batch_numbers->transactions->transaction->batch_number;
+                    $batchNumber = BatchNumber::where('local_code', 'like', "$bat%")->first();
+                }
                 $parentTransaction = Transaction::create([
-                            'batch_number' => $parentBatch->batch_number,
+                            'batch_number' => $batchNumber->batch_number,
                             'is_parent' => 0,
                             'is_mixed' => $batch_numbers->transactions->transaction->is_mixed,
                             'created_by' => $batch_numbers->transactions->transaction->created_by,
@@ -392,73 +328,57 @@ class CoffeeBuyer extends Controller {
                     }
                 }
             }
-            array_push($batchesArray, $parentBatch->batch_id);
-            BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
             Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
+            array_push($transationArray, $parentTransaction->transaction_id);
         }
-
         $dataArray = array();
         $user_image = asset('storage/app/images/demo_user_image.png');
         $user_image_path = asset('storage/app/images/');
-        $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesArray)->with('childBatchNumber.latestTransation.transactionDetail')->with(['latestTransation' => function($query) use($user_image, $user_image_path) {
-                        $query->with('transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
-                                $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
-                            }]);
+        $currentBatchesData = Transaction::whereIn('transaction_id', $transationArray)->with('childTransation.transactionDetail', 'transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
+                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                     }])->get();
-        foreach ($currentBatchesData as $key => $currentBatchData) {
-            $patentTransactions = null;
-            $patentTransactionsDetail = null;
-            $childBatches = array();
-            if ($currentBatchData->is_mixed == 1) {
-                if (isset($currentBatchData->childBatchNumber) && $currentBatchData->childBatchNumber) {
-                    foreach ($currentBatchData->childBatchNumber as $key => $childBatchNumber) {
-                        $childPatentTransactions = null;
-                        $childPatentTransactionsDetail = null;
-                        if (isset($childBatchNumber->latestTransation) && $childBatchNumber->latestTransation) {
-                            if (isset($childBatchNumber->latestTransation->transactionDetail) && $childBatchNumber->latestTransation->transactionDetail) {
-                                $childPatentTransactionsDetail = $childBatchNumber->latestTransation->transactionDetail;
-                                $childBatchNumber->latestTransation->makeHidden('transactionDetail');
-                            }
-                            $childPatentTransactions = $childBatchNumber->latestTransation;
-                            $childBatchNumber->makeHidden('latestTransation');
-                        }
-                        $invoiceEmptyArray = array();
-                        $childtransactionData = ['transaction' => $childPatentTransactions, 'transactions_detail' => $childPatentTransactionsDetail, 'transactions_invoices' => $invoiceEmptyArray];
-                        $dataPush = ['batch' => $childBatchNumber, 'transactions' => $childtransactionData];
-                        array_push($childBatches, $dataPush);
-                    }
-                }
-                $currentBatchData->makeHidden('childBatchNumber');
-            } else {
-                $currentBatchData->makeHidden('childBatchNumber');
-            }
-            if (isset($currentBatchData->latestTransation) && $currentBatchData->latestTransation) {
-                if (isset($currentBatchData->latestTransation->transactionDetail) && $currentBatchData->latestTransation->transactionDetail) {
-                    $patentTransactionsDetail = $currentBatchData->latestTransation->transactionDetail;
 
+        foreach ($currentBatchesData as $key => $currentBatches) {
+            $childTransaction = array();
+            if (isset($currentBatches->childTransation) && $currentBatches->childTransation) {
 
-                    $currentBatchData->latestTransation->makeHidden('transactionDetail');
-                }
-                $patentTransactions = $currentBatchData->latestTransation;
-                if (isset($patentTransactions->transactions_invoices)) {
-                    foreach ($patentTransactions->transactions_invoices as $key => $transactions_invoices) {
-                        $transactions_invoices->invoice_image = '';
-                        if (isset($transactions_invoices->invoice)) {
-                            $transactions_invoices->invoice_image = $transactions_invoices->invoice->user_file_name;
-                        }
-                        $transactions_invoices->makeHidden('invoice');
-                    }
+                foreach ($currentBatches->childTransation as $key => $child_transation) {
+                    $emptyObject = array();
+
+                    $childtransactions_detail = $child_transation->transactionDetail;
+                    $transactions_invoices = $child_transation->transactions_invoices;
+                    $child_transation->makeHidden('transactionDetail');
+                    $child_transation->makeHidden('transactions_invoices');
+                    $parentData2 = ['transaction' => $currentBatches, 'transactions_detail' => $childtransactions_detail, 'transactions_invoices' => $emptyObject];
+                    array_push($childTransaction, $parentData2);
                 }
             }
-            $transactions_invoices = $patentTransactions->transactions_invoices;
-            $currentBatchData->makeHidden('transactions_invoices');
-            $currentBatchData->makeHidden('latestTransation');
-            $patentTransactions->makeHidden('transactions_invoices');
-            $transactionData = ['transaction' => $patentTransactions, 'transactions_detail' => $patentTransactionsDetail, 'transactions_invoices' => $transactions_invoices];
 
-            $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
+            $currentBatches->makeHidden('childTransation');
+
+            $transactions_detail = $currentBatches->transactionDetail;
+            if (isset($currentBatches->transactions_invoices)) {
+                foreach ($currentBatches->transactions_invoices as $key => $transactions_invoices) {
+                    $transactions_invoices->invoice_image = '';
+                    if (isset($transactions_invoices->invoice)) {
+                        $transactions_invoices->invoice_image = $transactions_invoices->invoice->user_file_name;
+                    }
+                    $transactions_invoices->makeHidden('invoice');
+                }
+            }
+
+            $transactions_invoices = $currentBatches->transactions_invoices;
+            $currentBatches->makeHidden('transactionDetail');
+            $currentBatches->makeHidden('transactions_invoices');
+            $currentBatches->center_id = 0;
+            $currentBatches->center_name = '';
+            $currentBatches->colorCode = '';
+            $parentData = ['transaction' => $currentBatches, 'transactions_detail' => $transactions_detail, 'transactions_invoices' => $transactions_invoices];
+
+            $data = ['transactions' => $parentData, 'child_transactions' => $childTransaction];
             array_push($dataArray, $data);
         }
+
         return sendSuccess('Coffee was added Successfully', $dataArray);
     }
 
@@ -483,7 +403,7 @@ class CoffeeBuyer extends Controller {
                     $currentBatch = BatchNumber::where('local_code', 'like', "$batchCode%")->first();
                     $batchCode = $currentBatch->batch_number;
                 }
-      
+
                 $newTransaction = Transaction::create([
                             'batch_number' => $batchCode,
                             'is_parent' => 0,
@@ -608,6 +528,59 @@ class CoffeeBuyer extends Controller {
         }
 
         return sendSuccess('Transactions retrieved successfully', $allTransactions);
+    }
+
+    function addBatchNumber(Request $request) {
+        //::validation
+        $validator = Validator::make($request->all(), [
+                    'batches' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+        $batchesId = array();
+        $batches = json_decode($request['batches']);
+        $lastBatch = 1;
+        $season = Season::where('status', 0)->first();
+        $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
+        if ($lastBatchNumber) {
+            $lastBatch = ($lastBatchNumber->batch_id + 1);
+        }
+        foreach ($batches as $key => $batch) {
+
+            $removeLocalId = explode("-", $batch->batch_number);
+            //::remove last index of array
+            array_pop($removeLocalId);
+            $farmerCode = implode("-", $removeLocalId);
+
+            if ($removeLocalId[3] == '000') {
+                $parentBatchCode = implode("-", $removeLocalId) . '-' . ($lastBatch);
+            } else {
+                if ($batch->is_server_id == 1) {
+                    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+                } else {
+                    $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+                }
+                $parentBatchCode = $farmer->farmer_code . '-' . ($lastBatch);
+            }
+            $parentBatch = BatchNumber::create([
+                        'batch_number' => $parentBatchCode,
+                        'is_parent' => 0,
+                        'is_mixed' => $batch->is_mixed,
+                        'created_by' => $batch->created_by,
+                        'is_local' => FALSE,
+                        'local_code' => $batch->local_code,
+                        'is_server_id' => True,
+                        'season_id' => $season->season_id,
+                        'season_status' => $season->status,
+            ]);
+
+            array_push($batchesId, $parentBatch->batch_id);
+        }
+
+        $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesId)->get();
+        return sendSuccess('Farmer was created Successfully', $currentBatchesData);
     }
 
 }
