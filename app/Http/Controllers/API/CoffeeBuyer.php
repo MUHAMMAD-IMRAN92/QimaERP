@@ -262,13 +262,16 @@ class CoffeeBuyer extends Controller {
                 array_push($childTransactionArray, $newTransaction->transaction_id);
             }
             //::add parent batch
-            return print_r($batch_numbers,true);
+            //return print_r($batch_numbers,true);
             if (isset($batch_numbers->transactions) && isset($batch_numbers->transactions->transaction) && $batch_numbers->transactions->transaction) {
                 if ($batch_numbers->transactions->transaction->is_server_id == 1) {
                     $batchNumber = BatchNumber::where('batch_number', $batch_numbers->transactions->transaction->batch_number)->first();
                 } else {
                     $bat = $batch_numbers->transactions->transaction->batch_number;
                     $batchNumber = BatchNumber::where('local_code', 'like', "$bat%")->first();
+                }
+                if(!$batchNumber){
+                    return {"status":"error","message","Batch number ".$bat." Not found","data":[];
                 }
                 $parentTransaction = Transaction::create([
                             'batch_number' => $batchNumber->batch_number,
