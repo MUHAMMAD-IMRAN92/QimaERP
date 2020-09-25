@@ -264,10 +264,11 @@ class CoffeeBuyer extends Controller {
             //::add parent batch
             //return print_r($batch_numbers,true);
             if (isset($batch_numbers->transactions) && isset($batch_numbers->transactions->transaction) && $batch_numbers->transactions->transaction) {
+                $bat = $batch_numbers->transactions->transaction->batch_number;
+
                 if ($batch_numbers->transactions->transaction->is_server_id == 1) {
                     $batchNumber = BatchNumber::where('batch_number', $batch_numbers->transactions->transaction->batch_number)->first();
                 } else {
-                    $bat = $batch_numbers->transactions->transaction->batch_number;
                     $batchNumber = BatchNumber::where('local_code', 'like', "$bat%")->first();
                 }
                 if(!$batchNumber){
