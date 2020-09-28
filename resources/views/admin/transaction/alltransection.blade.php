@@ -14,7 +14,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Transections Information 
+            <h1>Transactions Information 
               <a href="" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
@@ -63,15 +63,6 @@
                     @endforeach
                   
                  </tbody>
-                  <tfoot>
-                 <tr>
-                    <th>S#</th>
-                    <th>Code</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                    
-                  </tr>
-                  </tfoot>
                 </table>
               </div>
               <!-- /.card-body -->
