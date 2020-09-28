@@ -250,11 +250,10 @@ class CommonController extends Controller {
     function allBatches(Request $request) {
         $season = Season::where('status', 0)->first();
         $allBatches = array();
-        $batches = BatchNumber::where('is_parent', 0)->where('season_id', $season->season_id)->with('childBatches')->where('season_status', 0)->get();
+        $batches = BatchNumber::where('is_parent', 0)->where('season_id', $season->season_id)->where('season_status', 0)->get();
         foreach ($batches as $key => $batche) {
             $childBatch = $batche->childBatches;
-            $batche->makeHidden('childBatches');
-            $batchData = ['batch' => $batche, 'child_batches' => $childBatch];
+            $batchData = ['batch' => $batche];
             array_push($allBatches, $batchData);
         }
         return sendSuccess('Successfully retrieved batches', $allBatches);
