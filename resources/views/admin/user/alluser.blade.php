@@ -1,7 +1,12 @@
 @extends('layouts.default')
 @section('title', 'All Center')
 @section('content')
-    
+<style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style>    
 
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -50,7 +55,7 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="users" class="table table-bordered table-striped">
-                  <thead >
+                  <thead>
                   <tr>
                     <th>S#</th>
                     <th>First Name</th>
@@ -61,16 +66,7 @@
                   </tr>
                   </thead>
                  
-                  <tfoot>
-                 <tr>
-                    <th>S#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Action</th>
-                    
-                  </tr>
-                  </tfoot>
+                 
                 </table>
               </div>
               <!-- /.card-body -->
@@ -94,9 +90,7 @@
             "processing": true,
             "serverSide": true,
             "deferRender": true,
-            "language": {
-                "searchPlaceholder": "Search by Name And Email"
-            },
+           
             "ajax": {
                 url: '<?= asset('admin/getuser') ?>',
             },

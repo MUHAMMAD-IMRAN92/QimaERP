@@ -2,7 +2,12 @@
 @section('title', 'All Container')
 @section('content')
     
-
+<style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style>
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -56,13 +61,7 @@
                     @endforeach
                   
                  </tbody>
-                  <tfoot>
-                 <tr>
-                    <th>Container Number</th>
-                    <th>Capacity</th>
-                    <th>Action</th>
-                  </tr>
-                  </tfoot>
+                 
                 </table>
               </div>
               <!-- /.card-body -->

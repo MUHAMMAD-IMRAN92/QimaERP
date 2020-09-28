@@ -1,7 +1,12 @@
 @extends('layouts.default')
 @section('title', 'All Transection')
 @section('content') 
-
+<style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style>
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->

@@ -1,7 +1,12 @@
 @extends('layouts.default')
 @section('title', 'All Regions')
 @section('content')
-    
+<style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style>    
  
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -69,15 +74,7 @@
                         </tr>
                     @endforeach
                   </tbody>
-                  <tfoot>
-                  <tr>
-                   <th>S#</th>
-                    <th>Region Code</th>
-                    <th>Region Title</th>
-                    <th>Action</th>
-                    
-                  </tr>
-                  </tfoot>
+                  
                 </table>
               </div>
               <!-- /.card-body -->
