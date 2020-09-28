@@ -70,7 +70,7 @@ class RegionController extends Controller
     	$region->created_by=Auth::user()->user_id;
     	// dd($region);
     	$region->save();
-    	Session::flash('message', 'Region Has Been Stored Successfully.');
+    	Session::flash('message', 'Region Has Been Added Successfully.');
     	return redirect('admin/allregion');
     }
 
