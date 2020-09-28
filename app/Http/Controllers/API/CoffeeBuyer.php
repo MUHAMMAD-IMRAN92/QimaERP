@@ -147,7 +147,7 @@ class CoffeeBuyer extends Controller {
                 }
                 $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
                 $village = Village::where('village_code', 'like', "%$farmer->farmer_village%")->first();
-//::create new 
+//::create new
                 $alreadyFarmer = Farmer::create([
                             'farmer_code' => $village->village_code . '-' . $currentFarmerCode,
                             'farmer_name' => $farmer->farmer_name,
@@ -262,13 +262,21 @@ class CoffeeBuyer extends Controller {
                 array_push($childTransactionArray, $newTransaction->transaction_id);
             }
             //::add parent batch
-
+            //return print_r($batch_numbers,true);
             if (isset($batch_numbers->transactions) && isset($batch_numbers->transactions->transaction) && $batch_numbers->transactions->transaction) {
+                $bat = $batch_numbers->transactions->transaction->batch_number;
+
                 if ($batch_numbers->transactions->transaction->is_server_id == 1) {
                     $batchNumber = BatchNumber::where('batch_number', $batch_numbers->transactions->transaction->batch_number)->first();
                 } else {
-                    $bat = $batch_numbers->transactions->transaction->batch_number;
                     $batchNumber = BatchNumber::where('local_code', 'like', "$bat%")->first();
+                }
+                if(!$batchNumber){
+                    $error_data['status'] = "error"; 
+                    $error_data['message'] = "Batch number ".$bat." Not found";
+                    $error_data['data'] = [];
+                     
+                    return json_encode($error_data);
                 }
                 $parentTransaction = Transaction::create([
                             'batch_number' => $batchNumber->batch_number,
