@@ -8,12 +8,11 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use App\TransactionDetail;
 use App\TransactionLog;
-use App\CoffeeProcess;
 use App\Transaction;
 use App\LoginUser;
 use App\User;
 
-class SpecialProcessingController extends Controller {
+class CoffeeDryingController extends Controller {
 
     private $userId;
     private $user;
@@ -36,13 +35,15 @@ class SpecialProcessingController extends Controller {
         }
     }
 
-    function getSpeicalProcessingManagerPendingCoffee(Request $request) {
+    function getCoffeeDryingPendingCoffee(Request $request) {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
-                    $q->where('action', 'sent')->where('type', 'special_processing')->where('entity_id', $centerId);
-                })->doesntHave('isReference')->with(['transactionDetail' => function($query) {
+        $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) use($centerId) {
+                    $q->where('action', 'sent')->where('type', 'coffee_drying')->where('entity_id', $centerId);
+                })
+                        //->doesntHave('isReference')
+                        ->with(['transactionDetail' => function($query) {
                         $query->where('container_status', 0);
                     }])->orderBy('transaction_id', 'desc')->get();
 
@@ -56,13 +57,7 @@ class SpecialProcessingController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Special processor manager received coffee', $allTransactions);
-    }
-
-    function processList(Request $request) {
-        $process = CoffeeProcess::all();
-
-        return sendSuccess('processor manager received coffee', $process);
+        return sendSuccess('Coffee drying manager received coffee', $allTransactions);
     }
 
 }
