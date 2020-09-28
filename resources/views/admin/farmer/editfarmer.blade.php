@@ -68,7 +68,7 @@
 
                   <div class="form-group">
                     
-                    <label for="customFile">Farmer Cnin Image</label>
+                    <label for="customFile">Farmer Id Card Image</label>
                     <input type="hidden" name="idcard_picture_id" value="{{$farmer->idcard_picture_id}}">
                     <div class="custom-file">
                       <input type="file" class="custom-file-input"   name="idcard_picture" id="customFile" @error('idcard_picture') is-invalid @enderror>
@@ -115,7 +115,7 @@
                     
                     <label for="customFile">Id Card</label><br>
                    
-                    <img class="img-thumbnail"  style="height: 141px;width: 200px; margin-bottom: 10px" src="{{URL::to('')}}/storage/app/images/{{isset($farmer->idcardImage->user_file_name)?$farmer->idcardImage->user_file_name : ''}}">
+                    <img class="img-thumbnail" style="height: 195px;margin-bottom: 10px" src="{{URL::to('')}}/storage/app/images/{{isset($farmer->idcardImage->user_file_name)?$farmer->idcardImage->user_file_name : ''}}">
                   
                   </div> 
                 @else
