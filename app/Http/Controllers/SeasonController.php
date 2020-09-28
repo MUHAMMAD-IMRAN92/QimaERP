@@ -22,7 +22,8 @@ class SeasonController extends Controller
     public function store(Request $request){
     	$validatedData = $request->validate([
         'season_title' => 'required',
-        'start_date' => 'required',
+        'start_date'    => 'required|date',
+        'end_date'      => 'required|date|after_or_equal:start_date',
         'status' => 'required',
     ]);
     	 // dd($request->all());
