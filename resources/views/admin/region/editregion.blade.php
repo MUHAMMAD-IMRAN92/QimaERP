@@ -8,7 +8,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Add Region</h1>
+            <h1>Edit Region</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -29,9 +29,9 @@
             <!-- general form elements -->
             <div class="card card-primary">
 
-              <div class="card-header">
+              {{-- <div class="card-header">
                 <h3 class="card-title">Edit</h3>
-              </div>
+              </div> --}}
               <!-- /.card-header -->
               <!-- form start -->
               <form role="form" method="POST" action="">

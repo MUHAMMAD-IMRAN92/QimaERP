@@ -67,9 +67,11 @@
 
                   <div class="form-group">
                     <label class="col-form-label" for="inputSuccess">Password</label></br>
-                      
+                        <div style="display: flex;">
                           <input type="password"  placeholder="Enter new password" class="form-control " name="password" id="myInput" >
                           <a onclick="myFunction()" class="fa fa-eye ml-2 mt-2"></a>
+                        </div>
+                          
                       
                   </div>
 
