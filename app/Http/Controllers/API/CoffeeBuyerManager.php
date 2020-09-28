@@ -124,6 +124,7 @@ class CoffeeBuyerManager extends Controller {
                                 'action' => 'sent',
                                 'created_by' => $sentTransaction->transactions->created_by,
                                 'entity_id' => $sentTransaction->transactions->center_id,
+                                'center_name' => $sentTransaction->transactions->center_name,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
                                 'type' => 'center',
                     ]);
@@ -150,6 +151,7 @@ class CoffeeBuyerManager extends Controller {
         foreach ($currentlySentCoffees as $key => $currentlySentCoffee) {
             $transactionsDetail = $currentlySentCoffee->transactionDetail;
             $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
+            $currentlySentCoffee->center_name = $currentlySentCoffee->log->center_name;
             $currentlySentCoffee->makeHidden('transactionDetail');
             $currentlySentCoffee->makeHidden('log');
             $currentlySentCoffee->already_sent = FALSE;
@@ -205,6 +207,7 @@ class CoffeeBuyerManager extends Controller {
                         $query->where('container_status', 0);
                     }])->with('log')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
+            $transaction->center_name = $transaction->log->center_name;
             $transactionDetail = $transaction->transactionDetail;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
