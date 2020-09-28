@@ -39,8 +39,8 @@ class SpecialProcessingController extends Controller {
         $userId = $this->userId;
         $centerId = $this->user->table_id;
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'received')->whereHas('log', function($q) use($centerId) {
-                    $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
+        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
+                    $q->where('action', 'sent')->where('type', 'special_processing')->where('entity_id', $centerId);
                 })->doesntHave('isReference')->with(['transactionDetail' => function($query) {
                         $query->where('container_status', 0);
                     }])->orderBy('transaction_id', 'desc')->get();
@@ -55,7 +55,7 @@ class SpecialProcessingController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Processor manager received coffee', $allTransactions);
+        return sendSuccess('Special processor manager received coffee', $allTransactions);
     }
 
 }

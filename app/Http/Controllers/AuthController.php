@@ -15,7 +15,7 @@ class AuthController extends Controller {
 
     public function adminLogin() {
 
-       // var_dump(Hash::make("123456"));exit;
+       //var_dump(Hash::make("123456"));exit;
         if (Auth::guard()->check()) {
             return redirect('admin/dashboard');
         }
