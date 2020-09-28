@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', 'All Container')
 @section('content')
-    
+  
 <style type="text/css">
    .dataTables_wrapper .dataTables_filter input {
     margin-left: 0.5em;
@@ -10,6 +10,15 @@
  </style>
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+
+     @if(session()->has('success'))
+    <div class="alert alert-success">
+        {{ session()->get('success') }}
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+    </div>
+    @endif  
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
