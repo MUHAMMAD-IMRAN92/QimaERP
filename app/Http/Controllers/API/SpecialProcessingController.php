@@ -12,6 +12,7 @@ use App\CoffeeProcess;
 use App\Transaction;
 use App\LoginUser;
 use App\User;
+use App\CenterUser;
 
 class SpecialProcessingController extends Controller {
 
@@ -38,7 +39,11 @@ class SpecialProcessingController extends Controller {
 
     function getSpeicalProcessingManagerPendingCoffee(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'sent')->where('type', 'special_processing')->where('entity_id', $centerId);

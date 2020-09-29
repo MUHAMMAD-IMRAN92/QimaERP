@@ -12,6 +12,7 @@ use App\LoginUser;
 use App\Center;
 use App\Farmer;
 use App\User;
+use App\CenterUser;
 
 class CenterManagerController extends Controller {
 
@@ -117,7 +118,12 @@ class CenterManagerController extends Controller {
     }
 
     function centerManagerCoffee(Request $request) {
-        $centerId = $this->user->table_id;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        $centerId = 0;
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
+
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'sent')->where('type', 'center')->where('entity_id', $centerId);
@@ -143,7 +149,11 @@ class CenterManagerController extends Controller {
     function centerManagerReceivedCoffee(Request $request) {
 
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->whereHas('transactionLog', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);

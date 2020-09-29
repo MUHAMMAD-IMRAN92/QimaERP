@@ -11,6 +11,7 @@ use App\TransactionLog;
 use App\Transaction;
 use App\LoginUser;
 use App\User;
+use App\CenterUser;
 
 class ProcessingManagerController extends Controller {
 
@@ -37,7 +38,11 @@ class ProcessingManagerController extends Controller {
 
     function getProcessingManager(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'received')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
@@ -60,7 +65,11 @@ class ProcessingManagerController extends Controller {
 
     function fetchProcessorRole(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $role = Role::whereIn('name', ['Special Processing', 'Coffee Drying'])->select('name')->get();
         return sendSuccess('Processor manager coffee', $role);
     }
@@ -159,7 +168,11 @@ class ProcessingManagerController extends Controller {
 
     function getSendSpecialProcessingAndDryingCoffee(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
@@ -180,7 +193,11 @@ class ProcessingManagerController extends Controller {
 
     function getSendCoffeeDrying(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'sent')->where('type', 'coffee_drying')->where('entity_id', $centerId);

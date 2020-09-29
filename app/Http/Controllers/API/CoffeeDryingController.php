@@ -11,6 +11,7 @@ use App\TransactionLog;
 use App\Transaction;
 use App\LoginUser;
 use App\User;
+use App\CenterUser;
 
 class CoffeeDryingController extends Controller {
 
@@ -37,15 +38,19 @@ class CoffeeDryingController extends Controller {
 
     function getCoffeeDryingPendingCoffee(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) use($centerId) {
-                    $q->where('action', 'sent')->where('type', 'coffee_drying')->where('entity_id', $centerId);
-                })
+                            $q->where('action', 'sent')->where('type', 'coffee_drying')->where('entity_id', $centerId);
+                        })
                         //->doesntHave('isReference')
                         ->with(['transactionDetail' => function($query) {
-                        $query->where('container_status', 0);
-                    }])->orderBy('transaction_id', 'desc')->get();
+                                $query->where('container_status', 0);
+                            }])->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
