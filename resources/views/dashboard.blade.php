@@ -17,9 +17,9 @@
             <h1 class="m-0 text-dark">Dashboard</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
+           {{--  <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{URL::to('')}}/admin/dashboard">Home</a></li>
-            </ol>
+            </ol> --}}
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -37,7 +37,7 @@
               <div class="inner">
                 <h3>{{App\Farmer::count()}}</h3>
 
-                <p>Farmers</p>
+               <p>Farmers</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -52,7 +52,7 @@
               <div class="inner">
                 {{-- <h3>53<sup style="font-size: 20px">%</sup></h3> --}}
                 <h3>{{App\Village::count()}}</h3>
-                <p>Villages</p>
+               <p>Villages</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -103,14 +103,14 @@
           <div class="col-md-6">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Farmer </h3>
+                <h3 class="card-title"><b>Farmer</b> </h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table class="table table-bordered">
                   <thead>                  
                     <tr>
-                      <th style="width: 10px">#</th>
+                      <th style="width: 10px">Sr#</th>
                       <th>Farmer Code</th>
                       <th>Farmer Name</th>
                       <th>Village Code</th>
@@ -137,14 +137,14 @@
           <div class="col-md-6">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Village </h3>
+                <h3 class="card-title"><b>Village</b> </h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table class="table table-bordered">
                   <thead>                  
                     <tr>
-                      <th style="width: 10px">#</th>
+                      <th style="width: 10px">Sr#</th>
                       <th>Village Code</th>
                       <th>Village Name</th>
                     </tr>

@@ -113,13 +113,6 @@
                     @endforeach
                   
                  </tbody>
-                  <tfoot>
-                 <tr>
-                    <th>S#</th>
-                    <th>Batch Number</th>
-                    <th>Weight</th>
-                  </tr>
-                  </tfoot>
                 </table>
               </div>
               <!-- /.card-body -->

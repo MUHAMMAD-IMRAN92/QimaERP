@@ -2,7 +2,12 @@
 @section('title', 'All Farmers')
 @section('content')
     
- 
+<style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style>
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     @if(Session::has('message'))
@@ -17,9 +22,9 @@
         <div class="row mb-2">
 
           <div class="col-sm-6">
-            <h1>Batch Number 
+            <h1>Batch Numbers 
               <a href="" class="btn btn-add rounded-circle"> 
-                <i class="fas fa-user-plus add-client-icon"></i>
+                {{-- <i class="fas fa-user-plus add-client-icon"></i> --}}
               </a>
             </h1>
           </div>
@@ -54,14 +59,7 @@
                   </tr>
                   </thead>
                   
-                  <tfoot>
-                  <tr>
-                    <th>S#</th>
-                    <th>Batch Number</th>
-                    <th>Action</th>
-                    
-                  </tr>
-                  </tfoot>
+                  
                 </table>
               </div>
               <!-- /.card-body -->

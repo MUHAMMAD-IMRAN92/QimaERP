@@ -2,7 +2,12 @@
 @section('title', 'All Center')
 @section('content')
     
-
+<style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style>
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     
@@ -64,14 +69,7 @@
                     </tr>
                     @endforeach
                   </tbody>
-                  <tfoot>
-                 <tr>
-                    <th>S#</th>
-                    <th>Code</th>
-                    <th>Title</th>
-                    <th>Total Weight</th>
-                  </tr>
-                  </tfoot>
+                 
                 </table>
               </div>
               <!-- /.card-body -->

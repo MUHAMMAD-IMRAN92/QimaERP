@@ -30,7 +30,7 @@ class ContainerController extends Controller
     	// dd($request->all());
     	// if(Container::where('container_number', '=', $request->codetype.$request->number)->first()){
 	    	 $validatedData = $request->validate([
-		        'region_code' => 'required',
+                'container_type' => 'required',
                 'number' => 'required',
                 'capacity' => 'required',
 		    ]);
@@ -50,7 +50,7 @@ class ContainerController extends Controller
 	    	$container->local_code=$request->codetype.$request->number.'-'.Auth::user()->user_id.'-'.'C'.'-'.$current_timestamp;
     	
     	$container->save();
-    	return redirect('admin/allcontainer');
+    	return redirect('admin/allcontainer')->with('success', 'Container Number Added Successfully');
 
     	}else{
     		

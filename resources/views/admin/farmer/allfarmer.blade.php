@@ -2,7 +2,12 @@
 @section('title', 'All Farmers')
 @section('content')
     
- 
+ <style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style>
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
                   @if(Session::has('message'))
@@ -23,10 +28,7 @@
         <div class="row mb-2">
 
           <div class="col-sm-6">
-            <h1>Add New Farmer 
-              <a href="" class="btn btn-add rounded-circle"> 
-                <i class="fas fa-user-plus add-client-icon"></i>
-              </a>
+            <h1>All Farmer
             </h1>
           </div>
           <div class="col-sm-6">
@@ -62,17 +64,7 @@
                   </tr>
                   </thead>
                  
-                  <tfoot>
-                  <tr>
-                    <th>S#</th>
-                    
-                    <th>Farmer Code</th>
-                    <th>Farmer Name</th>
-                    <th>Village Code</th>
-                    <th>Farmer Cnic</th>
-                    <th>Action</th> 
-                  </tr>
-                  </tfoot>
+                  
                 </table>
               </div>
               <!-- /.card-body -->

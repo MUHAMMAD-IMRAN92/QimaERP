@@ -1,7 +1,12 @@
 @extends('layouts.default')
 @section('title', 'All Transection')
 @section('content') 
-
+<style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style>
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -9,7 +14,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Transections Information 
+            <h1>Transactions Information 
               <a href="" class="btn btn-add rounded-circle"> 
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a>
@@ -58,15 +63,6 @@
                     @endforeach
                   
                  </tbody>
-                  <tfoot>
-                 <tr>
-                    <th>S#</th>
-                    <th>Code</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                    
-                  </tr>
-                  </tfoot>
                 </table>
               </div>
               <!-- /.card-body -->

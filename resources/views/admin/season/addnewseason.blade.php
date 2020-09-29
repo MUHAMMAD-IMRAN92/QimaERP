@@ -96,7 +96,7 @@
                         </div>
 
                     </div>
-                     @error('start_date')
+                    @error('start_date')
                         <span  class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
@@ -104,12 +104,15 @@
                 <div class="form-group">
                   <label>End Date:</label>
                     <div class="input-group date" id="enddate" data-target-input="nearest">
-                       <input type="checkbox" name="end_date" value="1" onclick="var input = document.getElementById('end'); if(this.checked){ input.disabled = false; input.focus();}else{input.disabled=true;}" style="margin-top: 10px; margin-right: 18px;" checked />
+                       <input type="checkbox" name="end_date" value="1" onclick="var input = document.getElementById('end'); if(this.checked){ input.disabled = false; input.focus();}else{input.disabled=true;}" style="margin-top: 10px; margin-right: 18px;" checked  @error('start_date') is-invalid @enderror/>
                         <input type="text" name="end_date" id="end" class="form-control datetimepicker-input" data-target="#enddate"/>
                         <div class="input-group-append" data-target="#enddate" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
+                    @error('end_date')
+                        <span  class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
                  
                 

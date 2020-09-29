@@ -49,15 +49,20 @@
                   <div class="form-group">
                    <label for="country_name">Type</label>
                    
-                    <select class="form-control " id="container_type" name="container_type">
+                    <select class="form-control " id="container_type" name="container_type" @error('container_type') is-invalid @enderror>
+                       <option >Select</option>
                       @foreach($array as $row)
+                     
                       <option value="{{$row['code']}}">{{$row['type']}}</option>
                       @endforeach
                     </select>
+                     @error('container_type')
+                        <span  class="text-danger">{{ $message }}</span>
+                    @enderror
                   </div>
                   <div class="form-group">
                     <label for="codetype">Code</label>
-                    <input type="text" id="codetype" class="form-control" name="codetype" readonly="readonly" @error('codetype') is-invalid @enderror>
+                    <input type="text" id="codetype" class="form-control" name="codetype" readonly="readonly" @error('codetype') is-invalid @enderror required="required">
                     @error('codetype')
                         <span  class="text-danger">{{ $message }}</span>
                     @enderror
@@ -106,6 +111,7 @@
       var input = document.getElementById('codetype');
       select.onchange = function() {
           input.value = select.value;
+
       }
   </script>
 @endsection

@@ -1,8 +1,12 @@
 @extends('layouts.default')
 @section('title', 'All Seasons')
 @section('content')
-    
- 
+<style type="text/css">
+   .dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5em;
+    width: 240px;
+}
+ </style> 
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
      @if(session()->has('close'))
@@ -76,16 +80,7 @@
                   </thead>
                   
                    
-                  <tfoot>
-                  <tr>
-                    <th>S#</th>
-                    <th>Title</th>
-                    <th>Start Data</th>
-                    <th>End Data</th>
-                    <th>Action</th>
-                    
-                  </tr>
-                  </tfoot>
+                  
                 </table>
               </div>
               <!-- /.card-body -->
