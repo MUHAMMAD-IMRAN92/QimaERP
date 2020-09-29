@@ -66,7 +66,7 @@ class VillageController extends Controller
             ]);
 
         $currentVillageCode = 1;
-        $lastVillage = Village::orderBy('created_at', 'ASC')->first();
+        $lastVillage = Village::orderBy('created_at', 'DESC')->first();
         if (isset($lastVillage) && $lastVillage) {
             $currentVillageCode = ($lastVillage->village_id + 1);
         }
