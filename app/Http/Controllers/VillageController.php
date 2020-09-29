@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Village;
 use App\Region;
-class VillageController extends Controller
-{
-    public function index(){
-    	$data['village']=Village::all();
-    	return view('admin.village.allvillage',$data);
+use Auth;
+
+class VillageController extends Controller {
+
+    public function index() {
+        $data['village'] = Village::all();
+        return view('admin.village.allvillage', $data);
     }
 
     function getVillageAjax(Request $request) {
@@ -26,8 +28,8 @@ class VillageController extends Controller
         $members = $members->select('village_id', 'village_code', 'village_title');
         //::search with farmername or farmer_code or  village_code
         $members = $members->when($search, function($q)use ($search) {
-                    $q->where('village_code', 'like', "%$search%")->orWhere('village_title', 'like', "%$search%");
-                });
+            $q->where('village_code', 'like', "%$search%")->orWhere('village_title', 'like', "%$search%");
+        });
         if ($request->has('order') && !is_null($request['order'])) {
             $orderBy = $request->get('order');
             $orderby = 'asc';
@@ -36,9 +38,9 @@ class VillageController extends Controller
             }
             if (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 1) {
                 $column = 'village_code';
-            }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
                 $column = 'village_title';
-            }else {
+            } else {
                 $column = 'village_code';
             }
         }
@@ -53,17 +55,16 @@ class VillageController extends Controller
         return json_encode($data);
     }
 
-    public function addnewvillage(){
-        $data['region']=Region::all();
-        return view('admin.village.addvillage',$data);
+    public function addnewvillage() {
+        $data['region'] = Region::all();
+        return view('admin.village.addvillage', $data);
     }
 
-    public function store(Request $request){
-
-         $validatedData = $request->validate([
-        'region_code' => 'required',
-        'village_title' => 'required',
-            ]);
+    public function store(Request $request) {
+        $validatedData = $request->validate([
+            'region_code' => 'required',
+            'village_title' => 'required',
+        ]);
 
         $currentVillageCode = 1;
         $lastVillage = Village::orderBy('created_at', 'DESC')->first();
@@ -74,29 +75,28 @@ class VillageController extends Controller
         $twoDigitCode = sprintf("%02d", ($currentVillageCode));
         // dd($twoDigitCode);
         // $last= $twoDigitCode+1;
-        $village=new Village();
-        $village->village_code=$request->region_code.'-'.$twoDigitCode;
-        $village->village_title=$request->village_title;
-        $village->local_code='';
+        $village = new Village();
+        $village->village_code = $request->region_code . '-' . $twoDigitCode;
+        $village->village_title = $request->village_title;
+        $village->created_by = Auth::user()->user_id;
+        $village->local_code = '';
         // dd($village->village_id);
         $village->save();
         return redirect('admin/allvillage');
-
-
     }
 
-    public function edit($id){
+    public function edit($id) {
         // dd($id);
-        $data['village']=Village::find($id);
-        return view('admin.village.editvillage',$data);
+        $data['village'] = Village::find($id);
+        return view('admin.village.editvillage', $data);
     }
 
-
-    public function update(Request $request){
-        $updatevillage= Village::find($request->village_id);
-        $updatevillage->village_title=$request->village_title;
+    public function update(Request $request) {
+        $updatevillage = Village::find($request->village_id);
+        $updatevillage->village_title = $request->village_title;
         // dd($updatevillage);
         $updatevillage->update();
         return redirect('admin/allvillage')->with('update', 'Village Update Successfully!');
     }
+
 }
