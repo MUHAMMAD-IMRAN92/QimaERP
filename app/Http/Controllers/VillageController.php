@@ -77,6 +77,7 @@ class VillageController extends Controller
         $village=new Village();
         $village->village_code=$request->region_code.'-'.$twoDigitCode;
         $village->village_title=$request->village_title;
+        $village->local_code='';
         // dd($village->village_id);
         $village->save();
         return redirect('admin/allvillage');
