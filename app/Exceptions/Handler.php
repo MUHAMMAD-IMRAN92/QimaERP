@@ -52,9 +52,12 @@ class Handler extends ExceptionHandler {
 
         $segment = \Illuminate\Support\Facades\Request::segment(1);
         if ($segment == 'api') {
+ 
             //var_dump($exception);exit;
             $message = $exception->getMessage();
-            $message = explode(";", $exception->errorInfo[2]);
+            if(isset($exception->errorInfo)){
+                $message = explode(";", $exception->errorInfo[2]); 
+            }           
             \Log::error($message);
             return Response::json(array('status' => 'error', 'message' => $message, 'data' => []), 499);
         }

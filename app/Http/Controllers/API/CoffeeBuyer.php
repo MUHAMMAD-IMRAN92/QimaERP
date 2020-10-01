@@ -271,11 +271,11 @@ class CoffeeBuyer extends Controller {
                 } else {
                     $batchNumber = BatchNumber::where('local_code', 'like', "$bat%")->first();
                 }
-                if(!$batchNumber){
-                    $error_data['status'] = "error"; 
-                    $error_data['message'] = "Batch number ".$bat." Not found";
+                if (!$batchNumber) {
+                    $error_data['status'] = "error";
+                    $error_data['message'] = "Batch number " . $bat . " Not found";
                     $error_data['data'] = [];
-                     
+
                     return json_encode($error_data);
                 }
                 $parentTransaction = Transaction::create([
@@ -402,9 +402,11 @@ class CoffeeBuyer extends Controller {
 
         $allTransactions = array();
         $allTransactionsData = json_decode($request['transaction']);
+
         foreach ($allTransactionsData as $key => $transactions) {
             $newTransactionid = null;
             if (isset($transactions->transactions) && $transactions->transactions) {
+
                 $batchCode = $transactions->transactions->batch_number;
 
                 if ($transactions->transactions->is_server_id == FALSE) {
@@ -475,9 +477,11 @@ class CoffeeBuyer extends Controller {
             }
             $user_image = asset('storage/app/images/demo_user_image.png');
             $user_image_path = asset('storage/app/images/');
+
             $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->with(['transactions_invoices.invoice' => function($query) use($user_image, $user_image_path) {
                             $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                         }])->first();
+
             $transationsDetail = $currentBatch->transactionDetail;
             if (isset($currentBatch->transactions_invoices)) {
                 foreach ($currentBatch->transactions_invoices as $key => $transactions_invoices) {
