@@ -17,22 +17,27 @@ class CoffeeBuyerManager extends Controller {
 
     private $userId;
     private $user;
+    private $app_lang;
 
     public function __construct() {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
-
+        if (isset($headers['app_lang'])) {
+            $this->app_lang = $headers['app_lang'];
+        } else {
+            $this->app_lang = 'en';
+        }
         if ($checksession) {
             $user = User::where('user_id', $checksession->user_id)->with('roles')->first();
             if ($user) {
                 $this->user = $user;
                 $this->userId = $user->user_id;
             } else {
-                return sendError('Session Expired', 404);
+                return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
             }
         } else {
-            return sendError('Session Expired', 404);
+            return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
         }
     }
 
@@ -79,7 +84,7 @@ class CoffeeBuyerManager extends Controller {
             $farmer->makeHidden('idcard_picture_id');
             $farmer->makeHidden('picture_id');
         }
-        return sendSuccess('Successfully retrieved farmers', $farmers);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_FARMER"), $farmers);
     }
 
     function sentTransactions(Request $request) {
@@ -160,9 +165,9 @@ class CoffeeBuyerManager extends Controller {
         }
         $data = array_merge($dataArray, $alreadySentCoffee);
         if (count($alreadySentCoffee) > 0) {
-            return sendSuccess('Some transactions have already been sent.', $data);
+            return sendSuccess(Config("statuscodes." . $this->app_lang . ".error_messages.TRANSACTION_SENT_ALREADY"), $data);
         }
-        return sendSuccess('Coffee sent successfully', $data);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $data);
     }
 
     function centers(Request $request) {
@@ -172,7 +177,7 @@ class CoffeeBuyerManager extends Controller {
                         $q->where('center_code', 'like', "%$search%");
                     });
                 })->get();
-        return sendSuccess('Successfully retrieved centers', $centers);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CENTER"), $centers);
     }
 
     function coffeeBuyerManagerCoffee(Request $request) {
@@ -196,7 +201,7 @@ class CoffeeBuyerManager extends Controller {
             array_push($allTransactions, $data);
         }
 
-        return sendSuccess('Transactions retrieved successfully', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_TRANSACTION"), $allTransactions);
     }
 
     function coffeeBuyerManagerSentCoffeeTransaction(Request $request) {
@@ -214,7 +219,7 @@ class CoffeeBuyerManager extends Controller {
             $data = ['transactions' => $transaction, 'transactions_detail' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Transactions retrieved successfully!', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_TRANSACTION"), $allTransactions);
     }
 
     function approvedFarmer(Request $request) {
@@ -226,7 +231,7 @@ class CoffeeBuyerManager extends Controller {
             return sendError($errors, 400);
         }
         Farmer::wherein('farmer_code', $request['farmer_code'])->update(['is_status' => 1]);
-        return sendSuccess('Farmer approved successfully', []);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.APPROVED_FARMER"), []);
     }
 
 }

@@ -19,6 +19,11 @@ class CheckUserSession {
      */
     public function handle($request, Closure $next) {
         $headers = getallheaders();
+        if (isset($headers['app_lang'])) {
+            $app_lang = $headers['app_lang'];
+        } else {
+            $app_lang = 'en';
+        }
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
         if ($checksession) {
             $user = User::find($checksession->user_id);
@@ -26,10 +31,10 @@ class CheckUserSession {
                 Auth::login($user);
                 return $next($request);
             } else {
-                return sendError('Session Expired', 404);
+                return sendError(Config("statuscodes." . $app_lang . ".error_messages.SESSION_EXPIRED"), 404);
             }
         } else {
-            return sendError('Session Expired', 404);
+            return sendError(Config("statuscodes." . $app_lang . ".error_messages.SESSION_EXPIRED"), 404);
             //return Response::json(array('status' => 'error', 'errorMessage' => 'Session Expired', 'errorCode' => 400), 400);
         }
     }

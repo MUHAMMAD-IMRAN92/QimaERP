@@ -22,22 +22,27 @@ class CoffeeBuyer extends Controller {
 
     private $userId;
     private $user;
+    private $app_lang;
 
     public function __construct() {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
-
+        if (isset($headers['app_lang'])) {
+            $this->app_lang = $headers['app_lang'];
+        } else {
+            $this->app_lang = 'en';
+        }
         if ($checksession) {
             $user = User::where('user_id', $checksession->user_id)->with('roles')->first();
             if ($user) {
                 $this->user = $user;
                 $this->userId = $user->user_id;
             } else {
-                return sendError('Session Expired', 404);
+                return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
             }
         } else {
-            return sendError('Session Expired', 404);
+            return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
         }
     }
 
@@ -88,7 +93,7 @@ class CoffeeBuyer extends Controller {
             $farmer->makeHidden('idcard_picture_id');
             $farmer->makeHidden('picture_id');
         }
-        return sendSuccess('Successfully retrieved farmers', $farmers);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_FARMER"), $farmers);
     }
 
     function batches(Request $request) {
@@ -98,7 +103,7 @@ class CoffeeBuyer extends Controller {
                         $q->where('batch_number', 'like', "%$search%");
                     });
                 })->where('is_parent', 0)->where('created_by', $this->userId)->get();
-        return sendSuccess('Successfully retrieved batches', $batches);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $batches);
     }
 
     function addFarmer(Request $request) {
@@ -194,7 +199,7 @@ class CoffeeBuyer extends Controller {
             $farmer->makeHidden('picture_id');
         }
 
-        return sendSuccess('Farmer was created Successfully', $farmers);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_FARMER"), $farmers);
     }
 
     function addCoffeeWithBatchNumber(Request $request) {
@@ -273,7 +278,12 @@ class CoffeeBuyer extends Controller {
                 }
                 if (!$batchNumber) {
                     $error_data['status'] = "error";
-                    $error_data['message'] = "Batch number " . $bat . " Not found";
+                    if ($this->app_lang == 'ar') {
+                        $error_data['message'] = "Batch number " . $bat . " Not found";
+                    } else {
+                        $error_data['message'] = "Batch number " . $bat . " Not found";
+                    }
+
                     $error_data['data'] = [];
 
                     return json_encode($error_data);
@@ -387,7 +397,7 @@ class CoffeeBuyer extends Controller {
             array_push($dataArray, $data);
         }
 
-        return sendSuccess('Coffee was added Successfully', $dataArray);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $dataArray);
     }
 
     function addCoffeeWithOutBatchNumber(Request $request) {
@@ -500,7 +510,7 @@ class CoffeeBuyer extends Controller {
             $data = ['transactions' => $transations, 'transactions_detail' => $transationsDetail, 'transactions_invoices' => $transactions_invoices];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Coffee was added Successfully', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $allTransactions);
     }
 
     function coffeeBuyerCoffee(Request $request) {
@@ -539,7 +549,7 @@ class CoffeeBuyer extends Controller {
             array_push($allTransactions, $data);
         }
 
-        return sendSuccess('Transactions retrieved successfully', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_TRANSACTION"), $allTransactions);
     }
 
     function addBatchNumber(Request $request) {
@@ -592,7 +602,7 @@ class CoffeeBuyer extends Controller {
         }
 
         $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesId)->get();
-        return sendSuccess('Farmer was created Successfully', $currentBatchesData);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_BATCHES"), $currentBatchesData);
     }
 
 }
