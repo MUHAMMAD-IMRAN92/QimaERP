@@ -16,7 +16,6 @@ class checkAppKey {
      */
     public function handle($request, Closure $next) {
         $headers = getallheaders();
-        return sendSuccess('You Are Not Autherize For App', $headers);
         if ($headers['app_key'] == 'P3dvmoVlG/7V7soppeHO1a8T0+B/f0PsxTvupV+eems=') {
 //            if(isset($headers['session_token'])){
 //        $checksession = LoginUsers::where('session_key', $headers['session_token'])->first();
