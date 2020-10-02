@@ -18,22 +18,27 @@ class SpecialProcessingController extends Controller {
 
     private $userId;
     private $user;
+    private $app_lang;
 
     public function __construct() {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
-
+        if (isset($headers['app_lang'])) {
+            $this->app_lang = $headers['app_lang'];
+        } else {
+            $this->app_lang = 'en';
+        }
         if ($checksession) {
             $user = User::where('user_id', $checksession->user_id)->with('roles')->first();
             if ($user) {
                 $this->user = $user;
                 $this->userId = $user->user_id;
             } else {
-                return sendError('Session Expired', 404);
+                return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
             }
         } else {
-            return sendError('Session Expired', 404);
+            return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
         }
     }
 
@@ -61,13 +66,13 @@ class SpecialProcessingController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Special processor manager received coffee', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
     function processList(Request $request) {
         $process = CoffeeProcess::all();
 
-        return sendSuccess('processor manager received coffee', $process);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.PROCESS_LIST"), $process);
     }
 
 }

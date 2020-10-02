@@ -28,6 +28,9 @@ return [
             'SENT_COFFEE' => 'Coffee sent successfully',
             'RECV_COFFEE' => 'Transactions received successfully',
             'CENTER_MANAGER_RECV_COFFEE' => 'Center manager received coffee',
+            'RECV_COFFEE_MESSAGE' => 'Coffee received',
+            'ROLE' => 'Role',
+            'PROCESS_LIST' => 'Successfully retrieved processes list',
         ],
         // ---------------------- :::::::::::::::::::: ------------------//
         // ---------------------- END - SUCCESS CODES & MESSAGES --------//
@@ -64,6 +67,9 @@ return [
             'SENT_COFFEE' => 'تم الإرسال بنجاح',
             'RECV_COFFEE' => 'Transactions received successfully',
             'CENTER_MANAGER_RECV_COFFEE' => 'Center manager received coffee',
+            'RECV_COFFEE_MESSAGE' => 'Coffee received',
+            'ROLE' => 'Role',
+            'PROCESS_LIST' => 'Successfully retrieved processes list',
         ],
         // ---------------------- :::::::::::::::::::: ------------------//
         // ---------------------- END - SUCCESS CODES & MESSAGES --------//

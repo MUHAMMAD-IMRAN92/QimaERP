@@ -17,22 +17,27 @@ class ProcessingManagerController extends Controller {
 
     private $userId;
     private $user;
+    private $app_lang;
 
     public function __construct() {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
-
+        if (isset($headers['app_lang'])) {
+            $this->app_lang = $headers['app_lang'];
+        } else {
+            $this->app_lang = 'en';
+        }
         if ($checksession) {
             $user = User::where('user_id', $checksession->user_id)->with('roles')->first();
             if ($user) {
                 $this->user = $user;
                 $this->userId = $user->user_id;
             } else {
-                return sendError('Session Expired', 404);
+                return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
             }
         } else {
-            return sendError('Session Expired', 404);
+            return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
         }
     }
 
@@ -60,7 +65,7 @@ class ProcessingManagerController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Processor manager received coffee', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
     function fetchProcessorRole(Request $request) {
@@ -71,7 +76,7 @@ class ProcessingManagerController extends Controller {
             $centerId = $userCenter->center_id;
         }
         $role = Role::whereIn('name', ['Special Processing', 'Coffee Drying'])->select('name')->get();
-        return sendSuccess('Processor manager coffee', $role);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ROLE"), $role);
     }
 
     function sentToSpecialProcessingAndCoffeeDrying(Request $request) {
@@ -161,9 +166,9 @@ class ProcessingManagerController extends Controller {
         }
         $data = array_merge($dataArray, $alreadyReciviedCoffee);
         if (count($alreadyReciviedCoffee) > 0) {
-            return sendSuccess('Some transactions have already been recivied.', $data);
+            return sendSuccess(Config("statuscodes." . $this->app_lang . ".error_messages.TRANSACTION_SENT_ALREADY"), $data);
         }
-        return sendSuccess('Transactions sent successfully', $data);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $data);
     }
 
     function getSendSpecialProcessingAndDryingCoffee(Request $request) {
@@ -188,7 +193,7 @@ class ProcessingManagerController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Processor manager coffee', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
     function getSendCoffeeDrying(Request $request) {
@@ -217,7 +222,7 @@ class ProcessingManagerController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Processor manager coffee', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
 }
