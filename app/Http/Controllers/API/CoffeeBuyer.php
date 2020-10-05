@@ -279,7 +279,7 @@ class CoffeeBuyer extends Controller {
                 if (!$batchNumber) {
                     $error_data['status'] = "error";
                     if ($this->app_lang == 'ar') {
-                        $error_data['message'] = "Batch number " . $bat . " Not found";
+                        $error_data['message'] = "لم يتم ايجاد رقم دفعة";
                     } else {
                         $error_data['message'] = "Batch number " . $bat . " Not found";
                     }

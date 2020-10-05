@@ -56,7 +56,6 @@ class CoffeeDryingController extends Controller {
                         ->with(['transactionDetail' => function($query) {
                                 $query->where('container_status', 0);
                             }])->orderBy('transaction_id', 'desc')->get();
-
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
@@ -71,6 +70,7 @@ class CoffeeDryingController extends Controller {
     }
 
     function receivedCoffeeDryingCoffee(Request $request) {
+
         $validator = Validator::make($request->all(), [
                     'transactions' => 'required',
         ]);
@@ -78,9 +78,62 @@ class CoffeeDryingController extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+        $userId = $this->userId;
+        $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
-       
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+        foreach ($receivedTransactions as $key => $receivedTransaction) {
+            if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+
+                $transaction = Transaction::create([
+                            'batch_number' => $receivedTransaction->transaction->batch_number,
+                            'is_parent' => $receivedTransaction->transaction->is_parent,
+                            'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                            'created_by' => $receivedTransaction->transaction->created_by,
+                            'is_local' => FALSE,
+                            'transaction_type' => 1,
+                            'local_code' => $receivedTransaction->transaction->local_code,
+                            'transaction_status' => 'received',
+                            'reference_id' => $receivedTransaction->transaction->reference_id,
+                            'is_server_id' => 1,
+                            'is_new' => 0,
+                            'sent_to' => 7,
+                            'is_sent' => 1,
+                ]);
+                $receivedTransId = $receivedTransaction->transaction->reference_id;
+                $transactionLog = TransactionLog::create([
+                            'transaction_id' => $transaction->transaction_id,
+                            'action' => 'received',
+                            'created_by' => $receivedTransaction->transaction->created_by,
+                            'entity_id' => $receivedTransaction->transaction->center_id,
+                            'center_name' => '',
+                            'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                            'type' => 'center',
+                ]);
+                $transactionContainers = $receivedTransaction->transactions_meta;
+                foreach ($transactionContainers as $key => $transactionContainer) {
+                    if (strstr($transactionContainer->key, 'BS') || strstr($transactionContainer->key, 'DS')) {
+                        $basketArray = explode("_", strstr($transactionContainer->key));
+                        $basket = $basketArray[0];
+                        $weight = $basketArray[1];
+                        TransactionDetail::create([
+                            'transaction_id' => $transaction->transaction_id,
+                            'container_number' => $basket,
+                            'created_by' => $userId,
+                            'is_local' => FALSE,
+                            'container_weight' => $weight,
+                            'weight_unit' => 'kg',
+                            'center_id' => $receivedTransaction->transaction->center_id,
+                            'reference_id' => $transactionContainer->reference_id,
+                        ]);
+
+                        TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                    }
+                }
+                array_push($reciviedCoffee, $transaction->transaction_id);
+            }
+        }
+
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $receivedCofffee);
     }
 
 }
