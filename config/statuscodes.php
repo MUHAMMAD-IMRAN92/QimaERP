@@ -60,27 +60,27 @@ return [
             'RETRIEVED_TRANSACTION_DETAIL' => 'تم استرجاع تفاصيل العملية',
             'RETRIEVED_BATCHES' => 'تم استرجاع الدفعة',
             'ADD_FARMER' => 'تم اضافة مزارع',
-            'ADD_COFFEE' => 'Coffee was added Successfully',
-            'ADD_BATCHES' => 'Batches was created Successfully ar',
-            'RETRIEVED_CENTER' => 'Successfully retrieved centers ar',
-            'APPROVED_FARMER' => 'Farmer approved successfully ar',
+            'ADD_COFFEE' => 'تم اضافة البن',
+            'ADD_BATCHES' => 'تم إضافة الدفعة ',
+            'RETRIEVED_CENTER' => 'تم استرجاع المركز',
+            'APPROVED_FARMER' => 'تم الموافقة على المزارع',
             'SENT_COFFEE' => 'تم الإرسال بنجاح',
-            'RECV_COFFEE' => 'Transactions received successfully ar',
-            'CENTER_MANAGER_RECV_COFFEE' => 'Center manager received coffee ar',
-            'RECV_COFFEE_MESSAGE' => 'Coffee received ar',
-            'ROLE' => 'Role ar',
-            'PROCESS_LIST' => 'Successfully retrieved processes list ar',
+            'RECV_COFFEE' => 'تم استقبال بيانات العمليات',
+            'CENTER_MANAGER_RECV_COFFEE' => 'مدير المركز قام باستقبال البن',
+            'RECV_COFFEE_MESSAGE' => 'تم استقبال البن',
+            'ROLE' => 'دور',
+            'PROCESS_LIST' => 'تم استرجاع بيانات المعالجة',
         ],
         // ---------------------- :::::::::::::::::::: ------------------//
         // ---------------------- END - SUCCESS CODES & MESSAGES --------//
         // ---------------------- :::::::::::::::::::: ------------------//
         // ::::::::::: ERROR CODES & MESSAGES :::::::::::: //
         'error_messages' => [
-            'BLOCKED' => 'You are blocked by admin',
-            'INVALID_USER' => 'Invalid email or password',
-            'SESSION_EXPIRED' => 'Session Expired',
-            'TRANSACTION_SENT_ALREADY' => 'Some transactions have already been sent',
-            'TRANSACTION_REC_ALREADY' => 'Some transactions have already been received',
+            'BLOCKED' => 'تم تجميد هذا الحساب',
+            'INVALID_USER' => 'البريد الاكتروني او كلمة المرور غير صحيحة',
+            'SESSION_EXPIRED' => 'انتهت الجلسة',
+            'TRANSACTION_SENT_ALREADY' => 'بعض من العمليات قد تم ارسالها',
+            'TRANSACTION_REC_ALREADY' => 'بعض من العمليات قد تم استقبالها',
         ],
     ]
 ];

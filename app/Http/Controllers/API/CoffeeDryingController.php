@@ -48,7 +48,6 @@ class CoffeeDryingController extends Controller {
         if ($userCenter) {
             $centerId = $userCenter->center_id;
         }
-       
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) use($centerId) {
                             $q->where('action', 'sent')->where('type', 'coffee_drying')->where('entity_id', $centerId);
@@ -68,6 +67,19 @@ class CoffeeDryingController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+    }
+
+    function receivedCoffeeDryingCoffee(Request $request) {
+        $validator = Validator::make($request->all(), [
+                    'transactions' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+        $receivedTransactions = json_decode($request['transactions']);
+       
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 

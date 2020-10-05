@@ -100,5 +100,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         //::Coffee Drying Manager
         Route::get('/get_coffee_drying_coffee', 'API\CoffeeDryingController@getCoffeeDryingPendingCoffee');
+        Route::post('/received_drying_coffee', 'API\CoffeeDryingController@receivedCoffeeDryingCoffee');
     });
 });
