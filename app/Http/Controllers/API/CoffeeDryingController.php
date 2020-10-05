@@ -48,6 +48,7 @@ class CoffeeDryingController extends Controller {
         if ($userCenter) {
             $centerId = $userCenter->center_id;
         }
+       
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) use($centerId) {
                             $q->where('action', 'sent')->where('type', 'coffee_drying')->where('entity_id', $centerId);

@@ -187,7 +187,7 @@ class ProcessingManagerController extends Controller {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
-            $transaction->is_sent = 0;
+            $transaction->is_sent = 1;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
