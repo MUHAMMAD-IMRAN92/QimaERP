@@ -98,6 +98,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/get_special_processing_coffee', 'API\SpecialProcessingController@getSpeicalProcessingManagerPendingCoffee');
         Route::get('/get_processing_list', 'API\SpecialProcessingController@processList');
         Route::get('/get_yeast_list', 'API\SpecialProcessingController@yeastList');
+        Route::post('/received_special_processing_coffee', 'API\SpecialProcessingController@receivedSpecialProcessingCoffee');
 
         //::Coffee Drying Manager
         Route::get('/get_coffee_drying_coffee', 'API\CoffeeDryingController@getCoffeeDryingPendingCoffee');
