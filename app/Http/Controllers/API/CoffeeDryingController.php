@@ -64,7 +64,7 @@ class CoffeeDryingController extends Controller {
             $transactionMata = $transaction->meta;
             $transactionDetailArray = array();
             foreach ($transactionDetail as $key => $transactionDet) {
-                $transactionDet->is_local = 0;
+                $transactionDet->is_local = FALSE;
                 $transactionDet->update_meta = FALSE;
                 array_push($transactionDetailArray, $transactionDet);
             }
@@ -199,7 +199,7 @@ class CoffeeDryingController extends Controller {
 
             $transactionDetailArray = array();
             foreach ($transactionDetail as $key => $transactionDet) {
-                $transactionDet->is_local = 0;
+                $transactionDet->is_local = FALSE;
                 $transactionDet->update_meta = FALSE;
                 array_push($transactionDetailArray, $transactionDet);
             }
@@ -232,7 +232,8 @@ class CoffeeDryingController extends Controller {
             $transactionDetail = $transaction->transactionDetail;
             $transactionDetailArray = array();
             foreach ($transactionDetail as $key => $transactionDet) {
-                $transactionDet->is_local = 0;
+                $transactionDet->is_local = FALSE;
+                $transactionDet->update_meta = FALSE;
                 array_push($transactionDetailArray, $transactionDet);
             }
             $transactionMeta = $transaction->meta;
@@ -450,7 +451,7 @@ class CoffeeDryingController extends Controller {
 
             $transactionDetailArray = array();
             foreach ($transactionDetail as $key => $transactionDet) {
-                $transactionDet->is_local = 0;
+                $transactionDet->is_local = FALSE;
                 $transactionDet->update_meta = FALSE;
                 array_push($transactionDetailArray, $transactionDet);
             }
