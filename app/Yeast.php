@@ -8,6 +8,6 @@ class Yeast extends Model {
 
     protected $table = "yeast";
     protected $primaryKey = 'yeast_id';
-    protected $fillable = ['yeast_id', 'yeast_name'];
+    protected $fillable = ['yeast_id', 'yeast_name','ar_yeast_name'];
 
 }
