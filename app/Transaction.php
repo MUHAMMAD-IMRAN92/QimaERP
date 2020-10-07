@@ -48,4 +48,8 @@ class Transaction extends Model {
         return $this->hasMany(TransactionInvoice::class, 'transaction_id', 'transaction_id');
     }
 
+    public function meta() {
+        return $this->hasMany(MetaTransation::class, 'transaction_id', 'transaction_id');
+    }
+
 }

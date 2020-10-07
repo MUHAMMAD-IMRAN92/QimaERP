@@ -31,6 +31,7 @@ return [
             'RECV_COFFEE_MESSAGE' => 'Coffee received',
             'ROLE' => 'Role',
             'PROCESS_LIST' => 'Successfully retrieved processes list',
+            'YEAST_LIST' => 'Successfully retrieved processes list',
         ],
         // ---------------------- :::::::::::::::::::: ------------------//
         // ---------------------- END - SUCCESS CODES & MESSAGES --------//
@@ -70,6 +71,7 @@ return [
             'RECV_COFFEE_MESSAGE' => 'تم استقبال البن',
             'ROLE' => 'دور',
             'PROCESS_LIST' => 'تم استرجاع بيانات المعالجة',
+            'YEAST_LIST' => 'Successfully retrieved yeast list',
         ],
         // ---------------------- :::::::::::::::::::: ------------------//
         // ---------------------- END - SUCCESS CODES & MESSAGES --------//

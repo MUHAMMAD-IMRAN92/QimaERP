@@ -13,6 +13,7 @@ use App\Transaction;
 use App\LoginUser;
 use App\User;
 use App\CenterUser;
+use App\Yeast;
 
 class SpecialProcessingController extends Controller {
 
@@ -73,6 +74,12 @@ class SpecialProcessingController extends Controller {
         $process = CoffeeProcess::all();
 
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.PROCESS_LIST"), $process);
+    }
+
+    function yeastList(Request $request) {
+        $yest = Yeast::all();
+
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.YEAST_LIST"), $yest);
     }
 
 }
