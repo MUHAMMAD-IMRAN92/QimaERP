@@ -104,5 +104,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::post('/received_drying_coffee', 'API\CoffeeDryingController@receivedCoffeeDryingCoffee');
         Route::get('/get_received_drying_coffee', 'API\CoffeeDryingController@getReceivedCoffeeDryingCoffee');
         Route::post('/update_coffee_meta', 'API\CoffeeDryingController@updateMeta');
+        Route::post('/sent_drying_coffee', 'API\CoffeeDryingController@sendCoffeeDryingCoffee');
+        Route::post('/coffee_sent_to_yemen', 'API\CoffeeDryingController@coffeeSentToYemen');
+        Route::post('/part_dry_coffee', 'API\CoffeeDryingController@partDryCoffee');
     });
 });
