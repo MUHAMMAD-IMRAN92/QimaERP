@@ -239,6 +239,8 @@ class CoffeeBuyer extends Controller {
                                 'is_server_id' => $childBatch->transaction->is_server_id,
                                 'is_new' => $childBatch->transaction->is_new,
                                 'sent_to' => 2,
+                                'session_no' => 2,
+                                'local_created_at' => $childBatch->transaction->created_at,
                     ]);
 
                     $transactionLog = TransactionLog::create([
@@ -300,6 +302,8 @@ class CoffeeBuyer extends Controller {
                             'is_server_id' => $batch_numbers->transactions->transaction->is_server_id,
                             'is_new' => $batch_numbers->transactions->transaction->is_new,
                             'sent_to' => 2,
+                            'session_no' => 2,
+                            'local_created_at' => $batch_numbers->transactions->transaction->created_at,
                 ]);
                 $transactionLog = TransactionLog::create([
                             'transaction_id' => $parentTransaction->transaction_id,
@@ -362,7 +366,8 @@ class CoffeeBuyer extends Controller {
 
                 foreach ($currentBatches->childTransation as $key => $child_transation) {
                     $emptyObject = array();
-
+                    $child_transation->buyer_name = '';
+                  
                     $childtransactions_detail = $child_transation->transactionDetail;
                     $transactions_invoices = $child_transation->transactions_invoices;
                     $child_transation->makeHidden('transactionDetail');
@@ -373,7 +378,10 @@ class CoffeeBuyer extends Controller {
             }
 
             $currentBatches->makeHidden('childTransation');
-
+            $currentBatches->buyer_name = '';
+            if (isset($currentBatches->buyer) && isset($currentBatches->buyer->first_name)) {
+                $currentBatches->buyer_name = $currentBatches->buyer->first_name . ' ' . $currentBatches->buyer->last_name;
+            }
             $transactions_detail = $currentBatches->transactionDetail;
             if (isset($currentBatches->transactions_invoices)) {
                 foreach ($currentBatches->transactions_invoices as $key => $transactions_invoices) {

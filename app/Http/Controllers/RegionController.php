@@ -70,6 +70,7 @@ class RegionController extends Controller {
         $region->region_code = $request->governerate_code . '-' . $request->region_code;
         $region->region_title = $request->region_title;
         $region->local_code = '';
+        $region->is_local = 0;
         $region->created_by = Auth::user()->user_id;
         // dd($region);
         $region->save();

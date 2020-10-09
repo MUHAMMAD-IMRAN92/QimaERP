@@ -253,15 +253,15 @@ class CommonController extends Controller {
     }
 
     function allBatches(Request $request) {
-        $season = Season::where('status', 0)->first();
         $allBatches = array();
-        $batches = BatchNumber::where('is_parent', 0)->where('season_id', $season->season_id)->where('season_status', 0)->get();
+        $batches = BatchNumber::where('is_parent', 0)->get();
         foreach ($batches as $key => $batche) {
-            $childBatch = $batche->childBatches;
+            $batche->is_active = FALSE;
+            //   $childBatch = $batche->childBatches;
             $batchData = ['batch' => $batche];
             array_push($allBatches, $batchData);
         }
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"),$allBatches);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $allBatches);
     }
 
 }

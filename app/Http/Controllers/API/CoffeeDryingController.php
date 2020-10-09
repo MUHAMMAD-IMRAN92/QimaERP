@@ -95,6 +95,11 @@ class CoffeeDryingController extends Controller {
         foreach ($receivedTransactions as $key => $receivedTransaction) {
             //::Recevied coffee transations
             if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+
+                $trans = true;
+                if ($receivedTransaction->transaction->is_server_id == FALSE) {
+                    $trans = FALSE;
+                }
                 $transaction = Transaction::create([
                             'batch_number' => $receivedTransaction->transaction->batch_number,
                             'is_parent' => $receivedTransaction->transaction->is_parent,
@@ -126,6 +131,7 @@ class CoffeeDryingController extends Controller {
                         $basketArray = explode("_", $transactionContainer->key);
                         $basket = $basketArray[0];
                         $weight = $basketArray[1];
+                        $transationsExplodeId = $basketArray[2];
                         TransactionDetail::create([
                             'transaction_id' => $transaction->transaction_id,
                             'container_number' => $basket,
@@ -136,7 +142,15 @@ class CoffeeDryingController extends Controller {
                             'center_id' => $receivedTransaction->transaction->center_id,
                             'reference_id' => $receivedTransaction->transaction->reference_id,
                         ]);
-                        TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $basket)->update(['container_status' => 1]);
+
+                        if ($trans == true) {
+                            TransactionDetail::where('transaction_id', $transationsExplodeId)->where('container_number', $basket)->update(['container_status' => 1]);
+                        } else {
+                            $code = $transationsExplodeId . '_' . $userId . '-T';
+                            $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+                            $receivedTransIdCheck = $checkTransaction->transaction_id;
+                            TransactionDetail::where('transaction_id', $receivedTransIdCheck)->where('container_number', $basket)->update(['container_status' => 1]);
+                        }
                     }
                 }
             }
@@ -167,7 +181,7 @@ class CoffeeDryingController extends Controller {
                             'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
                             'type' => 'coffee_drying_received',
                 ]);
-                $transactionContainers = $receivedTransaction->transactionDetail;
+                $transactionContainers = $receivedTransaction->transactionDetails;
                 foreach ($transactionContainers as $key => $transactionContainer) {
                     TransactionDetail::create([
                         'transaction_id' => $processTransaction->transaction_id,
@@ -210,7 +224,7 @@ class CoffeeDryingController extends Controller {
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
-            $data = ['transaction' => $transaction, 'transactionDetail' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
             array_push($allTransactions, $data);
         }
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
@@ -262,7 +276,7 @@ class CoffeeDryingController extends Controller {
         $receivedMeta = json_decode($request['meta']);
         $transationsIdArray = array();
         foreach ($receivedMeta as $key => $transactionsInformation) {
-            if ($transactionsInformation->transactionDetail) {
+            if ($transactionsInformation->transactionDetails) {
                 $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetail->transaction_id)->where('container_number', $transactionsInformation->transactionDetail->container_number)->first();
                 $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetail->container_weight;
                 $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetail->is_sent;
@@ -322,7 +336,7 @@ class CoffeeDryingController extends Controller {
         foreach ($currentlyReceivedCoffees as $key => $currentlyReceivedCof) {
             $transactionDetailRec = $currentlyReceivedCof->transactionDetail;
             $transactionMetaRec = $currentlyReceivedCof->meta;
-            $data = ['transactionDetail' => $transactionDetailRec, 'transactionMeta' => $transactionMetaRec];
+            $data = ['transactionDetails' => $transactionDetailRec, 'transactionMeta' => $transactionMetaRec];
             array_push($allTransationsDetail, $data);
         }
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransationsDetail);
@@ -349,6 +363,7 @@ class CoffeeDryingController extends Controller {
                     $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
                     $receivedTransId = $checkTransaction->transaction_id;
                 }
+
                 $processTransaction = Transaction::create([
                             'batch_number' => $receivedTransaction->transaction->batch_number,
                             'is_parent' => $receivedTransaction->transaction->is_parent,
@@ -374,7 +389,7 @@ class CoffeeDryingController extends Controller {
                             'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
                             'type' => 'coffee_drying_send',
                 ]);
-                $transactionContainers = $receivedTransaction->transactionDetail;
+                $transactionContainers = $receivedTransaction->transactionDetails;
                 foreach ($transactionContainers as $key => $transactionContainer) {
                     TransactionDetail::create([
                         'transaction_id' => $processTransaction->transaction_id,
@@ -416,7 +431,7 @@ class CoffeeDryingController extends Controller {
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
-            $data = ['transaction' => $transaction, 'transactionDetail' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
             array_push($allTransactions, $data);
         }
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $allTransactions);
@@ -468,7 +483,7 @@ class CoffeeDryingController extends Controller {
                             'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
                             'type' => 'sent_to_yemen',
                 ]);
-                $transactionContainers = $receivedTransaction->transactionDetail;
+                $transactionContainers = $receivedTransaction->transactionDetails;
                 foreach ($transactionContainers as $key => $transactionContainer) {
                     TransactionDetail::create([
                         'transaction_id' => $processTransaction->transaction_id,
@@ -510,7 +525,7 @@ class CoffeeDryingController extends Controller {
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
-            $data = ['transaction' => $transaction, 'transactionDetail' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
             array_push($allTransactions, $data);
         }
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $allTransactions);
@@ -562,7 +577,7 @@ class CoffeeDryingController extends Controller {
                             'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
                             'type' => 'coffee_drying',
                 ]);
-                $transactionContainers = $receivedTransaction->transactionDetail;
+                $transactionContainers = $receivedTransaction->transactionDetails;
                 foreach ($transactionContainers as $key => $transactionContainer) {
                     TransactionDetail::create([
                         'transaction_id' => $processTransaction->transaction_id,
@@ -604,7 +619,7 @@ class CoffeeDryingController extends Controller {
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
-            $data = ['transaction' => $transaction, 'transactionDetail' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
             array_push($allTransactions, $data);
         }
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $allTransactions);

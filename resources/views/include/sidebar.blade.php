@@ -126,7 +126,11 @@
               </p>
              </a>
           	</li>  
-            <li class="nav-item"  @if($segment == 'allregion') class="active" @endif>
+            
+@else
+
+@endhasrole
+         <li class="nav-item"  @if($segment == 'allregion') class="active" @endif>
              <a href="{{URL::to('')}}/admin/allregion" class="nav-link ">
               <i class="nav-icon fas fa-globe"></i>
               <p>
@@ -134,11 +138,7 @@
                 
               </p>
              </a>
-            </li> 
-@else
-
-@endhasrole
-           
+            </li>   
             <li class="nav-item"   @if($segment == 'allvillage')class="active" @endif>
              <a href="{{URL::to('')}}/admin/allvillage" class="nav-link ">
               <i class="nav-icon fas fa-tree"></i>

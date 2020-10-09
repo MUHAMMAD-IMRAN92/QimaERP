@@ -99,6 +99,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/get_processing_list', 'API\SpecialProcessingController@processList');
         Route::get('/get_yeast_list', 'API\SpecialProcessingController@yeastList');
         Route::post('/received_special_processing_coffee', 'API\SpecialProcessingController@receivedSpecialProcessingCoffee');
+        Route::post('/special_processing_coffee_sent_to_drying', 'API\SpecialProcessingController@spSendCoffeeDryingCoffee');
 
         //::Coffee Drying Manager
         Route::get('/get_coffee_drying_coffee', 'API\CoffeeDryingController@getCoffeeDryingPendingCoffee');
