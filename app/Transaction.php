@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model {
 
     protected $primaryKey = 'transaction_id';
-    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status', 'is_server_id', 'is_new', 'sent_to', 'is_sent'];
+    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status', 'is_server_id', 'is_new', 'sent_to', 'is_sent', 'session_no', 'local_created_at'];
     protected $casts = [
         'is_local' => 'boolean',
         'is_mixed' => 'boolean',
@@ -46,6 +46,14 @@ class Transaction extends Model {
 
     public function transactions_invoices() {
         return $this->hasMany(TransactionInvoice::class, 'transaction_id', 'transaction_id');
+    }
+
+    public function meta() {
+        return $this->hasMany(MetaTransation::class, 'transaction_id', 'transaction_id');
+    }
+
+    public function buyer() {
+        return $this->belongsTo('App\User', 'created_by', 'user_id');
     }
 
 }

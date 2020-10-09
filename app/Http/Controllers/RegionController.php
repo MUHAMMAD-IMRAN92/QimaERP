@@ -7,17 +7,19 @@ use App\Governerate;
 use App\Region;
 use Auth;
 use Session;
-class RegionController extends Controller
-{
-    public function index(){
-    	$data['region']=Region::all();
-    	return view('admin.region.allregion',$data);
+
+class RegionController extends Controller {
+
+    public function index() {
+        $data['region'] = Region::all();
+        return view('admin.region.allregion', $data);
     }
 
-    public function addnewregion(){
-    	$data['governor']=Governerate::all();
-    	return view('admin.region.addnewregion',$data);
+    public function addnewregion() {
+        $data['governor'] = Governerate::all();
+        return view('admin.region.addnewregion', $data);
     }
+
     function getRegionAjax(Request $request) {
         $draw = $request->get('draw');
         $start = $request->get('start');
@@ -32,8 +34,8 @@ class RegionController extends Controller
         $members = $members->select('region_id', 'region_code', 'region_title');
         //::search with farmername or farmer_code or  region_code
         $members = $members->when($search, function($q)use ($search) {
-                    $q->where('region_code', 'like', "%$search%")->orWhere('region_title', 'like', "%$search%");
-                });
+            $q->where('region_code', 'like', "%$search%")->orWhere('region_title', 'like', "%$search%");
+        });
         if ($request->has('order') && !is_null($request['order'])) {
             $orderBy = $request->get('order');
             $orderby = 'asc';
@@ -42,9 +44,9 @@ class RegionController extends Controller
             }
             if (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 1) {
                 $column = 'region_code';
-            }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
                 $column = 'region_title';
-            }else {
+            } else {
                 $column = 'region_code';
             }
         }
@@ -59,30 +61,34 @@ class RegionController extends Controller
         return json_encode($data);
     }
 
-    public function store(Request $request){
-    	 $validatedData = $request->validate([
-        'region_code' => 'required|unique:regions',
-        'region_title' => 'required|unique:regions',
-    ]);
-    	$region = new Region;
-    	$region->region_code=$request->governerate_code.'-'.$request->region_code;
-    	$region->region_title=$request->region_title;
-    	$region->created_by=Auth::user()->user_id;
-    	// dd($region);
-    	$region->save();
-    	Session::flash('message', 'Region Has Been Added Successfully.');
-    	return redirect('admin/allregion');
-    }
-
-     public function edit($id){
-     	// $data['governor']=Governerate::all();
-    	$data['region']=Region::find($id);
-    	return view('admin.region.editregion',$data);
-    }
-     public function delete($id){
-     	$region = Region::find($id);
-        $region->delete();
-        Session::flash('message', 'Region Has Been Deleted Successfully.');  
+    public function store(Request $request) {
+        $validatedData = $request->validate([
+            'region_code' => 'required|unique:regions',
+            'region_title' => 'required|unique:regions',
+        ]);
+        $region = new Region;
+        $region->region_code = $request->governerate_code . '-' . $request->region_code;
+        $region->region_title = $request->region_title;
+        $region->local_code = '';
+        $region->is_local = 0;
+        $region->created_by = Auth::user()->user_id;
+        // dd($region);
+        $region->save();
+        Session::flash('message', 'Region Has Been Added Successfully.');
         return redirect('admin/allregion');
     }
+
+    public function edit($id) {
+        // $data['governor']=Governerate::all();
+        $data['region'] = Region::find($id);
+        return view('admin.region.editregion', $data);
+    }
+
+    public function delete($id) {
+        $region = Region::find($id);
+        $region->delete();
+        Session::flash('message', 'Region Has Been Deleted Successfully.');
+        return redirect('admin/allregion');
+    }
+
 }

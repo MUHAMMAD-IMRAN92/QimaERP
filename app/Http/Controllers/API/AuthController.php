@@ -15,6 +15,18 @@ use App\User;
 
 class AuthController extends Controller {
 
+    private $app_lang;
+
+    public function __construct() {
+        set_time_limit(0);
+        $headers = getallheaders();
+        if (isset($headers['app_lang'])) {
+            $this->app_lang = $headers['app_lang'];
+        } else {
+            $this->app_lang = 'en';
+        }
+    }
+
     /**
      * Login user.
      *
@@ -30,20 +42,24 @@ class AuthController extends Controller {
             return sendError($errors, 400);
         }
         $auth = auth()->guard('web');
-
+        $center = '';
         if ($auth->attempt(['password' => $request->password, 'email' => $request->email])) {
             $user = Auth::user();
             if ($user->hasRole(['super admin', 'admin'])) {
                 Auth::logout();
-                return sendError('You are blocked by admin', 400);
+                return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.BLOCKED"), 400);
             }
-            $user = User::where('user_id', Auth::user()->user_id)->with('roles')->first();
-            // return sendSuccess('Logged In', $user);
+            $user = User::where('user_id', Auth::user()->user_id)->with('roles', 'center_user')->first();
+            if (isset($user->center_user) && isset($user->center_user->center_id)) {
+                $user->center_id = $user->center_user->center_id;
+            }
+            $user->makeHidden('center_user');
+// return sendSuccess('Logged In', $user);
             $session = $this->saveLoginUserDetail($user->user_id);
             $user->session_key = $session->session_key;
-            return sendSuccess('Logged In', $user);
+            return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.LOGIN"), $user);
         } else {
-            return sendError('Invalid email or password', 400);
+            return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.INVALID_USER"), 400);
         }
     }
 

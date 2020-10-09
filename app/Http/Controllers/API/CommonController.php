@@ -26,10 +26,16 @@ class CommonController extends Controller {
 
     private $userId;
     private $user;
+    private $app_lang;
 
     public function __construct() {
         set_time_limit(0);
         $headers = getallheaders();
+        if (isset($headers['app_lang'])) {
+            $this->app_lang = $headers['app_lang'];
+        } else {
+            $this->app_lang = 'en';
+        }
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
         if ($checksession) {
             $user = User::where('user_id', $checksession->user_id)->with('roles')->first();
@@ -37,10 +43,10 @@ class CommonController extends Controller {
                 $this->user = $user;
                 $this->userId = $user->user_id;
             } else {
-                return sendError('Session Expired', 404);
+                return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
             }
         } else {
-            return sendError('Session Expired', 404);
+            return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
         }
     }
 
@@ -49,7 +55,6 @@ class CommonController extends Controller {
      * @return \Illuminate\Http\Response
      */
     function addGovernerate(Request $request) {
-
         //::validation
         $validator = Validator::make($request->all(), [
                     'governerates' => 'required',
@@ -72,7 +77,7 @@ class CommonController extends Controller {
                 ]);
             }
         }
-        return sendSuccess('Governerate was created Successfully', []);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_GOV"), []);
     }
 
     function governerate(Request $request) {
@@ -83,7 +88,7 @@ class CommonController extends Controller {
                         $q->where('governerate_title', 'like', "%$search%")->orwhere('governerate_code', 'like', "%$search%");
                     });
                 })->orderBy('governerate_title')->get();
-        return sendSuccess('Successfully retrieved Governerate', $governerates);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_GOV"), $governerates);
     }
 
     function addRegion(Request $request) {
@@ -109,7 +114,7 @@ class CommonController extends Controller {
                 ]);
             }
         }
-        return sendSuccess('Region was created Successfully', []);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_REGION"), []);
     }
 
     function regions(Request $request) {
@@ -119,7 +124,7 @@ class CommonController extends Controller {
                         $q->where('region_title', 'like', "%$search%")->orwhere('region_code', 'like', "%$search%");
                     });
                 })->orderBy('region_title')->get();
-        return sendSuccess('Successfully retrieved region', $regions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_REGION"), $regions);
     }
 
     function addVillage(Request $request) {
@@ -159,7 +164,7 @@ class CommonController extends Controller {
                 }
             }
         }
-        return sendSuccess('Village was created Successfully', []);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_VILLAGE"), []);
     }
 
     function villages(Request $request) {
@@ -169,7 +174,7 @@ class CommonController extends Controller {
                         $q->where('village_title', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
                     });
                 })->orderBy('village_title')->get();
-        return sendSuccess('Successfully retrieved villages', $villages);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_VILLAGE"), $villages);
     }
 
     function farmers(Request $request) {
@@ -179,7 +184,7 @@ class CommonController extends Controller {
                         $q->where('farmer_code', 'like', "%$search%")->orwhere('farmer_name', 'like', "%$search%");
                     });
                 })->orderBy('farmer_name')->get();
-        return sendSuccess('Successfully retrieved farmers', $farmers);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_FARMER"), $farmers);
     }
 
     function addContainer(Request $request) {
@@ -214,7 +219,7 @@ class CommonController extends Controller {
             }
         }
         $containersListing = Container::whereIn('container_id', $containersId)->get();
-        return sendSuccess('Container was created Successfully', $containersListing);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_CONTAINER"), $containersListing);
     }
 
     function containers(Request $request) {
@@ -224,7 +229,7 @@ class CommonController extends Controller {
                         $q->where('container_number', 'like', "%$containerNumber%");
                     });
                 })->orderBy('container_number')->get();
-        return sendSuccess('Successfully retrieved containera', $containers);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CONTAINER"), $containers);
     }
 
     function transactions(Request $request) {
@@ -234,7 +239,7 @@ class CommonController extends Controller {
                         $q->where('batch_number', 'like', "%$search%");
                     });
                 })->get();
-        return sendSuccess('Successfully retrieved transactions', $transactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_TRANSACTION"), $transactions);
     }
 
     function transactionsDetails(Request $request) {
@@ -244,19 +249,19 @@ class CommonController extends Controller {
                         $q->where('container_number', 'like', "%$search%");
                     });
                 })->get();
-        return sendSuccess('Successfully retrieved transactions details', $transactionsDetails);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_TRANSACTION_DETAIL"), $transactionsDetails);
     }
 
     function allBatches(Request $request) {
-        $season = Season::where('status', 0)->first();
         $allBatches = array();
-        $batches = BatchNumber::where('is_parent', 0)->where('season_id', $season->season_id)->where('season_status', 0)->get();
+        $batches = BatchNumber::where('is_parent', 0)->get();
         foreach ($batches as $key => $batche) {
-            $childBatch = $batche->childBatches;
+            $batche->is_active = FALSE;
+            //   $childBatch = $batche->childBatches;
             $batchData = ['batch' => $batche];
             array_push($allBatches, $batchData);
         }
-        return sendSuccess('Successfully retrieved batches', $allBatches);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $allBatches);
     }
 
 }

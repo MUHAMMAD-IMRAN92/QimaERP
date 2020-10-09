@@ -97,8 +97,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::Special processing Manager
         Route::get('/get_special_processing_coffee', 'API\SpecialProcessingController@getSpeicalProcessingManagerPendingCoffee');
         Route::get('/get_processing_list', 'API\SpecialProcessingController@processList');
+        Route::get('/get_yeast_list', 'API\SpecialProcessingController@yeastList');
+        Route::post('/received_special_processing_coffee', 'API\SpecialProcessingController@receivedSpecialProcessingCoffee');
+        Route::post('/special_processing_coffee_sent_to_drying', 'API\SpecialProcessingController@spSendCoffeeDryingCoffee');
 
         //::Coffee Drying Manager
         Route::get('/get_coffee_drying_coffee', 'API\CoffeeDryingController@getCoffeeDryingPendingCoffee');
+        Route::post('/received_drying_coffee', 'API\CoffeeDryingController@receivedCoffeeDryingCoffee');
+        Route::get('/get_received_drying_coffee', 'API\CoffeeDryingController@getReceivedCoffeeDryingCoffee');
+        Route::post('/update_coffee_meta', 'API\CoffeeDryingController@updateMeta');
+        Route::post('/sent_drying_coffee', 'API\CoffeeDryingController@sendCoffeeDryingCoffee');
+        Route::post('/coffee_sent_to_yemen', 'API\CoffeeDryingController@coffeeSentToYemen');
+        Route::post('/part_dry_coffee', 'API\CoffeeDryingController@partDryCoffee');
     });
 });

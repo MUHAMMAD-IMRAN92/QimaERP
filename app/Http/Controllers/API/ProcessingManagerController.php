@@ -11,33 +11,43 @@ use App\TransactionLog;
 use App\Transaction;
 use App\LoginUser;
 use App\User;
+use App\CenterUser;
 
 class ProcessingManagerController extends Controller {
 
     private $userId;
     private $user;
+    private $app_lang;
 
     public function __construct() {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
-
+        if (isset($headers['app_lang'])) {
+            $this->app_lang = $headers['app_lang'];
+        } else {
+            $this->app_lang = 'en';
+        }
         if ($checksession) {
             $user = User::where('user_id', $checksession->user_id)->with('roles')->first();
             if ($user) {
                 $this->user = $user;
                 $this->userId = $user->user_id;
             } else {
-                return sendError('Session Expired', 404);
+                return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
             }
         } else {
-            return sendError('Session Expired', 404);
+            return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
         }
     }
 
     function getProcessingManager(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'received')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
@@ -55,14 +65,18 @@ class ProcessingManagerController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Processor manager received coffee', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
     function fetchProcessorRole(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $role = Role::whereIn('name', ['Special Processing', 'Coffee Drying'])->select('name')->get();
-        return sendSuccess('Processor manager coffee', $role);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ROLE"), $role);
     }
 
     function sentToSpecialProcessingAndCoffeeDrying(Request $request) {
@@ -152,14 +166,18 @@ class ProcessingManagerController extends Controller {
         }
         $data = array_merge($dataArray, $alreadyReciviedCoffee);
         if (count($alreadyReciviedCoffee) > 0) {
-            return sendSuccess('Some transactions have already been recivied.', $data);
+            return sendSuccess(Config("statuscodes." . $this->app_lang . ".error_messages.TRANSACTION_SENT_ALREADY"), $data);
         }
-        return sendSuccess('Transactions sent successfully', $data);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $data);
     }
 
     function getSendSpecialProcessingAndDryingCoffee(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
@@ -169,18 +187,22 @@ class ProcessingManagerController extends Controller {
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
-            $transaction->is_sent = 0;
+            $transaction->is_sent = 1;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Processor manager coffee', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
     function getSendCoffeeDrying(Request $request) {
         $userId = $this->userId;
-        $centerId = $this->user->table_id;
+        $centerId = 0;
+        $userCenter = CenterUser::where('user_id', $this->userId)->first();
+        if ($userCenter) {
+            $centerId = $userCenter->center_id;
+        }
         $allTransactions = array();
         $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'sent')->where('type', 'coffee_drying')->where('entity_id', $centerId);
@@ -200,7 +222,7 @@ class ProcessingManagerController extends Controller {
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail];
             array_push($allTransactions, $data);
         }
-        return sendSuccess('Processor manager coffee', $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
 }

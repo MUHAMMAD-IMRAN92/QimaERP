@@ -65,6 +65,7 @@ class GovernorController extends Controller
     	$governor = new Governerate;
     	$governor->governerate_code=$request->governerate_code;
     	$governor->governerate_title=$request->governerate_title;
+    	$governor->local_code='';
     	$governor->created_by=Auth::user()->user_id;
     	// dd($governor);
     	$governor->save();
