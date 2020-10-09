@@ -13,7 +13,7 @@ class AddSessionsToTransactionsTable extends Migration {
      */
     public function up() {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->integer('session_no')->nullable();
+            $table->integer('session_no')->default(1)->nullable();
             $table->dateTime('local_created_at')->nullable();
         });
     }

@@ -57,6 +57,11 @@ class ProcessingManagerController extends Controller {
                     }])->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
+             $transaction->buyer_name = '';
+            $parentCheckBatch = BatchNumber::where('batch_number', $transaction->batch_number)->with('buyer')->first();
+            if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
+                $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
+            }
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
@@ -126,7 +131,7 @@ class ProcessingManagerController extends Controller {
                                 'sent_to' => $sentTransaction->transaction->sent_to,
                                 'is_sent' => 1,
                                 'session_no' => $sentTransaction->transaction->session_no,
-                                'local_created_at' => $sentTransaction->transaction->created_at,
+                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
                     ]);
                     $transactionLog = TransactionLog::create([
                                 'transaction_id' => $transaction->transaction_id,

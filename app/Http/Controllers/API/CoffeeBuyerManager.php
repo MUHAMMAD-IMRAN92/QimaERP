@@ -124,7 +124,7 @@ class CoffeeBuyerManager extends Controller {
                                 'sent_to' => 3,
                                 'is_sent' => 0,
                                 'session_no' => $sentTransaction->transactions->session_no,
-                                'local_created_at' => $sentTransaction->transactions->created_at,
+                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
                     ]);
 
                     $transactionLog = TransactionLog::create([
