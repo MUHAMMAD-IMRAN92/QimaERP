@@ -12,6 +12,7 @@
         <div class="kt-login__head">
 
             <h3 class="kt-login__title">Sign In To Admin</h3>
+            
             @include('admin_layout.messages')
         </div>
         <form class="kt-form" action="{{url('admin/login')}}" method="post">

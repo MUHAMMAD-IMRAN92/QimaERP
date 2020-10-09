@@ -78,9 +78,18 @@
                   <div class="form-group">
                     <label for="cars">Choose a Role:</label>
 
-                      <select class="form-control" name="role_id">
+                      <select class="form-control" name="role_id" id="select1">
                         @foreach($role as $row)
                         <option value="{{$row->id}}">{{$row->name}}</option>
+                        @endforeach
+                      </select>
+                  </div>
+
+                   <div class="form-group" id="select2"  style="display:none;"> 
+                    <label for="cars">Center:</label>
+                     <select class="form-control" name="center_id">
+                        @foreach($center as $row)
+                        <option value="{{$row->center_id}}">{{$row->center_name}}</option>
                         @endforeach
                       </select>
                   </div>
@@ -110,6 +119,19 @@
   </div>
   <!-- /.content-wrapper -->
  <script>
+  $("#select1").change(function() {
+  if ($(this).val() == 3) {
+    $("#select2").show();
+  } else if ($(this).val() == 5){
+    $("#select2").show();
+  } else if ($(this).val() == 6){
+    $("#select2").show();
+  } else if ($(this).val() == 7){
+    $("#select2").show();
+  }else{
+    $("#select2").hide();
+  }
+});
 function myFunction() {
   var x = document.getElementById("myInput");
   if (x.type === "password") {

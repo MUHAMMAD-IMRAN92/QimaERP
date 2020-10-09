@@ -20,10 +20,12 @@ Route::get('/', function () {
 
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::get('dashboard', 'AuthController@dashboard')->middleware('auth');
-    Route::get('logout', 'AuthController@adminLogout');
-    Route::get('login', 'AuthController@adminLogin');
+       Route::get('login', 'AuthController@adminLogin');
     Route::post('login', 'AuthController@adminPostLogin');
+    Route::group(['middleware' => ['CheckRole']], function () {
+    Route::get('dashboard', 'AuthController@dashboard')->middleware('auth' ,'CheckRole');
+    Route::get('logout', 'AuthController@adminLogout');
+ 
 
     //Governor Controller
     Route::get('allgovernor', 'GovernorController@allgovernor')->middleware('auth');
@@ -57,6 +59,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('getfarmer', 'FarmerController@getFarmerAjax');
     Route::get('editfarmer/{id}', 'FarmerController@edit');
     Route::post('updatefarmer', 'FarmerController@update');
+
+    Route::get('statusupdate/{id}', 'FarmerController@updatestatus');
 
 
     //BatchNumber Controller
@@ -97,6 +101,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('seasonclose/{id}', 'SeasonController@seasonclose');
 
 
+
     //Weight Controller
     Route::get('governorweight', 'WeightController@governorweight');
     Route::get('governorweightcode/{id}', 'WeightController@governorweightcode');
@@ -115,7 +120,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('updatepassword', 'UserController@updatepassword');
 
     
-    Route::group(['middleware' => ['nocache', 'admin']], function () {
+    
 
 
 

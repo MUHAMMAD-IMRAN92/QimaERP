@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Governerate;
 use App\Region;
+use App\Center;
 use Auth;
 use Session;
 
@@ -17,6 +18,7 @@ class RegionController extends Controller {
 
     public function addnewregion() {
         $data['governor'] = Governerate::all();
+        $data['center'] = Center::all();
         return view('admin.region.addnewregion', $data);
     }
 
@@ -62,13 +64,17 @@ class RegionController extends Controller {
     }
 
     public function store(Request $request) {
+
+        // dd($request->all());
         $validatedData = $request->validate([
             'region_code' => 'required|unique:regions',
             'region_title' => 'required|unique:regions',
+
         ]);
         $region = new Region;
         $region->region_code = $request->governerate_code . '-' . $request->region_code;
         $region->region_title = $request->region_title;
+        $region->center_id = $request->center_id;
         $region->local_code = '';
         $region->is_local = 0;
         $region->created_by = Auth::user()->user_id;
@@ -79,7 +85,7 @@ class RegionController extends Controller {
     }
 
     public function edit($id) {
-        // $data['governor']=Governerate::all();
+         $data['center']=Center::all();
         $data['region'] = Region::find($id);
         return view('admin.region.editregion', $data);
     }

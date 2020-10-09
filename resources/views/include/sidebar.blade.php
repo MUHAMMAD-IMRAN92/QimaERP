@@ -138,7 +138,9 @@
                 
               </p>
              </a>
-            </li>   
+
+            </li> 
+
             <li class="nav-item"   @if($segment == 'allvillage')class="active" @endif>
              <a href="{{URL::to('')}}/admin/allvillage" class="nav-link ">
               <i class="nav-icon fas fa-tree"></i>

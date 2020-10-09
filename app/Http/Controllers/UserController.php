@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
 use App\User;
+use App\Center;
 use Hash;
 use DB;
 use Auth;
@@ -64,6 +65,7 @@ class UserController extends Controller
 
     public function adduser(){
     	$data['role'] = Role::get();
+        $data['center'] = Center::all();
     	return view('admin.user.addnewuser',$data);
     }
 
@@ -82,11 +84,22 @@ class UserController extends Controller
     	$user->password=Hash::make($request->password);
     	// dd($user);
     	$user->save();
-    	DB::table('model_has_roles')->insert([
+        DB::table('model_has_roles')->insert([
             'role_id' =>$request->role_id,
             'model_id' => $user->user_id,
             'model_type' => 'App\User'
         ]);
+         $data = User::where('user_id',$user->user_id)->with('roles')->first();
+   if($request->center_id){
+
+
+        DB::table('center_users')->insert([
+            'center_id' =>$request->center_id,
+            'user_id' => $user->user_id,
+            'role_name' => $data->roles['0']->name,
+        ]);
+
+   }
     	return redirect('admin/allusers')->with('message','User Create Successfully');
     }
 

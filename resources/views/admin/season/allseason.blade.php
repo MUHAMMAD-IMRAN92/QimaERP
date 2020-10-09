@@ -118,7 +118,7 @@
                 {"data": 'end_date'},
                 {"mRender": function (data, type, row) {
                         return '<a href=' + base_path + 'admin/editseason/' + row.season_id + '>Edit </a>| \
-                        <a href=' + base_path + 'admin/seasonclose/' + row.season_id + ' class="season_close" data-id="' + row.season_id + '">Season Close</a>';
+                        <a href=' + base_path + 'admin/seasonclose/' + row.season_id + ' class="season_close" data-id="' + row.season_id + '" rel2='1'>Season Close</a>';
                     }
                 }
             ],
@@ -157,6 +157,8 @@
 //            location.reload();
         }
     });
+
+    
 
 
    
