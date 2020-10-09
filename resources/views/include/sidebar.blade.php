@@ -89,8 +89,8 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-       
-            <li class="nav-item"  @if($segment == 'dashboard') class="active" @endif>
+       @hasrole('Super Admin')
+ <li class="nav-item"  @if($segment == 'dashboard') class="active" @endif>
              <a href="{{URL::to('')}}/admin/dashboard" class="nav-link ">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
@@ -135,6 +135,10 @@
               </p>
              </a>
             </li> 
+@else
+
+@endhasrole
+           
             <li class="nav-item"   @if($segment == 'allvillage')class="active" @endif>
              <a href="{{URL::to('')}}/admin/allvillage" class="nav-link ">
               <i class="nav-icon fas fa-tree"></i>
@@ -153,7 +157,8 @@
               </p>
              </a>
             </li> 
-            <li class="nav-item"   @if($segment == 'allbatchnumber')class="active" @endif>
+            @hasrole('Super Admin')
+<li class="nav-item"   @if($segment == 'allbatchnumber')class="active" @endif>
              <a href="{{URL::to('')}}/admin/allbatchnumber" class="nav-link ">
              <i class="nav-icon fas fa-sort-numeric-up-alt"></i>
               <p>
@@ -225,6 +230,9 @@
               </p>
              </a>
             </li>
+@else
+    
+@endhasrole
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
