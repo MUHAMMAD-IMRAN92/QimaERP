@@ -60,6 +60,7 @@
                     <th>Farmer Name</th>
                     <th>Village Code</th>
                     <th>Farmer Cnic</th>
+                    <th>Status</th>
                     <th>Action</th> 
                   </tr>
                   </thead>
@@ -102,7 +103,19 @@
                 {"data": 'village_code'},
                 {"data": 'farmer_nicn'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + '>Edit</a>| <a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + ' class="editor_remove" data-id="' + row.farmer_id + '">Delete</a>';
+                        if (row.is_status == 1) {
+                            var status = 'Approved';
+                        }else {
+                           var status = 'Pending';
+                        }
+                        return '<td>'+status+'</td>';
+                    }
+                },
+                {"mRender": function (data, type, row) {
+                  if(row.is_status == 0){
+                        return '<a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + '>Edit</a>| <a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + ' class="editor_remove" data-id="' + row.farmer_id + '">Delete</a>|  <a href=' + base_path + 'admin/statusupdate/' + row.farmer_id + ' data-id="' + row.farmer_id + '">Approved</a>'; }else{
+                           return '<a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + '>Edit</a>| <a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + ' class="editor_remove" data-id="' + row.farmer_id + '">Delete</a>';
+                        }
                     }
                 }
             ],
@@ -124,6 +137,7 @@
 
         }).draw();
     });
+
 
    
 </script>

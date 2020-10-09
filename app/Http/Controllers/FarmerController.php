@@ -23,7 +23,7 @@ class FarmerController extends Controller
         $total_members = Farmer::count();
         $members = Farmer::query();
         //::select columns
-        $members = $members->select('farmer_id', 'farmer_code', 'farmer_name', 'village_code', 'farmer_nicn');
+        $members = $members->select('farmer_id', 'farmer_code', 'farmer_name', 'village_code', 'farmer_nicn','is_status');
         //::search with farmername or farmer_code or  village_code
         $members = $members->when($search, function($q)use ($search) {
                     $q->where('farmer_name', 'like', "%$search%")->orWhere('farmer_code', 'like', "%$search%")->orWhere('village_code', 'like', "%$search%")->orWhere('farmer_nicn', 'like', "%$search%");
@@ -40,14 +40,17 @@ class FarmerController extends Controller
                 $column = 'farmer_name';
             } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 3) {
                 $column = 'village_code';
-            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 3) {
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 4) {
                 $column = 'farmer_nicn';
+            
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 5) {
+                $column = 'is_status';
             
             } else {
                 $column = 'farmer_code';
             }
         }
-        $members = $members->orderBy($column, $orderby)->get();
+        $members = $members->skip($start)->take($length)->orderBy($column, $orderby)->get();
         $data = array(
             'draw' => $draw,
             'recordsTotal' => $total_members,
@@ -128,5 +131,17 @@ class FarmerController extends Controller
        
         $updatefarmer->save();
         return view('admin.farmer.allfarmer')->with('updatefarmer','farmer detail update Successfully');
+    }
+
+
+    public function updatestatus($id){
+        $status=Farmer::find($id);
+        if ($status->is_status=='0'){
+            $status->is_status='1';
+        }else{
+             $status->is_status='0';
+        }
+        $status->save();
+        return redirect()->back();
     }
 }

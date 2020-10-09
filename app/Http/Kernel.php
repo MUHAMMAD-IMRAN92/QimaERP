@@ -67,6 +67,7 @@ class Kernel extends HttpKernel {
         'checkAppKey' => \App\Http\Middleware\checkAppKey::class,
         'checkSession' => \App\Http\Middleware\CheckUserSession::class,
         'headersmid' => \App\Http\Middleware\midheaders::class,
+        'CheckRole' => \App\Http\Middleware\CheckRole::class,
     ];
 
 }

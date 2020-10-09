@@ -22,6 +22,14 @@
                             </div>
                             <?php
                         }
+                        if (Session::has('logincheck')) {
+                            ?>
+                            <div class="alert alert-info alert-dismissible">
+                                <a href="javascript:void(0)" class="close" data-dismiss="alert" aria-label="close">&times</a>
+                                <?php echo Session::get('logincheck') ?>
+                            </div>
+                            <?php
+                        }
                         if (Session::has('error')) {
                             ?>
                             <div class="alert alert-danger">

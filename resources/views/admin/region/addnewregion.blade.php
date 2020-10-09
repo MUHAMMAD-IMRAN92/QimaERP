@@ -61,7 +61,18 @@
                       @endforeach
                     </select>
                   </div>
-                    
+
+                   <div class="form-group">
+                    <label for="exampleInputEmail1">Center </label>
+                   <select class="form-control input-add-inception" name="center_id">
+                       @foreach($center as $row)
+                      <option value="{{$row->center_id}}">{{$row->center_name}}</option>
+                      @endforeach
+                    </select>
+                    @error('region_code')
+                         <span  class="text-danger">{{ $message }}</span>
+                    @enderror
+                  </div> 
                  
                   <div class="form-group">
                     <label for="exampleInputEmail1">Region Code</label>

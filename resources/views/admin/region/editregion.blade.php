@@ -46,14 +46,14 @@
               @endif
                 {{ csrf_field() }}
                 <div class="card-body">
-                  {{-- <div class="form-group">
+                  <div class="form-group">
                    <label for="country_name">All Governor</label>
-                    <select class="form-control input-add-inception" name="governerate_code">
-                       @foreach($governor as $row)
-                      <option value="{{$row->governerate_code}}">{{$row->governerate_code}}</option>
+                    <select class="form-control input-add-inception" name="center_id">
+                       @foreach($center as $row)
+                      <option value="{{$row->center_id}}"{{$region->center_id == $row->center_id  ? 'selected' : ''}}>{{$row->center_name}}</option>
                       @endforeach
                     </select>
-                  </div> --}}
+                  </div>
                     
                  
                   <div class="form-group">
