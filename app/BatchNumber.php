@@ -42,4 +42,8 @@ class BatchNumber extends Model {
         return $this->hasMany(BatchNumber::class, 'is_parent', 'batch_id');
     }
 
+    public function buyer() {
+        return $this->belongsTo('App\User', 'created_by', 'user_id');
+    }
+
 }

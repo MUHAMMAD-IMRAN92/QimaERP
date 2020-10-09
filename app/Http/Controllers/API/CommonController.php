@@ -254,7 +254,7 @@ class CommonController extends Controller {
 
     function allBatches(Request $request) {
         $allBatches = array();
-        $batches = BatchNumber::where('is_parent', 0)->get();
+        $batches = BatchNumber::all();
         foreach ($batches as $key => $batche) {
             $batche->is_active = FALSE;
             //   $childBatch = $batche->childBatches;

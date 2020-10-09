@@ -13,6 +13,7 @@ use App\Center;
 use App\Farmer;
 use App\User;
 use App\CenterUser;
+use App\BatchNumber;
 
 class CenterManagerController extends Controller {
 
@@ -76,6 +77,8 @@ class CenterManagerController extends Controller {
                             'is_new' => 0,
                             'sent_to' => 4,
                             'is_sent' => 1,
+                            'session_no' => $sentTransaction->transaction->session_no,
+                            'local_created_at' => $sentTransaction->transaction->created_at,
                 ]);
                 $transactionLog = TransactionLog::create([
                             'transaction_id' => $transaction->transaction_id,
@@ -107,6 +110,12 @@ class CenterManagerController extends Controller {
         $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail', 'log')->get();
         $dataArray = array();
         foreach ($currentlyReceivedCoffees as $key => $currentlyReceivedCoffee) {
+            $currentlyReceivedCoffee->buyer_name = '';
+            $parentCheckBatch = BatchNumber::where('batch_number', $currentlyReceivedCoffee->batch_number)->with('buyer')->first();
+            if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
+                $currentlyReceivedCoffee->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
+            }
+
             $transactionDeatil = $currentlyReceivedCoffee->transactionDetail;
             $currentlyReceivedCoffee->makeHidden('transactionDetail');
             $currentlyReceivedCoffee->center_name = $transaction->log->center_name;
@@ -138,6 +147,11 @@ class CenterManagerController extends Controller {
                         $query->where('container_status', 0);
                     }])->with('log')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
+            $transaction->buyer_name = '';
+            $parentCheckBatch = BatchNumber::where('batch_number', $transaction->batch_number)->with('buyer')->first();
+            if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
+                $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
+            }
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
@@ -165,6 +179,11 @@ class CenterManagerController extends Controller {
                 })->with('transactionDetail')->with('log')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
+            $transaction->buyer_name = '';
+            $parentCheckBatch = BatchNumber::where('batch_number', $transaction->batch_number)->with('buyer')->first();
+            if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
+                $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
+            }
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;

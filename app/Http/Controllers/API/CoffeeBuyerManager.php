@@ -12,6 +12,7 @@ use App\LoginUser;
 use App\Center;
 use App\Farmer;
 use App\User;
+use App\BatchNumber;
 
 class CoffeeBuyerManager extends Controller {
 
@@ -122,6 +123,8 @@ class CoffeeBuyerManager extends Controller {
                                 'is_new' => $sentTransaction->transactions->is_new,
                                 'sent_to' => 3,
                                 'is_sent' => 0,
+                                'session_no' => $sentTransaction->transactions->session_no,
+                                'local_created_at' => $sentTransaction->transactions->created_at,
                     ]);
 
                     $transactionLog = TransactionLog::create([
@@ -154,6 +157,12 @@ class CoffeeBuyerManager extends Controller {
         $currentlySentCoffees = Transaction::whereIn('transaction_id', $sentCoffeeArray)->with('transactionDetail', 'log')->get();
         $dataArray = array();
         foreach ($currentlySentCoffees as $key => $currentlySentCoffee) {
+            $currentlySentCoffee->buyer_name = '';
+            $parentCheckBatch = BatchNumber::where('batch_number', $currentlySentCoffee->batch_number)->with('buyer')->first();
+            if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
+                $currentlySentCoffee->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
+            }
+
             $transactionsDetail = $currentlySentCoffee->transactionDetail;
             $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
             $currentlySentCoffee->center_name = $currentlySentCoffee->log->center_name;
@@ -188,11 +197,22 @@ class CoffeeBuyerManager extends Controller {
             $childTransactions = array();
             if ($transaction->childTransation) {
                 foreach ($transaction->childTransation as $key => $childTransation) {
+                    $childTransation->buyer_name = '';
+                    $checkBatch = BatchNumber::where('batch_number', $childTransation->batch_number)->with('buyer')->first();
+                    if ($checkBatch && isset($checkBatch->buyer)) {
+                        $childTransation->buyer_name = $checkBatch->buyer->first_name . ' ' . $checkBatch->buyer->last_name;
+                    }
                     $childTransationDetail = $childTransation->transactionDetail;
                     $childTransation->makeHidden('transactionDetail');
                     $childData = ['transactions' => $childTransation, 'transactions_detail' => $childTransationDetail];
                     array_push($childTransactions, $childData);
                 }
+            }
+
+            $transaction->buyer_name = '';
+            $parentCheckBatch = BatchNumber::where('batch_number', $transaction->batch_number)->with('buyer')->first();
+            if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
+                $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
             $transactionDetail = $transaction->transactionDetail;
             $transaction->makeHidden('transactionDetail');
@@ -212,6 +232,12 @@ class CoffeeBuyerManager extends Controller {
                         $query->where('container_status', 0);
                     }])->with('log')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
+            $transaction->buyer_name = '';
+            $parentCheckBatch = BatchNumber::where('batch_number', $transaction->batch_number)->with('buyer')->first();
+            if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
+                $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
+            }
+
             $transaction->center_name = $transaction->log->center_name;
             $transactionDetail = $transaction->transactionDetail;
             $transaction->makeHidden('transactionDetail');

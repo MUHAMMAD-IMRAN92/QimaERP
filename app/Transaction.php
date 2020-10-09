@@ -52,8 +52,4 @@ class Transaction extends Model {
         return $this->hasMany(MetaTransation::class, 'transaction_id', 'transaction_id');
     }
 
-    public function buyer() {
-        return $this->belongsTo('App\User', 'created_by', 'user_id');
-    }
-
 }
