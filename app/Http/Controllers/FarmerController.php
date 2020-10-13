@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Village;
+use App\FileSystem;
 use App\Farmer;
+use Auth;
 
 class FarmerController extends Controller {
 
@@ -19,7 +21,7 @@ class FarmerController extends Controller {
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
-        $orderby = 'ASC';
+        $orderby = 'DESC';
         $column = 'farmer_id';
 //::count total record
         $total_members = Farmer::count();
@@ -144,16 +146,59 @@ class FarmerController extends Controller {
         return view('admin.farmer.add_farmer', $data);
     }
 
-    public function save() {
+    public function save(Request $request) {
         $validator = Validator::make($request->all(), [
                     'village_code' => 'required',
-                    'village_title_ar' => 'required',
-                    'village_id' => 'required',
+                    'farmer_name' => 'required',
+                    'farmer_nicn' => 'required',
         ]);
         if ($validator->fails()) {
             //::validation failed
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        $profileImageId = null;
+        $idcardImageId = null;
+        if ($request->profile_picture) {
+            $file = $request->profile_picture;
+            $file_name = time() . '.' . $file->getClientOriginalExtension();
+            $request->file('profile_picture')->storeAs('images', $file_name);
+            $userProfileImage = FileSystem::create([
+                        'user_file_name' => $file_name,
+            ]);
+            $profileImageId = $userProfileImage->file_id;
+        }
+
+        if ($request->idcard_picture) {
+            $file = $request->idcard_picture;
+            $id_card_file_name = time() . '.' . $file->getClientOriginalExtension();
+            $request->file('idcard_picture')->storeAs('images', $id_card_file_name);
+            $userIdCardImage = FileSystem::create([
+                        'user_file_name' => $id_card_file_name,
+            ]);
+            $idcardImageId = $userIdCardImage->file_id;
+        }
+        $lastFarmer = Farmer::orderBy('created_at', 'desc')->first();
+        $currentFarmerCode = 1;
+        if (isset($lastFarmer) && $lastFarmer) {
+            $currentFarmerCode = ($lastFarmer->farmer_id + 1);
+        }
+        $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
+
+        $code = $request->village_code . '-' . $currentFarmerCode;
+        $alreadyFarmer = Farmer::create([
+                    'farmer_code' => $code,
+                    'farmer_name' => $request->farmer_name,
+                    'village_code' => $request->village_code,
+                    'picture_id' => $profileImageId,
+                    'idcard_picture_id' => $idcardImageId,
+                    'farmer_nicn' => $request->farmer_nicn,
+                    'local_code' => $code . '_' . Auth::user()->user_id . '-F-' . strtotime("now"),
+                    'is_local' => 0,
+                    'is_status' => 1,
+                    'created_by' => Auth::user()->user_id,
+        ]);
+
+        return redirect('admin/allfarmer');
     }
 
 }

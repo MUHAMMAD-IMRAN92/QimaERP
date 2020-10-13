@@ -376,8 +376,6 @@ class CoffeeBuyer extends Controller {
                     ]);
                     $pSession = $sessiondata;
                 }
-
-
                 $parentTransaction = Transaction::create([
                             'batch_number' => $parentBatch->batch_number,
                             'is_parent' => 0,
