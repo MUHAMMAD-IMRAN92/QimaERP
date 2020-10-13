@@ -61,9 +61,9 @@
                   <tr>
                     <th>S#</th>
                     <th>Village Code</th>
-                    <th>Village Title</th>
+                    <th>Village Title (En)</th>
+                    <th>Village Title (Ar)</th>
                     <th>Action</th>
-                    
                   </tr>
                   </thead>
                  
@@ -102,6 +102,7 @@
                 
                 {"data": 'village_code'},
                 {"data": 'village_title'},
+                {"data": 'village_title_ar'},
                 {"mRender": function (data, type, row) {
                         return '<a href=' + base_path + 'admin/editvillage/' + row.village_id + '>Edit</a>| <a href=' + base_path + '' + row.village_id + ' class="editor_remove" data-id="' + row.village_id + '">Delete</a>';
                     }

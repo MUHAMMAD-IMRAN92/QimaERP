@@ -171,7 +171,7 @@ class CommonController extends Controller {
         $search = $request->search;
         $villages = Village::when($search, function($q) use ($search) {
                     $q->where(function($q) use ($search) {
-                        $q->where('village_title', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
+                        $q->where('village_title', 'like', "%$search%")->orwhere('village_title_ar', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
                     });
                 })->orderBy('village_title')->get();
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_VILLAGE"), $villages);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Village;
 use App\Region;
 use Auth;
@@ -19,13 +20,13 @@ class VillageController extends Controller {
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
-        $orderby = 'ASC';
+        $orderby = 'DESC';
         $column = 'village_id';
 //::count total record
         $total_members = Village::count();
         $members = Village::query();
         //::select columns
-        $members = $members->select('village_id', 'village_code', 'village_title');
+        $members = $members->select('village_id', 'village_code', 'village_title', 'village_title_ar');
         //::search with farmername or farmer_code or  village_code
         $members = $members->when($search, function($q)use ($search) {
             $q->where('village_code', 'like', "%$search%")->orWhere('village_title', 'like', "%$search%");
@@ -44,7 +45,7 @@ class VillageController extends Controller {
                 $column = 'village_code';
             }
         }
-        $members = $members->orderBy($column, $orderby)->get();
+        $members = $members->skip($start)->take($length)->orderBy($column, $orderby)->get();
         $data = array(
             'draw' => $draw,
             'recordsTotal' => $total_members,
@@ -64,6 +65,7 @@ class VillageController extends Controller {
         $validatedData = $request->validate([
             'region_code' => 'required',
             'village_title' => 'required',
+            'village_title_ar' => 'required',
         ]);
 
         $currentVillageCode = 1;
@@ -78,6 +80,7 @@ class VillageController extends Controller {
         $village = new Village();
         $village->village_code = $request->region_code . '-' . $twoDigitCode;
         $village->village_title = $request->village_title;
+        $village->village_title_ar = $request->village_title_ar;
         $village->created_by = Auth::user()->user_id;
         $village->local_code = '';
         // dd($village->village_id);
@@ -92,8 +95,18 @@ class VillageController extends Controller {
     }
 
     public function update(Request $request) {
+        $validator = Validator::make($request->all(), [
+                    'village_title' => 'required',
+                    'village_title_ar' => 'required',
+                    'village_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            //::validation failed
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         $updatevillage = Village::find($request->village_id);
         $updatevillage->village_title = $request->village_title;
+        $updatevillage->village_title_ar = $request->village_title_ar;
         // dd($updatevillage);
         $updatevillage->update();
         return redirect('admin/allvillage')->with('update', 'Village Update Successfully!');
