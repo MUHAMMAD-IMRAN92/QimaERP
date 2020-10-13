@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Village;
 use App\Farmer;
 
@@ -144,7 +145,15 @@ class FarmerController extends Controller {
     }
 
     public function save() {
-        die("xzc");
+        $validator = Validator::make($request->all(), [
+                    'village_code' => 'required',
+                    'village_title_ar' => 'required',
+                    'village_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            //::validation failed
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
     }
 
 }
