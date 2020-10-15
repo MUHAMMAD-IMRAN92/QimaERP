@@ -62,11 +62,15 @@ class VillageController extends Controller {
     }
 
     public function store(Request $request) {
-        $validatedData = $request->validate([
-            'region_code' => 'required',
-            'village_title' => 'required',
-            'village_title_ar' => 'required',
+        $validator = Validator::make($request->all(), [
+                    'region_code' => 'required|max:100|unique:villages,village_code',
+                    'village_title' => 'required|max:100|unique:villages,village_title',
+                    'village_title_ar' => 'required|max:100|unique:villages,village_title_ar',
         ]);
+        if ($validator->fails()) {
+            //::validation failed
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $currentVillageCode = 1;
         $lastVillage = Village::orderBy('created_at', 'DESC')->first();
@@ -95,9 +99,10 @@ class VillageController extends Controller {
     }
 
     public function update(Request $request) {
+
         $validator = Validator::make($request->all(), [
-                    'village_title' => 'required',
-                    'village_title_ar' => 'required',
+                    'village_title' => 'required|max:100|unique:villages,village_title',
+                    'village_title_ar' => 'required|max:100|unique:villages,village_title_ar',
                     'village_id' => 'required',
         ]);
         if ($validator->fails()) {

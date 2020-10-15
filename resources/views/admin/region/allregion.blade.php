@@ -110,7 +110,7 @@
                 {"data": 'region_code'},
                 {"data": 'region_title'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/editregion/' + row.region_id + '>Edit</a>| <a href=' + base_path + 'admin/deleteregion' + row.region_id + ' class="editor_remove" data-id="' + row.region_id + '">Delete</a>';
+                        return '<a href=' + base_path + 'admin/deleteregion/' + row.region_id + ' class="editor_remove" data-id="' + row.region_id + '">Delete</a>';
                     }
                 }
             ],

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Governerate;
 use App\Region;
 use App\Center;
@@ -27,7 +28,7 @@ class RegionController extends Controller {
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
-        $orderby = 'ASC';
+        $orderby = 'DESC';
         $column = 'region_id';
 //::count total record
         $total_members = Region::count();
@@ -64,13 +65,14 @@ class RegionController extends Controller {
     }
 
     public function store(Request $request) {
-
-        // dd($request->all());
-        $validatedData = $request->validate([
-            'region_code' => 'required|unique:regions',
-            'region_title' => 'required|unique:regions',
-
+        $validator = Validator::make($request->all(), [
+                    'region_code' => 'required|max:100|unique:regions,region_code',
+                    'region_title' => 'required|max:100|unique:regions,region_title',
         ]);
+        if ($validator->fails()) {
+            //::validation failed
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         $region = new Region;
         $region->region_code = $request->governerate_code . '-' . $request->region_code;
         $region->region_title = $request->region_title;
@@ -85,7 +87,7 @@ class RegionController extends Controller {
     }
 
     public function edit($id) {
-         $data['center']=Center::all();
+        $data['center'] = Center::all();
         $data['region'] = Region::find($id);
         return view('admin.region.editregion', $data);
     }

@@ -164,6 +164,7 @@ class CoffeeBuyer extends Controller {
                             'local_code' => $farmer->local_code,
                             'is_local' => 0,
                             'created_by' => $farmer->created_id,
+                            'center_id' => $farmer->center_id,
                 ]);
             } else {
                 $alreadyFarmer->local_code = $alreadyFarmer->local_code . ',' . $farmer->local_code;
@@ -298,7 +299,7 @@ class CoffeeBuyer extends Controller {
                                 'is_new' => $childBatch->transactions[0]->transactions->is_new,
                                 'sent_to' => 2,
                                 'session_no' => $childSession,
-                                'local_created_at' => $childBatch->transactions[0]->transactions->created_at,
+                                'local_created_at' => date("Y-m-d H:i:s", strtotime($childBatch->transactions[0]->transactions->created_at)),
                     ]);
 
                     $transactionLog = TransactionLog::create([
@@ -389,7 +390,7 @@ class CoffeeBuyer extends Controller {
                             'is_new' => $batch_numbers->batch->transactions[0]->transactions->is_new,
                             'sent_to' => 2,
                             'session_no' => $pSession,
-                            'local_created_at' => $batch_numbers->batch->transactions[0]->transactions->created_at,
+                            'local_created_at' =>date("Y-m-d H:i:s", strtotime($batch_numbers->batch->transactions[0]->transactions->created_at)), 
                 ]);
 
 

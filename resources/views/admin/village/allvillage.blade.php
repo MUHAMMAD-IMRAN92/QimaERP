@@ -104,7 +104,7 @@
                 {"data": 'village_title'},
                 {"data": 'village_title_ar'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/editvillage/' + row.village_id + '>Edit</a>| <a href=' + base_path + '' + row.village_id + ' class="editor_remove" data-id="' + row.village_id + '">Delete</a>';
+                        return '<a href=' + base_path + 'admin/editvillage/' + row.village_id + '>Edit</a>';
                     }
                 }
             ],
