@@ -59,9 +59,9 @@ class Handler extends ExceptionHandler {
                 $message = explode(";", $exception->errorInfo[2]);
             }
             \Log::error($message);
-            //return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
+            return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
 
-            return Response::json(array('status' => 'error', 'message' => $message, 'data' => []), 499);
+            //return Response::json(array('status' => 'error', 'message' => $message, 'data' => []), 499);
         }
         return parent::render($request, $exception);
     }

@@ -107,7 +107,7 @@ class SpecialProcessingController extends Controller {
                             'reference_id' => $receivedTransaction->transaction->reference_id,
                             'is_server_id' => 1,
                             'is_new' => 0,
-                            'sent_to' => 8,
+                            'sent_to' => $receivedTransaction->transaction->sent_to,
                             'is_sent' => 1,
                 ]);
                 $receivedTransId = $receivedTransaction->transaction->reference_id;
@@ -154,7 +154,7 @@ class SpecialProcessingController extends Controller {
                             'reference_id' => $receivedTransaction->transaction->reference_id,
                             'is_server_id' => 1,
                             'is_new' => 0,
-                            'sent_to' => 8,
+                            'sent_to' => $receivedTransaction->transaction->sent_to,
                             'is_sent' => 1,
                 ]);
                 $receivedTransId = $receivedTransaction->transaction->reference_id;
