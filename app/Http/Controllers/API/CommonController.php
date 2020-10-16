@@ -264,4 +264,15 @@ class CommonController extends Controller {
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $allBatches);
     }
 
+    function getContainerType(Request $request) {
+        $containerTypeArray = containerType();
+        $container=array();
+        foreach ($containerTypeArray as $key => $containerTypeAr) {
+           $data['code']=$containerTypeAr['code'];
+           array_push($container, $data);
+        }
+        
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CONTAINER"), $container);
+    }
+
 }

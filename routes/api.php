@@ -44,6 +44,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::Get All Farmer
         Route::get('/farmers', 'API\CommonController@farmers');
 
+        Route::get('/get_container_type', 'API\CommonController@getContainerType');
         //::Add container
         Route::post('/add_container', 'API\CommonController@addContainer');
         Route::get('/containers', 'API\CommonController@containers');

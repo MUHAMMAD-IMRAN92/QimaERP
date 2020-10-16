@@ -53,7 +53,7 @@ class SpecialProcessingController extends Controller {
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('log', function($q) use($centerId) {
                     $q->where('action', 'sent')->where('type', 'special_processing')->where('entity_id', $centerId);
-                })->doesntHave('isReference')->with(['transactionDetail' => function($query) {
+                })->with(['transactionDetail' => function($query) {
                         $query->where('container_status', 0);
                     }])->orderBy('transaction_id', 'desc')->get();
 

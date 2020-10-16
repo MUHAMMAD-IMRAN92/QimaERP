@@ -104,53 +104,66 @@ class CoffeeBuyerManager extends Controller {
         foreach ($sentTransactions as $key => $sentTransaction) {
 
             if (isset($sentTransaction->transactions) && $sentTransaction->transactions) {
-                $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
-                if ($alreadyExistTransaction) {
-                    $sentTransaction->transactions->already_sent = true;
-                    array_push($alreadySentCoffee, $sentTransaction);
+                if ($sentTransaction->transactions->is_update_center == TRUE) {
+                    $updateCenter = Transaction::where('transaction_id', $sentTransaction->transactions->transaction_id)->with('log')->first();
+                    if ($updateCenter) {
+                        $updateCenter->log->entity_id = $sentTransaction->transactions->center_id;
+                        $updateCenter->log->center_name = $sentTransaction->transactions->center_name;
+                        $updateCenter->sent_to = $sentTransaction->transactions->sent_to;
+                        $updateCenter->transaction_type = 2;
+                        $updateCenter->save();
+                        $updateCenter->log->save();
+                        array_push($sentCoffeeArray, $sentTransaction->transactions->transaction_id);
+                    }
                 } else {
-                    $transaction = Transaction::create([
-                                'batch_number' => $sentTransaction->transactions->batch_number,
-                                'is_parent' => $sentTransaction->transactions->is_parent,
-                                'is_mixed' => $sentTransaction->transactions->is_mixed,
+                    $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
+                    if ($alreadyExistTransaction) {
+                        $sentTransaction->transactions->already_sent = true;
+                        array_push($alreadySentCoffee, $sentTransaction);
+                    } else {
+                        $transaction = Transaction::create([
+                                    'batch_number' => $sentTransaction->transactions->batch_number,
+                                    'is_parent' => $sentTransaction->transactions->is_parent,
+                                    'is_mixed' => $sentTransaction->transactions->is_mixed,
+                                    'created_by' => $sentTransaction->transactions->created_by,
+                                    'is_local' => FALSE,
+                                    'transaction_type' => 2,
+                                    'local_code' => $sentTransaction->transactions->local_code,
+                                    'transaction_status' => 'sent',
+                                    'reference_id' => $sentTransaction->transactions->reference_id,
+                                    'is_server_id' => 1,
+                                    'is_new' => $sentTransaction->transactions->is_new,
+                                    'sent_to' => 3,
+                                    'is_sent' => 0,
+                                    'session_no' => $sentTransaction->transactions->session_no,
+                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
+                        ]);
+
+                        $transactionLog = TransactionLog::create([
+                                    'transaction_id' => $transaction->transaction_id,
+                                    'action' => 'sent',
+                                    'created_by' => $sentTransaction->transactions->created_by,
+                                    'entity_id' => $sentTransaction->transactions->center_id,
+                                    'center_name' => $sentTransaction->transactions->center_name,
+                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
+                                    'type' => 'center',
+                        ]);
+
+                        $transactionContainers = $sentTransaction->transactions_detail;
+                        foreach ($transactionContainers as $key => $transactionContainer) {
+                            TransactionDetail::create([
+                                'transaction_id' => $transaction->transaction_id,
+                                'container_number' => $transactionContainer->container_number,
                                 'created_by' => $sentTransaction->transactions->created_by,
                                 'is_local' => FALSE,
-                                'transaction_type' => 2,
-                                'local_code' => $sentTransaction->transactions->local_code,
-                                'transaction_status' => 'sent',
-                                'reference_id' => $sentTransaction->transactions->reference_id,
-                                'is_server_id' => 1,
-                                'is_new' => $sentTransaction->transactions->is_new,
-                                'sent_to' => 3,
-                                'is_sent' => 0,
-                                'session_no' => $sentTransaction->transactions->session_no,
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
-                    ]);
-
-                    $transactionLog = TransactionLog::create([
-                                'transaction_id' => $transaction->transaction_id,
-                                'action' => 'sent',
-                                'created_by' => $sentTransaction->transactions->created_by,
-                                'entity_id' => $sentTransaction->transactions->center_id,
-                                'center_name' => $sentTransaction->transactions->center_name,
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
-                                'type' => 'center',
-                    ]);
-
-                    $transactionContainers = $sentTransaction->transactions_detail;
-                    foreach ($transactionContainers as $key => $transactionContainer) {
-                        TransactionDetail::create([
-                            'transaction_id' => $transaction->transaction_id,
-                            'container_number' => $transactionContainer->container_number,
-                            'created_by' => $sentTransaction->transactions->created_by,
-                            'is_local' => FALSE,
-                            'container_weight' => $transactionContainer->container_weight,
-                            'weight_unit' => $transactionContainer->weight_unit,
-                            'center_id' => $transactionContainer->center_id,
-                            'reference_id' => 0,
-                        ]);
+                                'container_weight' => $transactionContainer->container_weight,
+                                'weight_unit' => $transactionContainer->weight_unit,
+                                'center_id' => $transactionContainer->center_id,
+                                'reference_id' => 0,
+                            ]);
+                        }
+                        array_push($sentCoffeeArray, $transaction->transaction_id);
                     }
-                    array_push($sentCoffeeArray, $transaction->transaction_id);
                 }
             }
         }
@@ -191,7 +204,7 @@ class CoffeeBuyerManager extends Controller {
 
     function coffeeBuyerManagerCoffee(Request $request) {
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail')->orderBy('transaction_id', 'desc')->get();
+        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail', 'log')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $childTransactions = array();
@@ -214,9 +227,12 @@ class CoffeeBuyerManager extends Controller {
             if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
                 $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
+            $transaction->center_name = $transaction->log->center_name;
+            $transaction->center_id = $transaction->log->entity_id;
             $transactionDetail = $transaction->transactionDetail;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
+            $transaction->makeHidden('log');
             $data = ['transactions' => $transaction, 'child_transation' => $childTransactions, 'transactions_detail' => $transactionDetail];
             array_push($allTransactions, $data);
         }
