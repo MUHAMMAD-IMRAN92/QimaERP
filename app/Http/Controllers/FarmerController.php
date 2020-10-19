@@ -177,7 +177,7 @@ class FarmerController extends Controller {
             ]);
             $idcardImageId = $userIdCardImage->file_id;
         }
-        $lastFarmer = Farmer::orderBy('created_at', 'desc')->first();
+        $lastFarmer = Farmer::orderBy('farmer_id', 'desc')->first();
         $currentFarmerCode = 1;
         if (isset($lastFarmer) && $lastFarmer) {
             $currentFarmerCode = ($lastFarmer->farmer_id + 1);

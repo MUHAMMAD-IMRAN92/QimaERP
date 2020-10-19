@@ -299,6 +299,7 @@ class CoffeeBuyer extends Controller {
                                 'is_new' => $childBatch->transactions[0]->transactions->is_new,
                                 'sent_to' => 2,
                                 'session_no' => $childSession,
+                                'local_session_no' => $childBatch->transactions[0]->transactions->session_no,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($childBatch->transactions[0]->transactions->created_at)),
                     ]);
 
@@ -390,6 +391,7 @@ class CoffeeBuyer extends Controller {
                             'is_new' => $batch_numbers->batch->transactions[0]->transactions->is_new,
                             'sent_to' => 2,
                             'session_no' => $pSession,
+                            'local_session_no' => $batch_numbers->batch->transactions[0]->transactions->session_no,
                             'local_created_at' =>date("Y-m-d H:i:s", strtotime($batch_numbers->batch->transactions[0]->transactions->created_at)), 
                 ]);
 
