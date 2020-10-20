@@ -481,28 +481,29 @@ class CoffeeDryingController extends Controller {
         $userId = $this->userId;
         $allMetaArray = array();
         $receivedMeta = json_decode($request['meta']);
+
         $transationsIdArray = array();
         foreach ($receivedMeta as $key => $transactionsInformation) {
             if ($transactionsInformation->transactionDetails) {
                 if ($transactionsInformation->transactionDetails->is_local == TRUE) {
                     TransactionDetail::create([
-                        'transaction_id' => $transactionsInformation->transaction_id,
-                        'container_number' => $transactionsInformation->container_number,
+                        'transaction_id' => $transactionsInformation->transactionDetails->transaction_id,
+                        'container_number' => $transactionsInformation->transactionDetails->container_number,
                         'created_by' => $userId,
                         'is_local' => FALSE,
-                        'container_weight' => $transactionsInformation->container_weight,
+                        'container_weight' => $transactionsInformation->transactionDetails->container_weight,
                         'weight_unit' => 'kg',
-                        'center_id' => $transactionsInformation->transaction->center_id,
-                        'reference_id' => $transactionsInformation->transaction->reference_id,
+                        'center_id' => $transactionsInformation->transactionDetails->center_id,
+                        'reference_id' => $transactionsInformation->transactionDetails->reference_id,
                     ]);
                 } else {
-                    $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetail->transaction_id)->where('container_number', $transactionsInformation->transactionDetail->container_number)->first();
-                    $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetail->container_weight;
-                    $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetail->is_sent;
+                    $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)->where('container_number', $transactionsInformation->transactionDetails->container_number)->first();
+                    $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
+                    $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
                     $alreadyExistTransactionDetail->save();
                 }
-                if (!in_array($transactionsInformation->transactionDetail->transaction_id, $transationsIdArray)) {
-                    array_push($transationsIdArray, $transactionsInformation->transactionDetail->transaction_id);
+                if (!in_array($transactionsInformation->transactionDetails->transaction_id, $transationsIdArray)) {
+                    array_push($transationsIdArray, $transactionsInformation->transactionDetails->transaction_id);
                 }
             }
             foreach ($transactionsInformation->transactionMeta as $key => $value) {
@@ -518,9 +519,9 @@ class CoffeeDryingController extends Controller {
                                     'value' => $value->value,
                         ]);
                     }
-                } elseif (strstr($transactionContainer->key, 'BS') || strstr($transactionContainer->key, 'DT') || strstr($transactionContainer->key, 'SC') || strstr($transactionContainer->key, 'DM') || strstr($transactionContainer->key, 'DS') || strstr($transactionContainer->key, 'GS') || strstr($transactionContainer->key, 'ES') || strstr($transactionContainer->key, 'PS') || strstr($transactionContainer->key, 'SS') || strstr($transactionContainer->key, 'LS') || strstr($transactionContainer->key, 'HS') || strstr($transactionContainer->key, 'QS') || strstr($transactionContainer->key, 'KS') || strstr($transactionContainer->key, 'VB') || strstr($transactionContainer->key, 'PB') || strstr($transactionContainer->key, 'VP') || strstr($transactionContainer->key, 'PP') || strstr($transactionContainer->key, 'SM')) {
+                } elseif (strstr($value->key, 'BS') || strstr($value->key, 'DT') || strstr($value->key, 'SC') || strstr($value->key, 'DM') || strstr($value->key, 'DS') || strstr($value->key, 'GS') || strstr($value->key, 'ES') || strstr($value->key, 'PS') || strstr($value->key, 'SS') || strstr($value->key, 'LS') || strstr($value->key, 'HS') || strstr($value->key, 'QS') || strstr($value->key, 'KS') || strstr($value->key, 'VB') || strstr($value->key, 'PB') || strstr($value->key, 'VP') || strstr($value->key, 'PP') || strstr($value->key, 'SM')) {
 
-                    $basketArray = explode("_", $transactionContainer->key);
+                    $basketArray = explode("_", $value->key);
                     $basket = $basketArray[0];
                     $weight = $basketArray[1];
                     $alreadyExistBasketMeta = MetaTransation::where('transaction_id', $value->transaction_id)->where('key', 'like', "$basket%")->first();
