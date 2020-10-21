@@ -13,6 +13,7 @@ use App\LoginUser;
 use App\User;
 use App\CenterUser;
 use App\MetaTransation;
+use DB;
 
 class CoffeeDryingController extends Controller {
 
@@ -93,326 +94,333 @@ class CoffeeDryingController extends Controller {
         $userId = $this->userId;
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
-        foreach ($receivedTransactions as $key => $receivedTransaction) {
-            if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
-                $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
-                if ($updateCoffees) {
-                    $updateCoffees->is_sent = $receivedTransaction->transaction->is_sent;
-                    $updateCoffees->is_in_process = $receivedTransaction->transaction->is_in_process;
-                    $updateCoffees->save();
-                }
-            } else {
-                if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 10) {
+        DB::beginTransaction();
+        try {
+            foreach ($receivedTransactions as $key => $receivedTransaction) {
+                if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
+                    $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
+                    if ($updateCoffees) {
+                        $updateCoffees->is_sent = $receivedTransaction->transaction->is_sent;
+                        $updateCoffees->is_in_process = $receivedTransaction->transaction->is_in_process;
+                        $updateCoffees->save();
+                    }
+                } else {
+                    if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 10) {
+                        //::Recevied coffee transations
+                        if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+                            $trans = true;
+                            if ($receivedTransaction->transaction->is_server_id == FALSE) {
+                                $trans = FALSE;
+                            }
+                            $transaction = Transaction::create([
+                                        'batch_number' => $receivedTransaction->transaction->batch_number,
+                                        'is_parent' => $receivedTransaction->transaction->is_parent,
+                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'is_local' => FALSE,
+                                        'transaction_type' => 1,
+                                        'local_code' => $receivedTransaction->transaction->local_code,
+                                        'transaction_status' => 'received',
+                                        'reference_id' => $receivedTransaction->transaction->reference_id,
+                                        'is_server_id' => 1,
+                                        'is_new' => 0,
+                                        'sent_to' => 10,
+                                        'is_sent' => 1,
+                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                        'session_no' => $receivedTransaction->transaction->session_no,
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                            ]);
+                            $receivedTransId = $receivedTransaction->transaction->reference_id;
+                            $transactionLog = TransactionLog::create([
+                                        'transaction_id' => $transaction->transaction_id,
+                                        'action' => 'received',
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'entity_id' => $receivedTransaction->transaction->center_id,
+                                        'center_name' => '',
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                        'type' => 'coffee_drying',
+                            ]);
+                            $transactionContainers = $receivedTransaction->transactionMeta;
+                            foreach ($transactionContainers as $key => $transactionContainer) {
+                                if (strstr($transactionContainer->key, 'BS') || strstr($transactionContainer->key, 'DT') || strstr($transactionContainer->key, 'SC') || strstr($transactionContainer->key, 'DM') || strstr($transactionContainer->key, 'DS') || strstr($transactionContainer->key, 'GS') || strstr($transactionContainer->key, 'ES') || strstr($transactionContainer->key, 'PS') || strstr($transactionContainer->key, 'SS') || strstr($transactionContainer->key, 'LS') || strstr($transactionContainer->key, 'HS') || strstr($transactionContainer->key, 'QS') || strstr($transactionContainer->key, 'KS') || strstr($transactionContainer->key, 'VB') || strstr($transactionContainer->key, 'PB') || strstr($transactionContainer->key, 'VP') || strstr($transactionContainer->key, 'PP') || strstr($transactionContainer->key, 'SM')) {
+                                    $basketArray = explode("_", $transactionContainer->key);
+                                    $basket = $basketArray[0];
+                                    $weight = $basketArray[1];
+                                    $transationsExplodeId = $basketArray[2];
+                                    TransactionDetail::create([
+                                        'transaction_id' => $transaction->transaction_id,
+                                        'container_number' => $basket,
+                                        'created_by' => $userId,
+                                        'is_local' => FALSE,
+                                        'container_weight' => $weight,
+                                        'weight_unit' => 'kg',
+                                        'center_id' => $receivedTransaction->transaction->center_id,
+                                        'reference_id' => $receivedTransaction->transaction->reference_id,
+                                    ]);
 
-                    //::Recevied coffee transations
-                    if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-
-                        $trans = true;
-                        if ($receivedTransaction->transaction->is_server_id == FALSE) {
-                            $trans = FALSE;
+                                    if ($trans == true) {
+                                        TransactionDetail::where('transaction_id', $transationsExplodeId)->where('container_number', $basket)->update(['container_status' => 1]);
+                                    } else {
+                                        $code = $transationsExplodeId . '_' . $userId . '-T';
+                                        $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+                                        $receivedTransIdCheck = $checkTransaction->transaction_id;
+                                        TransactionDetail::where('transaction_id', $receivedTransIdCheck)->where('container_number', $basket)->update(['container_status' => 1]);
+                                    }
+                                }
+                            }
                         }
-                        $transaction = Transaction::create([
-                                    'batch_number' => $receivedTransaction->transaction->batch_number,
-                                    'is_parent' => $receivedTransaction->transaction->is_parent,
-                                    'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                    'created_by' => $receivedTransaction->transaction->created_by,
-                                    'is_local' => FALSE,
-                                    'transaction_type' => 1,
-                                    'local_code' => $receivedTransaction->transaction->local_code,
-                                    'transaction_status' => 'received',
-                                    'reference_id' => $receivedTransaction->transaction->reference_id,
-                                    'is_server_id' => 1,
-                                    'is_new' => 0,
-                                    'sent_to' => 10,
-                                    'is_sent' => 1,
-                                    'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                    'session_no' => $receivedTransaction->transaction->session_no,
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                        ]);
-                        $receivedTransId = $receivedTransaction->transaction->reference_id;
-                        $transactionLog = TransactionLog::create([
-                                    'transaction_id' => $transaction->transaction_id,
-                                    'action' => 'received',
-                                    'created_by' => $receivedTransaction->transaction->created_by,
-                                    'entity_id' => $receivedTransaction->transaction->center_id,
-                                    'center_name' => '',
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                                    'type' => 'coffee_drying',
-                        ]);
-                        $transactionContainers = $receivedTransaction->transactionMeta;
-                        foreach ($transactionContainers as $key => $transactionContainer) {
-                            if (strstr($transactionContainer->key, 'BS') || strstr($transactionContainer->key, 'DT') || strstr($transactionContainer->key, 'SC') || strstr($transactionContainer->key, 'DM') || strstr($transactionContainer->key, 'DS') || strstr($transactionContainer->key, 'GS') || strstr($transactionContainer->key, 'ES') || strstr($transactionContainer->key, 'PS') || strstr($transactionContainer->key, 'SS') || strstr($transactionContainer->key, 'LS') || strstr($transactionContainer->key, 'HS') || strstr($transactionContainer->key, 'QS') || strstr($transactionContainer->key, 'KS') || strstr($transactionContainer->key, 'VB') || strstr($transactionContainer->key, 'PB') || strstr($transactionContainer->key, 'VP') || strstr($transactionContainer->key, 'PP') || strstr($transactionContainer->key, 'SM')) {
-                                $basketArray = explode("_", $transactionContainer->key);
-                                $basket = $basketArray[0];
-                                $weight = $basketArray[1];
-                                $transationsExplodeId = $basketArray[2];
+                        //::Process start transactions
+                        if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+                            $processTransaction = Transaction::create([
+                                        'batch_number' => $receivedTransaction->transaction->batch_number,
+                                        'is_parent' => $receivedTransaction->transaction->is_parent,
+                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'is_local' => FALSE,
+                                        'transaction_type' => 2,
+                                        'local_code' => $receivedTransaction->transaction->local_code,
+                                        'transaction_status' => 'sent',
+                                        'reference_id' => $receivedTransaction->transaction->reference_id,
+                                        'is_server_id' => 1,
+                                        'is_new' => 0,
+                                        'sent_to' => 10,
+                                        'is_sent' => 1,
+                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                        'session_no' => $receivedTransaction->transaction->session_no,
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                            ]);
+                            $receivedTransId = $receivedTransaction->transaction->reference_id;
+                            $transactionLog = TransactionLog::create([
+                                        'transaction_id' => $processTransaction->transaction_id,
+                                        'action' => 'sent',
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'entity_id' => $receivedTransaction->transaction->center_id,
+                                        'center_name' => '',
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                        'type' => 'coffee_drying_received',
+                            ]);
+                            $transactionContainers = $receivedTransaction->transactionDetails;
+                            foreach ($transactionContainers as $key => $transactionContainer) {
                                 TransactionDetail::create([
-                                    'transaction_id' => $transaction->transaction_id,
-                                    'container_number' => $basket,
+                                    'transaction_id' => $processTransaction->transaction_id,
+                                    'container_number' => $transactionContainer->container_number,
                                     'created_by' => $userId,
                                     'is_local' => FALSE,
-                                    'container_weight' => $weight,
+                                    'container_weight' => $transactionContainer->container_weight,
                                     'weight_unit' => 'kg',
                                     'center_id' => $receivedTransaction->transaction->center_id,
                                     'reference_id' => $receivedTransaction->transaction->reference_id,
                                 ]);
+                            }
+                            array_push($receivedCofffee, $processTransaction->transaction_id);
 
-                                if ($trans == true) {
-                                    TransactionDetail::where('transaction_id', $transationsExplodeId)->where('container_number', $basket)->update(['container_status' => 1]);
-                                } else {
-                                    $code = $transationsExplodeId . '_' . $userId . '-T';
-                                    $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
-                                    $receivedTransIdCheck = $checkTransaction->transaction_id;
-                                    TransactionDetail::where('transaction_id', $receivedTransIdCheck)->where('container_number', $basket)->update(['container_status' => 1]);
-                                }
+                            $transactionMeta = $receivedTransaction->transactionMeta;
+                            foreach ($transactionMeta as $key => $transactionMe) {
+                                MetaTransation::create([
+                                    'transaction_id' => $processTransaction->transaction_id,
+                                    'key' => $transactionMe->key,
+                                    'value' => $transactionMe->value,
+                                ]);
                             }
                         }
                     }
-                    //::Process start transactions
-                    if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-                        $processTransaction = Transaction::create([
-                                    'batch_number' => $receivedTransaction->transaction->batch_number,
-                                    'is_parent' => $receivedTransaction->transaction->is_parent,
-                                    'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                    'created_by' => $receivedTransaction->transaction->created_by,
+                    if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 11) {
+
+                        if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+                            if ($receivedTransaction->transaction->is_server_id == True) {
+                                $receivedTransId = $receivedTransaction->transaction->reference_id;
+                            } else {
+                                $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
+                                $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+                                $receivedTransId = $checkTransaction->transaction_id;
+                            }
+                            $processTransaction = Transaction::create([
+                                        'batch_number' => $receivedTransaction->transaction->batch_number,
+                                        'is_parent' => $receivedTransaction->transaction->is_parent,
+                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'is_local' => FALSE,
+                                        'transaction_type' => 2,
+                                        'local_code' => $receivedTransaction->transaction->local_code,
+                                        'transaction_status' => 'sent',
+                                        'reference_id' => $receivedTransId,
+                                        'is_server_id' => 1,
+                                        'is_new' => 0,
+                                        'sent_to' => 11,
+                                        'is_sent' => 1,
+                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                        'session_no' => $receivedTransaction->transaction->session_no,
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                            ]);
+                            array_push($receivedCofffee, $processTransaction->transaction_id);
+                            $transactionLog = TransactionLog::create([
+                                        'transaction_id' => $processTransaction->transaction_id,
+                                        'action' => 'sent',
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'entity_id' => $receivedTransaction->transaction->center_id,
+                                        'center_name' => '',
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                        'type' => 'coffee_drying_send',
+                            ]);
+                            $transactionContainers = $receivedTransaction->transactionDetails;
+                            foreach ($transactionContainers as $key => $transactionContainer) {
+                                TransactionDetail::create([
+                                    'transaction_id' => $processTransaction->transaction_id,
+                                    'container_number' => $transactionContainer->container_number,
+                                    'created_by' => $userId,
                                     'is_local' => FALSE,
-                                    'transaction_type' => 2,
-                                    'local_code' => $receivedTransaction->transaction->local_code,
-                                    'transaction_status' => 'sent',
+                                    'container_weight' => $transactionContainer->container_weight,
+                                    'weight_unit' => 'kg',
+                                    'center_id' => $receivedTransaction->transaction->center_id,
                                     'reference_id' => $receivedTransaction->transaction->reference_id,
-                                    'is_server_id' => 1,
-                                    'is_new' => 0,
-                                    'sent_to' => 10,
-                                    'is_sent' => 1,
-                                    'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                    'session_no' => $receivedTransaction->transaction->session_no,
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                        ]);
-                        $receivedTransId = $receivedTransaction->transaction->reference_id;
-                        $transactionLog = TransactionLog::create([
+                                ]);
+                                TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                            }
+                            $transactionMeta = $receivedTransaction->transactionMeta;
+                            foreach ($transactionMeta as $key => $transactionMe) {
+                                MetaTransation::create([
                                     'transaction_id' => $processTransaction->transaction_id,
-                                    'action' => 'sent',
-                                    'created_by' => $receivedTransaction->transaction->created_by,
-                                    'entity_id' => $receivedTransaction->transaction->center_id,
-                                    'center_name' => '',
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                                    'type' => 'coffee_drying_received',
-                        ]);
-                        $transactionContainers = $receivedTransaction->transactionDetails;
-                        foreach ($transactionContainers as $key => $transactionContainer) {
-                            TransactionDetail::create([
-                                'transaction_id' => $processTransaction->transaction_id,
-                                'container_number' => $transactionContainer->container_number,
-                                'created_by' => $userId,
-                                'is_local' => FALSE,
-                                'container_weight' => $transactionContainer->container_weight,
-                                'weight_unit' => 'kg',
-                                'center_id' => $receivedTransaction->transaction->center_id,
-                                'reference_id' => $receivedTransaction->transaction->reference_id,
-                            ]);
-                        }
-                        array_push($receivedCofffee, $processTransaction->transaction_id);
-
-                        $transactionMeta = $receivedTransaction->transactionMeta;
-                        foreach ($transactionMeta as $key => $transactionMe) {
-                            MetaTransation::create([
-                                'transaction_id' => $processTransaction->transaction_id,
-                                'key' => $transactionMe->key,
-                                'value' => $transactionMe->value,
-                            ]);
+                                    'key' => $transactionMe->key,
+                                    'value' => $transactionMe->value,
+                                ]);
+                            }
                         }
                     }
-                }
-                if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 11) {
+                    if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 12) {
 
-                    if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-                        if ($receivedTransaction->transaction->is_server_id == True) {
-                            $receivedTransId = $receivedTransaction->transaction->reference_id;
-                        } else {
-                            $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
-                            $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
-                            $receivedTransId = $checkTransaction->transaction_id;
-                        }
-                        $processTransaction = Transaction::create([
-                                    'batch_number' => $receivedTransaction->transaction->batch_number,
-                                    'is_parent' => $receivedTransaction->transaction->is_parent,
-                                    'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                    'created_by' => $receivedTransaction->transaction->created_by,
-                                    'is_local' => FALSE,
-                                    'transaction_type' => 2,
-                                    'local_code' => $receivedTransaction->transaction->local_code,
-                                    'transaction_status' => 'sent',
-                                    'reference_id' => $receivedTransId,
-                                    'is_server_id' => 1,
-                                    'is_new' => 0,
-                                    'sent_to' => 11,
-                                    'is_sent' => 1,
-                                    'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                    'session_no' => $receivedTransaction->transaction->session_no,
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                        ]);
-                        array_push($receivedCofffee, $processTransaction->transaction_id);
-                        $transactionLog = TransactionLog::create([
+                        if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+                            if ($receivedTransaction->transaction->is_server_id == True) {
+
+                                $receivedTransId = $receivedTransaction->transaction->reference_id;
+                            } else {
+
+                                $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
+                                $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+                                $receivedTransId = $checkTransaction->transaction_id;
+                            }
+                            $processTransaction = Transaction::create([
+                                        'batch_number' => $receivedTransaction->transaction->batch_number,
+                                        'is_parent' => $receivedTransaction->transaction->is_parent,
+                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'is_local' => FALSE,
+                                        'transaction_type' => 2,
+                                        'local_code' => $receivedTransaction->transaction->local_code,
+                                        'transaction_status' => 'sent',
+                                        'reference_id' => $receivedTransId,
+                                        'is_server_id' => 1,
+                                        'is_new' => 0,
+                                        'sent_to' => 12,
+                                        'is_sent' => 1,
+                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                        'session_no' => $receivedTransaction->transaction->session_no,
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                            ]);
+                            array_push($receivedCofffee, $processTransaction->transaction_id);
+                            $transactionLog = TransactionLog::create([
+                                        'transaction_id' => $processTransaction->transaction_id,
+                                        'action' => 'sent',
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'entity_id' => $receivedTransaction->transaction->center_id,
+                                        'center_name' => '',
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                        'type' => 'sent_to_yemen',
+                            ]);
+                            $transactionContainers = $receivedTransaction->transactionDetails;
+                            foreach ($transactionContainers as $key => $transactionContainer) {
+                                TransactionDetail::create([
                                     'transaction_id' => $processTransaction->transaction_id,
-                                    'action' => 'sent',
-                                    'created_by' => $receivedTransaction->transaction->created_by,
-                                    'entity_id' => $receivedTransaction->transaction->center_id,
-                                    'center_name' => '',
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                                    'type' => 'coffee_drying_send',
-                        ]);
-                        $transactionContainers = $receivedTransaction->transactionDetails;
-                        foreach ($transactionContainers as $key => $transactionContainer) {
-                            TransactionDetail::create([
-                                'transaction_id' => $processTransaction->transaction_id,
-                                'container_number' => $transactionContainer->container_number,
-                                'created_by' => $userId,
-                                'is_local' => FALSE,
-                                'container_weight' => $transactionContainer->container_weight,
-                                'weight_unit' => 'kg',
-                                'center_id' => $receivedTransaction->transaction->center_id,
-                                'reference_id' => $receivedTransaction->transaction->reference_id,
-                            ]);
-                            TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
-                        }
-                        $transactionMeta = $receivedTransaction->transactionMeta;
-                        foreach ($transactionMeta as $key => $transactionMe) {
-                            MetaTransation::create([
-                                'transaction_id' => $processTransaction->transaction_id,
-                                'key' => $transactionMe->key,
-                                'value' => $transactionMe->value,
-                            ]);
+                                    'container_number' => $transactionContainer->container_number,
+                                    'created_by' => $userId,
+                                    'is_local' => FALSE,
+                                    'container_weight' => $transactionContainer->container_weight,
+                                    'weight_unit' => 'kg',
+                                    'center_id' => $receivedTransaction->transaction->center_id,
+                                    'reference_id' => $receivedTransaction->transaction->reference_id,
+                                ]);
+                            }
+                            TransactionDetail::where('transaction_id', $receivedTransId)->update(['container_status' => 1]);
+                            $transactionMeta = $receivedTransaction->transactionMeta;
+                            foreach ($transactionMeta as $key => $transactionMe) {
+                                MetaTransation::create([
+                                    'transaction_id' => $processTransaction->transaction_id,
+                                    'key' => $transactionMe->key,
+                                    'value' => $transactionMe->value,
+                                ]);
+                            }
                         }
                     }
-                }
-                if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 12) {
+                    if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 0) {
+                        if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+                            if ($receivedTransaction->transaction->is_server_id == True) {
+                                $receivedTransId = $receivedTransaction->transaction->reference_id;
+                            } else {
+                                $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
+                                $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+                                $receivedTransId = $checkTransaction->transaction_id;
+                            }
+                            $processTransaction2 = Transaction::create([
+                                        'batch_number' => $receivedTransaction->transaction->batch_number,
+                                        'is_parent' => $receivedTransaction->transaction->is_parent,
+                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'is_local' => FALSE,
+                                        'transaction_type' => 2,
+                                        'local_code' => $receivedTransaction->transaction->local_code,
+                                        'transaction_status' => 'sent',
+                                        'reference_id' => $receivedTransId,
+                                        'is_server_id' => 1,
+                                        'is_new' => 0,
+                                        'sent_to' => 0,
+                                        'is_sent' => 1,
+                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                        'session_no' => $receivedTransaction->transaction->session_no,
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                            ]);
+                            array_push($receivedCofffee, $processTransaction->transaction_id);
 
-                    if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-                        if ($receivedTransaction->transaction->is_server_id == True) {
-
-                            $receivedTransId = $receivedTransaction->transaction->reference_id;
-                        } else {
-
-                            $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
-                            $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
-                            $receivedTransId = $checkTransaction->transaction_id;
-                        }
-                        $processTransaction = Transaction::create([
-                                    'batch_number' => $receivedTransaction->transaction->batch_number,
-                                    'is_parent' => $receivedTransaction->transaction->is_parent,
-                                    'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                    'created_by' => $receivedTransaction->transaction->created_by,
-                                    'is_local' => FALSE,
-                                    'transaction_type' => 2,
-                                    'local_code' => $receivedTransaction->transaction->local_code,
-                                    'transaction_status' => 'sent',
-                                    'reference_id' => $receivedTransId,
-                                    'is_server_id' => 1,
-                                    'is_new' => 0,
-                                    'sent_to' => 12,
-                                    'is_sent' => 1,
-                                    'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                    'session_no' => $receivedTransaction->transaction->session_no,
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                        ]);
-                        array_push($receivedCofffee, $processTransaction->transaction_id);
-                        $transactionLog = TransactionLog::create([
+                            $transactionLog = TransactionLog::create([
+                                        'transaction_id' => $processTransaction->transaction_id,
+                                        'action' => 'sent',
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'entity_id' => $receivedTransaction->transaction->center_id,
+                                        'center_name' => '',
+                                        'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                        'type' => 'coffee_drying',
+                            ]);
+                            $transactionContainers = $receivedTransaction->transactionDetails;
+                            foreach ($transactionContainers as $key => $transactionContainer) {
+                                TransactionDetail::create([
                                     'transaction_id' => $processTransaction->transaction_id,
-                                    'action' => 'sent',
-                                    'created_by' => $receivedTransaction->transaction->created_by,
-                                    'entity_id' => $receivedTransaction->transaction->center_id,
-                                    'center_name' => '',
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                                    'type' => 'sent_to_yemen',
-                        ]);
-                        $transactionContainers = $receivedTransaction->transactionDetails;
-                        foreach ($transactionContainers as $key => $transactionContainer) {
-                            TransactionDetail::create([
-                                'transaction_id' => $processTransaction->transaction_id,
-                                'container_number' => $transactionContainer->container_number,
-                                'created_by' => $userId,
-                                'is_local' => FALSE,
-                                'container_weight' => $transactionContainer->container_weight,
-                                'weight_unit' => 'kg',
-                                'center_id' => $receivedTransaction->transaction->center_id,
-                                'reference_id' => $receivedTransaction->transaction->reference_id,
-                            ]);
-                        }
-                        TransactionDetail::where('transaction_id', $receivedTransId)->update(['container_status' => 1]);
-                        $transactionMeta = $receivedTransaction->transactionMeta;
-                        foreach ($transactionMeta as $key => $transactionMe) {
-                            MetaTransation::create([
-                                'transaction_id' => $processTransaction->transaction_id,
-                                'key' => $transactionMe->key,
-                                'value' => $transactionMe->value,
-                            ]);
-                        }
-                    }
-                }
-                if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 0) {
-                    if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-                        if ($receivedTransaction->transaction->is_server_id == True) {
-                            $receivedTransId = $receivedTransaction->transaction->reference_id;
-                        } else {
-                            $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
-                            $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
-                            $receivedTransId = $checkTransaction->transaction_id;
-                        }
-                        $processTransaction2 = Transaction::create([
-                                    'batch_number' => $receivedTransaction->transaction->batch_number,
-                                    'is_parent' => $receivedTransaction->transaction->is_parent,
-                                    'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                    'created_by' => $receivedTransaction->transaction->created_by,
+                                    'container_number' => $transactionContainer->container_number,
+                                    'created_by' => $userId,
                                     'is_local' => FALSE,
-                                    'transaction_type' => 2,
-                                    'local_code' => $receivedTransaction->transaction->local_code,
-                                    'transaction_status' => 'sent',
-                                    'reference_id' => $receivedTransId,
-                                    'is_server_id' => 1,
-                                    'is_new' => 0,
-                                    'sent_to' => 0,
-                                    'is_sent' => 1,
-                                    'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                    'session_no' => $receivedTransaction->transaction->session_no,
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                        ]);
-                        array_push($receivedCofffee, $processTransaction->transaction_id);
-
-                        $transactionLog = TransactionLog::create([
+                                    'container_weight' => $transactionContainer->container_weight,
+                                    'weight_unit' => 'kg',
+                                    'center_id' => $receivedTransaction->transaction->center_id,
+                                    'reference_id' => $receivedTransaction->transaction->reference_id,
+                                ]);
+                            }
+                            TransactionDetail::where('transaction_id', $receivedTransId)->update(['container_status' => 1]);
+                            $transactionMeta = $receivedTransaction->transactionMeta;
+                            foreach ($transactionMeta as $key => $transactionMe) {
+                                MetaTransation::create([
                                     'transaction_id' => $processTransaction->transaction_id,
-                                    'action' => 'sent',
-                                    'created_by' => $receivedTransaction->transaction->created_by,
-                                    'entity_id' => $receivedTransaction->transaction->center_id,
-                                    'center_name' => '',
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                                    'type' => 'coffee_drying',
-                        ]);
-                        $transactionContainers = $receivedTransaction->transactionDetails;
-                        foreach ($transactionContainers as $key => $transactionContainer) {
-                            TransactionDetail::create([
-                                'transaction_id' => $processTransaction->transaction_id,
-                                'container_number' => $transactionContainer->container_number,
-                                'created_by' => $userId,
-                                'is_local' => FALSE,
-                                'container_weight' => $transactionContainer->container_weight,
-                                'weight_unit' => 'kg',
-                                'center_id' => $receivedTransaction->transaction->center_id,
-                                'reference_id' => $receivedTransaction->transaction->reference_id,
-                            ]);
-                        }
-                        TransactionDetail::where('transaction_id', $receivedTransId)->update(['container_status' => 1]);
-                        $transactionMeta = $receivedTransaction->transactionMeta;
-                        foreach ($transactionMeta as $key => $transactionMe) {
-                            MetaTransation::create([
-                                'transaction_id' => $processTransaction->transaction_id,
-                                'key' => $transactionMe->key,
-                                'value' => $transactionMe->value,
-                            ]);
+                                    'key' => $transactionMe->key,
+                                    'value' => $transactionMe->value,
+                                ]);
+                            }
                         }
                     }
                 }
             }
+            DB::commit();
+        } catch (PDOException $e) {
+            DB::rollback();
+            
+           // return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
         }
+
         $allTransactions = array();
 //        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $receivedCofffee)->with('transactionDetail', 'log', 'meta')->get();
 //        foreach ($currentlyReceivedCoffees as $key => $transaction) {
