@@ -64,7 +64,13 @@ class SpecialProcessingController extends Controller {
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
-           // $transaction->is_sent = 0;
+            $transaction->is_sent = 0;
+            if ($transaction->sent_to == 8) {
+                $checkStatus = Transaction::where('reference_id', $transaction->transaction_id)->where('sent_to', 9)->first();
+                if ($checkStatus) {
+                    $transaction->is_sent = 1;
+                }
+            }
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
@@ -101,7 +107,6 @@ class SpecialProcessingController extends Controller {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
                 if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
                     if ($receivedTransaction->transaction->sent_to == 7) {
-
                         $transaction = Transaction::create([
                                     'batch_number' => $receivedTransaction->transaction->batch_number,
                                     'is_parent' => $receivedTransaction->transaction->is_parent,
@@ -163,9 +168,7 @@ class SpecialProcessingController extends Controller {
                     }
 
                     if ($receivedTransaction->transaction->sent_to == 8) {
-
                         if ($receivedTransaction->transaction->is_server_id == TRUE && $receivedTransaction->transaction->update_meta == TRUE) {
-
                             $updateTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                             $updateTransaction->sent_to = $receivedTransaction->transaction->sent_to;
                             $updateTransaction->save();
@@ -341,7 +344,7 @@ class SpecialProcessingController extends Controller {
             }
             DB::commit();
         } catch (PDOException $e) {
-            //   DB::rollback();
+//   DB::rollback();
 
             return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
         }
