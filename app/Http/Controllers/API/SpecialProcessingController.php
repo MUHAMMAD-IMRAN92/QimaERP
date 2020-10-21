@@ -64,7 +64,7 @@ class SpecialProcessingController extends Controller {
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
-            $transaction->is_sent = 0;
+           // $transaction->is_sent = 0;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
