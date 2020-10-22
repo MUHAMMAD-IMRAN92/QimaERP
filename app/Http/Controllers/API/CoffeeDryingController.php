@@ -311,7 +311,7 @@ class CoffeeDryingController extends Controller {
                                         'is_server_id' => 1,
                                         'is_new' => 0,
                                         'sent_to' => 12,
-                                        'is_sent' => 1,
+                                        'is_sent' => $receivedTransaction->transaction->is_sent,
                                         'is_in_process' => $receivedTransaction->transaction->is_in_process,
                                         'session_no' => $receivedTransaction->transaction->session_no,
                                         'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
@@ -417,8 +417,8 @@ class CoffeeDryingController extends Controller {
             DB::commit();
         } catch (PDOException $e) {
             DB::rollback();
-            
-           // return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
+
+            // return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
         }
 
         $allTransactions = array();
@@ -533,10 +533,11 @@ class CoffeeDryingController extends Controller {
                     $basket = $basketArray[0];
                     $weight = $basketArray[1];
                     $alreadyExistBasketMeta = MetaTransation::where('transaction_id', $value->transaction_id)->where('key', 'like', "$basket%")->first();
+
                     if ($alreadyExistBasketMeta) {
-                        $alreadyMetaExist->key = $value->key;
-                        $alreadyMetaExist->value = $value->value;
-                        $alreadyMetaExist->save();
+                        $alreadyExistBasketMeta->key = $value->key;
+                        $alreadyExistBasketMeta->value = $value->value;
+                        $alreadyExistBasketMeta->save();
                     } else {
                         $newMata = MetaTransation::create([
                                     'transaction_id' => $value->transaction_id,
@@ -547,10 +548,12 @@ class CoffeeDryingController extends Controller {
                 } else {
                     $alreadyExist = MetaTransation::where('transaction_id', $value->transaction_id)->where('key', $value->key)->first();
                     if ($alreadyExist) {
+
                         $alreadyMetaExist->key = $value->key;
                         $alreadyMetaExist->value = $value->value;
                         $alreadyMetaExist->save();
                     } else {
+
                         $newMata = MetaTransation::create([
                                     'transaction_id' => $value->transaction_id,
                                     'key' => $value->key,
