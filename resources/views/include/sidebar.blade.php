@@ -201,7 +201,7 @@
                 
               </p>
              </a>
-            
+            </li>
             <li class="nav-item"   @if($segment == 'addcontainer'|| $segment == 'allcontainer')class="active" @endif>
              <a href="{{URL::to('')}}/admin/allcontainer" class="nav-link ">
              <i class="nav-icon fas fa-shopping-basket"></i>
@@ -231,7 +231,12 @@
                 
               </p>
              </a>
-            </li>
+            </li> <li class="nav-item"  @if($segment == 'session') class="active" @endif>
+             <a href="{{URL::to('')}}/admin/session" class="nav-link ">
+              <i class="nav-icon fas fa-globe"></i>
+              <p> Session Number </p>
+             </a>
+            </li> 
 @else
     
 @endhasrole

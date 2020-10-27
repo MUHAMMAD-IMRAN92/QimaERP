@@ -9,7 +9,9 @@ use App\Transaction;
 class BatchNumberController extends Controller {
 
     public function index() {
+ 
         $data['batch'] = BatchNumber::where('is_parent', '0')->get();
+
         return view('admin.batch.allbatchnumber', $data);
     }
 
@@ -41,7 +43,7 @@ class BatchNumberController extends Controller {
                 $column = 'batch_number';
             }
         }
-        $members = $members->where('is_parent', '0')->orderBy($column, $orderby)->get();
+        $members = $members->where('is_parent', '0')->with('latestTransation')->orderBy($column, $orderby)->get();
         $data = array(
             'draw' => $draw,
             'recordsTotal' => $total_members,
