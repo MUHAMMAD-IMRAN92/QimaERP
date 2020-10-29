@@ -4,21 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-
 use App\User;
 use App\Center;
 use Hash;
 use DB;
 use Auth;
-class UserController extends Controller
-{
-    
-    public function index(){
 
-    	return view('admin.user.alluser');
+class UserController extends Controller {
+
+    public function index() {
+
+        return view('admin.user.alluser');
     }
 
-     function getUserAjax(Request $request) {
+    function getUserAjax(Request $request) {
         $draw = $request->get('draw');
         $start = $request->get('start');
         $length = $request->get('length');
@@ -31,9 +30,9 @@ class UserController extends Controller
         //::select columns
         $members = $members->select('user_id', 'first_name', 'last_name', 'email');
         //::search with farmername or farmer_code or  village_code
-       $members = $members->when($search, function($q)use ($search) {
-                    $q->where('first_name', 'like', "%$search%")->orWhere('last_name', 'like', "%$search%")->orWhere('email', 'like', "%$search%");
-                });
+        $members = $members->when($search, function($q)use ($search) {
+            $q->where('first_name', 'like', "%$search%")->orWhere('last_name', 'like', "%$search%")->orWhere('email', 'like', "%$search%");
+        });
         if ($request->has('order') && !is_null($request['order'])) {
             $orderBy = $request->get('order');
             $orderby = 'asc';
@@ -42,11 +41,11 @@ class UserController extends Controller
             }
             if (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 1) {
                 $column = 'first_name';
-            }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
                 $column = 'last_name';
-            }elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
+            } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 2) {
                 $column = 'email';
-            }else {
+            } else {
                 $column = 'first_name';
             }
         }
@@ -61,109 +60,106 @@ class UserController extends Controller
         return json_encode($data);
     }
 
-
-
-    public function adduser(){
-    	$data['role'] = Role::get();
+    public function adduser() {
+        $data['role'] = Role::get();
         $data['center'] = Center::all();
-    	return view('admin.user.addnewuser',$data);
+        return view('admin.user.addnewuser', $data);
     }
 
-    public function store(Request $request){
-    	$validatedData = $request->validate([
-        'first_name' => 'required',
-        'last_name' => 'required',
-        'email' => 'required|unique:users',
-        'password' => 'required',
-    ]);
-    	 // dd($request->all());
-    	$user=new User;
-    	$user->first_name=$request->first_name;
-    	$user->last_name=$request->last_name;
-    	$user->email=$request->email;
-    	$user->password=Hash::make($request->password);
-    	// dd($user);
-    	$user->save();
+    public function store(Request $request) {
+        $validatedData = $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|unique:users',
+            'password' => 'required',
+        ]);
+        // dd($request->all());
+        $user = new User;
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        // dd($user);
+        $user->save();
         DB::table('model_has_roles')->insert([
-            'role_id' =>$request->role_id,
+            'role_id' => $request->role_id,
             'model_id' => $user->user_id,
             'model_type' => 'App\User'
         ]);
-         $data = User::where('user_id',$user->user_id)->with('roles')->first();
-   if($request->center_id){
+        $data = User::where('user_id', $user->user_id)->with('roles')->first();
+        if ($request->center_id) {
 
 
-        DB::table('center_users')->insert([
-            'center_id' =>$request->center_id,
-            'user_id' => $user->user_id,
-            'role_name' => $data->roles['0']->name,
-        ]);
-
-   }
-    	return redirect('admin/allusers')->with('message','User Create Successfully');
+            DB::table('center_users')->insert([
+                'center_id' => $request->center_id,
+                'user_id' => $user->user_id,
+                'role_name' => $data->roles['0']->name,
+            ]);
+        }
+        return redirect('admin/allusers')->with('message', 'User Create Successfully');
     }
 
-    public function edit($id){
-    	$data['role'] = Role::get();
-    	$data['user'] = User::find($id);
-    	return view('admin.user.edituser',$data);
+    public function edit($id) {
+        $data['role'] = Role::get();
+        $data['user'] = User::find($id);
+        return view('admin.user.edituser', $data);
     }
 
-    public function update(Request $request){
-		// dd($request->all());
-		$updateuser=User::find($request->user_id);
-		$updateuser->first_name=$request->first_name;
-    	$updateuser->last_name=$request->last_name;
-    	$updateuser->email=$request->email;
-    	$updateuser->update();
+    public function update(Request $request) {
+        // dd($request->all());
+        $updateuser = User::find($request->user_id);
+        $updateuser->first_name = $request->first_name;
+        $updateuser->last_name = $request->last_name;
+        $updateuser->email = $request->email;
+        $updateuser->update();
 
-    	DB::table('model_has_roles')->where('model_id',$request->user_id)->delete();
+        DB::table('model_has_roles')->where('model_id', $request->user_id)->delete();
 
 
         $updateuser->assignRole($request->input('roles'));
 
-        return redirect('admin/allusers')->with('update','User Update Successfully');
+        return redirect('admin/allusers')->with('update', 'User Update Successfully');
     }
 
-    public function resetpassword($id){
+    public function resetpassword($id) {
 
-    $data['reset']=User::find($id);
-    // dd($data['reset']);
-    return view('admin.user.resetpassword',$data);
+        $data['reset'] = User::find($id);
+        // dd($data['reset']);
+        return view('admin.user.resetpassword', $data);
     }
 
-    public function updatepassword(Request $request){
- 			// $pass=hash::make($request->password);
- 			// dd($pass);
-		 $user = User::find($request->user_id);
-           $hashedPassword = Auth::user()->password;
-     
-           if (Hash::check($request->oldpassword , $hashedPassword )) {
-     
-             if (!Hash::check($request->newpassword , $hashedPassword)) {
-     
-                  $user =User::find(Auth::user()->user_id);
-                  $user->password = bcrypt($request->newpassword);
-                  User::where( 'user_id' , Auth::user()->user_id)->update( array( 'password' =>  $user->password));
-     
-                  session()->flash('message','password updated successfully');
-                  return redirect()->back();
-                }
-     
-                else{
-                      session()->flash('new','new password can not be the old password!');
-                      return redirect()->back();
-                    }
-     
-               }
-     
-              else{
-                   session()->flash('old','old password doesnt matched ');
-                   return redirect()->back();
-                 }
+    public function updatepassword(Request $request) {
+        // $pass=hash::make($request->password);
+        // dd($pass);
+        $user = User::find($request->user_id);
+        $hashedPassword = Auth::user()->password;
 
+        if (Hash::check($request->oldpassword, $hashedPassword)) {
 
-         $user->update();
-        return redirect('view');
+            if (!Hash::check($request->newpassword, $hashedPassword)) {
+
+                $user = User::find(Auth::user()->user_id);
+                $user->password = bcrypt($request->newpassword);
+                User::where('user_id', Auth::user()->user_id)->update(array('password' => $user->password));
+
+                session()->flash('message', 'password updated successfully');
+                return redirect()->back();
+            } else {
+                session()->flash('new', 'new password can not be the old password!');
+                return redirect()->back();
+            }
+        } else {
+            session()->flash('old', 'old password doesnt matched ');
+            return redirect()->back();
         }
+
+
+        $user->update();
+        return redirect('view');
+    }
+
+    public function delete(Request $request, $id) {
+        User::where('user_id', $id)->delete();
+    }
+
 }

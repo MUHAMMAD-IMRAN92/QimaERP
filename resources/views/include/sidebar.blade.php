@@ -232,7 +232,7 @@
               </p>
              </a>
             </li> <li class="nav-item"  @if($segment == 'session') class="active" @endif>
-             <a href="{{URL::to('')}}/admin/session" class="nav-link ">
+             <a href="{{URL::to('')}}/admin/sessions" class="nav-link ">
               <i class="nav-icon fas fa-globe"></i>
               <p> Session Number </p>
              </a>

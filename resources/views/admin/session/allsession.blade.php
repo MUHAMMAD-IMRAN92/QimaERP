@@ -1,72 +1,59 @@
 @extends('layouts.default')
-@section('title', 'All Center')
+@section('title', 'All Farmers')
 @section('content')
+
 <style type="text/css">
     .dataTables_wrapper .dataTables_filter input {
         margin-left: 0.5em;
         width: 240px;
     }
-</style>    
-
+</style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    @if (\Session::has('message'))
-    <div class="alert alert-success">
-        <p>{{ \Session::get('message') }}<button type="button" class="close" data-dismiss="alert">&times;</button></p>
-
-    </div>
-    @endif
-    @if (\Session::has('update'))
-    <div class="alert alert-success">
-        <p>{{ \Session::get('update') }}<button type="button" class="close" data-dismiss="alert">&times;</button></p>
-
+    @if(Session::has('message'))
+    <div class="alert alert-success" role="alert">
+        <b>{{Session::get('message')}}</b>
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
     @endif
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
+
                 <div class="col-sm-6">
-                    <h1>Users Information 
-                        <a href="{{url('/admin/adduser')}}" class="btn btn-add rounded-circle"> 
-                            <i class="fas fa-user-plus add-client-icon"></i>
+                    <h1>Session Numbers
+                        <a href="" class="btn btn-add rounded-circle"> 
                         </a>
                     </h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">All Users</li>
+                        <li class="breadcrumb-item active">Session Numbers</li>
                     </ol>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
-
-    <!-- Main content -->
+    <!--     Main      content -->
     <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-
                     <!-- /.card -->
-
                     <div class="card">
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="users" class="table table-bordered table-striped">
+                            <table id="get_batch_number" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th>S#</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
+                                        <th>#</th>
+                                        <th>Session Number</th>
+                                        <th>Num Of Batches</th>
                                         <th>Action</th>
-
                                     </tr>
                                 </thead>
-
-
                             </table>
                         </div>
                         <!-- /.card-body -->
@@ -86,22 +73,22 @@
     let base_path
             = '<?= asset('/') ?>';
     $(document).ready(function () {
-        var t = $('#users').DataTable({
+        var t = $('#get_batch_number').DataTable({
             "processing": true,
             "serverSide": true,
             "deferRender": true,
-
+            "language": {
+                "searchPlaceholder": "Session Number"
+            },
             "ajax": {
-                url: '<?= asset('admin/getuser') ?>',
+                url: '<?= asset('admin/getsessions') ?>',
             },
             "columns": [
                 {"data": null},
-
-                {"data": 'first_name'},
-                {"data": 'last_name'},
-                {"data": 'email'},
+                {"data": 'session_no'},
+            {"data": 'batch_count'},
                 {"mRender": function (data, type, row) {
-                        return '<a href=' + base_path + 'admin/edituser/' + row.user_id + '>Edit</a> | <a href="#" class="editor_remove" data-id="' + row.user_id + '">Delete</a>';
+                        return '<a class="btn btn-info btn-sm" href=' + base_path + 'admin/sessions/' + row.session_no + '><i class="fa fa-info-circle"></i></a>';
                     }
                 }
             ],
@@ -116,7 +103,7 @@
         });
 
         t.on('draw.dt', function () {
-            var PageInfo = $('#users').DataTable().page.info();
+            var PageInfo = $('#get_batch_number').DataTable().page.info();
             t.column(0, {page: 'current'}).nodes().each(function (cell, i) {
                 cell.innerHTML = i + 1 + PageInfo.start;
             });
@@ -124,20 +111,6 @@
         }).draw();
     });
 
-    $('#users').on('click', 'a.editor_remove', function (e) {
-        e.preventDefault();
-        if (confirm('You want to delete user?')) {
-            var id = $(this).data('id');
-            $(this).closest('tr').remove();
-            var id = $(this).data('id');
-            $.ajax({
-                type: "GET",
-                url: base_path + 'admin/deleteuser/' + id
-
-            });
-////            location.reload();
-        }
-    });
 
 </script>
 @endsection

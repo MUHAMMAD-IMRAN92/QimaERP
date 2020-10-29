@@ -117,8 +117,14 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('storeuser', 'UserController@store');
         Route::get('edituser/{id}', 'UserController@edit');
         Route::post('updateuser', 'UserController@update');
+        Route::get('deleteuser/{id}', 'UserController@delete');
         //adminpasswordreset
         Route::get('resetpassword/{id}', 'UserController@resetpassword');
         Route::post('updatepassword', 'UserController@updatepassword');
+
+        //::Session
+        Route::get('sessions', 'SessionController@index');
+        Route::get('getsessions', 'SessionController@getSessionAjax');
+        Route::get('sessions/{id}', 'SessionController@sessionDetail');
     });
 });
