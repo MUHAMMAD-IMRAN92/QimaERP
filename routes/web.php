@@ -126,5 +126,14 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('sessions', 'SessionController@index');
         Route::get('getsessions', 'SessionController@getSessionAjax');
         Route::get('sessions/{id}', 'SessionController@sessionDetail');
+
+
+        //Environment Controller
+        Route::get('environments', 'EnvironmentsController@index')->middleware('auth');
+        Route::get('getenvironments', 'EnvironmentsController@getEnvironmentsAjax');
+        Route::get('environments/create', 'EnvironmentsController@create')->middleware('auth');
+        Route::post('environments', 'EnvironmentsController@store')->middleware('auth');
+        Route::get('environments/edit/{id}', 'EnvironmentsController@edit')->middleware('auth');
+        Route::post('environments/{id}', 'EnvironmentsController@update')->middleware('auth');
     });
 });

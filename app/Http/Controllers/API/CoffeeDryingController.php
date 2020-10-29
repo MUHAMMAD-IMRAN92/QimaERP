@@ -13,6 +13,7 @@ use App\LoginUser;
 use App\User;
 use App\CenterUser;
 use App\MetaTransation;
+use App\Environment;
 use DB;
 
 class CoffeeDryingController extends Controller {
@@ -857,4 +858,12 @@ class CoffeeDryingController extends Controller {
 //        }
 //        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $allTransactions);
 //    }
+
+
+    function environmentList(Request $request) {
+
+        $environments = Environment::Select('environment_id', 'environment_name')->get();
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $environments);
+    }
+
 }

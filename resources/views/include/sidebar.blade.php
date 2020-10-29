@@ -201,6 +201,11 @@
                 
               </p>
              </a>
+            </li></li> <li class="nav-item"  @if($segment == 'environments') class="active" @endif>
+             <a href="{{URL::to('')}}/admin/environments" class="nav-link ">
+              <i class="nav-icon fas fa-globe"></i>
+              <p>Environments</p>
+             </a>
             </li>
             <li class="nav-item"   @if($segment == 'addcontainer'|| $segment == 'allcontainer')class="active" @endif>
              <a href="{{URL::to('')}}/admin/allcontainer" class="nav-link ">
@@ -231,12 +236,12 @@
                 
               </p>
              </a>
-            </li> <li class="nav-item"  @if($segment == 'session') class="active" @endif>
+<!--            </li> <li class="nav-item"  @if($segment == 'session') class="active" @endif>
              <a href="{{URL::to('')}}/admin/sessions" class="nav-link ">
               <i class="nav-icon fas fa-globe"></i>
               <p> Session Number </p>
              </a>
-            </li> 
+            </li> -->
 @else
     
 @endhasrole
