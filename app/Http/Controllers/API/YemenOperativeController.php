@@ -17,7 +17,6 @@ class YemenOperativeController extends Controller {
     private $app_lang;
 
     public function __construct() {
-        die("xcvxc");
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();

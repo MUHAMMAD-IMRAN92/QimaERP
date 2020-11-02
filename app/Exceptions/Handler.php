@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler {
      * @throws \Throwable
      */
     public function render($request, Throwable $exception) {
-
+die("cxv");
         $segment = \Illuminate\Support\Facades\Request::segment(1);
         if ($segment == 'api') {
 
