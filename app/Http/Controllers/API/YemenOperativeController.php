@@ -40,6 +40,7 @@ class YemenOperativeController extends Controller {
 
     function getYemenOperativeCoffee(Request $request) {
         $allTransactions = array();
+        
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) {
                     $q->where('action', 'sent')->whereIn('type', ['sent_to_yemen']);
                 })->whereHas('transactionDetail', function($q) {
@@ -54,7 +55,6 @@ class YemenOperativeController extends Controller {
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
-
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
