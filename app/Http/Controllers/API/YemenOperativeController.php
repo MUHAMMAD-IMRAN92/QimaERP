@@ -49,6 +49,7 @@ class YemenOperativeController extends Controller {
                     }])->with('meta')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
+            $childTransaction = array();
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
@@ -57,9 +58,44 @@ class YemenOperativeController extends Controller {
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
-            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail, 'transactionMeta' => $transactionMata];
+            $removeLocalId = explode("-", $transaction->batch_number);
+            if ($removeLocalId[3] == '000') {
+                $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $transaction->batch_number)->first();
+                if ($FindParentTransactions) {
+                    $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                }
+//$childTransaction = [];
+            }
+            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail, 'transactionMeta' => $transactionMata, 'child_transactions' => $childTransaction];
             array_push($allTransactions, $data);
         }
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+    }
+
+    function receivedSpecialProcessingCoffee(Request $request) {
+        $validator = Validator::make($request->all(), [
+                    'transactions' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+        $userId = $this->userId;
+        $receivedCofffee = array();
+        $receivedTransactions = json_decode($request['transactions']);
+        DB::beginTransaction();
+        try {
+            foreach ($receivedTransactions as $key => $receivedTransaction) {
+                
+            }
+            DB::commit();
+        } catch (PDOException $e) {
+//   DB::rollback();
+
+            return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
+        }
+        $allTransactions = array();
+
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
