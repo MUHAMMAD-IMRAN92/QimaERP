@@ -40,7 +40,7 @@ class YemenOperativeController extends Controller {
 
     function getYemenOperativeCoffee(Request $request) {
         $allTransactions = array();
-        
+
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) {
                     $q->where('action', 'sent')->whereIn('type', ['sent_to_yemen']);
                 })->whereHas('transactionDetail', function($q) {
@@ -63,8 +63,11 @@ class YemenOperativeController extends Controller {
                 $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $transaction->batch_number)->first();
                 if ($FindParentTransactions) {
                     $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+
+                    foreach ($childTransaction as $key => $childTransactio) {
+                        $childTransactio->is_parent = $transaction->transaction_id;
+                    }
                 }
-//$childTransaction = [];
             }
             $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail, 'transactionMeta' => $transactionMata, 'child_transactions' => $childTransaction];
             array_push($allTransactions, $data);
