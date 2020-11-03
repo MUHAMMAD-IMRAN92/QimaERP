@@ -3,8 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Farmer extends Model {
+
+    use SoftDeletes;
 
     protected $casts = [
         'is_local' => 'boolean',

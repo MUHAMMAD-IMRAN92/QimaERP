@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Edit Farmer</h1>
+                    <h1>Add Farmer</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -60,28 +60,32 @@
                                     @enderror
                                 </div>   
 
-                                <div class="form-group">
-                                    <label for="customFile">Farmer Image</label>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input"  name="profile_picture" id="customFile"  @error('profile_picture') is-invalid @enderror>
-                                               <label class="custom-file-label" for="customFile">Choose file</label>
-                                        @error('profile_picture')
-                                        <span  class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div> 
+                                <div class="row">
 
-                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="customFile">Farmer Image</label>
+                                            <div class="">
+                                                <input type="file" class=""  name="profile_picture" id="customFile"  @error('profile_picture') is-invalid @enderror>
+                                                       @error('profile_picture')
+                                                       <span  class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div> 
 
-                                    <label for="customFile">Farmer Id Card Image</label>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input"   name="idcard_picture" id="customFile" @error('idcard_picture') is-invalid @enderror>
-                                               <label class="custom-file-label" for="customFile">Choose file</label>
-                                        @error('idcard_picture')
-                                        <span  class="text-danger">{{ $message }}</span>
-                                        @enderror
                                     </div>
-                                </div>     
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="customFile">Farmer Id Card Image</label>
+                                            <div class="">
+                                                <input type="file" class=""   name="idcard_picture" id="customFile" @error('idcard_picture') is-invalid @enderror>
+                                                       @error('idcard_picture')
+                                                       <span  class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>     
+                                    </div>
+                                </div>
                             </div>
                             <!-- /.card-body -->
                             <div class="card-footer">

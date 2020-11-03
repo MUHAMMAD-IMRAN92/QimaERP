@@ -201,4 +201,9 @@ class FarmerController extends Controller {
         return redirect('admin/allfarmer');
     }
 
+    public function delete(Request $request, $id) {
+
+        Farmer::where('farmer_id', $id)->delete();
+    }
+
 }

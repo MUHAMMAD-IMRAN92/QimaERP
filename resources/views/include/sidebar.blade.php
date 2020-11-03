@@ -216,8 +216,14 @@
               </p>
              </a>
             </li>
-
-            <li class="nav-item"   @if($segment == 'addseason')class="active" @endif>
+             <li class="nav-item"   @if($segment == 'milling_coffee')class="active" @endif>
+             <a href="{{URL::to('')}}/admin/milling_coffee" class="nav-link ">
+              <i class="fal fa-trees"></i>
+             <i class="nav-icon fas fa-tree"></i>
+              <p>Milling</p>
+             </a>
+            </li>
+<!--            <li class="nav-item"   @if($segment == 'addseason')class="active" @endif>
              <a href="{{URL::to('')}}/admin/allseason" class="nav-link ">
               <i class="fal fa-trees"></i>
              <i class="nav-icon fas fa-tree"></i>
@@ -226,7 +232,7 @@
                 
               </p>
              </a>
-            </li>
+            </li>-->
             <li class="nav-item"   @if($segment == 'governorweight')class="active" @endif>
              <a href="{{URL::to('')}}/admin/governorweight" class="nav-link ">
               <i class="fal fa-trees"></i>

@@ -116,9 +116,9 @@
                 },
                 {"mRender": function (data, type, row) {
                         if (row.is_status == 0) {
-                            return '<a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + '>Edit</a>| <a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + ' class="editor_remove" data-id="' + row.farmer_id + '">Delete</a>|  <a href=' + base_path + 'admin/statusupdate/' + row.farmer_id + ' data-id="' + row.farmer_id + '">Approve</a>';
+                            return '<a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + '>Edit</a>| <a href=' + base_path + 'admin/deletefarmer/' + row.farmer_id + ' class="editor_remove" data-id="' + row.farmer_id + '">Delete</a>|  <a href=' + base_path + 'admin/statusupdate/' + row.farmer_id + ' data-id="' + row.farmer_id + '">Approve</a>';
                         } else {
-                            return '<a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + '>Edit</a>| <a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + ' class="editor_remove" data-id="' + row.farmer_id + '">Delete</a>';
+                            return '<a href=' + base_path + 'admin/editfarmer/' + row.farmer_id + '>Edit</a>| <a href=' + base_path + 'admin/deletefarmer/' + row.farmer_id + ' class="editor_remove" data-id="' + row.farmer_id + '">Delete</a>';
                         }
                     }
                 }
@@ -142,7 +142,19 @@
         }).draw();
     });
 
+    $('#allfarmer').on('click', 'a.editor_remove', function (e) {
+        e.preventDefault();
+        if (confirm('You want to delete famer?')) {
+            var id = $(this).data('id');
+            $(this).closest('tr').remove();
+            $.ajax({
+                type: "GET",
+                url: base_path + 'admin/deletefarmer/' + id
 
+            });
+           // location.reload();
+        }
+    });
 
 </script>
 @endsection
