@@ -95,8 +95,8 @@ class CoffeeDryingController extends Controller {
         $userId = $this->userId;
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
-        DB::beginTransaction();
-        try {
+        //DB::beginTransaction();
+      //  try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
                 if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
@@ -378,10 +378,10 @@ class CoffeeDryingController extends Controller {
                                         'session_no' => $receivedTransaction->transaction->session_no,
                                         'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
                             ]);
-                            array_push($receivedCofffee, $processTransaction->transaction_id);
+                            array_push($receivedCofffee, $processTransaction2->transaction_id);
 
                             $transactionLog = TransactionLog::create([
-                                        'transaction_id' => $processTransaction->transaction_id,
+                                        'transaction_id' => $processTransaction2->transaction_id,
                                         'action' => 'sent',
                                         'created_by' => $receivedTransaction->transaction->created_by,
                                         'entity_id' => $receivedTransaction->transaction->center_id,
@@ -392,7 +392,7 @@ class CoffeeDryingController extends Controller {
                             $transactionContainers = $receivedTransaction->transactionDetails;
                             foreach ($transactionContainers as $key => $transactionContainer) {
                                 TransactionDetail::create([
-                                    'transaction_id' => $processTransaction->transaction_id,
+                                    'transaction_id' => $processTransaction2->transaction_id,
                                     'container_number' => $transactionContainer->container_number,
                                     'created_by' => $userId,
                                     'is_local' => FALSE,
@@ -406,7 +406,7 @@ class CoffeeDryingController extends Controller {
                             $transactionMeta = $receivedTransaction->transactionMeta;
                             foreach ($transactionMeta as $key => $transactionMe) {
                                 MetaTransation::create([
-                                    'transaction_id' => $processTransaction->transaction_id,
+                                    'transaction_id' => $processTransaction2->transaction_id,
                                     'key' => $transactionMe->key,
                                     'value' => $transactionMe->value,
                                 ]);
@@ -415,12 +415,12 @@ class CoffeeDryingController extends Controller {
                     }
                 }
             }
-            DB::commit();
-        } catch (PDOException $e) {
-            DB::rollback();
+            //DB::commit();
+       // } catch (PDOException $e) {
+           // DB::rollback();
 
             // return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
-        }
+       // }
 
         $allTransactions = array();
 //        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $receivedCofffee)->with('transactionDetail', 'log', 'meta')->get();
