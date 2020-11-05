@@ -10,7 +10,7 @@ class MillingController extends Controller {
     public function index() {
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) {
-                    $q->where('action', 'sent')->whereIn('type', ['sent_to_yemen']);
+                    $q->where('action', 'received')->where('type', 'received_by_yemen');
                 })->whereHas('transactionDetail', function($q) {
                     $q->where('container_status', 0);
                 }, '>', 0)->with(['transactionDetail' => function($query) {
