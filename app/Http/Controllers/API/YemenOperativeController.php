@@ -47,7 +47,7 @@ class YemenOperativeController extends Controller {
     function getYemenOperativeCoffee(Request $request) {
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) {
-                    $q->whereIn('action', ['sent','received'])->whereIn('type', ['sent_to_yemen','received_by_yemen']);
+                    $q->whereIn('action', 'sent')->whereIn('type', ['sent_to_yemen']);
                 })->whereHas('transactionDetail', function($q) {
                     $q->where('container_status', 0);
                 }, '>', 0)->with(['transactionDetail' => function($query) {
