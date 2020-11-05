@@ -114,5 +114,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         //::Yemen Operative
         Route::get('/get_yemen_operative_coffee', 'API\YemenOperativeController@getYemenOperativeCoffee');
+        Route::post('/received_yemen_operative_coffee', 'API\YemenOperativeController@receivedYemenOperative');
     });
 });

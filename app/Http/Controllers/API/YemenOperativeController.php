@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use App\TransactionDetail;
 use App\TransactionLog;
 use App\Transaction;
 use App\LoginUser;
 use App\User;
+use App\CenterUser;
+use App\MetaTransation;
+use App\Environment;
+use DB;
 
 class YemenOperativeController extends Controller {
 
@@ -75,7 +81,7 @@ class YemenOperativeController extends Controller {
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
-    function receivedSpecialProcessingCoffee(Request $request) {
+    function receivedYemenOperative(Request $request) {
         $validator = Validator::make($request->all(), [
                     'transactions' => 'required',
         ]);
@@ -83,22 +89,60 @@ class YemenOperativeController extends Controller {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-        $userId = $this->userId;
-        $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
         DB::beginTransaction();
         try {
-            foreach ($receivedTransactions as $key => $receivedTransaction) {
-                
+            foreach ($receivedTransactions as $key => $sentTransaction) {
+                if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+                    $transaction = Transaction::create([
+                                'batch_number' => $sentTransaction->transaction->batch_number,
+                                'is_parent' => $sentTransaction->transaction->is_parent,
+                                'is_mixed' => $sentTransaction->transaction->is_mixed,
+                                'created_by' => $sentTransaction->transaction->created_by,
+                                'is_local' => FALSE,
+                                'transaction_type' => $sentTransaction->transaction->transaction_type,
+                                'local_code' => $sentTransaction->transaction->local_code,
+                                'transaction_status' => 'received',
+                                'reference_id' => $sentTransaction->transaction->reference_id,
+                                'is_server_id' => 1,
+                                'is_new' => 0,
+                                'sent_to' => $sentTransaction->transaction->sent_to,
+                                'is_sent' => 1,
+                                'session_no' => $sentTransaction->transaction->session_no,
+                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                    ]);
+                    $transactionLog = TransactionLog::create([
+                                'transaction_id' => $transaction->transaction_id,
+                                'action' => 'received',
+                                'created_by' => $sentTransaction->transaction->created_by,
+                                'entity_id' => $sentTransaction->transaction->center_id,
+                                'center_name' => $sentTransaction->transaction->center_name,
+                                'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                                'type' => 'received_by_yemen',
+                    ]);
+                    $transactionContainers = $sentTransaction->transactionDetails;
+                    foreach ($transactionContainers as $key => $transactionContainer) {
+                        TransactionDetail::create([
+                            'transaction_id' => $transaction->transaction_id,
+                            'container_number' => $transactionContainer->container_number,
+                            'created_by' => $transactionContainer->created_by,
+                            'is_local' => FALSE,
+                            'container_weight' => $transactionContainer->container_weight,
+                            'weight_unit' => $transactionContainer->weight_unit,
+                            'center_id' => $transactionContainer->center_id,
+                            'reference_id' => $transactionContainer->reference_id,
+                        ]);
+
+                        TransactionDetail::where('transaction_id', $sentTransaction->transaction->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                    }
+                }
             }
             DB::commit();
         } catch (PDOException $e) {
-//   DB::rollback();
-
+            DB::rollback();
             return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
         }
         $allTransactions = array();
-
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 

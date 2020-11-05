@@ -95,8 +95,8 @@ class CoffeeDryingController extends Controller {
         $userId = $this->userId;
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
-        //DB::beginTransaction();
-      //  try {
+        DB::beginTransaction();
+        try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
                 if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
@@ -415,12 +415,12 @@ class CoffeeDryingController extends Controller {
                     }
                 }
             }
-            //DB::commit();
-       // } catch (PDOException $e) {
-           // DB::rollback();
+            DB::commit();
+        } catch (PDOException $e) {
+            DB::rollback();
 
-            // return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
-       // }
+             return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
+        }
 
         $allTransactions = array();
 //        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $receivedCofffee)->with('transactionDetail', 'log', 'meta')->get();
