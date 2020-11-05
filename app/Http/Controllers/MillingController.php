@@ -8,6 +8,7 @@ use App\Transaction;
 class MillingController extends Controller {
 
     public function index() {
+        $data = array();
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) {
                     $q->where('action', 'received')->where('type', 'received_by_yemen');
@@ -17,6 +18,7 @@ class MillingController extends Controller {
                         $query->where('container_status', 0);
                     }])->orderBy('transaction_id', 'desc')->get();
         $sessionTransactions = $transactions->groupBy('session_no');
+
         foreach ($sessionTransactions as $key => $sessionTransaction) {
             $sessionTransation = array();
             foreach ($sessionTransaction as $key => $transaction) {
@@ -36,11 +38,8 @@ class MillingController extends Controller {
             }
             array_push($allTransactions, $sessionTransation);
         }
-        return sendSuccess(Config("statuscodes.en.success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
-
-        var_dump($allTransactions);
-        exit;
-        return view('admin.milling.index');
+        $data['transactions'] = $allTransactions;
+        return view('admin.milling.index', $data);
     }
 
 }
