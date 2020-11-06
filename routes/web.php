@@ -64,7 +64,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 
         Route::get('deletefarmer/{id}', 'FarmerController@delete');
-        
+
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
         //BatchNumber Controller
@@ -139,5 +139,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('environments/{id}', 'EnvironmentsController@update')->middleware('auth');
         //::milling
         Route::get('milling_coffee', 'MillingController@index')->middleware('auth');
+        Route::get('get_milling_sessions', 'MillingController@getMillingSessionAjax');
+        Route::get('milling_coffee/{id}', 'MillingController@milling')->middleware('auth');
+        Route::post('milling_coffee', 'MillingController@millingCoffee')->middleware('auth');
     });
 });

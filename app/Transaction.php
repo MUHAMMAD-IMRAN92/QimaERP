@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model {
 
     protected $primaryKey = 'transaction_id';
-    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status', 'is_server_id', 'is_new', 'sent_to', 'is_sent', 'session_no', 'local_created_at','is_in_process','is_update_center','local_session_no'];
+    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status', 'is_server_id', 'is_new', 'sent_to', 'is_sent', 'session_no', 'local_created_at','is_in_process','is_update_center','local_session_no','mill_id'];
     protected $casts = [
         'is_local' => 'boolean',
         'is_mixed' => 'boolean',

@@ -10,12 +10,12 @@
  
     <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    @if(Session::has('message'))
-                  <div class="alert alert-success" role="alert">
-                  <b>{{Session::get('message')}}</b>
-                  <button type="button" class="close" data-dismiss="alert">&times;</button>
-                  </div>
-                  @endif
+      @if(Session::has('message'))
+      <div class="alert alert-success" role="alert">
+          <b>{{Session::get('message')}}</b>
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+      @endif
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
