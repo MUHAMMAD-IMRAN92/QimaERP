@@ -61,8 +61,8 @@
                                         <th>First Name</th>
                                         <th>Last Name</th>
                                         <th>Email</th>
+                                        <th>Role</th>
                                         <th>Action</th>
-
                                     </tr>
                                 </thead>
 
@@ -90,16 +90,22 @@
             "processing": true,
             "serverSide": true,
             "deferRender": true,
-
             "ajax": {
                 url: '<?= asset('admin/getuser') ?>',
             },
             "columns": [
                 {"data": null},
-
                 {"data": 'first_name'},
                 {"data": 'last_name'},
                 {"data": 'email'},
+                {"mRender": function (data, type, row) {
+                        var role = '-';
+                        if (typeof (row.roles) != "undefined" && row.roles !== null && typeof (row.roles[0]) != "undefined" && row.roles[0] !== null) {
+                            role=row.roles[0].name;
+                        }
+                        return '<td>'+role+'</td>';
+                    }
+                },
                 {"mRender": function (data, type, row) {
                         return '<a href=' + base_path + 'admin/edituser/' + row.user_id + '>Edit</a> | <a href="#" class="editor_remove" data-id="' + row.user_id + '">Delete</a>';
                     }
@@ -114,16 +120,13 @@
             "order": [], //Initial no order.
             "aaSorting": [],
         });
-
         t.on('draw.dt', function () {
             var PageInfo = $('#users').DataTable().page.info();
             t.column(0, {page: 'current'}).nodes().each(function (cell, i) {
                 cell.innerHTML = i + 1 + PageInfo.start;
             });
-
         }).draw();
     });
-
     $('#users').on('click', 'a.editor_remove', function (e) {
         e.preventDefault();
         if (confirm('You want to delete user?')) {

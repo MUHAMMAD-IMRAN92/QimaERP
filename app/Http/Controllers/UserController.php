@@ -49,7 +49,7 @@ class UserController extends Controller {
                 $column = 'first_name';
             }
         }
-        $members = $members->skip($start)->take($length)->orderBy($column, $orderby)->get();
+        $members = $members->skip($start)->take($length)->orderBy($column, $orderby)->with('roles')->get();
         $data = array(
             'draw' => $draw,
             'recordsTotal' => $total_members,
