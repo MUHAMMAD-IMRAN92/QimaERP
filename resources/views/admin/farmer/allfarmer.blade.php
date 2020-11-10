@@ -10,18 +10,7 @@
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    @if(Session::has('message'))
-    <div class="alert alert-success" role="alert">
-        <b>{{Session::get('message')}}</b>
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-    @endif
-    @if(Session::has('updatefarmer'))
-    <div class="alert alert-success" role="alert">
-        <b>{{Session::get('updatefarmer')}}</b>
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-    @endif
+   
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
@@ -49,7 +38,18 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-
+ @if(Session::has('message'))
+    <div class="alert alert-success" role="alert">
+        <b>{{Session::get('message')}}</b>
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    @endif
+    @if(Session::has('updatefarmer'))
+    <div class="alert alert-success" role="alert">
+        <b>{{Session::get('updatefarmer')}}</b>
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    @endif
                     <!-- /.card -->
 
                     <div class="card">

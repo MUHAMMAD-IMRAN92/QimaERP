@@ -54,4 +54,7 @@ class Transaction extends Model {
         return $this->hasMany(MetaTransation::class, 'transaction_id', 'transaction_id');
     }
 
+        public function child() {
+        return $this->hasMany(ChildTransaction::class, 'parent_transaction_id','transaction_id');
+    }
 }

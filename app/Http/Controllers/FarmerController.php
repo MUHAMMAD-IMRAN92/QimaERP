@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Village;
 use App\FileSystem;
 use App\Farmer;
+use Session;
 use Auth;
 
 class FarmerController extends Controller {
@@ -116,18 +117,14 @@ class FarmerController extends Controller {
             $updatefarmer->idcard_picture_id = $idcardImageId;
         }
 
-
-
-
         // dd($updatefarmer);
         $updatefarmer->farmer_name = $request->farmer_name;
         $updatefarmer->farmer_nicn = $request->farmer_nicn;
 
-
-
-
         $updatefarmer->save();
-        return view('admin.farmer.allfarmer')->with('updatefarmer', 'farmer detail update Successfully');
+         Session::flash('updatefarmer', 'farmer was updated Successfully.');
+        return redirect('admin/allfarmer');
+      //  return view('admin.farmer.allfarmer')->with('updatefarmer', 'farmer detail update Successfully');
     }
 
     public function updatestatus($id) {

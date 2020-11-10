@@ -25,10 +25,10 @@ class UserController extends Controller {
         $orderby = 'ASC';
         $column = 'user_id';
 //::count total record
-        $total_members = User::count();
+        $total_members = User::where('user_id','!=',Auth::user()->user_id )->count();
         $members = User::query();
         //::select columns
-        $members = $members->select('user_id', 'first_name', 'last_name', 'email');
+        $members = $members->select('user_id', 'first_name', 'last_name', 'email')->where('user_id','!=',Auth::user()->user_id );
         //::search with farmername or farmer_code or  village_code
         $members = $members->when($search, function($q)use ($search) {
             $q->where('first_name', 'like', "%$search%")->orWhere('last_name', 'like', "%$search%")->orWhere('email', 'like', "%$search%");
