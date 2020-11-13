@@ -18,6 +18,7 @@ use App\User;
 use App\Season;
 use App\CoffeeSession;
 use Storage;
+use App\Jobs\TransactionInvoices;
 
 class CoffeeBuyer extends Controller {
 
@@ -250,7 +251,6 @@ class CoffeeBuyer extends Controller {
                 $removeLocalId = explode("-", $childBatch->batch->batch_number);
                 //::remove last index of array
                 array_pop($removeLocalId);
-
                 // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
                 $farmerCode = implode("-", $removeLocalId);
                 if ($childBatch->batch->is_server_id == 1) {
@@ -433,14 +433,12 @@ class CoffeeBuyer extends Controller {
                     }
                 }
 
-
-
                 if (isset($batch_numbers->batch->transactions[0]->transactions_invoices) && $batch_numbers->batch->transactions[0]->transactions_invoices) {
                     $transactionsInvoices = $batch_numbers->batch->transactions[0]->transactions_invoices;
                     $i = 1;
                     foreach ($transactionsInvoices as $key => $transactionsInvoice) {
-
                         if ($transactionsInvoice->invoice_image) {
+                            //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
                             $destinationPath = 'storage/app/images/';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
@@ -519,7 +517,12 @@ class CoffeeBuyer extends Controller {
             $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
             array_push($dataArray, $data);
         }
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $dataArray);
+           $session=1;
+          $findLatestSession = Transaction::where('created_by',$this->userId)->orderBy('local_session_no', 'desc')->first();
+        if($findLatestSession){
+            $session =($findLatestSession->local_session_no + 1);
+        }
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $session);
 //        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
 //        return sendSuccess('Coffee was added Successfully', $currentBatch);
     }

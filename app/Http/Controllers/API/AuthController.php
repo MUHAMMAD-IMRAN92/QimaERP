@@ -55,10 +55,10 @@ class AuthController extends Controller {
                 $user->center_id = $user->center_user->center_id;
             }
             $user->makeHidden('center_user');
-            $user->session_no = 0;
-            $sessionNo = Transaction::orderBy('session_no', 'desc')->first();
+            $user->session_no = 1;
+            $sessionNo = Transaction::where('created_by', Auth::user()->user_id)->orderBy('local_session_no', 'desc')->first();
             if ($sessionNo) {
-                $user->session_no = $sessionNo->session_no;
+                $user->session_no =($sessionNo->local_session_no + 1);;
             }
 // return sendSuccess('Logged In', $user);
             $session = $this->saveLoginUserDetail($user->user_id);
