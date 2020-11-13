@@ -340,9 +340,21 @@ class CoffeeBuyer extends Controller {
                 $newLastBID = ($lastBatchNumber->batch_id + 1);
             }
             array_pop($removeLocalId);
+            $checkMixed = 0;
             if ($removeLocalId[3] == '000') {
                 $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
-            } else {
+                $checkMixed = 1;
+            }
+            if ($removeLocalId[2] == '00') {
+                $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
+                $checkMixed = 1;
+            }
+            if ($removeLocalId[2] == 'XXX') {
+                $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
+                $checkMixed = 1;
+            }
+
+            if ($checkMixed == 0) {
                 //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                 $farmerCode = implode("-", $removeLocalId);
                 if ($batch_numbers->batch->batch->is_server_id == 1) {
@@ -392,7 +404,7 @@ class CoffeeBuyer extends Controller {
                             'sent_to' => 2,
                             'session_no' => $pSession,
                             'local_session_no' => $pSession,
-                            'local_created_at' =>date("Y-m-d H:i:s", strtotime($batch_numbers->batch->transactions[0]->transactions->created_at)), 
+                            'local_created_at' => date("Y-m-d H:i:s", strtotime($batch_numbers->batch->transactions[0]->transactions->created_at)),
                 ]);
 
 
@@ -853,7 +865,7 @@ class CoffeeBuyer extends Controller {
                     $checkBatch = BatchNumber::where('batch_number', $childTransation->batch_number)->with('buyer')->first();
 
                     if ($checkBatch && isset($checkBatch->buyer)) {
-                       $childTransation->buyer_name  = $checkBatch->buyer->first_name . ' ' . $checkBatch->buyer->last_name;
+                        $childTransation->buyer_name = $checkBatch->buyer->first_name . ' ' . $checkBatch->buyer->last_name;
                     }
 
                     $childTransationDetail = $childTransation->transactionDetail;
