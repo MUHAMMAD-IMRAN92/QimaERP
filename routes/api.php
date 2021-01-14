@@ -27,7 +27,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], function () {
     Route::post('/login', 'API\AuthController@login');
-    Route::post('/login', 'API\AuthController@login');
 // Logged In users
     Route::group(['middleware' => ['checkSession']], function () {
 //::Common Routes
