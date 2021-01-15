@@ -213,8 +213,6 @@ class CoffeeBuyer extends Controller
 
     function addCoffeeWithBatchNumber(Request $request)
     {
-        // return response()->json(json_decode(json_encode($request['batch_number'])));
-        //::validation
         $validator = Validator::make($request->all(), [
             'batch_number' => 'required',
         ]);
@@ -309,7 +307,7 @@ class CoffeeBuyer extends Controller
                         'session_no' => $childSession,
                         'local_session_no' => $childBatch->transactions[0]->transactions->session_no,
                         'local_created_at' => date("Y-m-d H:i:s", strtotime($childBatch->transactions[0]->transactions->created_at)),
-                        'local_updated_at' => Carbon::parse($childBatch->transactions[0]->transactions->updated_at)->toDateString()
+                        'local_updated_at' => Carbon::parse($childBatch->transactions[0]->transactions->local_updated_at)->toDateString()
                     ]);
 
                     $transactionLog = TransactionLog::create([
@@ -319,6 +317,7 @@ class CoffeeBuyer extends Controller
                         'entity_id' => $childBatch->transactions[0]->transactions->created_by,
                         'type' => 'coffee_buyer',
                         'local_created_at' => $childBatch->transactions[0]->transactions->created_at,
+                        'local_updated_at' => Carbon::parse($childBatch->transactions[0]->transactions->local_updated_at)->toDateString()
                     ]);
                     //::child transactions details
                     if (isset($childBatch->transactions[0]->transactions_detail) && $childBatch->transactions[0]->transactions_detail) {
@@ -414,7 +413,7 @@ class CoffeeBuyer extends Controller
                     'session_no' => $pSession,
                     'local_session_no' => $pSession,
                     'local_created_at' => date("Y-m-d H:i:s", strtotime($batch_numbers->batch->transactions[0]->transactions->created_at)),
-                    'local_updated_at' => Carbon::parse($batch_numbers->batch->transactions[0]->transactions->updated_at)->toDateString()
+                    'local_updated_at' => Carbon::parse($batch_numbers->batch->transactions[0]->transactions->local_updated_at)->toDateString()
 
                 ]);
 
@@ -426,7 +425,7 @@ class CoffeeBuyer extends Controller
                     'entity_id' => $batch_numbers->batch->transactions[0]->transactions->created_by,
                     'type' => 'coffee_buyer',
                     'local_created_at' => $batch_numbers->batch->transactions[0]->transactions->created_at,
-                    'local_updated_at' => Carbon::parse($batch_numbers->batch->transactions[0]->transactions->updated_at)->toDateString()
+                    'local_updated_at' => Carbon::parse($batch_numbers->batch->transactions[0]->transactions->local_updated_at)->toDateString()
                 ]);
 
 
