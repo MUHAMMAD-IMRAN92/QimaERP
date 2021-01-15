@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 //$user->assignRole('Coffee Buying Manager');
 //$role = Role::create(['name' => 'Coffee Buying Manager']);
 
+Route::get('dev_test', 'API\DevTestController');
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
