@@ -20,6 +20,7 @@ use App\CoffeeSession;
 use Storage;
 use App\Jobs\TransactionInvoices;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class CoffeeBuyer extends Controller
 {
@@ -214,7 +215,7 @@ class CoffeeBuyer extends Controller
     function addCoffeeWithBatchNumber(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'batch_numbers' => 'required',
+            'batch_number' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
@@ -233,9 +234,8 @@ class CoffeeBuyer extends Controller
         if ($lastTransactionNumber) {
             $lastTID = $lastTransactionNumber->transaction_id;
         }
-
-        $requestPaylod = json_decode($request->getContent());
-        $batches_numbers = $requestPaylod->batch_numbers;
+        
+        $batches_numbers = json_decode(str_replace('&quot;', '"', $request->input('batch_number')));;
 
         // foreach($batches_numbers as $batch){
         //     return response()->json([
