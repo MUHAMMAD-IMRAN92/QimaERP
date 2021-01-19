@@ -568,7 +568,7 @@ class CoffeeDryingController extends Controller {
         $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $transationsIdArray)->with('transactionDetail', 'log', 'meta')->get();
 
         foreach ($currentlyReceivedCoffees as $key => $currentlyReceivedCof) {
-            $transactionDetailRec = $currentlyReceivedCof->transactionDetail;
+            $transactionDetailRec = $currentlyReceivedCof->transactionDetail()->first();
             $transactionMetaRec = $currentlyReceivedCof->meta;
             $data = ['transactionDetails' => $transactionDetailRec, 'transactionMeta' => $transactionMetaRec];
             array_push($allTransationsDetail, $data);
