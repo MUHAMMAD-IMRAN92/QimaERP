@@ -4,10 +4,36 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model {
+class Transaction extends Model
+{
 
     protected $primaryKey = 'transaction_id';
-    protected $fillable = ['transaction_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'transaction_type', 'reference_id', 'transaction_status', 'is_server_id', 'is_new', 'sent_to', 'is_sent', 'session_no', 'local_created_at','is_in_process','is_update_center','local_session_no','mill_id'];
+
+    protected $guarded = [];
+
+    // protected $fillable = [
+    //     'transaction_id',
+    //     'batch_number',
+    //     'is_parent',
+    //     'created_by',
+    //     'is_local',
+    //     'local_code',
+    //     'is_mixed',
+    //     'transaction_type',
+    //     'reference_id',
+    //     'transaction_status',
+    //     'is_server_id',
+    //     'is_new',
+    //     'sent_to',
+    //     'is_sent',
+    //     'session_no',
+    //     'local_created_at',
+    //     'is_in_process',
+    //     'is_update_center',
+    //     'local_session_no',
+    //     'mill_id'
+    // ];
+
     protected $casts = [
         'is_local' => 'boolean',
         'is_mixed' => 'boolean',
@@ -18,43 +44,53 @@ class Transaction extends Model {
         'is_update_center' => 'boolean',
     ];
 
-    public function transactionDetail() {
+    public function transactionDetail()
+    {
         return $this->hasMany(TransactionDetail::class, 'transaction_id', 'transaction_id');
     }
 
-    public function isReference() {
+    public function isReference()
+    {
         return $this->hasMany(Transaction::class, 'reference_id', 'transaction_id');
     }
 
-    public function childTransation() {
+    public function childTransation()
+    {
         return $this->hasMany(Transaction::class, 'is_parent', 'transaction_id');
     }
 
-    public function transactionLog() {
+    public function transactionLog()
+    {
         return $this->hasMany(TransactionLog::class, 'transaction_id', 'transaction_id');
     }
 
-    public function log() {
+    public function log()
+    {
         return $this->hasOne(TransactionLog::class, 'transaction_id', 'transaction_id');
     }
 
-    public function sent_transaction() {
+    public function sent_transaction()
+    {
         return $this->hasOne(Transaction::class, 'reference_id', 'transaction_id');
     }
 
-    public function center_manager_received_transaction() {
+    public function center_manager_received_transaction()
+    {
         return $this->hasOne(Transaction::class, 'reference_id', 'transaction_id');
     }
 
-    public function transactions_invoices() {
+    public function transactions_invoices()
+    {
         return $this->hasMany(TransactionInvoice::class, 'transaction_id', 'transaction_id');
     }
 
-    public function meta() {
+    public function meta()
+    {
         return $this->hasMany(MetaTransation::class, 'transaction_id', 'transaction_id');
     }
 
-        public function child() {
-        return $this->hasMany(ChildTransaction::class, 'parent_transaction_id','transaction_id');
+    public function child()
+    {
+        return $this->hasMany(ChildTransaction::class, 'parent_transaction_id', 'transaction_id');
     }
 }
