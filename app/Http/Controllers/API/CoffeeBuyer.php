@@ -213,9 +213,6 @@ class CoffeeBuyer extends Controller
 
     function addCoffeeWithBatchNumber(Request $request)
     {
-        return $request->all();
-
-        
         $validator = Validator::make($request->all(), [
             'batch_numbers' => 'required',
         ]);
