@@ -235,7 +235,7 @@ class CoffeeBuyer extends Controller
             $lastTID = $lastTransactionNumber->transaction_id;
         }
         
-        $batches_numbers = json_decode(str_replace('&quot;', '"', $request->input('batch_number')));;
+        $batches_numbers = json_decode(str_replace('&quot;', '"', $request->input('batch_number')));
 
         // foreach($batches_numbers as $batch){
         //     return response()->json([
