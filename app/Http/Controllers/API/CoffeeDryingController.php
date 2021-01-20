@@ -529,9 +529,12 @@ class CoffeeDryingController extends Controller
             }
 
             foreach ($transactionsInformation->transactionMeta as $key => $value) {
-                
+
                 if ($value->key == 'moisture_measurement') {
-                    $alreadyMetaExist = MetaTransation::where('transaction_id', $value->transaction_id)->where('key', 'moisture_measurement')->first();
+                    $alreadyMetaExist = MetaTransation::where('transaction_id', $value->transaction_id)
+                        ->where('key', 'moisture_measurement')
+                        ->first();
+
                     if ($alreadyMetaExist) {
                         $alreadyMetaExist->value = $value->value;
                         $alreadyMetaExist->save();
@@ -544,10 +547,15 @@ class CoffeeDryingController extends Controller
                         ]);
                     }
                 } elseif (strstr($value->key, 'BS') || strstr($value->key, 'DT') || strstr($value->key, 'SC') || strstr($value->key, 'DM') || strstr($value->key, 'DS') || strstr($value->key, 'GS') || strstr($value->key, 'ES') || strstr($value->key, 'PS') || strstr($value->key, 'SS') || strstr($value->key, 'LS') || strstr($value->key, 'HS') || strstr($value->key, 'QS') || strstr($value->key, 'KS') || strstr($value->key, 'VB') || strstr($value->key, 'PB') || strstr($value->key, 'VP') || strstr($value->key, 'PP') || strstr($value->key, 'SM')) {
+
                     $basketArray = explode("_", $value->key);
+
                     $basket = $basketArray[0];
                     $weight = $basketArray[1];
-                    $alreadyExistBasketMeta = MetaTransation::where('transaction_id', $value->transaction_id)->where('key', 'like', "$basket%")->first();
+
+                    $alreadyExistBasketMeta = MetaTransation::where('transaction_id', $value->transaction_id)
+                        ->where('key', 'like', "$basket%")
+                        ->first();
 
                     if ($alreadyExistBasketMeta) {
                         $alreadyExistBasketMeta->key = $value->key;
@@ -563,7 +571,10 @@ class CoffeeDryingController extends Controller
                     }
                 } else {
 
-                    $alreadyExist = MetaTransation::where('transaction_id', $value->transaction_id)->where('key', $value->key)->first();
+                    $alreadyExist = MetaTransation::where('transaction_id', $value->transaction_id)
+                        ->where('key', $value->key)
+                        ->first();
+
                     if ($alreadyExist) {
 
                         $alreadyExist->key = $value->key;
@@ -581,6 +592,7 @@ class CoffeeDryingController extends Controller
                 }
             }
         }
+
         $allTransationsDetail = array();
         $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $transationsIdArray)->with('transactionDetail', 'log', 'meta')->get();
 
@@ -590,6 +602,7 @@ class CoffeeDryingController extends Controller
             $data = ['transactionDetails' => $transactionDetailRec, 'transactionMeta' => $transactionMetaRec];
             array_push($allTransationsDetail, $data);
         }
+
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransationsDetail);
     }
 
