@@ -14,6 +14,7 @@ use App\User;
 use App\CenterUser;
 use App\MetaTransation;
 use App\Environment;
+use Carbon\Carbon;
 use DB;
 
 class CoffeeDryingController extends Controller
@@ -490,8 +491,6 @@ class CoffeeDryingController extends Controller
             'meta' => 'required',
         ]);
 
-        // return $request->input('meta');
-
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
@@ -530,7 +529,7 @@ class CoffeeDryingController extends Controller
             }
 
             foreach ($transactionsInformation->transactionMeta as $key => $value) {
-
+                
                 if ($value->key == 'moisture_measurement') {
                     $alreadyMetaExist = MetaTransation::where('transaction_id', $value->transaction_id)->where('key', 'moisture_measurement')->first();
                     if ($alreadyMetaExist) {
@@ -541,6 +540,7 @@ class CoffeeDryingController extends Controller
                             'transaction_id' => $value->transaction_id,
                             'key' => $value->key,
                             'value' => $value->value,
+                            'local_created_at' => Carbon::parse($value->local_created_at)->toDateTimeString()
                         ]);
                     }
                 } elseif (strstr($value->key, 'BS') || strstr($value->key, 'DT') || strstr($value->key, 'SC') || strstr($value->key, 'DM') || strstr($value->key, 'DS') || strstr($value->key, 'GS') || strstr($value->key, 'ES') || strstr($value->key, 'PS') || strstr($value->key, 'SS') || strstr($value->key, 'LS') || strstr($value->key, 'HS') || strstr($value->key, 'QS') || strstr($value->key, 'KS') || strstr($value->key, 'VB') || strstr($value->key, 'PB') || strstr($value->key, 'VP') || strstr($value->key, 'PP') || strstr($value->key, 'SM')) {
@@ -558,6 +558,7 @@ class CoffeeDryingController extends Controller
                             'transaction_id' => $value->transaction_id,
                             'key' => $value->key,
                             'value' => $value->value,
+                            'local_created_at' => Carbon::parse($value->local_created_at)->toDateTimeString()
                         ]);
                     }
                 } else {
@@ -574,6 +575,7 @@ class CoffeeDryingController extends Controller
                             'transaction_id' => $value->transaction_id,
                             'key' => $value->key,
                             'value' => $value->value,
+                            'local_created_at' => Carbon::parse($value->local_created_at)->toDateTimeString()
                         ]);
                     }
                 }

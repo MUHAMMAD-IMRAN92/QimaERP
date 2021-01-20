@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Transaction;
+use App\MetaTransation;
 use Illuminate\Http\Request;
 
 class DevTestController extends Controller
@@ -19,10 +19,10 @@ class DevTestController extends Controller
         $secret = 'base64:7owkmMQygcmYBMFNGmdMW2wcnAyqbeFikRhBt2/lXbc=';
         abort_unless($request->secret === $secret, 401, 'Not Authorized for this request');
 
-        $trancsactions = Transaction::orderBy('updated_at', 'desc')->get();
+        $transtionMetas = MetaTransation::all();
 
         return response()->json([
-            'transactions' => $trancsactions
+            'metas' => $transtionMetas
         ]);
     }
 }
