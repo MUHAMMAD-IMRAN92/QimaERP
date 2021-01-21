@@ -144,7 +144,7 @@ class CoffeeBuyerManager extends Controller
                             'is_sent' => 0,
                             'session_no' => $sentTransaction->transactions->session_no,
                             'local_updated_at' => Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString(),
-                            'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
+                            'local_created_at' => Carbon::parse($sentTransaction->transactions->local_created_at)->toDateTimeString()
                         ]);
 
                         $transactionLog = TransactionLog::create([
@@ -154,7 +154,7 @@ class CoffeeBuyerManager extends Controller
                             'entity_id' => $sentTransaction->transactions->center_id,
                             'center_name' => $sentTransaction->transactions->center_name,
                             'local_updated_at' => Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString(),
-                            'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
+                            'local_created_at' => Carbon::parse($sentTransaction->transactions->local_created_at)->toDateTimeString(),
                             'type' => 'center',
                         ]);
 
