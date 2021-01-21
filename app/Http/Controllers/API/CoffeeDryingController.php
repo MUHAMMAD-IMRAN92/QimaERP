@@ -531,21 +531,29 @@ class CoffeeDryingController extends Controller
             foreach ($transactionsInformation->transactionMeta as $key => $value) {
 
                 if ($value->key == 'moisture_measurement') {
-                    $alreadyMetaExist = MetaTransation::where('transaction_id', $value->transaction_id)
-                        ->where('key', 'moisture_measurement')
-                        ->first();
 
-                    if ($alreadyMetaExist) {
-                        $alreadyMetaExist->value = $value->value;
-                        $alreadyMetaExist->save();
-                    } else {
-                        $newMata = MetaTransation::create([
-                            'transaction_id' => $value->transaction_id,
-                            'key' => $value->key,
-                            'value' => $value->value,
-                            'local_created_at' => Carbon::parse($value->local_created_at)->toDateTimeString()
-                        ]);
-                    }
+                    // $alreadyMetaExist = MetaTransation::where('transaction_id', $value->transaction_id)
+                    //     ->where('key', 'moisture_measurement')
+                    //     ->first();
+
+                    // if ($alreadyMetaExist) {
+                    //     $alreadyMetaExist->value = $value->value;
+                    //     $alreadyMetaExist->save();
+                    // } else {
+                    //     $newMata = MetaTransation::create([
+                    //         'transaction_id' => $value->transaction_id,
+                    //         'key' => $value->key,
+                    //         'value' => $value->value,
+                    //         'local_created_at' => Carbon::parse($value->local_created_at)->toDateTimeString()
+                    //     ]);
+                    // }
+
+                    $newMata = MetaTransation::create([
+                        'transaction_id' => $value->transaction_id,
+                        'key' => $value->key,
+                        'value' => $value->value,
+                        'local_created_at' => Carbon::parse($value->local_created_at)->toDateTimeString()
+                    ]);
                 } elseif (strstr($value->key, 'BS') || strstr($value->key, 'DT') || strstr($value->key, 'SC') || strstr($value->key, 'DM') || strstr($value->key, 'DS') || strstr($value->key, 'GS') || strstr($value->key, 'ES') || strstr($value->key, 'PS') || strstr($value->key, 'SS') || strstr($value->key, 'LS') || strstr($value->key, 'HS') || strstr($value->key, 'QS') || strstr($value->key, 'KS') || strstr($value->key, 'VB') || strstr($value->key, 'PB') || strstr($value->key, 'VP') || strstr($value->key, 'PP') || strstr($value->key, 'SM')) {
 
                     $basketArray = explode("_", $value->key);
@@ -594,7 +602,9 @@ class CoffeeDryingController extends Controller
         }
 
         $allTransationsDetail = array();
-        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $transationsIdArray)->with('transactionDetail', 'log', 'meta')->get();
+        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $transationsIdArray)
+            ->with('transactionDetail', 'log', 'meta')
+            ->get();
 
         foreach ($currentlyReceivedCoffees as $key => $currentlyReceivedCof) {
             $transactionDetailRec = $currentlyReceivedCof->transactionDetail()->first();
