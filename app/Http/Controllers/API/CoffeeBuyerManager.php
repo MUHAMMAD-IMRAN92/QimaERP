@@ -14,13 +14,15 @@ use App\Farmer;
 use App\User;
 use App\BatchNumber;
 
-class CoffeeBuyerManager extends Controller {
+class CoffeeBuyerManager extends Controller
+{
 
     private $userId;
     private $user;
     private $app_lang;
 
-    public function __construct() {
+    public function __construct()
+    {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
@@ -42,30 +44,31 @@ class CoffeeBuyerManager extends Controller {
         }
     }
 
-    function farmer(Request $request) {
+    function farmer(Request $request)
+    {
         $farmerName = $request->farmer_name;
         $villageCode = $request->village_code;
         $farmerCode = $request->farmer_code;
         $farmerNicn = $request->farmer_nicn;
         $user_image = asset('storage/app/images/demo_user_image.png');
         $user_image_path = asset('storage/app/images/');
-        $farmers = Farmer::when($farmerName, function($q) use ($farmerName) {
-                    $q->where(function($q) use ($farmerName) {
-                        $q->where('farmer_name', 'like', "%$farmerName%");
-                    });
-                })->when($villageCode, function($q) use ($villageCode) {
-                    $q->where(function($q) use ($villageCode) {
-                        $q->where('village_code', 'like', "%$villageCode%");
-                    });
-                })->when($farmerCode, function($q) use ($farmerCode) {
-                    $q->where(function($q) use ($farmerCode) {
-                        $q->where('farmer_code', 'like', "%$farmerCode%");
-                    });
-                })->with(['profileImage' => function($query) use($user_image, $user_image_path) {
-                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
-                    }])->with(['idcardImage' => function($query) use($user_image, $user_image_path) {
-                        $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
-                    }])->orderBy('farmer_name')->get();
+        $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
+            $q->where(function ($q) use ($farmerName) {
+                $q->where('farmer_name', 'like', "%$farmerName%");
+            });
+        })->when($villageCode, function ($q) use ($villageCode) {
+            $q->where(function ($q) use ($villageCode) {
+                $q->where('village_code', 'like', "%$villageCode%");
+            });
+        })->when($farmerCode, function ($q) use ($farmerCode) {
+            $q->where(function ($q) use ($farmerCode) {
+                $q->where('farmer_code', 'like', "%$farmerCode%");
+            });
+        })->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
+            $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+        }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
+            $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+        }])->orderBy('farmer_name')->get();
 
         foreach ($farmers as $key => $farmer) {
             $farmer->farmer_id_card_picture = '';
@@ -88,10 +91,11 @@ class CoffeeBuyerManager extends Controller {
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_FARMER"), $farmers);
     }
 
-    function sentTransactions(Request $request) {
+    function sentTransactions(Request $request)
+    {
         //::validation
         $validator = Validator::make($request->all(), [
-                    'transactions' => 'required',
+            'transactions' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
@@ -122,31 +126,31 @@ class CoffeeBuyerManager extends Controller {
                         array_push($alreadySentCoffee, $sentTransaction);
                     } else {
                         $transaction = Transaction::create([
-                                    'batch_number' => $sentTransaction->transactions->batch_number,
-                                    'is_parent' => $sentTransaction->transactions->is_parent,
-                                    'is_mixed' => $sentTransaction->transactions->is_mixed,
-                                    'created_by' => $sentTransaction->transactions->created_by,
-                                    'is_local' => FALSE,
-                                    'transaction_type' => 2,
-                                    'local_code' => $sentTransaction->transactions->local_code,
-                                    'transaction_status' => 'sent',
-                                    'reference_id' => $sentTransaction->transactions->reference_id,
-                                    'is_server_id' => 1,
-                                    'is_new' => $sentTransaction->transactions->is_new,
-                                    'sent_to' => 3,
-                                    'is_sent' => 0,
-                                    'session_no' => $sentTransaction->transactions->session_no,
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
+                            'batch_number' => $sentTransaction->transactions->batch_number,
+                            'is_parent' => $sentTransaction->transactions->is_parent,
+                            'is_mixed' => $sentTransaction->transactions->is_mixed,
+                            'created_by' => $sentTransaction->transactions->created_by,
+                            'is_local' => FALSE,
+                            'transaction_type' => 2,
+                            'local_code' => $sentTransaction->transactions->local_code,
+                            'transaction_status' => 'sent',
+                            'reference_id' => $sentTransaction->transactions->reference_id,
+                            'is_server_id' => 1,
+                            'is_new' => $sentTransaction->transactions->is_new,
+                            'sent_to' => 3,
+                            'is_sent' => 0,
+                            'session_no' => $sentTransaction->transactions->session_no,
+                            'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
                         ]);
 
                         $transactionLog = TransactionLog::create([
-                                    'transaction_id' => $transaction->transaction_id,
-                                    'action' => 'sent',
-                                    'created_by' => $sentTransaction->transactions->created_by,
-                                    'entity_id' => $sentTransaction->transactions->center_id,
-                                    'center_name' => $sentTransaction->transactions->center_name,
-                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
-                                    'type' => 'center',
+                            'transaction_id' => $transaction->transaction_id,
+                            'action' => 'sent',
+                            'created_by' => $sentTransaction->transactions->created_by,
+                            'entity_id' => $sentTransaction->transactions->center_id,
+                            'center_name' => $sentTransaction->transactions->center_name,
+                            'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
+                            'type' => 'center',
                         ]);
 
                         $transactionContainers = $sentTransaction->transactions_detail;
@@ -192,22 +196,30 @@ class CoffeeBuyerManager extends Controller {
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $data);
     }
 
-    function centers(Request $request) {
+    function centers(Request $request)
+    {
         $search = $request->search;
-        $centers = Center::when($search, function($q) use ($search) {
-                    $q->where(function($q) use ($search) {
-                        $q->where('center_code', 'like', "%$search%");
-                    });
-                })->get();
+        $centers = Center::when($search, function ($q) use ($search) {
+            $q->where(function ($q) use ($search) {
+                $q->where('center_code', 'like', "%$search%");
+            });
+        })->get();
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CENTER"), $centers);
     }
 
-    function coffeeBuyerManagerCoffee(Request $request) {
+    function coffeeBuyerManagerCoffee(Request $request)
+    {
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'created')->doesntHave('isReference')->with('childTransation.transactionDetail', 'transactionDetail', 'log')->orderBy('transaction_id', 'desc')->get();
+        $transactions = Transaction::where('is_parent', 0)
+            ->where('transaction_status', 'created')
+            ->doesntHave('isReference')
+            ->with('childTransation.transactionDetail', 'transactionDetail', 'log')
+            ->orderBy('transaction_id', 'desc')
+            ->get();
 
         foreach ($transactions as $key => $transaction) {
             $childTransactions = array();
+
             if ($transaction->childTransation) {
                 foreach ($transaction->childTransation as $key => $childTransation) {
                     $childTransation->buyer_name = '';
@@ -227,8 +239,9 @@ class CoffeeBuyerManager extends Controller {
             if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
                 $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
-            $transaction->center_name = $transaction->log->center_name;
-            $transaction->center_id = $transaction->log->entity_id;
+
+            $transaction->center_name = optional($transaction->log)->center_name;
+            $transaction->center_id = optional($transaction->log)->entity_id;
             $transactionDetail = $transaction->transactionDetail;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
@@ -240,13 +253,14 @@ class CoffeeBuyerManager extends Controller {
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_TRANSACTION"), $allTransactions);
     }
 
-    function coffeeBuyerManagerSentCoffeeTransaction(Request $request) {
+    function coffeeBuyerManagerSentCoffeeTransaction(Request $request)
+    {
         $allTransactions = array();
-        $transactions = Transaction::where('created_by', $this->userId)->where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('transactionDetail', function($q) {
-                    $q->where('container_status', 0);
-                }, '>', 0)->with(['transactionDetail' => function($query) {
-                        $query->where('container_status', 0);
-                    }])->with('log')->orderBy('transaction_id', 'desc')->get();
+        $transactions = Transaction::where('created_by', $this->userId)->where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('transactionDetail', function ($q) {
+            $q->where('container_status', 0);
+        }, '>', 0)->with(['transactionDetail' => function ($query) {
+            $query->where('container_status', 0);
+        }])->with('log')->orderBy('transaction_id', 'desc')->get();
         foreach ($transactions as $key => $transaction) {
             $transaction->buyer_name = '';
             $parentCheckBatch = BatchNumber::where('batch_number', $transaction->batch_number)->with('buyer')->first();
@@ -264,9 +278,10 @@ class CoffeeBuyerManager extends Controller {
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_TRANSACTION"), $allTransactions);
     }
 
-    function approvedFarmer(Request $request) {
+    function approvedFarmer(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-                    'farmer_code' => 'required|array',
+            'farmer_code' => 'required|array',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
@@ -275,5 +290,4 @@ class CoffeeBuyerManager extends Controller {
         Farmer::wherein('farmer_code', $request['farmer_code'])->update(['is_status' => 1]);
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.APPROVED_FARMER"), []);
     }
-
 }
