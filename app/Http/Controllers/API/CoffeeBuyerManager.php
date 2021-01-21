@@ -13,6 +13,7 @@ use App\Center;
 use App\Farmer;
 use App\User;
 use App\BatchNumber;
+use Carbon\Carbon;
 
 class CoffeeBuyerManager extends Controller
 {
@@ -115,6 +116,7 @@ class CoffeeBuyerManager extends Controller
                         $updateCenter->log->center_name = $sentTransaction->transactions->center_name;
                         $updateCenter->sent_to = $sentTransaction->transactions->sent_to;
                         $updateCenter->transaction_type = 2;
+                        $updateCenter->local_updated_at = Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString();
                         $updateCenter->save();
                         $updateCenter->log->save();
                         array_push($sentCoffeeArray, $sentTransaction->transactions->transaction_id);
@@ -123,6 +125,7 @@ class CoffeeBuyerManager extends Controller
                     $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                     if ($alreadyExistTransaction) {
                         $sentTransaction->transactions->already_sent = true;
+                        $sentTransaction->transactions->local_updated_at = Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString();
                         array_push($alreadySentCoffee, $sentTransaction);
                     } else {
                         $transaction = Transaction::create([
@@ -140,6 +143,7 @@ class CoffeeBuyerManager extends Controller
                             'sent_to' => 3,
                             'is_sent' => 0,
                             'session_no' => $sentTransaction->transactions->session_no,
+                            'local_updated_at' => Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString(),
                             'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
                         ]);
 
@@ -149,6 +153,7 @@ class CoffeeBuyerManager extends Controller
                             'created_by' => $sentTransaction->transactions->created_by,
                             'entity_id' => $sentTransaction->transactions->center_id,
                             'center_name' => $sentTransaction->transactions->center_name,
+                            'local_updated_at' => Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString(),
                             'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transactions->created_at)),
                             'type' => 'center',
                         ]);
