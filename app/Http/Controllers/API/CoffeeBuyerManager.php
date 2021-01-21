@@ -240,8 +240,8 @@ class CoffeeBuyerManager extends Controller
                 $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
 
-            $transaction->center_name = optional($transaction->log)->center_name;
-            $transaction->center_id = optional($transaction->log)->entity_id;
+            $transaction->center_name = $transaction->log ? $transaction->log->center_name : '';
+            $transaction->center_id = $transaction->log ? $transaction->log->entity_id : 0;
             $transactionDetail = $transaction->transactionDetail;
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('childTransation');
