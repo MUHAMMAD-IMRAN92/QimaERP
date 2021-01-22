@@ -125,10 +125,11 @@ class SpecialProcessingController extends Controller
                         if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                             $updateTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                             $updateTransaction->sent_to = $receivedTransaction->transaction->sent_to;
-                            $updateTransaction->local_updated_at = Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString();
+                            $updateTransaction->local_created_at = Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString();
                             $updateTransaction->save();
                             TransactionDetail::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
                             MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
+
 
                             $transactionContainers = $receivedTransaction->transactionDetails;
                             foreach ($transactionContainers as $key => $transactionContainer) {

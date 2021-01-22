@@ -6,8 +6,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Support\Facades\Response;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
 
     /**
      * A list of the exception types that are not reported.
@@ -15,7 +14,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+            //
     ];
 
     /**
@@ -36,8 +35,7 @@ class Handler extends ExceptionHandler
      *
      * @throws \Exception
      */
-    public function report(Throwable $exception)
-    {
+    public function report(Throwable $exception) {
         parent::report($exception);
     }
 
@@ -50,24 +48,30 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception)
-    {
+    public function render($request, Throwable $exception) {
         $segment = \Illuminate\Support\Facades\Request::segment(1);
         if ($segment == 'api') {
-            abort_unless(config('app.debug'), 500, 'Internal error occured.');
-
             return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-                'data' => [
+                'messge' => 'Exception',
+                'exception' => [
+                    'message' => $exception->getMessage(),
                     'file' => $exception->getFile(),
                     'code' => $exception->getCode(),
                     'line' => $exception->getLine(),
                     'trace' => $exception->getTrace()
                 ]
-            ], 499);
+            ]);
+            //var_dump($exception);exit;
+            $message = $exception->getMessage();
+            if (isset($exception->errorInfo)) {
+                $message = explode(";", $exception->errorInfo[2]);
+            }
+            \Log::error($message);
+            // Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
+
+            return Response::json(array('status' => 'error', 'message' => $message, 'data' => []), 499);
         }
-        
         return parent::render($request, $exception);
     }
+
 }
