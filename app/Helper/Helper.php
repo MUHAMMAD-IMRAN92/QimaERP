@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
 
 function timeago($ptime) {
@@ -142,15 +141,4 @@ function getFileExtensionForBase64($file) {
     } else {
         return ".no-extension";
     }
-}
-
-/**
- * format datetime into mysql datetime
- *
- * @param String $dt
- * @return String datetime
- */
-function formatDT($dt)
-{
-    return Carbon::parse($dt)->toDateTimeString();
 }
