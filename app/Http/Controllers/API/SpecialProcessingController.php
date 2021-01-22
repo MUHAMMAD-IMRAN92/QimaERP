@@ -103,6 +103,7 @@ class SpecialProcessingController extends Controller
 
     function receivedSpecialProcessingCoffee(Request $request)
     {
+        return $request->transactions;
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
