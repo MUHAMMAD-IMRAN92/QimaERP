@@ -51,16 +51,7 @@ class Handler extends ExceptionHandler {
     public function render($request, Throwable $exception) {
         $segment = \Illuminate\Support\Facades\Request::segment(1);
         if ($segment == 'api') {
-            return response()->json([
-                'messge' => 'Exception',
-                'exception' => [
-                    'message' => $exception->getMessage(),
-                    'file' => $exception->getFile(),
-                    'code' => $exception->getCode(),
-                    'line' => $exception->getLine(),
-                    'trace' => $exception->getTrace()
-                ]
-            ]);
+
             //var_dump($exception);exit;
             $message = $exception->getMessage();
             if (isset($exception->errorInfo)) {
