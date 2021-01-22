@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
-use Illuminate\Http\Request;
-use App\TransactionDetail;
-use App\TransactionLog;
-use App\CoffeeProcess;
-use App\Transaction;
-use App\LoginUser;
 use App\User;
-use App\CenterUser;
-use App\MetaTransation;
 use App\Yeast;
-use DB;
+use PDOException;
+use App\LoginUser;
+use App\CenterUser;
+use App\Transaction;
+use App\CoffeeProcess;
+use App\MetaTransation;
+use App\TransactionLog;
+use App\TransactionDetail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class SpecialProcessingController extends Controller {
 
