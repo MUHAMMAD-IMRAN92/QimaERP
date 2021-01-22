@@ -97,14 +97,10 @@ class SpecialProcessingController extends Controller {
         $validator = Validator::make($request->all(), [
                     'transactions' => 'required',
         ]);
-
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-
-        // return response()->json(json_decode($request->transactions));
-
         $userId = $this->userId;
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
@@ -148,7 +144,6 @@ class SpecialProcessingController extends Controller {
                                     'transaction_id' => $receivedTransaction->transaction->transaction_id,
                                     'key' => $transactionMe->key,
                                     'value' => $transactionMe->value,
-                                    'local_created_at' => Carbon::parse($transactionMe->local_created_at)->toDateTimeString()
                                 ]);
                             }
                         } else {
@@ -209,7 +204,6 @@ class SpecialProcessingController extends Controller {
                                     'transaction_id' => $transaction->transaction_id,
                                     'key' => $transactionMe->key,
                                     'value' => $transactionMe->value,
-                                    'local_created_at' => Carbon::parse($transactionMe->local_created_at)->toDateTimeString()
                                 ]);
                             }
                         }
@@ -251,7 +245,6 @@ class SpecialProcessingController extends Controller {
                                     'transaction_id' => $receivedTransaction->transaction->transaction_id,
                                     'key' => $transactionMe->key,
                                     'value' => $transactionMe->value,
-                                    'local_created_at' => Carbon::parse($transactionMe->local_created_at)->toDateTimeString()
                                 ]);
                             }
                         } else {
@@ -311,7 +304,6 @@ class SpecialProcessingController extends Controller {
                                     'transaction_id' => $transaction->transaction_id,
                                     'key' => $transactionMe->key,
                                     'value' => $transactionMe->value,
-                                    'local_created_at' => Carbon::parse($transactionMe->local_created_at)->toDateTimeString()
                                 ]);
                             }
                         }
@@ -353,7 +345,6 @@ class SpecialProcessingController extends Controller {
                                     'transaction_id' => $receivedTransaction->transaction->transaction_id,
                                     'key' => $transactionMe->key,
                                     'value' => $transactionMe->value,
-                                    'local_created_at' => Carbon::parse($transactionMe->local_created_at)->toDateTimeString()
                                 ]);
                             }
                         } else {
@@ -424,7 +415,6 @@ class SpecialProcessingController extends Controller {
                                     'transaction_id' => $transaction->transaction_id,
                                     'key' => $transactionMe->key,
                                     'value' => $transactionMe->value,
-                                    'local_created_at' => Carbon::parse($transactionMe->local_created_at)->toDateTimeString()
                                 ]);
                             }
                         }
