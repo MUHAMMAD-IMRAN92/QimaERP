@@ -80,8 +80,8 @@ class CenterManagerController extends Controller {
                             'sent_to' => 4,
                             'is_sent' => 1,
                             'session_no' => $sentTransaction->transaction->session_no,
-                            'local_created_at' => Carbon::parse($sentTransaction->transaction->local_created_at),
-                            'local_updated_at' => Carbon::parse($sentTransaction->transaction->local_updated_at)
+                            'local_created_at' => Carbon::parse($sentTransaction->transaction->local_created_at)->toDateTimeString(),
+                            'local_updated_at' => Carbon::parse($sentTransaction->transaction->local_updated_at)->toDateTimeString()
                 ]);
                 $transactionLog = TransactionLog::create([
                             'transaction_id' => $transaction->transaction_id,
