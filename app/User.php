@@ -8,10 +8,12 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
 
     use Notifiable,
-        HasRoles ,SoftDeletes;
+        HasRoles,
+        SoftDeletes;
 
     protected $primaryKey = 'user_id';
 
@@ -21,7 +23,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','picture_id','table_id','table_name'
+        'name', 'email', 'password', 'picture_id', 'table_id', 'table_name'
     ];
 
     /**
@@ -42,10 +44,8 @@ class User extends Authenticatable {
         'email_verified_at' => 'datetime',
     ];
 
-     public function center_user() {
+    public function center_user()
+    {
         return $this->hasOne(CenterUser::class, 'user_id', 'user_id');
     }
-
-  
-
 }
