@@ -2,13 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-<<<<<<< HEAD
-use App\User;
-use App\Yeast;
-use PDOException;
-use App\LoginUser;
-use Carbon\Carbon;
-=======
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
@@ -19,22 +12,10 @@ use App\CoffeeProcess;
 use App\Transaction;
 use App\LoginUser;
 use App\User;
->>>>>>> parent of 53486db... fix the formatting
 use App\CenterUser;
 use App\MetaTransation;
-<<<<<<< HEAD
-use App\TransactionLog;
-use App\TransactionDetail;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Validator;
-=======
 use App\Yeast;
 use DB;
->>>>>>> parent of 53486db... fix the formatting
 
 class SpecialProcessingController extends Controller {
 
