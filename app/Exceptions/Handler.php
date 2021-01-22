@@ -60,7 +60,16 @@ class Handler extends ExceptionHandler {
             \Log::error($message);
             // Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
 
-            return Response::json(array('status' => 'error', 'message' => $message, 'data' => []), 499);
+            $data = [];
+
+            if(config('app.debug')){
+                $data['file'] = $exception->getFile();
+                $data['code'] = $exception->getCode();
+                $data['line'] = $exception->getLine();
+                $data['trace'] = $exception->getTrace();
+            }
+
+            return Response::json(array('status' => 'error', 'message' => $message, 'data' => $data), 499);
         }
         return parent::render($request, $exception);
     }
