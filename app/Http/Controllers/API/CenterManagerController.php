@@ -14,6 +14,7 @@ use App\Farmer;
 use App\User;
 use App\CenterUser;
 use App\BatchNumber;
+use Carbon\Carbon;
 
 class CenterManagerController extends Controller {
 
@@ -44,7 +45,8 @@ class CenterManagerController extends Controller {
     }
 
     function receivedTransactions(Request $request) {
-        //::validation
+        return $request->transactions;
+
         $validator = Validator::make($request->all(), [
                     'transactions' => 'required',
         ]);
@@ -78,7 +80,8 @@ class CenterManagerController extends Controller {
                             'sent_to' => 4,
                             'is_sent' => 1,
                             'session_no' => $sentTransaction->transaction->session_no,
-                            'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                            'local_created_at' => Carbon::parse($sentTransaction->transaction->local_created_at),
+                            'local_updated_at' => Carbon::parse($sentTransaction->transaction->local_updated_at)
                 ]);
                 $transactionLog = TransactionLog::create([
                             'transaction_id' => $transaction->transaction_id,
