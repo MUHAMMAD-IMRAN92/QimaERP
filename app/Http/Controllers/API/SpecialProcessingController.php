@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -99,9 +100,8 @@ class SpecialProcessingController extends Controller
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.YEAST_LIST"), $yest);
     }
 
-    function receivedSpecialProcessingCoffee(Request $request) {
-        // return $request->transactions;
-
+    function receivedSpecialProcessingCoffee(Request $request) 
+    {
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -122,6 +122,7 @@ class SpecialProcessingController extends Controller
                             $updateTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                             $updateTransaction->sent_to = $receivedTransaction->transaction->sent_to;
                             $updateTransaction->is_in_process = $receivedTransaction->transaction->is_in_process;
+                            $updateTransaction->local_updated_at = Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString();
                             $updateTransaction->update();
                             TransactionDetail::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
                             MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
@@ -159,32 +160,34 @@ class SpecialProcessingController extends Controller
                         } else {
 
                             $transaction = Transaction::create([
-                                'batch_number' => $receivedTransaction->transaction->batch_number,
-                                'is_parent' => $receivedTransaction->transaction->is_parent,
-                                'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                'created_by' => $receivedTransaction->transaction->created_by,
-                                'is_local' => FALSE,
-                                'transaction_type' => 1,
-                                'local_code' => $receivedTransaction->transaction->local_code,
-                                'transaction_status' => 'received',
-                                'reference_id' => $receivedTransaction->transaction->reference_id,
-                                'is_server_id' => 1,
-                                'is_new' => 0,
-                                'sent_to' => $receivedTransaction->transaction->sent_to,
-                                'is_sent' => 1,
-                                'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                'session_no' => $receivedTransaction->transaction->session_no,
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                        'batch_number' => $receivedTransaction->transaction->batch_number,
+                                        'is_parent' => $receivedTransaction->transaction->is_parent,
+                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'is_local' => FALSE,
+                                        'transaction_type' => 1,
+                                        'local_code' => $receivedTransaction->transaction->local_code,
+                                        'transaction_status' => 'received',
+                                        'reference_id' => $receivedTransaction->transaction->reference_id,
+                                        'is_server_id' => 1,
+                                        'is_new' => 0,
+                                        'sent_to' => $receivedTransaction->transaction->sent_to,
+                                        'is_sent' => 1,
+                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                        'session_no' => $receivedTransaction->transaction->session_no,
+                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
                             ]);
 
                             $transactionLog = TransactionLog::create([
-                                'transaction_id' => $transaction->transaction_id,
-                                'action' => 'sent',
-                                'created_by' => $receivedTransaction->transaction->created_by,
-                                'entity_id' => $receivedTransaction->transaction->center_id,
-                                'center_name' => '',
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                                'type' => 'special_processing',
+                                        'transaction_id' => $transaction->transaction_id,
+                                        'action' => 'sent',
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'entity_id' => $receivedTransaction->transaction->center_id,
+                                        'center_name' => '',
+                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
+                                        'type' => 'special_processing',
                             ]);
 
                             $transactionContainers = $receivedTransaction->transactionDetails;
@@ -223,7 +226,8 @@ class SpecialProcessingController extends Controller
                         if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                             $updateTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                             $updateTransaction->sent_to = $receivedTransaction->transaction->sent_to;
-                            $updateTransaction->save();
+                            $updateTransaction->local_updated_at = Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString();
+                            $updateTransaction->update();
                             TransactionDetail::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
                             MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
 
@@ -259,32 +263,34 @@ class SpecialProcessingController extends Controller
                             }
                         } else {
                             $transaction = Transaction::create([
-                                'batch_number' => $receivedTransaction->transaction->batch_number,
-                                'is_parent' => $receivedTransaction->transaction->is_parent,
-                                'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                'created_by' => $receivedTransaction->transaction->created_by,
-                                'is_local' => FALSE,
-                                'transaction_type' => 1,
-                                'local_code' => $receivedTransaction->transaction->local_code,
-                                'transaction_status' => 'received',
-                                'reference_id' => $receivedTransaction->transaction->reference_id,
-                                'is_server_id' => 1,
-                                'is_new' => 0,
-                                'sent_to' => $receivedTransaction->transaction->sent_to,
-                                'is_sent' => 1,
-                                'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                'session_no' => $receivedTransaction->transaction->session_no,
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                        'batch_number' => $receivedTransaction->transaction->batch_number,
+                                        'is_parent' => $receivedTransaction->transaction->is_parent,
+                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'is_local' => FALSE,
+                                        'transaction_type' => 1,
+                                        'local_code' => $receivedTransaction->transaction->local_code,
+                                        'transaction_status' => 'received',
+                                        'reference_id' => $receivedTransaction->transaction->reference_id,
+                                        'is_server_id' => 1,
+                                        'is_new' => 0,
+                                        'sent_to' => $receivedTransaction->transaction->sent_to,
+                                        'is_sent' => 1,
+                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                        'session_no' => $receivedTransaction->transaction->session_no,
+                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
                             ]);
 
                             $transactionLog = TransactionLog::create([
-                                'transaction_id' => $transaction->transaction_id,
-                                'action' => 'sent',
-                                'created_by' => $receivedTransaction->transaction->created_by,
-                                'entity_id' => $receivedTransaction->transaction->center_id,
-                                'center_name' => '',
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                                'type' => 'special_processing',
+                                        'transaction_id' => $transaction->transaction_id,
+                                        'action' => 'sent',
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'entity_id' => $receivedTransaction->transaction->center_id,
+                                        'center_name' => '',
+                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
+                                        'type' => 'special_processing',
                             ]);
 
                             $transactionContainers = $receivedTransaction->transactionDetails;
@@ -323,7 +329,8 @@ class SpecialProcessingController extends Controller
                         if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                             $updateTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                             $updateTransaction->sent_to = $receivedTransaction->transaction->sent_to;
-                            $updateTransaction->save();
+                            $updateTransaction->local_updated_at = Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString();
+                            $updateTransaction->update();
                             TransactionDetail::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
                             MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
 
@@ -371,32 +378,34 @@ class SpecialProcessingController extends Controller
                             }
 
                             $transaction = Transaction::create([
-                                'batch_number' => $receivedTransaction->transaction->batch_number,
-                                'is_parent' => $receivedTransaction->transaction->is_parent,
-                                'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                'created_by' => $receivedTransaction->transaction->created_by,
-                                'is_local' => FALSE,
-                                'transaction_type' => 1,
-                                'local_code' => $receivedTransaction->transaction->local_code,
-                                'transaction_status' => 'sent',
-                                'reference_id' => $refTransactions,
-                                'is_server_id' => 1,
-                                'is_new' => 0,
-                                'sent_to' => $receivedTransaction->transaction->sent_to,
-                                'is_sent' => 1,
-                                'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                'session_no' => $receivedTransaction->transaction->session_no,
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                        'batch_number' => $receivedTransaction->transaction->batch_number,
+                                        'is_parent' => $receivedTransaction->transaction->is_parent,
+                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'is_local' => FALSE,
+                                        'transaction_type' => 1,
+                                        'local_code' => $receivedTransaction->transaction->local_code,
+                                        'transaction_status' => 'sent',
+                                        'reference_id' => $refTransactions,
+                                        'is_server_id' => 1,
+                                        'is_new' => 0,
+                                        'sent_to' => $receivedTransaction->transaction->sent_to,
+                                        'is_sent' => 1,
+                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                        'session_no' => $receivedTransaction->transaction->session_no,
+                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
                             ]);
 
                             $transactionLog = TransactionLog::create([
-                                'transaction_id' => $transaction->transaction_id,
-                                'action' => 'sent',
-                                'created_by' => $receivedTransaction->transaction->created_by,
-                                'entity_id' => $receivedTransaction->transaction->center_id,
-                                'center_name' => '',
-                                'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-                                'type' => 'coffee_drying',
+                                        'transaction_id' => $transaction->transaction_id,
+                                        'action' => 'sent',
+                                        'created_by' => $receivedTransaction->transaction->created_by,
+                                        'entity_id' => $receivedTransaction->transaction->center_id,
+                                        'center_name' => '',
+                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
+                                        'type' => 'coffee_drying',
                             ]);
 
                             $transactionContainers = $receivedTransaction->transactionDetails;
