@@ -99,8 +99,9 @@ class SpecialProcessingController extends Controller
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.YEAST_LIST"), $yest);
     }
 
-    function receivedSpecialProcessingCoffee(Request $request)
-    {
+    function receivedSpecialProcessingCoffee(Request $request) {
+        // return $request->transactions;
+
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -117,9 +118,11 @@ class SpecialProcessingController extends Controller
                 if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
                     if ($receivedTransaction->transaction->sent_to == 7) {
                         if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
+                            // return response()->json($receivedTransaction->transaction->is_in_process);
                             $updateTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                             $updateTransaction->sent_to = $receivedTransaction->transaction->sent_to;
-                            $updateTransaction->save();
+                            $updateTransaction->is_in_process = $receivedTransaction->transaction->is_in_process;
+                            $updateTransaction->update();
                             TransactionDetail::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
                             MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
 
