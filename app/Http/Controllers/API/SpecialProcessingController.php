@@ -96,6 +96,8 @@ class SpecialProcessingController extends Controller {
     }
 
     function receivedSpecialProcessingCoffee(Request $request) {
+        return $request->transactions;
+
         $validator = Validator::make($request->all(), [
                     'transactions' => 'required',
         ]);
@@ -114,7 +116,8 @@ class SpecialProcessingController extends Controller {
                         if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                             $updateTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                             $updateTransaction->sent_to = $receivedTransaction->transaction->sent_to;
-                            $updateTransaction->save();
+                            $updateTransaction->is_in_process = $receivedTransaction->is_in_process;
+                            $updateTransaction->update();
                             TransactionDetail::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
                             MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
 
