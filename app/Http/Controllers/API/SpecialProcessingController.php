@@ -20,13 +20,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
-class SpecialProcessingController extends Controller {
+class SpecialProcessingController extends Controller
+{
 
     private $userId;
     private $user;
     private $app_lang;
 
-    public function __construct() {
+    public function __construct()
+    {
         set_time_limit(0);
         $headers = getallheaders();
         $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
@@ -48,7 +50,8 @@ class SpecialProcessingController extends Controller {
         }
     }
 
-    function getSpeicalProcessingManagerPendingCoffee(Request $request) {
+    function getSpeicalProcessingManagerPendingCoffee(Request $request)
+    {
         $userId = $this->userId;
         $centerId = 0;
         $userCenter = CenterUser::where('user_id', $this->userId)->first();
@@ -56,13 +59,13 @@ class SpecialProcessingController extends Controller {
             $centerId = $userCenter->center_id;
         }
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->whereHas('log', function($q) use($centerId) {
-                    $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
-                })->whereHas('transactionDetail', function($q) use($centerId) {
-                    $q->where('container_status', 0);
-                }, '>', 0)->with(['transactionDetail' => function($query) {
-                        $query->where('container_status', 0);
-                    }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+        $transactions = Transaction::where('is_parent', 0)->whereHas('log', function ($q) use ($centerId) {
+            $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
+        })->whereHas('transactionDetail', function ($q) use ($centerId) {
+            $q->where('container_status', 0);
+        }, '>', 0)->with(['transactionDetail' => function ($query) {
+            $query->where('container_status', 0);
+        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
@@ -85,21 +88,23 @@ class SpecialProcessingController extends Controller {
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
-    function processList(Request $request) {
+    function processList(Request $request)
+    {
         $process = CoffeeProcess::all();
 
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.PROCESS_LIST"), $process);
     }
 
-    function yeastList(Request $request) {
+    function yeastList(Request $request)
+    {
         $yest = Yeast::all();
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.YEAST_LIST"), $yest);
     }
 
-    function receivedSpecialProcessingCoffee(Request $request) 
+    function receivedSpecialProcessingCoffee(Request $request)
     {
         $validator = Validator::make($request->all(), [
-                    'transactions' => 'required',
+            'transactions' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
@@ -155,34 +160,34 @@ class SpecialProcessingController extends Controller {
                         } else {
 
                             $transaction = Transaction::create([
-                                        'batch_number' => $receivedTransaction->transaction->batch_number,
-                                        'is_parent' => $receivedTransaction->transaction->is_parent,
-                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                        'created_by' => $receivedTransaction->transaction->created_by,
-                                        'is_local' => FALSE,
-                                        'transaction_type' => 1,
-                                        'local_code' => $receivedTransaction->transaction->local_code,
-                                        'transaction_status' => 'received',
-                                        'reference_id' => $receivedTransaction->transaction->reference_id,
-                                        'is_server_id' => 1,
-                                        'is_new' => 0,
-                                        'sent_to' => $receivedTransaction->transaction->sent_to,
-                                        'is_sent' => 1,
-                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                        'session_no' => $receivedTransaction->transaction->session_no,
-                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
-                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
+                                'batch_number' => $receivedTransaction->transaction->batch_number,
+                                'is_parent' => $receivedTransaction->transaction->is_parent,
+                                'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                'created_by' => $receivedTransaction->transaction->created_by,
+                                'is_local' => FALSE,
+                                'transaction_type' => 1,
+                                'local_code' => $receivedTransaction->transaction->local_code,
+                                'transaction_status' => 'received',
+                                'reference_id' => $receivedTransaction->transaction->reference_id,
+                                'is_server_id' => 1,
+                                'is_new' => 0,
+                                'sent_to' => $receivedTransaction->transaction->sent_to,
+                                'is_sent' => 1,
+                                'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                'session_no' => $receivedTransaction->transaction->session_no,
+                                'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
                             ]);
 
                             $transactionLog = TransactionLog::create([
-                                        'transaction_id' => $transaction->transaction_id,
-                                        'action' => 'sent',
-                                        'created_by' => $receivedTransaction->transaction->created_by,
-                                        'entity_id' => $receivedTransaction->transaction->center_id,
-                                        'center_name' => '',
-                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
-                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
-                                        'type' => 'special_processing',
+                                'transaction_id' => $transaction->transaction_id,
+                                'action' => 'sent',
+                                'created_by' => $receivedTransaction->transaction->created_by,
+                                'entity_id' => $receivedTransaction->transaction->center_id,
+                                'center_name' => '',
+                                'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
+                                'type' => 'special_processing',
                             ]);
 
                             $transactionContainers = $receivedTransaction->transactionDetails;
@@ -258,34 +263,34 @@ class SpecialProcessingController extends Controller {
                             }
                         } else {
                             $transaction = Transaction::create([
-                                        'batch_number' => $receivedTransaction->transaction->batch_number,
-                                        'is_parent' => $receivedTransaction->transaction->is_parent,
-                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                        'created_by' => $receivedTransaction->transaction->created_by,
-                                        'is_local' => FALSE,
-                                        'transaction_type' => 1,
-                                        'local_code' => $receivedTransaction->transaction->local_code,
-                                        'transaction_status' => 'received',
-                                        'reference_id' => $receivedTransaction->transaction->reference_id,
-                                        'is_server_id' => 1,
-                                        'is_new' => 0,
-                                        'sent_to' => $receivedTransaction->transaction->sent_to,
-                                        'is_sent' => 1,
-                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                        'session_no' => $receivedTransaction->transaction->session_no,
-                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
-                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
+                                'batch_number' => $receivedTransaction->transaction->batch_number,
+                                'is_parent' => $receivedTransaction->transaction->is_parent,
+                                'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                'created_by' => $receivedTransaction->transaction->created_by,
+                                'is_local' => FALSE,
+                                'transaction_type' => 1,
+                                'local_code' => $receivedTransaction->transaction->local_code,
+                                'transaction_status' => 'received',
+                                'reference_id' => $receivedTransaction->transaction->reference_id,
+                                'is_server_id' => 1,
+                                'is_new' => 0,
+                                'sent_to' => $receivedTransaction->transaction->sent_to,
+                                'is_sent' => 1,
+                                'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                'session_no' => $receivedTransaction->transaction->session_no,
+                                'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
                             ]);
 
                             $transactionLog = TransactionLog::create([
-                                        'transaction_id' => $transaction->transaction_id,
-                                        'action' => 'sent',
-                                        'created_by' => $receivedTransaction->transaction->created_by,
-                                        'entity_id' => $receivedTransaction->transaction->center_id,
-                                        'center_name' => '',
-                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
-                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
-                                        'type' => 'special_processing',
+                                'transaction_id' => $transaction->transaction_id,
+                                'action' => 'sent',
+                                'created_by' => $receivedTransaction->transaction->created_by,
+                                'entity_id' => $receivedTransaction->transaction->center_id,
+                                'center_name' => '',
+                                'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
+                                'type' => 'special_processing',
                             ]);
 
                             $transactionContainers = $receivedTransaction->transactionDetails;
@@ -373,34 +378,34 @@ class SpecialProcessingController extends Controller {
                             }
 
                             $transaction = Transaction::create([
-                                        'batch_number' => $receivedTransaction->transaction->batch_number,
-                                        'is_parent' => $receivedTransaction->transaction->is_parent,
-                                        'is_mixed' => $receivedTransaction->transaction->is_mixed,
-                                        'created_by' => $receivedTransaction->transaction->created_by,
-                                        'is_local' => FALSE,
-                                        'transaction_type' => 1,
-                                        'local_code' => $receivedTransaction->transaction->local_code,
-                                        'transaction_status' => 'sent',
-                                        'reference_id' => $refTransactions,
-                                        'is_server_id' => 1,
-                                        'is_new' => 0,
-                                        'sent_to' => $receivedTransaction->transaction->sent_to,
-                                        'is_sent' => 1,
-                                        'is_in_process' => $receivedTransaction->transaction->is_in_process,
-                                        'session_no' => $receivedTransaction->transaction->session_no,
-                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
-                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
+                                'batch_number' => $receivedTransaction->transaction->batch_number,
+                                'is_parent' => $receivedTransaction->transaction->is_parent,
+                                'is_mixed' => $receivedTransaction->transaction->is_mixed,
+                                'created_by' => $receivedTransaction->transaction->created_by,
+                                'is_local' => FALSE,
+                                'transaction_type' => 1,
+                                'local_code' => $receivedTransaction->transaction->local_code,
+                                'transaction_status' => 'sent',
+                                'reference_id' => $refTransactions,
+                                'is_server_id' => 1,
+                                'is_new' => 0,
+                                'sent_to' => $receivedTransaction->transaction->sent_to,
+                                'is_sent' => 1,
+                                'is_in_process' => $receivedTransaction->transaction->is_in_process,
+                                'session_no' => $receivedTransaction->transaction->session_no,
+                                'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString()
                             ]);
 
                             $transactionLog = TransactionLog::create([
-                                        'transaction_id' => $transaction->transaction_id,
-                                        'action' => 'sent',
-                                        'created_by' => $receivedTransaction->transaction->created_by,
-                                        'entity_id' => $receivedTransaction->transaction->center_id,
-                                        'center_name' => '',
-                                        'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
-                                        'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
-                                        'type' => 'coffee_drying',
+                                'transaction_id' => $transaction->transaction_id,
+                                'action' => 'sent',
+                                'created_by' => $receivedTransaction->transaction->created_by,
+                                'entity_id' => $receivedTransaction->transaction->center_id,
+                                'center_name' => '',
+                                'local_updated_at' => Carbon::parse($receivedTransaction->transaction->local_updated_at)->toDateTimeString(),
+                                'local_created_at' => Carbon::parse($receivedTransaction->transaction->local_created_at)->toDateTimeString(),
+                                'type' => 'coffee_drying',
                             ]);
 
                             $transactionContainers = $receivedTransaction->transactionDetails;
@@ -437,7 +442,7 @@ class SpecialProcessingController extends Controller {
             }
             DB::commit();
         } catch (PDOException $e) {
-//   DB::rollback();
+            //   DB::rollback();
 
             return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
         }
@@ -446,97 +451,97 @@ class SpecialProcessingController extends Controller {
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 
-//    function spSendCoffeeDryingCoffee(Request $request) {
-//        $validator = Validator::make($request->all(), [
-//                    'transactions' => 'required',
-//        ]);
-//        if ($validator->fails()) {
-//            $errors = implode(', ', $validator->errors()->all());
-//            return sendError($errors, 400);
-//        }
-//        $userId = $this->userId;
-//        $sentCofffeeArray = array();
-//        $receivedTransactions = json_decode($request['transactions']);
-//        foreach ($receivedTransactions as $key => $receivedTransaction) {
-//            //::Process start transactions
-//            if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-//                if ($receivedTransaction->transaction->is_server_id == True) {
-//                    $receivedTransId = $receivedTransaction->transaction->reference_id;
-//                } else {
-//                    $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
-//                    $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
-//                    $receivedTransId = $checkTransaction->transaction_id;
-//                }
-//                $processTransaction = Transaction::create([
-//                            'batch_number' => $receivedTransaction->transaction->batch_number,
-//                            'is_parent' => $receivedTransaction->transaction->is_parent,
-//                            'is_mixed' => $receivedTransaction->transaction->is_mixed,
-//                            'created_by' => $receivedTransaction->transaction->created_by,
-//                            'is_local' => FALSE,
-//                            'transaction_type' => 2,
-//                            'local_code' => $receivedTransaction->transaction->local_code,
-//                            'transaction_status' => 'sent',
-//                            'reference_id' => $receivedTransId,
-//                            'is_server_id' => 1,
-//                            'is_new' => 0,
-//                            'sent_to' => 9,
-//                            'is_sent' => 1,
-//                ]);
-//                array_push($sentCofffeeArray, $processTransaction->transaction_id);
-//                $transactionLog = TransactionLog::create([
-//                            'transaction_id' => $processTransaction->transaction_id,
-//                            'action' => 'sent',
-//                            'created_by' => $receivedTransaction->transaction->created_by,
-//                            'entity_id' => $receivedTransaction->transaction->center_id,
-//                            'center_name' => '',
-//                            'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
-//                            'type' => 'coffee_drying',
-//                ]);
-//                $transactionContainers = $receivedTransaction->transactionDetail;
-//                foreach ($transactionContainers as $key => $transactionContainer) {
-//                    TransactionDetail::create([
-//                        'transaction_id' => $processTransaction->transaction_id,
-//                        'container_number' => $transactionContainer->container_number,
-//                        'created_by' => $userId,
-//                        'is_local' => FALSE,
-//                        'container_weight' => $transactionContainer->container_weight,
-//                        'weight_unit' => 'kg',
-//                        'center_id' => $receivedTransaction->transaction->center_id,
-//                        'reference_id' => $receivedTransaction->transaction->reference_id,
-//                    ]);
-//                    TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
-//                }
-//                $transactionMeta = $receivedTransaction->transactionMeta;
-//                foreach ($transactionMeta as $key => $transactionMe) {
-//                    MetaTransation::create([
-//                        'transaction_id' => $processTransaction->transaction_id,
-//                        'key' => $transactionMe->key,
-//                        'value' => $transactionMe->value,
-//                    ]);
-//                }
-//            }
-//        }
-//        $allTransactions = array();
-//        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $sentCofffeeArray)->with('transactionDetail', 'log', 'meta')->get();
-//        foreach ($currentlyReceivedCoffees as $key => $transaction) {
-//            $transactionDetail = $transaction->transactionDetail;
-//
-//            $transactionDetailArray = array();
-//            foreach ($transactionDetail as $key => $transactionDet) {
-//                $transactionDet->is_local = FALSE;
-//                $transactionDet->update_meta = FALSE;
-//                array_push($transactionDetailArray, $transactionDet);
-//            }
-//            $transactionMeta = $transaction->meta;
-//            $transaction->center_id = $transaction->log->entity_id;
-//            $transaction->center_name = $transaction->log->center_name;
-//            $transaction->is_sent = 0;
-//            $transaction->makeHidden('transactionDetail');
-//            $transaction->makeHidden('log');
-//            $transaction->makeHidden('meta');
-//            $data = ['transaction' => $transaction, 'transactionDetail' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
-//            array_push($allTransactions, $data);
-//        }
-//        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $allTransactions);
-//    }
+    //    function spSendCoffeeDryingCoffee(Request $request) {
+    //        $validator = Validator::make($request->all(), [
+    //                    'transactions' => 'required',
+    //        ]);
+    //        if ($validator->fails()) {
+    //            $errors = implode(', ', $validator->errors()->all());
+    //            return sendError($errors, 400);
+    //        }
+    //        $userId = $this->userId;
+    //        $sentCofffeeArray = array();
+    //        $receivedTransactions = json_decode($request['transactions']);
+    //        foreach ($receivedTransactions as $key => $receivedTransaction) {
+    //            //::Process start transactions
+    //            if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+    //                if ($receivedTransaction->transaction->is_server_id == True) {
+    //                    $receivedTransId = $receivedTransaction->transaction->reference_id;
+    //                } else {
+    //                    $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
+    //                    $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+    //                    $receivedTransId = $checkTransaction->transaction_id;
+    //                }
+    //                $processTransaction = Transaction::create([
+    //                            'batch_number' => $receivedTransaction->transaction->batch_number,
+    //                            'is_parent' => $receivedTransaction->transaction->is_parent,
+    //                            'is_mixed' => $receivedTransaction->transaction->is_mixed,
+    //                            'created_by' => $receivedTransaction->transaction->created_by,
+    //                            'is_local' => FALSE,
+    //                            'transaction_type' => 2,
+    //                            'local_code' => $receivedTransaction->transaction->local_code,
+    //                            'transaction_status' => 'sent',
+    //                            'reference_id' => $receivedTransId,
+    //                            'is_server_id' => 1,
+    //                            'is_new' => 0,
+    //                            'sent_to' => 9,
+    //                            'is_sent' => 1,
+    //                ]);
+    //                array_push($sentCofffeeArray, $processTransaction->transaction_id);
+    //                $transactionLog = TransactionLog::create([
+    //                            'transaction_id' => $processTransaction->transaction_id,
+    //                            'action' => 'sent',
+    //                            'created_by' => $receivedTransaction->transaction->created_by,
+    //                            'entity_id' => $receivedTransaction->transaction->center_id,
+    //                            'center_name' => '',
+    //                            'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+    //                            'type' => 'coffee_drying',
+    //                ]);
+    //                $transactionContainers = $receivedTransaction->transactionDetail;
+    //                foreach ($transactionContainers as $key => $transactionContainer) {
+    //                    TransactionDetail::create([
+    //                        'transaction_id' => $processTransaction->transaction_id,
+    //                        'container_number' => $transactionContainer->container_number,
+    //                        'created_by' => $userId,
+    //                        'is_local' => FALSE,
+    //                        'container_weight' => $transactionContainer->container_weight,
+    //                        'weight_unit' => 'kg',
+    //                        'center_id' => $receivedTransaction->transaction->center_id,
+    //                        'reference_id' => $receivedTransaction->transaction->reference_id,
+    //                    ]);
+    //                    TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+    //                }
+    //                $transactionMeta = $receivedTransaction->transactionMeta;
+    //                foreach ($transactionMeta as $key => $transactionMe) {
+    //                    MetaTransation::create([
+    //                        'transaction_id' => $processTransaction->transaction_id,
+    //                        'key' => $transactionMe->key,
+    //                        'value' => $transactionMe->value,
+    //                    ]);
+    //                }
+    //            }
+    //        }
+    //        $allTransactions = array();
+    //        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $sentCofffeeArray)->with('transactionDetail', 'log', 'meta')->get();
+    //        foreach ($currentlyReceivedCoffees as $key => $transaction) {
+    //            $transactionDetail = $transaction->transactionDetail;
+    //
+    //            $transactionDetailArray = array();
+    //            foreach ($transactionDetail as $key => $transactionDet) {
+    //                $transactionDet->is_local = FALSE;
+    //                $transactionDet->update_meta = FALSE;
+    //                array_push($transactionDetailArray, $transactionDet);
+    //            }
+    //            $transactionMeta = $transaction->meta;
+    //            $transaction->center_id = $transaction->log->entity_id;
+    //            $transaction->center_name = $transaction->log->center_name;
+    //            $transaction->is_sent = 0;
+    //            $transaction->makeHidden('transactionDetail');
+    //            $transaction->makeHidden('log');
+    //            $transaction->makeHidden('meta');
+    //            $data = ['transaction' => $transaction, 'transactionDetail' => $transactionDetailArray, 'transactionMeta' => $transactionMeta];
+    //            array_push($allTransactions, $data);
+    //        }
+    //        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $allTransactions);
+    //    }
 }
