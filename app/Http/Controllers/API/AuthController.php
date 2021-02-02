@@ -14,11 +14,13 @@ use App\Village;
 use App\User;
 use App\Transaction;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
 
     private $app_lang;
 
-    public function __construct() {
+    public function __construct()
+    {
         set_time_limit(0);
         $headers = getallheaders();
         if (isset($headers['app_lang'])) {
@@ -33,10 +35,11 @@ class AuthController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    function login(Request $request) {
+    function login(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-                    'email' => 'required',
-                    'password' => 'required'
+            'email' => 'required',
+            'password' => 'required'
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
@@ -51,6 +54,7 @@ class AuthController extends Controller {
                 return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.BLOCKED"), 400);
             }
             $user = User::where('user_id', Auth::user()->user_id)->with('roles', 'center_user')->first();
+            $user->center = null;
             if (isset($user->center_user) && isset($user->center_user->center_id)) {
                 $user->center_id = $user->center_user->center_id;
                 $user->center = $user->center_user->center;
@@ -59,9 +63,9 @@ class AuthController extends Controller {
             $user->session_no = 1;
             $sessionNo = Transaction::where('created_by', Auth::user()->user_id)->orderBy('local_session_no', 'desc')->first();
             if ($sessionNo) {
-                $user->session_no =($sessionNo->local_session_no + 1);;
+                $user->session_no = ($sessionNo->local_session_no + 1);;
             }
-// return sendSuccess('Logged In', $user);
+            // return sendSuccess('Logged In', $user);
             $session = $this->saveLoginUserDetail($user->user_id);
             $user->session_key = $session->session_key;
             return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.LOGIN"), $user);
@@ -75,7 +79,8 @@ class AuthController extends Controller {
      * $user_id loginuser id
      * @return \Illuminate\Http\Response
      */
-    private function saveLoginUserDetail($user_id) {
+    private function saveLoginUserDetail($user_id)
+    {
         $newLoginUser = new LoginUser();
         $newLoginUser->session_key = bcrypt($user_id);
         $newLoginUser->user_id = $user_id;
@@ -83,5 +88,4 @@ class AuthController extends Controller {
         $newLoginUser->save();
         return $newLoginUser;
     }
-
 }
