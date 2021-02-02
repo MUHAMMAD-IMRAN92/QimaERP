@@ -36,74 +36,92 @@ function containerType() {
         1 => array(
             'code' => 'BS',
             'type' => 'Basket',
+            'user_role' => 2,
         ),
         2 => array(
             'code' => 'DT',
             'type' => 'Drying Tables',
+            'user_role' => 0,
         ),
         3 => array(
             'code' => 'SC',
             'type' => 'Special Process barrel',
+            'user_role' => 0,
         ),
         4 => array(
             'code' => 'DM',
             'type' => 'Drying Machine (Future)',
+            'user_role' => 0,
         ),
         5 => array(
             'code' => 'DS',
             'type' => 'Dry Coffee Bag',
+            'user_role' => 0,
         ),
         6 => array(
             'code' => 'GS',
             'type' => 'Pre Defect removal Export Coffee (Size 1 and Size 2) bag',
+            'user_role' => 0,
         ),
         7 => array(
             'code' => 'ES',
             'type' => 'Defect Free Export coffee (Size 1 and Size 2) bag',
+            'user_role' => 0,
         ),
         8 => array(
             'code' => 'PS',
             'type' => 'Peaberry Coffee Bag',
+            'user_role' => 0,
         ),
         9 => array(
             'code' => 'SS',
             'type' => 'Grade 2 Coffee (small and big beans)',
+            'user_role' => 6,
         ),
         10 => array(
             'code' => 'LS',
             'type' => 'Grade 3 (defect) Coffee',
+            'user_role' => 0,
         ),
         11 => array(
             'code' => 'HS',
             'type' => 'Grade 1 husk  Bag',
+            'user_role' => 0,
         ),
         12 => array(
             'code' => 'QS',
             'type' => 'Grade 2 husk Bag',
+            'user_role' => 0,
         ),
         13 => array(
             'code' => 'KS',
             'type' => 'Grade 3 husk bag',
+            'user_role' => 0,
         ),
         14 => array(
             'code' => 'VB',
             'type' => '5kg Vacuum Bag for export',
+            'user_role' => 0,
         ),
         15 => array(
             'code' => 'PB',
             'type' => '15kg Premium Bag for export',
+            'user_role' => 0,
         ),
         16 => array(
             'code' => 'VP',
             'type' => '10kg Shipping Box',
+            'user_role' => 0,
         ),
         17 => array(
             'code' => 'PP',
             'type' => '30kg Shipping Box',
+            'user_role' => 0,
         ),
         18 => array(
             'code' => 'SM',
             'type' => 'Sample Bag 1',
+            'user_role' => 0,
         )
     );
     return $arr;

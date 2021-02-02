@@ -280,14 +280,13 @@ class CommonController extends Controller
 
     function getContainerType(Request $request)
     {
-        $containerTypeArray = containerType();
-        $container = array();
-        foreach ($containerTypeArray as $key => $containerTypeAr) {
-            $data['code'] = $containerTypeAr['code'];
-            $data['user_role'] = $containerTypeAr['code'] == 'BS' ? 2 : 0;
-            array_push($container, $data);
-        }
+        // $containerTypeArray = containerType();
+        // $container = array();
+        // foreach ($containerTypeArray as $key => $containerTypeAr) {
+        //     $data['code'] = $containerTypeAr['code'];
+        //     array_push($container, $data);
+        // }
 
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CONTAINER"), $container);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CONTAINER"), containerType());
     }
 }
