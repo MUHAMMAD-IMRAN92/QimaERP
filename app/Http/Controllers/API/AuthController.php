@@ -53,6 +53,7 @@ class AuthController extends Controller {
             $user = User::where('user_id', Auth::user()->user_id)->with('roles', 'center_user')->first();
             if (isset($user->center_user) && isset($user->center_user->center_id)) {
                 $user->center_id = $user->center_user->center_id;
+                $user->center = $user->center_user->center;
             }
             $user->makeHidden('center_user');
             $user->session_no = 1;
