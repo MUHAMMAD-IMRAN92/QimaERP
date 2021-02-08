@@ -127,7 +127,12 @@ function containerType()
             'code' => 'SM',
             'type' => 'Sample Bag 1',
             'user_role' => 0,
-        )
+        ),
+        19 => array(
+            'code' => 'SPS',
+            'type' => 'Special Processing',
+            'user_role' => 6,
+        ),
     );
     return $arr;
 }
