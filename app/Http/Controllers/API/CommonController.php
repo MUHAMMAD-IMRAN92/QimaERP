@@ -287,6 +287,8 @@ class CommonController extends Controller
         //     array_push($container, $data);
         // }
 
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CONTAINER"), containerType());
+        $data = array_values(containerType());
+
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CONTAINER"), $data);
     }
 }
