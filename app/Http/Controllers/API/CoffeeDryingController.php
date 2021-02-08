@@ -90,7 +90,7 @@ class CoffeeDryingController extends Controller
 
     function receivedCoffeeDryingCoffee(Request $request)
     {
-        return $request->transactions;
+        // return $request->transactions;
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
