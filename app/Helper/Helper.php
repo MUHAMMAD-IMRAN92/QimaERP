@@ -170,5 +170,5 @@ function getFileExtensionForBase64($file)
 
 function toSqlDT($string)
 {
-    Carbon::parse($string)->toDateTimeString();
+    return Carbon::parse($string)->toDateTimeString();
 }
