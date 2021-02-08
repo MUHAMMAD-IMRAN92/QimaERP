@@ -90,6 +90,7 @@ class CoffeeDryingController extends Controller
 
     function receivedCoffeeDryingCoffee(Request $request)
     {
+        return $request->transactions;
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -108,6 +109,7 @@ class CoffeeDryingController extends Controller
                     if ($updateCoffees) {
                         $updateCoffees->is_sent = $receivedTransaction->transaction->is_sent;
                         $updateCoffees->is_in_process = $receivedTransaction->transaction->is_in_process;
+                        $updateCoffees->local_updated_at = toSqlDT($receivedTransaction->transaction->local_updated_at);
                         $updateCoffees->save();
                     }
                 } else {
@@ -135,6 +137,7 @@ class CoffeeDryingController extends Controller
                                 'is_in_process' => $receivedTransaction->transaction->is_in_process,
                                 'session_no' => $receivedTransaction->transaction->session_no,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
                             $receivedTransId = $receivedTransaction->transaction->reference_id;
                             $transactionLog = TransactionLog::create([
@@ -144,6 +147,7 @@ class CoffeeDryingController extends Controller
                                 'entity_id' => $receivedTransaction->transaction->center_id,
                                 'center_name' => '',
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at),
                                 'type' => 'coffee_drying',
                             ]);
                             $transactionContainers = $receivedTransaction->transactionMeta;
@@ -194,6 +198,7 @@ class CoffeeDryingController extends Controller
                                 'is_in_process' => $receivedTransaction->transaction->is_in_process,
                                 'session_no' => $receivedTransaction->transaction->session_no,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
                             $receivedTransId = $receivedTransaction->transaction->reference_id;
                             $transactionLog = TransactionLog::create([
@@ -203,6 +208,7 @@ class CoffeeDryingController extends Controller
                                 'entity_id' => $receivedTransaction->transaction->center_id,
                                 'center_name' => '',
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at),
                                 'type' => 'coffee_drying_received',
                             ]);
                             $transactionContainers = $receivedTransaction->transactionDetails;
@@ -257,6 +263,7 @@ class CoffeeDryingController extends Controller
                                 'is_in_process' => $receivedTransaction->transaction->is_in_process,
                                 'session_no' => $receivedTransaction->transaction->session_no,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
                             array_push($receivedCofffee, $processTransaction->transaction_id);
                             $transactionLog = TransactionLog::create([
@@ -266,6 +273,7 @@ class CoffeeDryingController extends Controller
                                 'entity_id' => $receivedTransaction->transaction->center_id,
                                 'center_name' => '',
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at),
                                 'type' => 'coffee_drying_send',
                             ]);
                             $transactionContainers = $receivedTransaction->transactionDetails;
@@ -321,6 +329,7 @@ class CoffeeDryingController extends Controller
                                 'is_in_process' => $receivedTransaction->transaction->is_in_process,
                                 'session_no' => $receivedTransaction->transaction->session_no,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
                             array_push($receivedCofffee, $processTransaction->transaction_id);
                             $transactionLog = TransactionLog::create([
@@ -330,6 +339,7 @@ class CoffeeDryingController extends Controller
                                 'entity_id' => $receivedTransaction->transaction->center_id,
                                 'center_name' => '',
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at),
                                 'type' => 'sent_to_yemen',
                             ]);
                             $transactionContainers = $receivedTransaction->transactionDetails;
@@ -382,6 +392,7 @@ class CoffeeDryingController extends Controller
                                 'is_in_process' => $receivedTransaction->transaction->is_in_process,
                                 'session_no' => $receivedTransaction->transaction->session_no,
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
                             array_push($receivedCofffee, $processTransaction2->transaction_id);
 
@@ -392,6 +403,7 @@ class CoffeeDryingController extends Controller
                                 'entity_id' => $receivedTransaction->transaction->center_id,
                                 'center_name' => '',
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
+                                'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at),
                                 'type' => 'coffee_drying',
                             ]);
                             $transactionContainers = $receivedTransaction->transactionDetails;

@@ -1,8 +1,10 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
 
-function timeago($ptime) {
+function timeago($ptime)
+{
     $difference = time() - strtotime($ptime);
     if ($difference) {
         $periods = array("sec", "min", "hr", "day", "week", "month", "years", "decade");
@@ -23,15 +25,18 @@ function timeago($ptime) {
     }
 }
 
-function sendSuccess($message, $data) {
+function sendSuccess($message, $data)
+{
     return Response::json(array('status' => 'success', 'message' => $message, 'data' => $data), 200, [], JSON_NUMERIC_CHECK);
 }
 
-function sendError($error_message, $code, $data = null) {
+function sendError($error_message, $code, $data = null)
+{
     return Response::json(array('status' => 'error', 'message' => $error_message, 'data' => $data), $code);
 }
 
-function containerType() {
+function containerType()
+{
     $arr = array(
         1 => array(
             'code' => 'BS',
@@ -127,7 +132,8 @@ function containerType() {
     return $arr;
 }
 
-function searcharray($value, $key, $array) {
+function searcharray($value, $key, $array)
+{
     foreach ($array as $k => $val) {
         if ($val[$key] == $value) {
             return $k;
@@ -136,7 +142,8 @@ function searcharray($value, $key, $array) {
     return null;
 }
 
-function getFileExtensionForBase64($file) {
+function getFileExtensionForBase64($file)
+{
 
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $ext = $finfo->buffer($file) . "\n";
@@ -159,4 +166,9 @@ function getFileExtensionForBase64($file) {
     } else {
         return ".no-extension";
     }
+}
+
+function toSqlDT($string)
+{
+    Carbon::parse($string)->toDateTimeString();
 }
