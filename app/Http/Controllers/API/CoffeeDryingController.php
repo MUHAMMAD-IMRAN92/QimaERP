@@ -90,7 +90,7 @@ class CoffeeDryingController extends Controller
 
     function receivedCoffeeDryingCoffee(Request $request)
     {
-        return $request->transactions;
+        // return $request->transactions;
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -110,7 +110,7 @@ class CoffeeDryingController extends Controller
                         $updateCoffees->is_sent = $receivedTransaction->transaction->is_sent;
                         $updateCoffees->is_in_process = $receivedTransaction->transaction->is_in_process;
                         $updateCoffees->local_updated_at = toSqlDT($receivedTransaction->transaction->local_updated_at);
-                        $updateCoffees->save();
+                        $updateCoffees->update();
                     }
                 } else {
                     if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 10) {
