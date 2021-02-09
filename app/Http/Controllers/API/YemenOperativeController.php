@@ -114,7 +114,8 @@ class YemenOperativeController extends Controller
                         'sent_to' => $sentTransaction->transaction->sent_to,
                         'is_sent' => 1,
                         'session_no' => $sentTransaction->transaction->session_no,
-                        'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                        'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
+                        'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
                     ]);
                     $transactionLog = TransactionLog::create([
                         'transaction_id' => $transaction->transaction_id,
@@ -122,7 +123,8 @@ class YemenOperativeController extends Controller
                         'created_by' => $sentTransaction->transaction->created_by,
                         'entity_id' => $sentTransaction->transaction->center_id,
                         'center_name' => $sentTransaction->transaction->center_name,
-                        'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                        'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
+                        'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at),
                         'type' => 'received_by_yemen',
                     ]);
                     $transactionContainers = $sentTransaction->transactionDetails;
