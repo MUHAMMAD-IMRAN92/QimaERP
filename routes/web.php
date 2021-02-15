@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
   | contains the "web" middleware group. Now create something great!
   |
  */
+
+Route::get('/dev_test', 'DevTestController');
 Route::get('login', 'AuthController@adminLogin')->name('login');
 Route::get('/', function () {
     return Redirect::route('login');
