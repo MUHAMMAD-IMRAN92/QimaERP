@@ -23,7 +23,10 @@ class DevTestController extends Controller
 
         $farmers = Farmer::where('village_code', $village_code)->get();
 
-        return $farmers;
+        return [
+            'farmers' => $farmers,
+            'village_code' => $village_code
+        ];
 
         $farmers->each(function ($farmer) {
             $farmer->farmer_code = $farmer->village_code . '-' . sprintf("%03d", $farmer->farmer_id);
