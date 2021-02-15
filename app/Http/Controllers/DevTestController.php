@@ -21,8 +21,8 @@ class DevTestController extends Controller
 
         $village_code = $request->village_code;
 
-        // $farmers = Farmer::where('village_code', $village_code)->get();
-        $farmers = Farmer::all();
+        $farmers = Farmer::where('village_code', $village_code)->get();
+        // $farmers = Farmer::all();
 
         return [
             'farmers' => $farmers,
