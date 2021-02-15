@@ -51,7 +51,7 @@ function containerType()
         3 => array(
             'code' => 'SC',
             'type' => 'Special Process barrel',
-            'user_role' => 0,
+            'user_role' => 6,
         ),
         4 => array(
             'code' => 'DM',
@@ -81,7 +81,7 @@ function containerType()
         9 => array(
             'code' => 'SS',
             'type' => 'Grade 2 Coffee (small and big beans)',
-            'user_role' => 6,
+            'user_role' => 0,
         ),
         10 => array(
             'code' => 'LS',
