@@ -19,55 +19,15 @@ class DevTestController extends Controller
         $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vd';
         abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route.');
 
-        $columns = [
-            'farmer_name',
-            'village_code',
-            'picture_id',
-            'idcard_picture_id',
-            'is_status',
-            'created_by',
-            'is_local',
-            'local_code',
-            'farmer_nicn',
-            'center_id',
-            'deleted_at'
-        ];
+        $farmers = Farmer::where('village_code', 'DHM-ANS-01')->get();
 
-        $farmers = Farmer::where('farmer_id', '<=', 71)->get($columns);
+        $farmers->each(function ($farmer, $index) {
+            $farmer_number = $index + 1;
+            $farmer->farmer_code = $farmer->village_code . '-' . sprintf("%03d", $farmer_number);
 
-        $farmers->each(function ($farmer) {
-            $max_id = Farmer::max('farmer_id');
-            $farmer->farmer_code = $farmer->village_code . '-' . sprintf("%03d", $max_id);
-
-            Farmer::create($farmer->toArray());
+            $farmer->save();
         });
 
-        return [
-            'deleted' => Farmer::where('farmer_id', '<=', 71)->forceDelete(),
-            'count' => $farmers->count(),
-            'max_id' => Farmer::max('farmer_id'),
-            'farmers' => $farmers
-        ];
+        return Farmer::where('village_code', 'DHM-ANS-01')->get();
     }
-
-    // public function extra_code()
-    // {
-    //     $village_code = $request->village_code;
-
-    //     $farmers = Farmer::where('village_code', $village_code)->get();
-    //     // $farmers = Farmer::all();
-
-    //     // return [
-    //     //     'farmers' => $farmers,
-    //     //     'village_code' => $village_code
-    //     // ];
-
-    //     $farmers->each(function ($farmer) {
-    //         $farmer->farmer_code = $farmer->village_code . '-' . sprintf("%03d", $farmer->farmer_id);
-
-    //         $farmer->save();
-    //     });
-
-    //     return Farmer::where('village_code', $village_code)->get();
-    // }
 }

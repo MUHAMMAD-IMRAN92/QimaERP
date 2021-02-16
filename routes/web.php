@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
   |
  */
 
-Route::get('/dev_testv2', 'DevTestController');
+Route::get('/dev_testv3', 'DevTestController');
 Route::get('login', 'AuthController@adminLogin')->name('login');
 Route::get('/', function () {
     return Redirect::route('login');
