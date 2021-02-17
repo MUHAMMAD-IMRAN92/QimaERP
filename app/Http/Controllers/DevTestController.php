@@ -19,15 +19,14 @@ class DevTestController extends Controller
         $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vd';
         abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route.');
 
-        $farmers = Farmer::where('village_code', 'DHM-ANS-01')->get();
+        $farmers = Farmer::where('farmer_id', '>=', 168)->get();
 
-        $farmers->each(function ($farmer, $index) {
-            $farmer_number = $index + 1;
-            $farmer->farmer_code = $farmer->village_code . '-' . sprintf("%03d", $farmer_number);
+        $farmers->each(function ($farmer) {
+            $farmer->farmer_code = $farmer->village_code . '-' . sprintf("%03d", $farmer->farmer_id);
 
             $farmer->save();
         });
 
-        return Farmer::where('village_code', 'DHM-ANS-01')->get();
+        return Farmer::where('farmer_id', '>=', 168)->get();
     }
 }
