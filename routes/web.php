@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Redirect;
   |
  */
 
-Route::get('/dev_testv4', 'DevTestController');
+Route::get('/dev_testv5', 'DevTestController');
 Route::get('login', 'AuthController@adminLogin')->name('login');
 Route::get('/', function () {
     return Redirect::route('login');
