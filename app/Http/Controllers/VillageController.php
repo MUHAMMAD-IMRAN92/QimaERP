@@ -2,33 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Village;
 use App\Region;
-use Auth;
+use App\Village;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-class VillageController extends Controller {
+class VillageController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
         $data['village'] = Village::all();
         return view('admin.village.allvillage', $data);
     }
 
-    function getVillageAjax(Request $request) {
+    function getVillageAjax(Request $request)
+    {
         $draw = $request->get('draw');
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
         $orderby = 'DESC';
         $column = 'village_id';
-//::count total record
+        //::count total record
         $total_members = Village::count();
         $members = Village::query();
         //::select columns
         $members = $members->select('village_id', 'village_code', 'village_title', 'village_title_ar');
         //::search with farmername or farmer_code or  village_code
-        $members = $members->when($search, function($q)use ($search) {
+        $members = $members->when($search, function ($q) use ($search) {
             $q->where('village_code', 'like', "%$search%")->orWhere('village_title', 'like', "%$search%");
         });
         if ($request->has('order') && !is_null($request['order'])) {
@@ -56,33 +59,33 @@ class VillageController extends Controller {
         return json_encode($data);
     }
 
-    public function addnewvillage() {
+    public function addnewvillage()
+    {
         $data['region'] = Region::all();
         return view('admin.village.addvillage', $data);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-                    'region_code' => 'required|max:100|unique:villages,village_code',
-                    'village_title' => 'required|max:100|unique:villages,village_title',
-                    'village_title_ar' => 'required|max:100|unique:villages,village_title_ar',
+            'region_code' => 'required|max:100|unique:villages,village_code',
+            'village_title' => 'required|max:100|unique:villages,village_title',
+            'village_title_ar' => 'required|max:100|unique:villages,village_title_ar',
         ]);
         if ($validator->fails()) {
             //::validation failed
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $currentVillageCode = 1;
-        $lastVillage = Village::orderBy('created_at', 'DESC')->first();
-        if (isset($lastVillage) && $lastVillage) {
-            $currentVillageCode = ($lastVillage->village_id + 1);
-        }
-        // dd( $currentVillageCode);
-        $twoDigitCode = sprintf("%02d", ($currentVillageCode));
-        // dd($twoDigitCode);
-        // $last= $twoDigitCode+1;
+        // $lastVillage = Village::orderBy('created_at', 'DESC')->first();
+        // if (isset($lastVillage) && $lastVillage) {
+        //     $currentVillageCode = ($lastVillage->village_id + 1);
+        // }
+
+        $max_id = Village::max('village_id');
+
         $village = new Village();
-        $village->village_code = $request->region_code . '-' . $twoDigitCode;
+        $village->village_code = $request->region_code . '-' . sprintf("%02d", ($max_id + 1));
         $village->village_title = $request->village_title;
         $village->village_title_ar = $request->village_title_ar;
         $village->created_by = Auth::user()->user_id;
@@ -92,18 +95,20 @@ class VillageController extends Controller {
         return redirect('admin/allvillage');
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         // dd($id);
         $data['village'] = Village::find($id);
         return view('admin.village.editvillage', $data);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
-                    'village_title' => 'required|max:100|unique:villages,village_title',
-                    'village_title_ar' => 'required|max:100|unique:villages,village_title_ar',
-                    'village_id' => 'required',
+            'village_title' => 'required|max:100|unique:villages,village_title',
+            'village_title_ar' => 'required|max:100|unique:villages,village_title_ar',
+            'village_id' => 'required',
         ]);
         if ($validator->fails()) {
             //::validation failed
@@ -116,5 +121,4 @@ class VillageController extends Controller {
         $updatevillage->update();
         return redirect('admin/allvillage')->with('update', 'Village Update Successfully!');
     }
-
 }
