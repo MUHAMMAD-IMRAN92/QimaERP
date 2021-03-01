@@ -42,6 +42,7 @@ class Transaction extends Model
         'is_sent' => 'boolean',
         'is_in_process' => 'boolean',
         'is_update_center' => 'boolean',
+        'ready_to_milled' => 'boolean'
     ];
 
     public function transactionDetail()
