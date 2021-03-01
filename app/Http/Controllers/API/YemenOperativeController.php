@@ -91,12 +91,16 @@ class YemenOperativeController extends Controller
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
+
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+
         $receivedTransactions = json_decode($request['transactions']);
+
         DB::beginTransaction();
+
         try {
             foreach ($receivedTransactions as $key => $sentTransaction) {
                 if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
@@ -115,6 +119,7 @@ class YemenOperativeController extends Controller
                         'sent_to' => $sentTransaction->transaction->sent_to,
                         'is_sent' => 1,
                         'session_no' => $sentTransaction->transaction->session_no,
+                        'ready_to_milled' => $sentTransaction->ready_to_milled,
                         'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
                         'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
                     ]);
@@ -145,6 +150,7 @@ class YemenOperativeController extends Controller
                     }
                 }
             }
+
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollback();
