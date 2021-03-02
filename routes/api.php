@@ -29,9 +29,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], function () {
     Route::post('/login', 'API\AuthController@login');
-// Logged In users
+    // Logged In users
     Route::group(['middleware' => ['checkSession']], function () {
-//::Common Routes
+        //::Common Routes
         //::governerate
         Route::post('/add_governerate', 'API\CommonController@addGovernerate');
         Route::get('/governerate', 'API\CommonController@governerate');
@@ -57,7 +57,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::--------------------------------------------
         //::Coffee buyer Routes
         //
-         Route::post('/add_batches', 'API\CoffeeBuyer@addBatchNumber');
+        Route::post('/add_batches', 'API\CoffeeBuyer@addBatchNumber');
         //::Get coffee buyer farmer
         Route::get('/coffee_buyer_farmer', 'API\CoffeeBuyer@farmer');
         //::Get all batches
@@ -67,7 +67,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::Add Coffee with batch number
         Route::post('/coffee_buyer_add_coffee', 'API\CoffeeBuyer@addCoffeeWithBatchNumber');
         Route::post('/coffee_buyer_add_coffee_without_batch_number', 'API\CoffeeBuyer@addCoffeeWithOutBatchNumber');
-//::Fetch Coffee Transactions
+        //::Fetch Coffee Transactions
         Route::get('/get_coffee_buyer_transactions', 'API\CoffeeBuyer@coffeeBuyerCoffee');
         //::-------------------------------------------------
         //::Coffee Buyer Manager Routes
@@ -116,5 +116,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //::Yemen Operative
         Route::get('/get_yemen_operative_coffee', 'API\YemenOperativeController@getYemenOperativeCoffee');
         Route::post('/received_yemen_operative_coffee', 'API\YemenOperativeController@receivedYemenOperative');
+
+        Route::get('/product_names', 'API\ProductNameController@index');
     });
 });

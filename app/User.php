@@ -11,9 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
 
-    use Notifiable,
-        HasRoles,
-        SoftDeletes;
+    use Notifiable, HasRoles, SoftDeletes;
 
     protected $primaryKey = 'user_id';
 
