@@ -50,25 +50,38 @@ class YemenOperativeController extends Controller
     function getYemenOperativeCoffee(Request $request)
     {
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->whereHas('log', function ($q) {
-            $q->whereIn('action', ['sent', 'received'])->whereIn('type', ['sent_to_yemen', 'received_by_yemen', 'milling_coffee']);
-        })->whereHas('transactionDetail', function ($q) {
-            $q->where('container_status', 0);
-        }, '>', 0)->with(['transactionDetail' => function ($query) {
-            $query->where('container_status', 0);
-        }])->with('meta', 'child')->orderBy('transaction_id', 'desc')->get();
+
+        $transactions = Transaction::where('is_parent', 0)
+            ->whereHas('log', function ($q) {
+                $q->whereIn('action', ['sent', 'received'])
+                    ->whereIn('type', ['sent_to_yemen', 'received_by_yemen', 'milling_coffee']);
+            })->whereHas(
+                'transactionDetail',
+                function ($q) {
+                    $q->where('container_status', 0);
+                },
+                '>',
+                0
+            )->with(['transactionDetail' => function ($query) {
+                $query->where('container_status', 0);
+            }])->with('meta', 'child')
+            ->orderBy('transaction_id', 'desc')
+            ->get();
 
         foreach ($transactions as $key => $transaction) {
+
             $childTransaction = array();
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
             $child = $transaction->child;
+
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
             $transaction->makeHidden('child');
+
             $removeLocalId = explode("-", $transaction->batch_number);
             if ($removeLocalId[3] == '000') {
                 $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $transaction->batch_number)->first();
@@ -80,9 +93,18 @@ class YemenOperativeController extends Controller
                     }
                 }
             }
-            $data = ['transaction' => $transaction, 'transactionDetails' => $transactionDetail, 'transactionMeta' => $transactionMata, 'child_transactions' => $childTransaction, 'child' => $child];
+
+            $data = [
+                'transaction' => $transaction,
+                'transactionDetails' => $transactionDetail,
+                'transactionMeta' => $transactionMata,
+                'child_transactions' => $childTransaction,
+                'child' => $child
+            ];
+
             array_push($allTransactions, $data);
         }
+
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 

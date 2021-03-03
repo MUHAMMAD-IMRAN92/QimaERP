@@ -120,6 +120,7 @@ class MillingController extends Controller
         $season = Season::where('status', 0)->first();
 
         DB::beginTransaction();
+
         try {
             foreach ($request->transaction_id as $key => $transaction) {
                 $serverTran = Transaction::where('transaction_id', $transaction)->first();

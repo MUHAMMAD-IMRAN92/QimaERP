@@ -138,25 +138,37 @@ class CenterManagerController extends Controller
     function centerManagerCoffee(Request $request)
     {
         $userCenter = CenterUser::where('user_id', $this->userId)->first();
+
         $centerId = 0;
+
         if ($userCenter) {
             $centerId = $userCenter->center_id;
         }
 
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('transactionLog', function ($q) use ($centerId) {
-            $q->where('action', 'sent')->where('type', 'center')->where('entity_id', $centerId);
-        })->whereHas('transactionDetail', function ($q) use ($centerId) {
-            $q->where('container_status', 0);
-        }, '>', 0)->with(['transactionDetail' => function ($query) {
-            $query->where('container_status', 0);
-        }])->with('log')->orderBy('transaction_id', 'desc')->get();
+
+        $transactions = Transaction::where('is_parent', 0)
+            ->where('transaction_status', 'sent')
+            ->whereHas('transactionLog', function ($q) use ($centerId) {
+                $q->where('action', 'sent')
+                    ->where('type', 'center')
+                    ->where('entity_id', $centerId);
+            })->whereHas('transactionDetail', function ($q) use ($centerId) {
+                $q->where('container_status', 0);
+            }, '>', 0)->with(['transactionDetail' => function ($query) {
+                $query->where('container_status', 0);
+            }])->with('log')->orderBy('transaction_id', 'desc')->get();
+
         foreach ($transactions as $key => $transaction) {
+
             $transaction->buyer_name = '';
-            $parentCheckBatch = BatchNumber::where('batch_number', $transaction->batch_number)->with('buyer')->first();
+            $parentCheckBatch = BatchNumber::where('batch_number', $transaction->batch_number)
+                ->with('buyer')->first();
+
             if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
                 $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
+
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
@@ -172,7 +184,6 @@ class CenterManagerController extends Controller
 
     function centerManagerReceivedCoffee(Request $request)
     {
-
         $userId = $this->userId;
         $centerId = 0;
         $userCenter = CenterUser::where('user_id', $this->userId)->first();

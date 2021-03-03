@@ -194,10 +194,13 @@ class CoffeeBuyerManager extends Controller
             $sentCoffee = ['transactions' => $currentlySentCoffee, 'transactions_detail' => $transactionsDetail];
             array_push($dataArray, $sentCoffee);
         }
+
         $data = array_merge($dataArray, $alreadySentCoffee);
+
         if (count($alreadySentCoffee) > 0) {
             return sendSuccess(Config("statuscodes." . $this->app_lang . ".error_messages.TRANSACTION_SENT_ALREADY"), $data);
         }
+
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.SENT_COFFEE"), $data);
     }
 
