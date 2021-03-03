@@ -14,40 +14,43 @@ use Session;
 use Auth;
 use DB;
 
-class MillingController extends Controller {
+class MillingController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
         return view('admin.milling.allsession');
     }
 
-    function getMillingSessionAjax(Request $request) {
+    function getMillingSessionAjax(Request $request)
+    {
         $draw = $request->get('draw');
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
-//::count total record
-        $total_members = Transaction::where('is_parent', 0)->whereHas('log', function($q) {
-                    $q->where('action', 'received')->where('type', 'received_by_yemen');
-                })->whereHas('transactionDetail', function($q) {
-                    $q->where('container_status', 0);
-                }, '>', 0)->distinct('session_no')->count();
+        //::count total record
+        $total_members = Transaction::where('is_parent', 0)->whereHas('log', function ($q) {
+            $q->where('action', 'received')->where('type', 'received_by_yemen');
+        })->whereHas('transactionDetail', function ($q) {
+            $q->where('container_status', 0);
+        }, '>', 0)->distinct('session_no')->count();
         $members = Transaction::query();
-        $members = $members->where('is_parent', 0)->whereHas('log', function($q) {
-                    $q->where('action', 'received')->where('type', 'received_by_yemen');
-                })->whereHas('transactionDetail', function($q) {
-                    $q->where('container_status', 0);
-                }, '>', 0)->with(['transactionDetail' => function($query) {
-                $query->where('container_status', 0);
-            }]);
+        $members = $members->where('is_parent', 0)->whereHas('log', function ($q) {
+            $q->where('action', 'received')->where('type', 'received_by_yemen');
+        })->whereHas('transactionDetail', function ($q) {
+            $q->where('container_status', 0);
+        }, '>', 0)->with(['transactionDetail' => function ($query) {
+            $query->where('container_status', 0);
+        }]);
         //::search session_no
-        $members = $members->when($search, function($q)use ($search) {
+        $members = $members->when($search, function ($q) use ($search) {
             $q->where('session_no', 'like', "%$search%");
         });
         $members = $members->distinct()->select('session_no')->skip($start)->take($length)->groupBy('session_no')->orderBy('session_no', 'DESC')->get();
         foreach ($members as $key => $member) {
-            $countBatch = Transaction::where('session_no', $member->session_no)->where('is_parent', 0)->distinct()->select('batch_number')->groupBy('batch_number')->whereHas('log', function($q) {
-                        $q->where('action', 'received')->where('type', 'received_by_yemen');
-                    })->count();
+            $countBatch = Transaction::where('session_no', $member->session_no)->where('is_parent', 0)->distinct()->select('batch_number')->groupBy('batch_number')->whereHas('log', function ($q) {
+                $q->where('action', 'received')->where('type', 'received_by_yemen');
+            })->count();
             $member->batch_count = $countBatch;
         }
         $data = array(
@@ -60,16 +63,17 @@ class MillingController extends Controller {
         return json_encode($data);
     }
 
-    public function milling(Request $request, $id) {
+    public function milling(Request $request, $id)
+    {
         $data = array();
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('session_no', $id)->whereHas('log', function($q) {
-                    $q->where('action', 'received')->where('type', 'received_by_yemen');
-                })->whereHas('transactionDetail', function($q) {
-                    $q->where('container_status', 0);
-                }, '>', 0)->with(['transactionDetail' => function($query) {
-                        $query->where('container_status', 0);
-                    }])->orderBy('transaction_id', 'desc')->get();
+        $transactions = Transaction::where('is_parent', 0)->where('session_no', $id)->whereHas('log', function ($q) {
+            $q->where('action', 'received')->where('type', 'received_by_yemen');
+        })->whereHas('transactionDetail', function ($q) {
+            $q->where('container_status', 0);
+        }, '>', 0)->with(['transactionDetail' => function ($query) {
+            $query->where('container_status', 0);
+        }])->orderBy('transaction_id', 'desc')->get();
         $sessionTransactions = $transactions->groupBy('session_no');
 
         foreach ($sessionTransactions as $key => $sessionTransaction) {
@@ -95,16 +99,18 @@ class MillingController extends Controller {
         return view('admin.milling.index', $data);
     }
 
-    public function millingCoffee(Request $request) {
+    public function millingCoffee(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-                    'transaction_id' => "required|array|min:1",
-                        ], [
-                    'transaction_id.required' => 'Please select at least one batch number',
+            'transaction_id' => "required|array|min:1",
+        ], [
+            'transaction_id.required' => 'Please select at least one batch number',
         ]);
+
         if ($validator->fails()) {
-            //::validation failed
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
         $newLastBID = ($lastBatchNumber->batch_id + 1);
 
@@ -112,6 +118,7 @@ class MillingController extends Controller {
         $transactionsDetail = array();
         $refid = implode(",", $request->transaction_id);
         $season = Season::where('status', 0)->first();
+
         DB::beginTransaction();
         try {
             foreach ($request->transaction_id as $key => $transaction) {
@@ -150,30 +157,30 @@ class MillingController extends Controller {
                 $batchNumber = $serverbatch->batch_number;
             }
             $newtransaction = Transaction::create([
-                        'batch_number' => $batchNumber,
-                        'is_parent' => 0,
-                        'is_mixed' => 1,
-                        'created_by' => Auth::user()->user_id,
-                        'is_local' => FALSE,
-                        'transaction_type' => 1,
-                        'local_code' => null,
-                        'transaction_status' => 'received',
-                        'reference_id' => $refid,
-                        'is_server_id' => 1,
-                        'is_new' => 0,
-                        'sent_to' => 14,
-                        'is_sent' => 1,
-                        'session_no' => $serverbatch->session_no,
-                        'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
+                'batch_number' => $batchNumber,
+                'is_parent' => 0,
+                'is_mixed' => 1,
+                'created_by' => Auth::user()->user_id,
+                'is_local' => FALSE,
+                'transaction_type' => 1,
+                'local_code' => null,
+                'transaction_status' => 'received',
+                'reference_id' => $refid,
+                'is_server_id' => 1,
+                'is_new' => 0,
+                'sent_to' => 14,
+                'is_sent' => 1,
+                'session_no' => $serverbatch->session_no,
+                'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
             ]);
             $transactionLog = TransactionLog::create([
-                        'transaction_id' => $newtransaction->transaction_id,
-                        'action' => 'received',
-                        'created_by' => Auth::user()->user_id,
-                        'entity_id' => $serverbatch->log->entity_id,
-                        'center_name' => '',
-                        'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
-                        'type' => 'milling_coffee',
+                'transaction_id' => $newtransaction->transaction_id,
+                'action' => 'received',
+                'created_by' => Auth::user()->user_id,
+                'entity_id' => $serverbatch->log->entity_id,
+                'center_name' => '',
+                'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
+                'type' => 'milling_coffee',
             ]);
             foreach ($transactionsDetail as $key => $transactionsDet) {
                 $checkDetail = TransactionDetail::where('transaction_id', $newtransaction->transaction_id)->where('container_number', $transactionsDet['container_number'])->first();
@@ -226,5 +233,4 @@ class MillingController extends Controller {
             return redirect('admin/milling_coffee');
         }
     }
-
 }

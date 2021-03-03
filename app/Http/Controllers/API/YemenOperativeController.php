@@ -92,6 +92,8 @@ class YemenOperativeController extends Controller
             'transactions' => 'required',
         ]);
 
+        // return $request->all();
+
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
@@ -99,11 +101,14 @@ class YemenOperativeController extends Controller
 
         $receivedTransactions = json_decode($request['transactions']);
 
+        // return $receivedTransactions;
+
         DB::beginTransaction();
 
         try {
             foreach ($receivedTransactions as $key => $sentTransaction) {
                 if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+
                     $transaction = Transaction::create([
                         'batch_number' => $sentTransaction->transaction->batch_number,
                         'is_parent' => $sentTransaction->transaction->is_parent,
@@ -119,10 +124,11 @@ class YemenOperativeController extends Controller
                         'sent_to' => $sentTransaction->transaction->sent_to,
                         'is_sent' => 1,
                         'session_no' => $sentTransaction->transaction->session_no,
-                        'ready_to_milled' => $sentTransaction->ready_to_milled,
+                        'ready_to_milled' => $sentTransaction->transaction->ready_to_milled,
                         'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
                         'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
                     ]);
+
                     $transactionLog = TransactionLog::create([
                         'transaction_id' => $transaction->transaction_id,
                         'action' => 'received',
@@ -154,7 +160,7 @@ class YemenOperativeController extends Controller
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollback();
-            return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
+            return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
         $allTransactions = array();
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
