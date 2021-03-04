@@ -10,8 +10,8 @@ class MillOperativeController extends Controller
 {
     public function coffee()
     {
-        $transactions = Transaction::where('ready_to_milled', true)
-            ->where('sent_to', 14)
+        $transactions = Transaction::where('is_parent', 0)
+            ->where('ready_to_milled', true)
             ->with(['transactionDetail', 'childTransation', 'meta', 'log'])
             ->get();
 
