@@ -29,27 +29,18 @@ class CommonController extends Controller
     private $user;
     private $app_lang;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
         set_time_limit(0);
-        $headers = getallheaders();
-        if (isset($headers['app_lang'])) {
-            $this->app_lang = $headers['app_lang'];
-        } else {
-            $this->app_lang = 'en';
-        }
-        $checksession = LoginUser::where('session_key', $headers['session_token'])->first();
-        if ($checksession) {
-            $user = User::where('user_id', $checksession->user_id)->with('roles')->first();
-            if ($user) {
-                $this->user = $user;
-                $this->userId = $user->user_id;
-            } else {
-                return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
-            }
-        } else {
-            return sendError(Config("statuscodes." . $this->app_lang . ".error_messages.SESSION_EXPIRED"), 404);
-        }
+
+        $this->app_lang = $request->header('x-app-lang') ?? 'en';
+
+        $this->middleware(function ($request, $next) {
+            $this->user = $request->user();
+            $this->userId = $request->user()->user_id;
+
+            return $next($request);
+        });
     }
 
     /**
