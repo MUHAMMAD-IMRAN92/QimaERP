@@ -2,11 +2,13 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Support\Facades\Response;
 
-class Handler extends ExceptionHandler {
+class Handler extends ExceptionHandler
+{
 
     /**
      * A list of the exception types that are not reported.
@@ -14,7 +16,7 @@ class Handler extends ExceptionHandler {
      * @var array
      */
     protected $dontReport = [
-            //
+        //
     ];
 
     /**
@@ -35,7 +37,8 @@ class Handler extends ExceptionHandler {
      *
      * @throws \Exception
      */
-    public function report(Throwable $exception) {
+    public function report(Throwable $exception)
+    {
         parent::report($exception);
     }
 
@@ -48,30 +51,20 @@ class Handler extends ExceptionHandler {
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception) {
-        $segment = \Illuminate\Support\Facades\Request::segment(1);
+    public function render($request, Throwable $exception)
+    {
+        $segment = $request->segment(1);
+
         if ($segment == 'api') {
 
-            //var_dump($exception);exit;
-            $message = $exception->getMessage();
-            if (isset($exception->errorInfo)) {
-                $message = explode(";", $exception->errorInfo[2]);
-            }
-            \Log::error($message);
-            // Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
+            $errorCode = $exception instanceof AuthenticationException ? 403 : 499;
 
-            $data = [];
-
-            if(config('app.debug')){
-                $data['file'] = $exception->getFile();
-                $data['code'] = $exception->getCode();
-                $data['line'] = $exception->getLine();
-                $data['trace'] = $exception->getTrace();
-            }
-
-            return Response::json(array('status' => 'error', 'message' => $message, 'data' => $data), 499);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ], $errorCode);
         }
+
         return parent::render($request, $exception);
     }
-
 }

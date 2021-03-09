@@ -22,15 +22,13 @@ use Illuminate\Support\Facades\Route;
 //$user->assignRole('Coffee Buying Manager');
 //$role = Role::create(['name' => 'Coffee Buying Manager']);
 
-Route::get('dev_test', 'API\DevTestController');
+// Route::post('dev_test', 'API\DevTestController@store');
+Route::get('dev_test', 'API\DevTestController@index');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], function () {
     Route::post('/login', 'API\AuthController@login');
     // Logged In users
-    Route::group(['middleware' => ['checkSession']], function () {
+    Route::middleware('auth:sanctum')->group(function () {
         //::Common Routes
         //::governerate
         Route::post('/add_governerate', 'API\CommonController@addGovernerate');
