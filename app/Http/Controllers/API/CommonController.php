@@ -76,8 +76,8 @@ class CommonController extends Controller
 
     function governerate(Request $request)
     {
-
         $search = $request->search;
+
         $governerates = Governerate::when($search, function ($q) use ($search) {
             $q->where(function ($q) use ($search) {
                 $q->where('governerate_title', 'like', "%$search%")->orwhere('governerate_code', 'like', "%$search%");

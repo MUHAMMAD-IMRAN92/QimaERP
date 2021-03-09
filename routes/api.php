@@ -22,7 +22,8 @@ use Illuminate\Support\Facades\Route;
 //$user->assignRole('Coffee Buying Manager');
 //$role = Role::create(['name' => 'Coffee Buying Manager']);
 
-Route::get('dev_test', 'API\DevTestController');
+// Route::post('dev_test', 'API\DevTestController@store');
+Route::get('dev_test', 'API\DevTestController@index');
 
 Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], function () {
     Route::post('/login', 'API\AuthController@login');
