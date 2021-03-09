@@ -20,7 +20,7 @@ class DevTestController extends Controller
         abort_unless($request->secret === $secret, 401, 'Not Authorized for this request');
 
         return response()->json([
-            'message' => 'Welcome Dev'
+            'message' => 'Welcome Dev to the QIMA'
         ]);
     }
 }
