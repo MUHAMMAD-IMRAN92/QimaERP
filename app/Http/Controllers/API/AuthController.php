@@ -45,6 +45,7 @@ class AuthController extends Controller
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+
         $auth = auth()->guard('web');
         $center = '';
         if ($auth->attempt(['password' => $request->password, 'email' => $request->email])) {
