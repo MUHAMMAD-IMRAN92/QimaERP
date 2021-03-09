@@ -52,9 +52,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/transactions_details', 'API\CommonController@transactionsDetails');
         //::all batches
         Route::get('/all_batches', 'API\CommonController@allBatches');
-        //::--------------------------------------------
         //::Coffee buyer Routes
-        //
         Route::post('/add_batches', 'API\CoffeeBuyer@addBatchNumber');
         //::Get coffee buyer farmer
         Route::get('/coffee_buyer_farmer', 'API\CoffeeBuyer@farmer');
