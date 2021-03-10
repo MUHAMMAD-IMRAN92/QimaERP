@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
-use App\TransactionDetail;
-use App\ChildTransaction;
-use App\TransactionLog;
+use App\Season;
 use App\BatchNumber;
 use App\Transaction;
-use App\Season;
-use Session;
-use Auth;
-use DB;
+use App\TransactionLog;
+use App\ChildTransaction;
+use App\TransactionDetail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class MillingController extends Controller
 {
@@ -127,6 +127,7 @@ class MillingController extends Controller
                 $removeLocalId = explode("-", $serverTran->batch_number);
                 if ($removeLocalId[3] == '000') {
                     $mixFirstServerTran = Transaction::where('batch_number', $serverTran->batch_number)->first();
+
                     $childTrans = Transaction::where('is_parent', $mixFirstServerTran->transaction_id)->get();
                     foreach ($childTrans as $key => $childTran) {
                         array_push($childTransactions, $childTran->transaction_id);
@@ -135,6 +136,7 @@ class MillingController extends Controller
                     array_push($childTransactions, $transaction);
                 }
                 $childData = TransactionDetail::where('transaction_id', $transaction)->get()->toArray();
+
                 $transactionsDetail = array_merge($transactionsDetail, $childData);
                 TransactionDetail::where('transaction_id', $transaction)->update(['container_status' => 1]);
             }
