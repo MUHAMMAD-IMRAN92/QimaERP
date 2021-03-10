@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use DB;
 use App\User;
 use App\LoginUser;
 use App\CenterUser;
@@ -12,6 +11,7 @@ use App\MetaTransation;
 use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
