@@ -2,9 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-
-Route::get('dev_test', 'API\DevTestController@index');
-
 Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], function () {
 
     Route::post('/login', 'API\AuthController@login');

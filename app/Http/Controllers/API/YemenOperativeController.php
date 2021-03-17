@@ -2,17 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\User;
-use App\LoginUser;
-use App\CenterUser;
-use App\Environment;
 use App\Transaction;
-use App\MetaTransation;
 use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -45,7 +39,7 @@ class YemenOperativeController extends Controller
         $transactions = Transaction::where('is_parent', 0)
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent', 'received'])
-                    ->whereIn('type', ['sent_to_yemen', 'received_by_yemen', 'milling_coffee']);
+                    ->whereIn('type', ['sent_to_yemen', 'received_by_yemen', 'milling_coffee', 'sent_to_mill']);
             })->whereHas(
                 'transactionDetail',
                 function ($q) {
@@ -120,52 +114,110 @@ class YemenOperativeController extends Controller
 
         try {
             foreach ($receivedTransactions as $key => $sentTransaction) {
-                if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+                if (isset($sentTransaction->transaction) && $sentTransaction->transaction && $sentTransaction->transaction->is_local == TRUE) {
 
-                    $transaction = Transaction::create([
-                        'batch_number' => $sentTransaction->transaction->batch_number,
-                        'is_parent' => $sentTransaction->transaction->is_parent,
-                        'is_mixed' => $sentTransaction->transaction->is_mixed,
-                        'created_by' => $sentTransaction->transaction->created_by,
-                        'is_local' => FALSE,
-                        'transaction_type' => $sentTransaction->transaction->transaction_type,
-                        'local_code' => $sentTransaction->transaction->local_code,
-                        'transaction_status' => 'received',
-                        'reference_id' => $sentTransaction->transaction->reference_id,
-                        'is_server_id' => 1,
-                        'is_new' => 0,
-                        'sent_to' => $sentTransaction->transaction->sent_to,
-                        'is_sent' => 1,
-                        'session_no' => $sentTransaction->transaction->session_no,
-                        'ready_to_milled' => $sentTransaction->transaction->ready_to_milled,
-                        'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
-                        'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
-                    ]);
-
-                    $transactionLog = TransactionLog::create([
-                        'transaction_id' => $transaction->transaction_id,
-                        'action' => 'received',
-                        'created_by' => $sentTransaction->transaction->created_by,
-                        'entity_id' => $sentTransaction->transaction->center_id,
-                        'center_name' => $sentTransaction->transaction->center_name,
-                        'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
-                        'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at),
-                        'type' => 'received_by_yemen',
-                    ]);
-                    $transactionContainers = $sentTransaction->transactionDetails;
-                    foreach ($transactionContainers as $key => $transactionContainer) {
-                        TransactionDetail::create([
-                            'transaction_id' => $transaction->transaction_id,
-                            'container_number' => $transactionContainer->container_number,
-                            'created_by' => $transactionContainer->created_by,
+                    if($sentTransaction->transaction->sent_to == 13){
+                        $transaction = Transaction::create([
+                            'batch_number' => $sentTransaction->transaction->batch_number,
+                            'is_parent' => $sentTransaction->transaction->is_parent,
+                            'is_mixed' => $sentTransaction->transaction->is_mixed,
+                            'created_by' => $this->userId,
                             'is_local' => FALSE,
-                            'container_weight' => $transactionContainer->container_weight,
-                            'weight_unit' => $transactionContainer->weight_unit,
-                            'center_id' => $transactionContainer->center_id,
-                            'reference_id' => $transactionContainer->reference_id,
+                            'transaction_type' => $sentTransaction->transaction->transaction_type,
+                            'local_code' => $sentTransaction->transaction->local_code,
+                            'transaction_status' => 'received',
+                            'reference_id' => $sentTransaction->transaction->reference_id,
+                            'is_server_id' => 1,
+                            'is_new' => 0,
+                            'sent_to' => $sentTransaction->transaction->sent_to,
+                            'is_sent' => 1,
+                            'session_no' => $sentTransaction->transaction->session_no,
+                            'ready_to_milled' => $sentTransaction->transaction->ready_to_milled,
+                            'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
+                            'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
                         ]);
+    
+                        $transactionLog = TransactionLog::create([
+                            'transaction_id' => $transaction->transaction_id,
+                            'action' => 'received',
+                            'created_by' => $this->userId,
+                            'entity_id' => $sentTransaction->transaction->center_id,
+                            'center_name' => $sentTransaction->transaction->center_name,
+                            'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
+                            'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at),
+                            'type' => 'received_by_yemen',
+                        ]);
+    
+                        $transactionContainers = $sentTransaction->transactionDetails;
+                        
+                        foreach ($transactionContainers as $key => $transactionContainer) {
+                            TransactionDetail::create([
+                                'transaction_id' => $transaction->transaction_id,
+                                'container_number' => $transactionContainer->container_number,
+                                'created_by' => $this->userId,
+                                'is_local' => FALSE,
+                                'container_weight' => $transactionContainer->container_weight,
+                                'weight_unit' => $transactionContainer->weight_unit,
+                                'center_id' => $transactionContainer->center_id,
+                                'reference_id' => $transactionContainer->reference_id,
+                            ]);
+    
+                            TransactionDetail::where('transaction_id', $sentTransaction->transaction->reference_id)
+                                ->where('container_number', $transactionContainer->container_number)
+                                ->update(['container_status' => 1]);
+                        }
+                    }
 
-                        TransactionDetail::where('transaction_id', $sentTransaction->transaction->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                    if($sentTransaction->transaction->sent_to == 15){
+                        $transaction = Transaction::create([
+                            'batch_number' => $sentTransaction->transaction->batch_number,
+                            'is_parent' => $sentTransaction->transaction->is_parent,
+                            'is_mixed' => $sentTransaction->transaction->is_mixed,
+                            'created_by' => $this->userId,
+                            'is_local' => FALSE,
+                            'transaction_type' => $sentTransaction->transaction->transaction_type,
+                            'local_code' => $sentTransaction->transaction->local_code,
+                            'transaction_status' => 'sent',
+                            'reference_id' => $sentTransaction->transaction->reference_id,
+                            'is_server_id' => 1,
+                            'is_new' => 0,
+                            'sent_to' => 15,
+                            'is_sent' => 1,
+                            'session_no' => $sentTransaction->transaction->session_no,
+                            'ready_to_milled' => $sentTransaction->transaction->ready_to_milled,
+                            'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
+                            'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
+                        ]);
+    
+                        $transactionLog = TransactionLog::create([
+                            'transaction_id' => $transaction->transaction_id,
+                            'action' => 'sent',
+                            'created_by' => $this->userId,
+                            'entity_id' => $sentTransaction->transaction->center_id,
+                            'center_name' => $sentTransaction->transaction->center_name,
+                            'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
+                            'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at),
+                            'type' => 'sent_to_mill',
+                        ]);
+    
+                        $transactionContainers = $sentTransaction->transactionDetails;
+                        
+                        foreach ($transactionContainers as $key => $transactionContainer) {
+                            TransactionDetail::create([
+                                'transaction_id' => $transaction->transaction_id,
+                                'container_number' => $transactionContainer->container_number,
+                                'created_by' => $this->userId,
+                                'is_local' => FALSE,
+                                'container_weight' => $transactionContainer->container_weight,
+                                'weight_unit' => $transactionContainer->weight_unit,
+                                'center_id' => $transactionContainer->center_id,
+                                'reference_id' => $transactionContainer->reference_id,
+                            ]);
+    
+                            TransactionDetail::where('transaction_id', $sentTransaction->transaction->reference_id)
+                                ->where('container_number', $transactionContainer->container_number)
+                                ->update(['container_status' => 1]);
+                        }
                     }
                 }
             }
