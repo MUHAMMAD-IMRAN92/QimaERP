@@ -67,13 +67,16 @@ class MillingController extends Controller
     {
         $data = array();
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)->where('session_no', $id)->whereHas('log', function ($q) {
-            $q->where('action', 'received')->where('type', 'received_by_yemen');
-        })->whereHas('transactionDetail', function ($q) {
-            $q->where('container_status', 0);
-        }, '>', 0)->with(['transactionDetail' => function ($query) {
-            $query->where('container_status', 0);
-        }])->orderBy('transaction_id', 'desc')->get();
+        $transactions = Transaction::where('is_parent', 0)
+            ->where('session_no', $id)
+            ->whereHas('log', function ($q) {
+                $q->where('action', 'received')->where('type', 'received_by_yemen');
+            })->whereHas('transactionDetail', function ($q) {
+                $q->where('container_status', 0);
+            }, '>', 0)->with(['transactionDetail' => function ($query) {
+                $query->where('container_status', 0);
+            }])->orderBy('transaction_id', 'desc')->get();
+
         $sessionTransactions = $transactions->groupBy('session_no');
 
         foreach ($sessionTransactions as $key => $sessionTransaction) {

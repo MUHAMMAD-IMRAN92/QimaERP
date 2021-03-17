@@ -20,7 +20,7 @@ class DevTestController extends Controller
         abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route.');
 
         return [
-            'message' => 'Hello Dev how are you?'
+            'message' => 'This is for alee'
         ];
     }
 }
