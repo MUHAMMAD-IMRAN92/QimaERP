@@ -45,7 +45,7 @@ class YemenOperativeController extends Controller
         $transactions = Transaction::where('is_parent', 0)
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent', 'received'])
-                    ->whereIn('type', ['sent_to_yemen', 'received_by_yemen', 'milling_coffee']);
+                    ->whereIn('type', ['sent_to_yemen', 'received_by_yemen', 'milling_coffee', 'sent_to_mill']);
             })->whereHas(
                 'transactionDetail',
                 function ($q) {
