@@ -19,17 +19,8 @@ class DevTestController extends Controller
         $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vd';
         abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route.');
 
-        // $productSeeder = new ProductNameSeeder();
-
-        // $ran = $productSeeder->run();
-
-        $exitCode = Artisan::call('db:seed', [
-                '--class' => 'ProductNameSeeder'
-            ]);
-
         return [
-            'message' => 'This is for alee',
-            'ran' => $exitCode
+            'message' => 'Hello Dev Alee how are you feeling today?',
         ];
     }
 }
