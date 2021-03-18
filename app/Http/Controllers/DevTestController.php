@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Farmer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use ProductNameSeeder;
 
 class DevTestController extends Controller
 {
@@ -19,8 +20,13 @@ class DevTestController extends Controller
         $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vd';
         abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route.');
 
+        $productSeeder = new ProductNameSeeder();
+
+        $ran = $productSeeder->run();
+
         return [
-            'message' => 'This is for alee'
+            'message' => 'This is for alee',
+            'ran' => $ran
         ];
     }
 }
