@@ -13,18 +13,23 @@ class ProductNameSeeder extends Seeder
     public function run()
     {
         $productNames = [
-            'GRADE1 HUSK',
-            'GRADE2 HUSK',
-            'GRADE3 HUSK',
-            'ELEPHANT BEANS',
-            'SMALL BEANS',
-            'SIZE1 GREEN COFFEE',
-            'SIZE 2 GREEN COFFEE',
-            'PEABERRY'
+            ['name' => 'GRADE1 HUSK', 'container_code' => 'HS'],
+            ['name' => 'GRADE2 HUSK', 'container_code' => 'QS'],
+            ['name' => 'GRADE3 HUSK', 'container_code' => 'KS'],
+            ['name' => 'ELEPHANT BEANS', 'container_code' => 'SS'],
+            ['name' => 'SMALL BEANS', 'container_code' => 'SS'],
+            ['name' => 'SIZE1 GREEN COFFEE', 'container_code' => 'GSA'],
+            ['name' => 'SIZE2 GREEN COFFEE', 'container_code' => 'GSB'],
+            ['name' => 'PEABERRY', 'container_code' => 'PS'],
         ];
 
-        foreach ($productNames as $name) {
-            ProductName::create(['name' => $name]);
+        ProductName::truncate();
+
+        foreach ($productNames as $product) {
+            ProductName::create([
+                'name' => $product['name'],
+                'container_code' => $product['container_code']
+            ]);
         }
     }
 }

@@ -15,7 +15,7 @@ class ProductNameController extends Controller
      */
     public function index()
     {
-        $productNames = ProductName::all(['id', 'name']);
+        $productNames = ProductName::all(['id', 'name', 'container_code']);
 
         return response()->json($productNames);
     }
