@@ -37,19 +37,17 @@ class MillOperativeController extends Controller
 
         $allTransactions = array();
 
-        foreach ($transactions as $key => $transaction) {
+        foreach ($transactions as $transaction) {
 
             $childTransaction = array();
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
-            $child = $transaction->child;
 
             $transaction->makeHidden('transactionDetail');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
-            $transaction->makeHidden('child');
 
             // $removeLocalId = explode("-", $transaction->batch_number);
             // if ($removeLocalId[3] == '000') {
@@ -68,7 +66,6 @@ class MillOperativeController extends Controller
                 'transactionDetails' => $transactionDetail,
                 'transactionMeta' => $transactionMata,
                 'child_transactions' => $childTransaction,
-                'child' => $child
             ];
 
             array_push($allTransactions, $data);
