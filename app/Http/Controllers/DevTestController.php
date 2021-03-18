@@ -23,7 +23,7 @@ class DevTestController extends Controller
 
         // $ran = $productSeeder->run();
 
-        $exitCode = Artisan::class('db:seed', [
+        $exitCode = Artisan::call('db:seed', [
                 '--class' => 'ProductNameSeeder'
             ]);
 
