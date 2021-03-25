@@ -367,11 +367,15 @@ class CoffeeBuyer extends Controller
             if ($checkMixed == 0) {
                 //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                 $farmerCode = implode("-", $removeLocalId);
-                if ($batch_numbers->batch->batch->is_server_id == 1) {
-                    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
-                } else {
-                    $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
-                }
+
+                // if ($batch_numbers->batch->batch->is_server_id == 1) {
+                //     $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+                // } else {
+                //     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+                // }
+
+                $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+
                 $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
             }
 
