@@ -50,6 +50,11 @@ class Transaction extends Model
         return $this->hasMany(TransactionDetail::class, 'transaction_id', 'transaction_id');
     }
 
+    public function details()
+    {
+        return $this->hasMany(TransactionDetail::class, 'transaction_id', 'transaction_id');
+    }
+
     public function isReference()
     {
         return $this->hasMany(Transaction::class, 'reference_id', 'transaction_id');
