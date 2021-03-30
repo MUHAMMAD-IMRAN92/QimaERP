@@ -3,20 +3,28 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Meta;
 use App\Transaction;
+use App\TransactionDetail;
+use App\TransactionLog;
+use Doctrine\DBAL\Driver\IBMDB2\DB2Driver;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\DB;
 
 class MillOperativeController extends Controller
 {
     private $app_lang;
 
-    public function __construct(Request $request) {
+    public function __construct(Request $request)
+    {
         set_time_limit(0);
-        
+
         $this->app_lang = $request->header('x-app-lang') ?? 'en';
     }
 
-    public function coffee()
+    public function sendCoffee()
     {
         $transactions = Transaction::where('is_parent', 0)
             ->whereHas('log', function ($q) {
@@ -72,5 +80,44 @@ class MillOperativeController extends Controller
         }
 
         return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+    }
+    public function receiveCoffee(Request $request)
+    {
+        $validator = validator::make($request->all(), [
+            'transaction' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+        $transactions = json_decode($request['transaction']);
+
+        DB::beginTransaction();
+        try {
+            foreach ($transactions as $transaction) {
+                if ('something' == 'something') {
+                    //do This
+                    $transaction =  Transaction::create([
+
+                    ]);
+                    
+                    $transactionDetail = TransactionDetail::create([
+
+                    ]);
+                    $transactionMetas  = Meta::create([
+
+                    ]);
+                    $transactionLog  = TransactionLog::create([
+
+                    ]);
+                }
+            }
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollback();
+            return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
+        }
+        $allTransactions = $transaction;
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 }
