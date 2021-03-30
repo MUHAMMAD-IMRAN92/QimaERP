@@ -84,32 +84,31 @@ class MillOperativeController extends Controller
     public function receiveCoffee(Request $request)
     {
         $validator = validator::make($request->all(), [
-            'transaction' => 'required',
+            'transactions' => 'required',
         ]);
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-        $transactions = json_decode($request['transaction']);
+        $transactions = json_decode($request['transactions']);
 
         DB::beginTransaction();
         try {
-            foreach ($transactions as $transaction) {
+            foreach ($transactions as $transactionData) {
                 if ('something' == 'something') {
                     //do This
-                    $transaction =  Transaction::create([
+                    $transaction =  Transaction::create([]);
 
-                    ]);
-                    
-                    $transactionDetail = TransactionDetail::create([
+                    foreach ($transactionData->details as $detailsData) {
+                        $transactionDetails = new TransactionDetail();
 
-                    ]);
-                    $transactionMetas  = Meta::create([
+                        $transactionDetails->details()->save;
+                        foreach ($detailsData->meta as $metas) {
+                            $transactionMetas = new Meta();
 
-                    ]);
-                    $transactionLog  = TransactionLog::create([
-
-                    ]);
+                            $transactionMetas->meta()->save;
+                        }
+                    }
                 }
             }
             DB::commit();
