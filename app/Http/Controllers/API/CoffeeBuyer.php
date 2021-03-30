@@ -208,12 +208,12 @@ class CoffeeBuyer extends Controller
         $validator = Validator::make($request->all(), [
             'batch_number' => 'required',
         ]);
+
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
 
-        // $lastBID = 0;
         $lastTID = 0;
         //::last batch number id
         //  $lastBatchNumber = BatchNumber::orderBy('created_at', 'desc')->first();
@@ -238,11 +238,11 @@ class CoffeeBuyer extends Controller
 
         $season = Season::where('status', 0)->first();
         $batchesArray = array();
-        $sessiondata = 0;
-        $sessionNo = Transaction::orderBy('session_no', 'desc')->first();
-        if ($sessionNo) {
-            $sessiondata = $sessionNo->session_no;
-        }
+        // $sessiondata = 0;
+        // $sessionNo = Transaction::orderBy('session_no', 'desc')->first();
+
+        $sessiondata = CoffeeSession::max('server_session_id') ?? 0;
+
         foreach ($batches_numbers as $key => $batch_numbers) {
             //::insert child batches id
             $childBatchNumberArray = array();
@@ -280,18 +280,21 @@ class CoffeeBuyer extends Controller
                 //::child transactions
                 if (isset($childBatch->transactions) && isset($childBatch->transactions[0]->transactions) && $childBatch->transactions[0]->transactions) {
 
-                    $checkSession = CoffeeSession::where('user_id', $childBatch->transactions[0]->transactions->created_by)->where('local_session_id', $childBatch->transactions[0]->transactions->session_no)->first();
-                    if ($checkSession) {
-                        $childSession = $checkSession->server_session_id;
-                    } else {
-                        $sessiondata = $sessiondata + 1;
-                        CoffeeSession::create([
-                            'user_id' => $childBatch->transactions[0]->transactions->created_by,
-                            'local_session_id' => $childBatch->transactions[0]->transactions->session_no,
-                            'server_session_id' => $sessiondata,
-                        ]);
-                        $childSession = $sessiondata;
-                    }
+                    // $checkSession = CoffeeSession::where('user_id', $childBatch->transactions[0]->transactions->created_by)
+                    //     ->where('local_session_id', $childBatch->transactions[0]->transactions->session_no)
+                    //     ->first();
+
+                    // if ($checkSession) {
+                    //     $childSession = $checkSession->server_session_id;
+                    // } else {
+                    //     $sessiondata = $sessiondata + 1;
+                    //     CoffeeSession::create([
+                    //         'user_id' => $childBatch->transactions[0]->transactions->created_by,
+                    //         'local_session_id' => $childBatch->transactions[0]->transactions->session_no,
+                    //         'server_session_id' => $sessiondata,
+                    //     ]);
+                    //     $childSession = $sessiondata;
+                    // }
 
                     $newTransaction = Transaction::create([
                         'batch_number' => $newBatch->batch_number,
@@ -306,7 +309,7 @@ class CoffeeBuyer extends Controller
                         'is_server_id' => $childBatch->transactions[0]->transactions->is_server_id,
                         'is_new' => $childBatch->transactions[0]->transactions->is_new,
                         'sent_to' => 2,
-                        'session_no' => $childSession,
+                        'session_no' => $sessiondata + 1,
                         'local_session_no' => $childBatch->transactions[0]->transactions->session_no,
                         'local_created_at' => Carbon::parse($childBatch->transactions[0]->transactions->local_created_at)->toDateTimeString(),
                         'local_updated_at' => Carbon::parse($childBatch->transactions[0]->transactions->local_updated_at)->toDateTimeString()
@@ -367,11 +370,15 @@ class CoffeeBuyer extends Controller
             if ($checkMixed == 0) {
                 //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                 $farmerCode = implode("-", $removeLocalId);
-                if ($batch_numbers->batch->batch->is_server_id == 1) {
-                    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
-                } else {
-                    $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
-                }
+
+                // if ($batch_numbers->batch->batch->is_server_id == 1) {
+                //     $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+                // } else {
+                //     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+                // }
+
+                $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+
                 $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
             }
 
@@ -388,18 +395,21 @@ class CoffeeBuyer extends Controller
             ]);
             if (isset($batch_numbers->batch->transactions[0]) && isset($batch_numbers->batch->transactions[0]->transactions) && $batch_numbers->batch->transactions[0]->transactions) {
 
-                $pCheckSession = CoffeeSession::where('user_id', $batch_numbers->batch->transactions[0]->transactions->created_by)->where('local_session_id', $batch_numbers->batch->transactions[0]->transactions->session_no)->first();
-                if ($pCheckSession) {
-                    $pSession = $pCheckSession->server_session_id;
-                } else {
-                    $sessiondata = $sessiondata + 1;
-                    CoffeeSession::create([
-                        'user_id' => $batch_numbers->batch->transactions[0]->transactions->created_by,
-                        'local_session_id' => $batch_numbers->batch->transactions[0]->transactions->session_no,
-                        'server_session_id' => $sessiondata,
-                    ]);
-                    $pSession = $sessiondata;
-                }
+                // $pCheckSession = CoffeeSession::where('user_id', $batch_numbers->batch->transactions[0]->transactions->created_by)
+                //     ->where('local_session_id', $batch_numbers->batch->transactions[0]->transactions->session_no)
+                //     ->first();
+
+                // if ($pCheckSession) {
+                //     $pSession = $pCheckSession->server_session_id;
+                // } else {
+                //     $sessiondata = $sessiondata + 1;
+                //     CoffeeSession::create([
+                //         'user_id' => $batch_numbers->batch->transactions[0]->transactions->created_by,
+                //         'local_session_id' => $batch_numbers->batch->transactions[0]->transactions->session_no,
+                //         'server_session_id' => $sessiondata,
+                //     ]);
+                //     $pSession = $sessiondata;
+                // }
 
                 $parentTransaction = Transaction::create([
                     'batch_number' => $parentBatch->batch_number,
@@ -413,8 +423,8 @@ class CoffeeBuyer extends Controller
                     'is_server_id' => $batch_numbers->batch->transactions[0]->transactions->is_server_id,
                     'is_new' => $batch_numbers->batch->transactions[0]->transactions->is_new,
                     'sent_to' => 2,
-                    'session_no' => $pSession,
-                    'local_session_no' => $pSession,
+                    'session_no' => $sessiondata + 1,
+                    'local_session_no' => $batch_numbers->batch->transactions[0]->transactions->local_session_no,
                     'local_created_at' => Carbon::parse($batch_numbers->batch->transactions[0]->transactions->local_created_at)->toDateTimeString(),
                     'local_updated_at' => Carbon::parse($batch_numbers->batch->transactions[0]->transactions->local_updated_at)->toDateTimeString()
                 ]);
@@ -529,12 +539,22 @@ class CoffeeBuyer extends Controller
             $data = ['batch' => $currentBatchData, 'child_batch' => $childBatches, 'transactions' => $transactionData];
             array_push($dataArray, $data);
         }
+
+
         $session = 1;
         $findLatestSession = Transaction::where('created_by', $this->userId)->orderBy('local_session_no', 'desc')->first();
         if ($findLatestSession) {
             $session = ($findLatestSession->local_session_no + 1);
         }
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $session);
+
+
+        $session = CoffeeSession::create([
+            'user_id' => $batch_numbers->batch->transactions[0]->transactions->created_by,
+            'local_session_id' => $batch_numbers->batch->transactions[0]->transactions->local_session_no,
+            'server_session_id' => $sessiondata + 1,
+        ]);
+
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $session->server_session_id);
         //        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
         //        return sendSuccess('Coffee was added Successfully', $currentBatch);
     }

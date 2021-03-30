@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\CoffeeSession;
 use App\User;
 use App\Transaction;
 use Illuminate\Http\Request;
@@ -53,13 +54,17 @@ class AuthController extends Controller
 
         $user->makeHidden('center_user');
 
-        $user->session_no = 1;
+        // $user->session_no = 1;
 
-        $latestTransaction = Transaction::where('created_by', $user->id)->orderBy('local_session_no', 'desc')->first();
+        // $latestTransaction = Transaction::where('created_by', $user->id)->orderBy('local_session_no', 'desc')->first();
 
-        if ($latestTransaction) {
-            $user->session_no = ($latestTransaction->local_session_no + 1);
-        }
+        // if ($latestTransaction) {
+        //     $user->session_no = ($latestTransaction->local_session_no + 1);
+        // }
+
+        $session_no = CoffeeSession::max('server_session_id') ?? 0;
+
+        $user->session_no = $session_no + 1;
 
         $user->token = $user->createToken($request->email)->plainTextToken;
 

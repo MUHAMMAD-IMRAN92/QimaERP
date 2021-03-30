@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\App;
 use Throwable;
 use Illuminate\Support\Facades\Response;
 
@@ -59,10 +60,21 @@ class Handler extends ExceptionHandler
 
             $errorCode = $exception instanceof AuthenticationException ? 403 : 499;
 
-            return response()->json([
+            $data = [
                 'status' => 'error',
                 'message' => $exception->getMessage()
-            ], $errorCode);
+            ];
+
+            // if(App::environment('local')) {
+            //     $data['exception'] = [
+            //         'code' => $exception->getCode(),
+            //         'line' => $exception->getLine(),
+            //         'file' => $exception->getFile(),
+            //         'trace' => $exception->getTrace()
+            //     ];
+            // }
+
+            return response()->json($data, $errorCode);
         }
 
         return parent::render($request, $exception);
