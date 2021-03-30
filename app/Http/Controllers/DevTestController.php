@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\BatchNumber;
-use ProductNameSeeder;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 
 class DevTestController extends Controller
 {
