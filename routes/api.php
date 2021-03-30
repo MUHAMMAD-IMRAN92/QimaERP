@@ -111,6 +111,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         //::Mill Operative
         Route::get('/product_names', 'API\ProductNameController@index');
-        Route::get('/mill_operative_coffee', 'API\MillOperativeController@coffee');
+        Route::get('/mill_operative_coffee', 'API\MillOperativeController@sendCoffee');
+        Route::post('/mill_operative_coffee', 'API\MillOperativeController@receiveCoffee');
     });
 });
