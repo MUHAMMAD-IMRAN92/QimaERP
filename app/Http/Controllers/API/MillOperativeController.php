@@ -71,6 +71,8 @@ class MillOperativeController extends Controller
     }
     public function receiveCoffee(Request $request)
     {
+        return response()->json(['requst_data'=> $request->all()]);
+        
         $validator = validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -79,8 +81,6 @@ class MillOperativeController extends Controller
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-
-      return response()->json(['requst_data'=> $request->all()]);
 
         // DB::beginTransaction();
         // try {
