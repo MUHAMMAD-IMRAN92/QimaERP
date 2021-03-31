@@ -85,6 +85,8 @@ class MillOperativeController extends Controller
 
         return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
+
+
     public function receiveCoffee(Request $request)
     {
         $validator = validator::make($request->all(), [
@@ -96,64 +98,68 @@ class MillOperativeController extends Controller
             return sendError($errors, 400);
         }
 
+        $savedTransactions = collect();
 
         DB::beginTransaction();
         try {
-            foreach ($request->transactions as $transactionData) {
+            foreach ($request->transactions as $transactionArray) {
 
-                $transaction = $transactionData->transaction;
+                $transactionData = (object) $transactionArray['transaction'];
 
-           
+                if ($transactionData->is_local == true && ($transactionData->sent_to == 17 || $transactionData->sent_to == 21)) {
 
-                if ($transaction->is_local == TRUE && ($transaction->is_sent == 17 || $transaction->is_sent == 21)) {
-
-                    if ($transaction->is_sent == 17) {
+                    $status = '';
+                    $type = '';
+                    if ($transactionData->sent_to == 17) {
                         $status = 'received';
                         $type = 'received_by_mill';
-                    } elseif ($transaction->is_sent == 21) {
+                    } elseif ($transactionData->sent_to == 21) {
                         $status = 'created';
                         $type = 'sent_to_market';
                     }
 
                     $transaction =  Transaction::create([
-                        'batch_number' => $transaction->batch_number,
-                        'is_parent' => $transaction->is_parent,
-                        'created_by' => $this->userId,
+                        'batch_number' => $transactionData->batch_number,
+                        'is_parent' => $transactionData->is_parent,
+                        'created_by' => $request->user()->id,
                         'is_local' => FALSE,
-                        'local_code' => $transaction->local_code,
-                        'is_mixed' => $transaction->is_mixed,
-                        'transaction_type' => $transaction->transaction_type,
-                        'reference_id' => $transaction->reference_id,
+                        'local_code' => $transactionData->local_code,
+                        'is_mixed' => $transactionData->is_mixed,
+                        'transaction_type' => $transactionData->transaction_type,
+                        'reference_id' => $transactionData->reference_id,
                         'transaction_status' => $status,
                         'is_new' => 0,
-                        'sent_to' => $transaction->sent_to,
+                        'sent_to' => $transactionData->sent_to,
                         'is_server_id' => 1,
-                        'is_sent' => $transaction->is_sent,
-                        'session_no' => $transaction->session_no,
-                        'ready_to_milled' => $transaction->ready_to_milled,
-                        'is_in_process' => $transaction->is_in_process,
-                        'is_update_center' => $transaction->isUpdateCenter,
-                        'local_session_no' => $transaction->local_session_no,
-                        'local_created_at' => toSqlDT($transaction->local_created_at),
-                        'local_updated_at' => toSqlDT($transaction->local_updated_at)
+                        'is_sent' => $transactionData->is_sent,
+                        'session_no' => $transactionData->session_no,
+                        'ready_to_milled' => $transactionData->ready_to_milled,
+                        'is_in_process' => $transactionData->is_in_process,
+                        'is_update_center' => $transactionData->isUpdateCenter,
+                        'local_session_no' => $transactionData->local_session_no,
+                        'local_created_at' => toSqlDT($transactionData->local_created_at),
+                        'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                     ]);
 
                     $log = new TransactionLog();
                     $log->action = $status;
-                    $log->created_by = $this->userId;
-                    $log->entity_id = $transaction->center_id;
-                    $log->local_created_at = toSqlDT($transaction->local_created_at);
-                    $log->local_updated_at = toSqlDT($transaction->local_updated_at);
+                    $log->created_by = $request->user()->id;
+                    $log->entity_id = $transactionData->center_id;
+                    $log->local_created_at = $transaction->local_created_at;
+                    $log->local_updated_at = $transaction->local_updated_at;
                     $log->type =  $type;
-                    $log->center_name = $transaction->center_name;
+                    $log->center_name = $transactionData->center_name;
 
                     $transaction->log()->save($log);
 
-                    foreach ($transaction->details as $detailData) {
+                    foreach ($transactionArray['details'] as $detailArray) {
+
+                        $detailData = (object) $detailArray['detail'];
+
                         $detail = new TransactionDetail();
 
                         $detail->container_number = $detailData->container_number;
-                        $detail->created_by = $this->userId;
+                        $detail->created_by = $request->user()->id;
                         $detail->is_local = FALSE;
                         $detail->container_weight = $detailData->container_weight;
                         $detail->weight_unit = $detailData->weight_unit;
@@ -163,13 +169,19 @@ class MillOperativeController extends Controller
 
                         $transaction->details()->save($detail);
 
-                        foreach ($detailData->metas as $metaData) {
+                        foreach ($detailArray['metas'] as $metaArray) {
+                            $metaData = (object) $metaArray;
+
                             $meta = new Meta();
                             $meta->key = $metaData->key;
                             $meta->value = $metaData->value;
                             $detail->metas()->save($meta);
                         }
                     }
+
+                    $transaction->load(['details.metas']);
+
+                    $savedTransactions->push($transaction);
                 }
             }
             DB::commit();
@@ -177,7 +189,8 @@ class MillOperativeController extends Controller
             DB::rollback();
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
-        $allTransactions = $transactions;
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
+            'transactions' => $savedTransactions
+        ]);
     }
 }
