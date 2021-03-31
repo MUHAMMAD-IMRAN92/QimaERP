@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MillOperativeController extends Controller
 {
@@ -71,6 +72,14 @@ class MillOperativeController extends Controller
     }
     public function receiveCoffee(Request $request)
     {
+        Log::channel('dev')->debug($request->all());
+        return response()->json([
+            'message' => 'request is ok',
+            'status' => true,
+            'requst_data' => $request->all()
+        ], 200);
+
+
         $validator = validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -79,9 +88,6 @@ class MillOperativeController extends Controller
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
-
-      return response()->json(['requst_data'=> $request->all()]);
-
 
         // DB::beginTransaction();
         // try {
@@ -112,7 +118,7 @@ class MillOperativeController extends Controller
         //                 'local_created_at' => toSqlDT($transactionData->local_created_at),
         //                 'local_updated_at' => toSqlDT($transactionData->local_updated_at)
         //             ]);
-               
+
         //             foreach ($transactionData->details as $detailsData) {
         //                 $transactionDetails = new TransactionDetail();
         //                 $transactionDetails->container_number = $detailsData->container_number;
