@@ -82,6 +82,7 @@ class MillOperativeController extends Controller
         }
 
         Log::channel('dev')->debug($request->all());
+        
         return response()->json([
             'message' => 'request is ok',
             'status' => true,
