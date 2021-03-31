@@ -93,6 +93,7 @@ class MillOperativeController extends Controller
         }
 
       return response()->json(['requst_data'=> $request->all()]);
+    $name  ='imran';
 
         // DB::beginTransaction();
         // try {
