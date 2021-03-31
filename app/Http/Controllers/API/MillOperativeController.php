@@ -57,18 +57,6 @@ class MillOperativeController extends Controller
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
 
-            // $removeLocalId = explode("-", $transaction->batch_number);
-            // if ($removeLocalId[3] == '000') {
-            //     $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $transaction->batch_number)->first();
-            //     if ($FindParentTransactions) {
-            //         $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
-
-            //         foreach ($childTransaction as $key => $childTransactio) {
-            //             $childTransactio->is_parent = $transaction->transaction_id;
-            //         }
-            //     }
-            // }
-
             $data = [
                 'transaction' => $transaction,
                 'transactionDetails' => $transactionDetail,
