@@ -40,7 +40,7 @@ class MillOperativeController extends Controller
                 0
             )->with(['details' => function ($query) {
                 $query->where('container_status', 0)->with('metas');
-            }])->with('meta')
+            }])->with(['meta', 'child'])
             ->orderBy('transaction_id', 'desc')
             ->get();
 
@@ -56,6 +56,7 @@ class MillOperativeController extends Controller
             $transactionMata = $transaction->meta;
 
             $detailMetas = [];
+            $transactionChilds = [];
 
             foreach($transactionDetails as $detail){
                 foreach($detail->metas as $meta){
@@ -63,6 +64,10 @@ class MillOperativeController extends Controller
                 }
 
                 $detail->makeHidden('metas');
+            }
+
+            foreach($transaction->child as $child){
+                array_push($transactionChilds, $child);
             }
 
             $transaction->makeHidden('details');
@@ -73,7 +78,8 @@ class MillOperativeController extends Controller
                 'transaction' => $transaction,
                 'transactionDetails' => $transactionDetails,
                 'transactionMeta' => $transactionMata,
-                'detail_metas' => $detailMetas
+                'detail_metas' => $detailMetas,
+                'child_transactions' => $transactionChilds,
             ];
 
             array_push($allTransactions, $data);
