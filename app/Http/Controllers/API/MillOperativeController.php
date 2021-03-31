@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Container;
 use App\Meta;
 use App\Transaction;
 use App\TransactionLog;
@@ -64,7 +65,7 @@ class MillOperativeController extends Controller
                 $detail->makeHidden('metas');
             }
 
-            foreach($transaction->child as $child){
+            foreach ($transaction->child as $child) {
                 array_push($transactionChilds, $child);
             }
 
@@ -106,17 +107,10 @@ class MillOperativeController extends Controller
 
                 $transactionData = (object) $transactionArray['transaction'];
 
-                if ($transactionData->is_local == true && ($transactionData->sent_to == 17 || $transactionData->sent_to == 21)) {
+                if ($transactionData->is_local == true && ($transactionData->sent_to == 17)) {
 
-                    $status = '';
-                    $type = '';
-                    if ($transactionData->sent_to == 17) {
-                        $status = 'received';
-                        $type = 'received_by_mill';
-                    } elseif ($transactionData->sent_to == 21) {
-                        $status = 'created';
-                        $type = 'sent_to_market';
-                    }
+                    $status = 'received';
+                    $type = 'received_by_mill';
 
                     $transaction =  Transaction::create([
                         'batch_number' => $transactionData->batch_number,
@@ -156,6 +150,17 @@ class MillOperativeController extends Controller
 
                         $detailData = (object) $detailArray['detail'];
 
+                        $container = Container::where('container_number', $detailData->container_number)->first();
+
+                        if(!$container){
+                            $container = new Container();
+
+                            $container->container_number = $detailData->container_number;
+                            $container->container_type = '';
+                            $container->capacity = 100;
+                            $container->created_by = $request->user()->id;
+                        }
+
                         $detail = new TransactionDetail();
 
                         $detail->container_number = $detailData->container_number;
@@ -183,6 +188,8 @@ class MillOperativeController extends Controller
 
                     $savedTransactions->push($transaction);
                 }
+
+                
             }
             DB::commit();
         } catch (\PDOException $e) {

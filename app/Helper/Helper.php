@@ -64,13 +64,13 @@ function containerType()
             'user_role' => 0,
         ),
         6 => array(
-            'code' => 'GS',
-            'type' => 'Pre Defect removal Export Coffee (Size 1 and Size 2) bag',
+            'code' => 'GSA',
+            'type' => 'Pre Defect removal Export Coffee (Size 1) bag',
             'user_role' => 0,
         ),
         7 => array(
-            'code' => 'ES',
-            'type' => 'Defect Free Export coffee (Size 1 and Size 2) bag',
+            'code' => 'ESA',
+            'type' => 'Defect Free Export coffee (Size 1) bag',
             'user_role' => 0,
         ),
         8 => array(
@@ -115,7 +115,7 @@ function containerType()
         ),
         16 => array(
             'code' => 'VP',
-            'type' => '10kg Shipping Box',
+            'type' => '15kg Shipping Box',
             'user_role' => 0,
         ),
         17 => array(
@@ -130,10 +130,51 @@ function containerType()
         ),
         19 => array(
             'code' => 'SPS',
-            'type' => 'Special Processing',
+            'type' => 'Special Processed Sack',
             'user_role' => 6,
         ),
+        20 => array(
+            'code' => 'EB',
+            'type' => 'Elephent Beans Bag',
+            'user_role' => 0,
+        ),
+        21 => array(
+            'code' => 'SB',
+            'type' => 'Small Beans Bag',
+            'user_role' => 0,
+        ),
+        22 => array(
+            'code' => 'SGO',
+            'type' => 'Size 1 Green Coffee Bag',
+            'user_role' => 0,
+        ),
+        23 => array(
+            'code' => 'SGT',
+            'type' => 'Size 2 Green Coffee Bag',
+            'user_role' => 0,
+        ),
+        24 => array(
+            'code' => 'GSB',
+            'type' => 'Pre Defect removal Export Coffee (Size 2) bag',
+            'user_role' => 0,
+        ),
+        25 => array(
+            'code' => 'ESB',
+            'type' => 'Defect Free Export coffee (Size 2) bag',
+            'user_role' => 0,
+        ),
+        26 => array(
+            'code' => 'PDC',
+            'type' => 'Part Dry Cherry',
+            'user_role' => 0,
+        ),
+        27 => array(
+            'code' => 'PW',
+            'type' => 'Pallet',
+            'user_role' => 0,
+        ),
     );
+
     return $arr;
 }
 
