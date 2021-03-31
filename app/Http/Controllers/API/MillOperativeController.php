@@ -32,37 +32,48 @@ class MillOperativeController extends Controller
                 $q->whereIn('action', ['sent'])
                     ->whereIn('type', ['sent_to_mill']);
             })->whereHas(
-                'transactionDetail',
+                'details',
                 function ($q) {
                     $q->where('container_status', 0);
                 },
                 '>',
                 0
-            )->with(['transactionDetail' => function ($query) {
-                $query->where('container_status', 0);
-            }])->with('meta', 'child')
+            )->with(['details' => function ($query) {
+                $query->where('container_status', 0)->with('metas');
+            }])->with('meta')
             ->orderBy('transaction_id', 'desc')
             ->get();
 
         $allTransactions = array();
 
+        $transactionDetailMetas = [];
+
         foreach ($transactions as $transaction) {
 
-            $childTransaction = array();
-            $transactionDetail = $transaction->transactionDetail;
+            $transactionDetails = $transaction->details;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
 
-            $transaction->makeHidden('transactionDetail');
+            $detailMetas = [];
+
+            foreach($transactionDetails as $detail){
+                foreach($detail->metas as $meta){
+                    array_push($detailMetas, $meta);
+                }
+
+                $detail->makeHidden('metas');
+            }
+
+            $transaction->makeHidden('details');
             $transaction->makeHidden('log');
             $transaction->makeHidden('meta');
 
             $data = [
                 'transaction' => $transaction,
-                'transactionDetails' => $transactionDetail,
+                'transactionDetails' => $transactionDetails,
                 'transactionMeta' => $transactionMata,
-                'child_transactions' => $childTransaction,
+                'detail_metas' => $detailMetas
             ];
 
             array_push($allTransactions, $data);
@@ -73,7 +84,7 @@ class MillOperativeController extends Controller
     public function receiveCoffee(Request $request)
     {
         $validator = validator::make($request->all(), [
-            'transactions' => 'required',
+            'transactions' => 'required|array',
         ]);
 
         if ($validator->fails()) {
