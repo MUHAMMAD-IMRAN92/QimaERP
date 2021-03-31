@@ -9,8 +9,9 @@ use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -153,12 +154,23 @@ class MillOperativeController extends Controller
                         $container = Container::where('container_number', $detailData->container_number)->first();
 
                         if(!$container){
-                            $container = new Container();
+                            $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
 
+                            $containerDetail = Arr::first(containerType(), function($detail) use($containerCode) {
+                                return $detail['code'] == $containerCode;
+                            });
+
+                            if(!$containerDetail){
+                                throw new Exception('Container type not found.', 400);
+                            }
+
+                            $container = new Container();
                             $container->container_number = $detailData->container_number;
-                            $container->container_type = '';
+                            $container->container_type = $containerDetail['id'];
                             $container->capacity = 100;
                             $container->created_by = $request->user()->id;
+
+                            $container->save();
                         }
 
                         $detail = new TransactionDetail();
@@ -189,10 +201,10 @@ class MillOperativeController extends Controller
                     $savedTransactions->push($transaction);
                 }
 
-                
+
             }
             DB::commit();
-        } catch (\PDOException $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
