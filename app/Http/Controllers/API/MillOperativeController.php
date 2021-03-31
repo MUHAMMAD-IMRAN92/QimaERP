@@ -72,14 +72,6 @@ class MillOperativeController extends Controller
     }
     public function receiveCoffee(Request $request)
     {
-        Log::channel('dev')->debug($request->all());
-        return response()->json([
-            'message' => 'request is ok',
-            'status' => true,
-            'requst_data' => $request->all()
-        ], 200);
-
-
         $validator = validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -88,6 +80,13 @@ class MillOperativeController extends Controller
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+
+        Log::channel('dev')->debug($request->all());
+        return response()->json([
+            'message' => 'request is ok',
+            'status' => true,
+            'requst_data' => $request->all()
+        ], 200);
 
         // DB::beginTransaction();
         // try {
