@@ -424,15 +424,20 @@ class MillOperativeController extends Controller
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
 
-        $session = CoffeeSession::create([
-            'user_id' => $request->user()->user_id,
-            'local_session_id' => $savedTransactions->orderBy('transaction_id', 'desc')->first()->local_session_no,
-            'server_session_id' => $sessionNo
-        ]);
+        if($savedTransactions->last()) {
+            CoffeeSession::create([
+                'user_id' => $request->user()->user_id,
+                'local_session_id' => $savedTransactions->last()->local_session_no,
+                'server_session_id' => $sessionNo
+            ]);
+        } else {
+            $sessionNo--;
+        }
 
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
+            'session_no' => $sessionNo,
+            'count' => $savedTransactions->count(),
             'transactions' => $savedTransactions,
-            'session_no' => $session->server_session_id
         ]);
     }
 }
