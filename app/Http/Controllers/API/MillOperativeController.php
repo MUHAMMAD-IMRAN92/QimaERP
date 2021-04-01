@@ -436,7 +436,6 @@ class MillOperativeController extends Controller
 
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
             'session_no' => $sessionNo,
-            'count' => $savedTransactions->count(),
             'transactions' => $savedTransactions,
         ]);
     }
