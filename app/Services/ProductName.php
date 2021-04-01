@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Arr;
-
 class ProductName
 {
     private const PRODUCTS = [
@@ -53,5 +51,21 @@ class ProductName
         return collect(self::PRODUCTS)->map(function($product){
             return (object) $product;
         });
+    }
+
+    public static function market(){
+        return static::all()->where('id', '<=', 5);
+    }
+
+    public static function marketIds(){
+        return static::all()->where('id', '<=', 5)->pluck('id');
+    }
+
+    public static function sorting(){
+        return static::all()->where('id', '>=', 6);
+    }
+
+    public static function sortingIds(){
+        return static::all()->where('id', '>=', 6)->pluck('id');
     }
 }
