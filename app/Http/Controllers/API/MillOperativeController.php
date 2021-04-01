@@ -33,7 +33,7 @@ class MillOperativeController extends Controller
         $transactions = Transaction::where('is_parent', 0)
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent'])
-                    ->whereIn('type', ['sent_to_mill']);
+                    ->whereIn('type', ['sent_to_mill' , 'sent_to_market' , 'sent_to_sorting']);
             })->whereHas(
                 'details',
                 function ($q) {
@@ -255,7 +255,7 @@ class MillOperativeController extends Controller
                             'local_created_at' => toSqlDT($transactionData->local_created_at),
                             'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                         ]);
-    
+
                         $log = new TransactionLog();
                         $log->action = $status;
                         $log->created_by = $request->user()->user_id;
@@ -264,37 +264,37 @@ class MillOperativeController extends Controller
                         $log->local_updated_at = $transaction->local_updated_at;
                         $log->type =  $type;
                         $log->center_name = $transactionData->center_name;
-    
+
                         $transaction->log()->save($log);
-    
+
                         foreach ($transactionArray['details'] as $detailArray) {
-    
+
                             $detailData = (object) $detailArray['detail'];
-    
+
                             $container = Container::where('container_number', $detailData->container_number)->first();
-    
+
                             if (!$container) {
                                 $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
-    
+
                                 $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
                                     return $detail['code'] == $containerCode;
                                 });
-    
+
                                 if (!$containerDetail) {
                                     throw new Exception('Container type not found.', 400);
                                 }
-    
+
                                 $container = new Container();
                                 $container->container_number = $detailData->container_number;
                                 $container->container_type = $containerDetail['id'];
                                 $container->capacity = 100;
                                 $container->created_by = $request->user()->user_id;
-    
+
                                 $container->save();
                             }
-    
+
                             $detail = new TransactionDetail();
-    
+
                             $detail->container_number = $detailData->container_number;
                             $detail->created_by = $request->user()->user_id;
                             $detail->is_local = FALSE;
@@ -303,21 +303,21 @@ class MillOperativeController extends Controller
                             $detail->container_status = $detailData->container_status;
                             $detail->center_id = $detailData->center_id;
                             $detail->reference_id = $detailData->reference_id;
-    
+
                             $transaction->details()->save($detail);
-    
+
                             foreach ($detailArray['metas'] as $metaArray) {
                                 $metaData = (object) $metaArray;
-    
+
                                 $meta = new Meta();
                                 $meta->key = $metaData->key;
                                 $meta->value = $metaData->value;
                                 $detail->metas()->save($meta);
                             }
                         }
-    
+
                         $transaction->load(['details.metas']);
-    
+
                         $savedTransactions->push($transaction);
                     }
 
@@ -349,7 +349,7 @@ class MillOperativeController extends Controller
                             'local_created_at' => toSqlDT($transactionData->local_created_at),
                             'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                         ]);
-    
+
                         $log = new TransactionLog();
                         $log->action = $status;
                         $log->created_by = $request->user()->user_id;
@@ -358,37 +358,37 @@ class MillOperativeController extends Controller
                         $log->local_updated_at = $transaction->local_updated_at;
                         $log->type =  $type;
                         $log->center_name = $transactionData->center_name;
-    
+
                         $transaction->log()->save($log);
-    
+
                         foreach ($transactionArray['details'] as $detailArray) {
-    
+
                             $detailData = (object) $detailArray['detail'];
-    
+
                             $container = Container::where('container_number', $detailData->container_number)->first();
-    
+
                             if (!$container) {
                                 $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
-    
+
                                 $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
                                     return $detail['code'] == $containerCode;
                                 });
-    
+
                                 if (!$containerDetail) {
                                     throw new Exception('Container type not found.', 400);
                                 }
-    
+
                                 $container = new Container();
                                 $container->container_number = $detailData->container_number;
                                 $container->container_type = $containerDetail['id'];
                                 $container->capacity = 100;
                                 $container->created_by = $request->user()->user_id;
-    
+
                                 $container->save();
                             }
-    
+
                             $detail = new TransactionDetail();
-    
+
                             $detail->container_number = $detailData->container_number;
                             $detail->created_by = $request->user()->user_id;
                             $detail->is_local = FALSE;
@@ -397,25 +397,23 @@ class MillOperativeController extends Controller
                             $detail->container_status = $detailData->container_status;
                             $detail->center_id = $detailData->center_id;
                             $detail->reference_id = $detailData->reference_id;
-    
+
                             $transaction->details()->save($detail);
-    
+
                             foreach ($detailArray['metas'] as $metaArray) {
                                 $metaData = (object) $metaArray;
-    
+
                                 $meta = new Meta();
                                 $meta->key = $metaData->key;
                                 $meta->value = $metaData->value;
                                 $detail->metas()->save($meta);
                             }
                         }
-    
+
                         $transaction->load(['details.metas']);
-    
+
                         $savedTransactions->push($transaction);
                     }
-
-
                 }
             }
             DB::commit();
@@ -424,7 +422,7 @@ class MillOperativeController extends Controller
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
 
-        if($savedTransactions->last()) {
+        if ($savedTransactions->last()) {
             CoffeeSession::create([
                 'user_id' => $request->user()->user_id,
                 'local_session_id' => $savedTransactions->last()->local_session_no,
@@ -437,6 +435,7 @@ class MillOperativeController extends Controller
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
             'session_no' => $sessionNo,
             'transactions' => $savedTransactions,
+
         ]);
     }
 }
