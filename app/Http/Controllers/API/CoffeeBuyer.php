@@ -548,13 +548,17 @@ class CoffeeBuyer extends Controller
         }
 
 
-        $session = CoffeeSession::create([
-            'user_id' => $batch_numbers->batch->transactions[0]->transactions->created_by,
-            'local_session_id' => $batch_numbers->batch->transactions[0]->transactions->local_session_no,
-            'server_session_id' => $sessiondata + 1,
-        ]);
+        if($batch_numbers->batch->transactions[0]){
+            $session = CoffeeSession::create([
+                'user_id' => $request->user()->user_id,
+                'local_session_id' => $batch_numbers->batch->transactions[0]->transactions->local_session_no,
+                'server_session_id' => $sessiondata + 1,
+            ]);
 
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $session->server_session_id);
+            $sessiondata = $session->server_session_id + 1;
+        }
+
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $sessiondata);
         //        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
         //        return sendSuccess('Coffee was added Successfully', $currentBatch);
     }

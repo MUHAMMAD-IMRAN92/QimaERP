@@ -118,5 +118,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/product_names', 'API\ProductNameController');
         Route::get('/mill_operative_coffee', 'API\MillOperativeController@sendCoffee');
         Route::post('/mill_operative_coffee', 'API\MillOperativeController@receiveCoffee');
+
+        Route::get('so_coffee_sorting', 'API\SOCoffeeSortingController@getCoffee');
+        Route::post('so_coffee_sorting', 'API\SOCoffeeSortingController@sendCoffee');
+
+        Route::get('yo_local_market', 'API\YOLocalMarketController@getCoffee');
+        Route::post('yo_local_market', 'API\YOLocalMarketController@sendCoffee');
     });
 });
