@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Transaction;
 use Illuminate\Http\Request;
 
 class YOLocalMarketController extends Controller
 {
     public function getCoffee()
     {
-        return 'coffee is coming...';
+        $transactions = Transaction::where('sent_to' , 20)->with('details.metas')->get();
+        return $transactions;
     }
 
     public function sendCoffee(Request $request)
