@@ -33,7 +33,7 @@ class MillOperativeController extends Controller
         $transactions = Transaction::where('is_parent', 0)
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent'])
-                    ->whereIn('type', ['sent_to_mill' , 'sent_to_market' , 'sent_to_sorting']);
+                    ->whereIn('type', ['sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
             })->whereHas(
                 'details',
                 function ($q) {
@@ -134,7 +134,7 @@ class MillOperativeController extends Controller
                         'session_no' => $sessionNo,
                         'ready_to_milled' => $transactionData->ready_to_milled,
                         'is_in_process' => $transactionData->is_in_process,
-                        'is_update_center' => $transactionData->isUpdateCenter,
+                        'is_update_center' => $transactionData->is_update_center,
                         'local_session_no' => $transactionData->local_session_no,
                         'local_created_at' => toSqlDT($transactionData->local_created_at),
                         'local_updated_at' => toSqlDT($transactionData->local_updated_at)
@@ -189,6 +189,10 @@ class MillOperativeController extends Controller
                         $detail->reference_id = $detailData->reference_id;
 
                         $transaction->details()->save($detail);
+
+                        TransactionDetail::where('transaction_id', $transaction->reference_id)
+                            ->where('container_number', $detail->container_number)
+                            ->update(['container_status' => 1]);
 
                         foreach ($detailArray['metas'] as $metaArray) {
                             $metaData = (object) $metaArray;
@@ -250,7 +254,7 @@ class MillOperativeController extends Controller
                             'session_no' => $sessionNo,
                             'ready_to_milled' => $transactionData->ready_to_milled,
                             'is_in_process' => $transactionData->is_in_process,
-                            'is_update_center' => $transactionData->isUpdateCenter,
+                            'is_update_center' => $transactionData->is_update_center,
                             'local_session_no' => $transactionData->local_session_no,
                             'local_created_at' => toSqlDT($transactionData->local_created_at),
                             'local_updated_at' => toSqlDT($transactionData->local_updated_at)
@@ -344,7 +348,7 @@ class MillOperativeController extends Controller
                             'session_no' => $sessionNo,
                             'ready_to_milled' => $transactionData->ready_to_milled,
                             'is_in_process' => $transactionData->is_in_process,
-                            'is_update_center' => $transactionData->isUpdateCenter,
+                            'is_update_center' => $transactionData->is_update_center,
                             'local_session_no' => $transactionData->local_session_no,
                             'local_created_at' => toSqlDT($transactionData->local_created_at),
                             'local_updated_at' => toSqlDT($transactionData->local_updated_at)
