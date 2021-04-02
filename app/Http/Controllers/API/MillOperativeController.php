@@ -32,8 +32,8 @@ class MillOperativeController extends Controller
     {
         $transactions = Transaction::where('is_parent', 0)
             ->whereHas('log', function ($q) {
-                $q->whereIn('action', ['sent'])
-                    ->whereIn('type', ['sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
+                $q->whereIn('action', ['sent', 'received'])
+                    ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
             })->whereHas(
                 'details',
                 function ($q) {
