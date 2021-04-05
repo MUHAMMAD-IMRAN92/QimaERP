@@ -271,7 +271,7 @@ class MillOperativeController extends Controller
 
                         $transaction->log()->save($log);
 
-                        foreach ($transactionArray['details'] as $detailArray) {
+                        foreach ($marketDetails as $detailArray) {
 
                             $detailData = (object) $detailArray['detail'];
 
@@ -365,7 +365,7 @@ class MillOperativeController extends Controller
 
                         $transaction->log()->save($log);
 
-                        foreach ($transactionArray['details'] as $detailArray) {
+                        foreach ($sortingDetails as $detailArray) {
 
                             $detailData = (object) $detailArray['detail'];
 
