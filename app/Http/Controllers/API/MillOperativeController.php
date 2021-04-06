@@ -49,7 +49,6 @@ class MillOperativeController extends Controller
 
         $allTransactions = array();
 
-
         foreach ($transactions as $transaction) {
 
             $transactionDetails = $transaction->details;
@@ -208,8 +207,6 @@ class MillOperativeController extends Controller
 
                     $savedTransactions->push($transaction);
                 }
-
-
 
                 if ($transactionData->is_local == true && ($transactionData->sent_to == 21)) {
 
