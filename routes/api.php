@@ -115,7 +115,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::post('/received_yemen_operative_coffee', 'API\YemenOperativeController@receivedYemenOperative');
 
         //::Mill Operative
-        Route::get('/product_names', 'API\ProductNameController');
+        Route::get('/product_names', 'API\ProductController@index');
         Route::get('/mill_operative_coffee', 'API\MillOperativeController@sendCoffee');
         Route::post('/mill_operative_coffee', 'API\MillOperativeController@receiveCoffee');
         //For Sorting Coffee
