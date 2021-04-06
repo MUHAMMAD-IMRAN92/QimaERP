@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Meta extends Model
 {
-    protected $table = 'metas';
+    protected $table = 'transaction_detail_metas';
 
     protected $guarded = [];
 

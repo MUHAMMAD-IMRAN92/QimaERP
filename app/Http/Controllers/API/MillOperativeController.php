@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
-use App\CoffeeSession;
-use App\Container;
 use App\Meta;
+use Exception;
+use App\Product;
+use App\Container;
 use App\Transaction;
+use App\CoffeeSession;
 use App\TransactionLog;
 use App\TransactionDetail;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Services\ProductName;
-use Exception;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -100,6 +100,9 @@ class MillOperativeController extends Controller
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+
+        $marketIds = Product::market()->get(['id']);
+        $sortingIds = Product::sorting()->get(['id']);
 
         $sessionNo = CoffeeSession::max('server_session_id') + 1;
 
@@ -219,9 +222,9 @@ class MillOperativeController extends Controller
                             $metaData = (object) $metaArray;
 
                             if ($metaData->key == 'product_id') {
-                                if (ProductName::marketIds()->contains($metaData->value)) {
+                                if ($marketIds->contains($metaData->value)) {
                                     array_push($marketDetails, $detailArray);
-                                } elseif (ProductName::sortingIds()->contains($metaData->value)) {
+                                } elseif ($sortingIds->contains($metaData->value)) {
                                     array_push($sortingDetails, $detailArray);
                                 }
                             }
