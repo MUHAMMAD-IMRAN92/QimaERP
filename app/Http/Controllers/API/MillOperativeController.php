@@ -126,6 +126,12 @@ class MillOperativeController extends Controller
                     $status = 'received';
                     $type = 'received_by_mill';
 
+                    $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
+
+                    if(!$batchCheck){
+                        throw new Exception("Batch Number [{$transactionData->batch_number}] does not exists.");
+                    }
+
                     $transaction =  Transaction::create([
                         'batch_number' => $transactionData->batch_number,
                         'is_parent' => $transactionData->is_parent,
@@ -222,6 +228,11 @@ class MillOperativeController extends Controller
                 if ($transactionData->is_local == true && ($transactionData->sent_to == 21)) {
 
 
+                    $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
+
+                    if(!$batchCheck){
+                        throw new Exception("Batch Number [{$transactionData->batch_number}] does not exists.");
+                    }
                     /**
                      * Here we are sorting the transaction detials of incoming request
                      * into two parts for sending to two different managers
