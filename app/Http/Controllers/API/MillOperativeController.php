@@ -348,7 +348,7 @@ class MillOperativeController extends Controller
                         // End of batch number Transaction
 
                         // Start of lot number Transaction
-                        $lotNumber = lotGen(Lot::max('id') + 1);
+                        $lotNumber = lotNumberGen();
 
                         $parentBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
 
@@ -578,8 +578,8 @@ class MillOperativeController extends Controller
                         }
                         // End of batch number Transaction
 
-                        // // Start of lot number Transaction
-                        $lotNumber = lotGen(Lot::max('id') + 1);
+                        // Start of lot number Transaction
+                        $lotNumber = lotNumberGen();
 
                         $parentBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
 
