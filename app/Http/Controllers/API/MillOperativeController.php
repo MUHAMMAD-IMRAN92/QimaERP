@@ -459,7 +459,11 @@ class MillOperativeController extends Controller
                                 $detail->metas()->save($meta);
                             }
 
-                            $detailView = TransactionDetailProduct::where('transaction_detail_id', 531)->first();
+                            $detailView = TransactionDetailProduct::where('transaction_detail_id', $detail->transaction_detail_id)->first();
+
+                            if(!$detailView){
+                                throw new Exception('Product does not exists.');
+                            }
 
                             $product = $detailView->product;
 
@@ -686,8 +690,12 @@ class MillOperativeController extends Controller
                                 $detail->metas()->save($meta);
                             }
 
-                            $detailView = TransactionDetailProduct::where('transaction_detail_id', 531)->first();
+                            $detailView = TransactionDetailProduct::where('transaction_detail_id', $detail->transaction_detail_id)->first();
 
+                            if(!$detailView){
+                                throw new Exception('Product does not exists.');
+                            }
+                            
                             $product = $detailView->product;
 
                             if (!$product) {
