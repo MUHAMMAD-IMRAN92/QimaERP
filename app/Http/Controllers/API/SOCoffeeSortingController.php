@@ -19,6 +19,7 @@ class SOCoffeeSortingController extends Controller
     {
         $transactions = Transaction::where('is_parent', 0)
             ->where('sent_to', 21)
+            ->where('transaction_type', 3)
             ->whereHas(
                 'details',
                 function ($q) {

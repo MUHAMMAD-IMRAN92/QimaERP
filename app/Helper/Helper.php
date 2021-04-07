@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
 
 function timeago($ptime)
@@ -244,4 +245,9 @@ function getFileExtensionForBase64($file)
 function toSqlDT($string)
 {
     return Carbon::parse($string)->toDateTimeString();
+}
+
+function lotGen($maxId)
+{
+    return 'LOT-' . now()->year . '-' . Str::padLeft($maxId, 4, 0);
 }
