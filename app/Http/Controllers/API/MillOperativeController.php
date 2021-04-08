@@ -356,6 +356,7 @@ class MillOperativeController extends Controller
 
                         $batch->batch_number = $lotNumber;
                         $batch->created_by = $request->user()->user_id;
+                        $batch->local_code = $lotNumber;
                         $batch->is_server_id = true;
                         $batch->is_mixed = $parentBatch->is_mixed;
                         $batch->season_id = $parentBatch->season_id;
@@ -587,6 +588,7 @@ class MillOperativeController extends Controller
 
                         $batch->batch_number = $lotNumber;
                         $batch->created_by = $request->user()->user_id;
+                        $batch->local_code = $lotNumber;
                         $batch->is_server_id = true;
                         $batch->is_mixed = $parentBatch->is_mixed;
                         $batch->season_id = $parentBatch->season_id;
