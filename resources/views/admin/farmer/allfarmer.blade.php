@@ -17,12 +17,13 @@
             <div class="row mb-2">
 
                 <div class="col-sm-6">
-                    <h1>All Farmer
+                    <h1>FARMERS
                         <a href="{{URL::to('')}}/admin/add_farmer" class="btn btn-add rounded-circle"> 
                             <i class="fas fa-user-plus add-client-icon"></i>
                         </a>
                     </h1>
                 </div>
+                <hr>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -58,13 +59,20 @@
                             <table id="allfarmer" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th>S#</th> 
-                                        <th>Farmer Code</th>
-                                        <th>Farmer Name</th>
-                                        <th>Village Code</th>
-                                        <th>Farmer Cnic</th>
-                                        <th>Status</th>
-                                        <th>Action</th> 
+                                        <th>ID</th> 
+                                         <th>Name</th>
+                                        <th>Code</th>
+                                        <th>First Purchase</th>
+                                        <th>Last Purchase</th>
+                                        <th>Governorate</th>
+                                        <th>Region</th>
+                                        <th>Village</th>
+                                        <th>Quantity</th> 
+                                        <th>Coffe Bought</th> 
+                                        <th>Reward</th> 
+                                        <th>Money Owed</th> 
+                                        <th>Cupping Score</th> 
+                                        <th>Cup Profile</th> 
                                     </tr>
                                 </thead>
 
@@ -84,7 +92,7 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-<script>
+{{-- <script>
     let base_path
             = '<?= asset('/') ?>';
     $(document).ready(function () {
@@ -156,5 +164,5 @@
         }
     });
 
-</script>
+</script> --}}
 @endsection
