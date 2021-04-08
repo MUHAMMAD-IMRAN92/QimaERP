@@ -25,6 +25,22 @@ class MillOperativeController extends Controller
 {
     private $app_lang;
 
+    private $normalProductBatchNumbers = [
+        1 => 'GR1-HSK-00-000',
+        2 => 'GR2-HSK-00-000',
+        3 => 'GR3-HSK-00-000',
+        4 => 'GR2-CFE-00-000',
+        5 => 'GR2-CFE-00-000'
+    ];
+
+    private $specialProductBatchNumbers = [
+        1 => 'GR1-HSK-99-999',
+        2 => 'GR2-HSK-99-999',
+        3 => 'GR3-HSK-99-999',
+        4 => 'GR2-CFE-99-999',
+        5 => 'GR2-CFE-99-999'
+    ];
+
     public function __construct(Request $request)
     {
         set_time_limit(0);
@@ -128,7 +144,7 @@ class MillOperativeController extends Controller
 
                     $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
 
-                    if(!$batchCheck){
+                    if (!$batchCheck) {
                         throw new Exception("Batch Number [{$transactionData->batch_number}] does not exists.");
                     }
 
@@ -230,14 +246,14 @@ class MillOperativeController extends Controller
 
                     $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
 
-                    if(!$batchCheck){
+                    if (!$batchCheck) {
                         throw new Exception("Batch Number [{$transactionData->batch_number}] does not exists.");
                     }
                     /**
                      * Here we are sorting the transaction detials of incoming request
                      * into two parts for sending to two different managers
                      */
-                    $marketDetails = [];
+                    $marketDetails = collect();
                     $sortingDetails = [];
 
                     foreach ($transactionArray['details'] as $detailArray) {
@@ -247,246 +263,13 @@ class MillOperativeController extends Controller
 
                             if ($metaData->key == 'product_id') {
                                 if ($marketIds->contains($metaData->value)) {
-                                    array_push($marketDetails, $detailArray);
+                                    $detailArray['product_id'] = $metaData->value;
+                                    $marketDetails->push($detailArray);
                                 } elseif ($sortingIds->contains($metaData->value)) {
                                     array_push($sortingDetails, $detailArray);
                                 }
                             }
                         }
-                    }
-
-                    // Saving the market coffee
-                    if (!empty($marketDetails)) {
-
-                        $status = 'sent';
-                        $type = 'sent_to_market';
-                        $sent_to = 20;
-
-                        // Start of batch number Transaction
-                        $transaction =  Transaction::create([
-                            'batch_number' => $transactionData->batch_number,
-                            'is_parent' => $transactionData->is_parent,
-                            'created_by' => $request->user()->user_id,
-                            'is_local' => FALSE,
-                            'local_code' => $transactionData->local_code,
-                            'is_mixed' => $transactionData->is_mixed,
-                            'transaction_type' => $transactionData->transaction_type,
-                            'reference_id' => $transactionData->reference_id,
-                            'transaction_status' => $status,
-                            'is_new' => 0,
-                            'sent_to' => $sent_to,
-                            'is_server_id' => 1,
-                            'is_sent' => $transactionData->is_sent,
-                            'session_no' => $sessionNo,
-                            'ready_to_milled' => $transactionData->ready_to_milled,
-                            'is_in_process' => $transactionData->is_in_process,
-                            'is_update_center' => $transactionData->is_update_center,
-                            'local_session_no' => $transactionData->local_session_no,
-                            'local_created_at' => toSqlDT($transactionData->local_created_at),
-                            'local_updated_at' => toSqlDT($transactionData->local_updated_at)
-                        ]);
-
-                        $log = new TransactionLog();
-                        $log->action = $status;
-                        $log->created_by = $request->user()->user_id;
-                        $log->entity_id = $transactionData->center_id;
-                        $log->local_created_at = $transaction->local_created_at;
-                        $log->local_updated_at = $transaction->local_updated_at;
-                        $log->type =  $type;
-                        $log->center_name = $transactionData->center_name;
-
-                        $transaction->log()->save($log);
-
-                        foreach ($marketDetails as $detailArray) {
-
-                            $detailData = (object) $detailArray['detail'];
-
-                            $container = Container::where('container_number', $detailData->container_number)->first();
-
-                            if (!$container) {
-                                $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
-
-                                $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
-                                    return $detail['code'] == $containerCode;
-                                });
-
-                                if (!$containerDetail) {
-                                    throw new Exception('Container type not found.', 400);
-                                }
-
-                                $container = new Container();
-                                $container->container_number = $detailData->container_number;
-                                $container->container_type = $containerDetail['id'];
-                                $container->capacity = 100;
-                                $container->created_by = $request->user()->user_id;
-
-                                $container->save();
-                            }
-
-                            $detail = new TransactionDetail();
-
-                            $detail->container_number = $detailData->container_number;
-                            $detail->created_by = $request->user()->user_id;
-                            $detail->is_local = FALSE;
-                            $detail->container_weight = $detailData->container_weight;
-                            $detail->weight_unit = $detailData->weight_unit;
-                            $detail->container_status = $detailData->container_status;
-                            $detail->center_id = $detailData->center_id;
-                            $detail->reference_id = $detailData->reference_id;
-
-                            $transaction->details()->save($detail);
-
-                            foreach ($detailArray['metas'] as $metaArray) {
-                                $metaData = (object) $metaArray;
-
-                                $meta = new Meta();
-                                $meta->key = $metaData->key;
-                                $meta->value = $metaData->value;
-                                $detail->metas()->save($meta);
-                            }
-                        }
-                        // End of batch number Transaction
-
-                        // Start of lot number Transaction
-                        $lotNumber = lotNumberGen();
-
-                        $parentBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
-
-                        $batch = new BatchNumber();
-
-                        $batch->batch_number = $lotNumber;
-                        $batch->created_by = $request->user()->user_id;
-                        $batch->local_code = $lotNumber;
-                        $batch->is_server_id = true;
-                        $batch->is_mixed = $parentBatch->is_mixed;
-                        $batch->season_id = $parentBatch->season_id;
-                        $batch->season_status = $parentBatch->season_status;
-
-                        $batch->save();
-
-                        $lotTransaction =  Transaction::create([
-                            'batch_number' => $batch->batch_number,
-                            'is_parent' => $transactionData->is_parent,
-                            'created_by' => $request->user()->user_id,
-                            'is_local' => FALSE,
-                            'local_code' => $transactionData->local_code,
-                            'is_mixed' => $transactionData->is_mixed,
-                            'transaction_type' => 3,
-                            'reference_id' => $transactionData->reference_id,
-                            'transaction_status' => $status,
-                            'is_new' => 0,
-                            'sent_to' => $sent_to,
-                            'is_server_id' => 1,
-                            'is_sent' => $transactionData->is_sent,
-                            'session_no' => $sessionNo,
-                            'ready_to_milled' => $transactionData->ready_to_milled,
-                            'is_in_process' => $transactionData->is_in_process,
-                            'is_update_center' => $transactionData->is_update_center,
-                            'local_session_no' => $transactionData->local_session_no,
-                            'local_created_at' => toSqlDT($transactionData->local_created_at),
-                            'local_updated_at' => toSqlDT($transactionData->local_updated_at)
-                        ]);
-
-                        $log = new TransactionLog();
-                        $log->action = $status;
-                        $log->created_by = $request->user()->user_id;
-                        $log->entity_id = $transactionData->center_id;
-                        $log->local_created_at = $transaction->local_created_at;
-                        $log->local_updated_at = $transaction->local_updated_at;
-                        $log->type =  $type;
-                        $log->center_name = $transactionData->center_name;
-
-                        $lotTransaction->log()->save($log);
-
-                        $lot = new Lot();
-                        $lot->lot_number = $lotNumber;
-                        $lot->transaction_id = $lotTransaction->transaction_id;
-                        $lot->user_id = $request->user()->user_id;
-                        $lot->is_mixed = $lotTransaction->is_mixed;
-                        $lot->transaction_type = 3;
-                        $lot->refference_ids = 0;
-                        $lot->sent_to = $lotTransaction->sent_to;
-                        $lot->is_in_process = $lotTransaction->is_in_process;
-                        $lot->session_no = $lotTransaction->session_no;
-                        $lot->is_sent = $lotTransaction->is_sent;
-
-                        $lot->save();
-
-                        foreach ($marketDetails as $detailArray) {
-
-                            $detailData = (object) $detailArray['detail'];
-
-                            $container = Container::where('container_number', $detailData->container_number)->first();
-
-                            if (!$container) {
-                                $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
-
-                                $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
-                                    return $detail['code'] == $containerCode;
-                                });
-
-                                if (!$containerDetail) {
-                                    throw new Exception('Container type not found.', 400);
-                                }
-
-                                $container = new Container();
-                                $container->container_number = $detailData->container_number;
-                                $container->container_type = $containerDetail['id'];
-                                $container->capacity = 100;
-                                $container->created_by = $request->user()->user_id;
-
-                                $container->save();
-                            }
-
-                            $detail = new TransactionDetail();
-
-                            $detail->container_number = $detailData->container_number;
-                            $detail->created_by = $request->user()->user_id;
-                            $detail->is_local = FALSE;
-                            $detail->container_weight = $detailData->container_weight;
-                            $detail->weight_unit = $detailData->weight_unit;
-                            $detail->container_status = $detailData->container_status;
-                            $detail->center_id = $detailData->center_id;
-                            $detail->reference_id = $detailData->reference_id;
-
-                            $lotTransaction->details()->save($detail);
-
-                            foreach ($detailArray['metas'] as $metaArray) {
-                                $metaData = (object) $metaArray;
-
-                                $meta = new Meta();
-                                $meta->key = $metaData->key;
-                                $meta->value = $metaData->value;
-                                $detail->metas()->save($meta);
-                            }
-
-                            $detailView = TransactionDetailProduct::where('transaction_detail_id', $detail->transaction_detail_id)->first();
-
-                            if(!$detailView){
-                                throw new Exception('Product does not exists.');
-                            }
-
-                            $product = $detailView->product;
-
-                            if (!$product) {
-                                throw new Exception('Product not found in meta.');
-                            }
-
-                            $lotDetail = new LotDetail();
-
-                            $lotDetail->lot_id = $lot->id;
-                            $lotDetail->product_id = $product->id;
-                            $lotDetail->container_number = $detail->container_number;
-                            $lotDetail->weight = $detail->container_weight;
-                            $lotDetail->weight_unit = $detail->weight_unit;
-
-                            $lot->details()->save($lotDetail);
-                        }
-                        // End of lot number Transaction
-
-                        $lotTransaction->load(['details.metas']);
-
-                        $savedTransactions->push($lotTransaction);
                     }
 
                     if (!empty($sortingDetails)) {
@@ -579,31 +362,29 @@ class MillOperativeController extends Controller
                         }
                         // End of batch number Transaction
 
-                        // Start of lot number Transaction
-                        $lotNumber = lotNumberGen();
+                        // End of lot number Transaction
 
-                        $parentBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
+                        $transaction->load(['details.metas']);
 
-                        $batch = new BatchNumber();
+                        $savedTransactions->push($transaction);
+                    }
 
-                        $batch->batch_number = $lotNumber;
-                        $batch->created_by = $request->user()->user_id;
-                        $batch->local_code = $lotNumber;
-                        $batch->is_server_id = true;
-                        $batch->is_mixed = $parentBatch->is_mixed;
-                        $batch->season_id = $parentBatch->season_id;
-                        $batch->season_status = $parentBatch->season_status;
+                    // Saving the market coffee
+                    if (!empty($marketDetails)) {
 
-                        $batch->save();
+                        $status = 'sent';
+                        $type = 'sent_to_market';
+                        $sent_to = 20;
 
-                        $lotTransaction =  Transaction::create([
-                            'batch_number' => $batch->batch_number,
+                        // Start of batch number Transaction
+                        $transaction =  Transaction::create([
+                            'batch_number' => $transactionData->batch_number,
                             'is_parent' => $transactionData->is_parent,
                             'created_by' => $request->user()->user_id,
                             'is_local' => FALSE,
                             'local_code' => $transactionData->local_code,
                             'is_mixed' => $transactionData->is_mixed,
-                            'transaction_type' => 3,
+                            'transaction_type' => 2,
                             'reference_id' => $transactionData->reference_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
@@ -628,21 +409,7 @@ class MillOperativeController extends Controller
                         $log->type =  $type;
                         $log->center_name = $transactionData->center_name;
 
-                        $lotTransaction->log()->save($log);
-
-                        $lot = new Lot();
-                        $lot->lot_number = $lotNumber;
-                        $lot->transaction_id = $lotTransaction->transaction_id;
-                        $lot->user_id = $request->user()->user_id;
-                        $lot->is_mixed = $lotTransaction->is_mixed;
-                        $lot->transaction_type = 3;
-                        $lot->refference_ids = 0;
-                        $lot->sent_to = $lotTransaction->sent_to;
-                        $lot->is_in_process = $lotTransaction->is_in_process;
-                        $lot->session_no = $lotTransaction->session_no;
-                        $lot->is_sent = $lotTransaction->is_sent;
-
-                        $lot->save();
+                        $transaction->log()->save($log);
 
                         foreach ($marketDetails as $detailArray) {
 
@@ -681,7 +448,7 @@ class MillOperativeController extends Controller
                             $detail->center_id = $detailData->center_id;
                             $detail->reference_id = $detailData->reference_id;
 
-                            $lotTransaction->details()->save($detail);
+                            $transaction->details()->save($detail);
 
                             foreach ($detailArray['metas'] as $metaArray) {
                                 $metaData = (object) $metaArray;
@@ -691,34 +458,143 @@ class MillOperativeController extends Controller
                                 $meta->value = $metaData->value;
                                 $detail->metas()->save($meta);
                             }
+                        }
+                        // End of batch number Transaction
 
-                            $detailView = TransactionDetailProduct::where('transaction_detail_id', $detail->transaction_detail_id)->first();
+                        // Start of lot number Transaction
 
-                            if(!$detailView){
-                                throw new Exception('Product does not exists.');
+                        $marketDetailsGrouped = $marketDetails->groupBy('product_id');
+
+                        foreach ($marketDetailsGrouped as $product_id => $detailArrays) {
+
+                            $special = false;
+
+                            $batchNumbers = $special ? $this->specialProductBatchNumbers : $this->normalProductBatchNumbers;
+
+                            $lotTransaction =  Transaction::create([
+                                'batch_number' => $batchNumbers[$product_id],
+                                'is_parent' => $transactionData->is_parent,
+                                'created_by' => $request->user()->user_id,
+                                'is_local' => FALSE,
+                                'local_code' => $transactionData->local_code,
+                                'is_mixed' => $transactionData->is_mixed,
+                                'transaction_type' => 3,
+                                'reference_id' => $transaction->transaction_id,
+                                'transaction_status' => $status,
+                                'is_new' => 0,
+                                'sent_to' => $sent_to,
+                                'is_server_id' => 1,
+                                'is_sent' => $transactionData->is_sent,
+                                'session_no' => $sessionNo,
+                                'ready_to_milled' => $transactionData->ready_to_milled,
+                                'is_in_process' => $transactionData->is_in_process,
+                                'is_update_center' => $transactionData->is_update_center,
+                                'local_session_no' => $transactionData->local_session_no,
+                                'local_created_at' => toSqlDT($transactionData->local_created_at),
+                                'local_updated_at' => toSqlDT($transactionData->local_updated_at)
+                            ]);
+
+                            $log = new TransactionLog();
+                            $log->action = $status;
+                            $log->created_by = $request->user()->user_id;
+                            $log->entity_id = $transactionData->center_id;
+                            $log->local_created_at = $transaction->local_created_at;
+                            $log->local_updated_at = $transaction->local_updated_at;
+                            $log->type =  $type;
+                            $log->center_name = $transactionData->center_name;
+
+                            $lotTransaction->log()->save($log);
+
+                            $lot = new Lot();
+                            $lot->lot_number = $lotTransaction->batch_number;
+                            $lot->transaction_id = $lotTransaction->transaction_id;
+                            $lot->user_id = $request->user()->user_id;
+                            $lot->is_mixed = $lotTransaction->is_mixed;
+                            $lot->transaction_type = 3;
+                            $lot->refference_ids = 0;
+                            $lot->sent_to = $lotTransaction->sent_to;
+                            $lot->is_in_process = $lotTransaction->is_in_process;
+                            $lot->session_no = $lotTransaction->session_no;
+                            $lot->is_sent = $lotTransaction->is_sent;
+
+                            $lot->save();
+
+                            foreach ($detailArrays as $detailArray) {
+
+                                $detailData = (object) $detailArray['detail'];
+
+                                $container = Container::where('container_number', $detailData->container_number)->first();
+
+                                if (!$container) {
+                                    $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
+
+                                    $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
+                                        return $detail['code'] == $containerCode;
+                                    });
+
+                                    if (!$containerDetail) {
+                                        throw new Exception('Container type not found.', 400);
+                                    }
+
+                                    $container = new Container();
+                                    $container->container_number = $detailData->container_number;
+                                    $container->container_type = $containerDetail['id'];
+                                    $container->capacity = 100;
+                                    $container->created_by = $request->user()->user_id;
+
+                                    $container->save();
+                                }
+
+                                $detail = new TransactionDetail();
+
+                                $detail->container_number = $detailData->container_number;
+                                $detail->created_by = $request->user()->user_id;
+                                $detail->is_local = FALSE;
+                                $detail->container_weight = $detailData->container_weight;
+                                $detail->weight_unit = $detailData->weight_unit;
+                                $detail->container_status = $detailData->container_status;
+                                $detail->center_id = $detailData->center_id;
+                                $detail->reference_id = $detailData->reference_id;
+
+                                $lotTransaction->details()->save($detail);
+
+                                foreach ($detailArray['metas'] as $metaArray) {
+                                    $metaData = (object) $metaArray;
+
+                                    $meta = new Meta();
+                                    $meta->key = $metaData->key;
+                                    $meta->value = $metaData->value;
+                                    $detail->metas()->save($meta);
+                                }
+
+                                $detailView = TransactionDetailProduct::where('transaction_detail_id', $detail->transaction_detail_id)->first();
+
+                                if (!$detailView) {
+                                    throw new Exception('Product does not exists.');
+                                }
+
+                                $product = $detailView->product;
+
+                                if (!$product) {
+                                    throw new Exception('Product not found in meta.');
+                                }
+
+                                $lotDetail = new LotDetail();
+
+                                $lotDetail->lot_id = $lot->id;
+                                $lotDetail->product_id = $product->id;
+                                $lotDetail->container_number = $detail->container_number;
+                                $lotDetail->weight = $detail->container_weight;
+                                $lotDetail->weight_unit = $detail->weight_unit;
+
+                                $lot->details()->save($lotDetail);
                             }
-                            
-                            $product = $detailView->product;
 
-                            if (!$product) {
-                                throw new Exception('Product not found in meta.');
-                            }
+                            $lotTransaction->load(['details.metas']);
 
-                            $lotDetail = new LotDetail();
-
-                            $lotDetail->lot_id = $lot->id;
-                            $lotDetail->product_id = $product->id;
-                            $lotDetail->container_number = $detail->container_number;
-                            $lotDetail->weight = $detail->container_weight;
-                            $lotDetail->weight_unit = $detail->weight_unit;
-
-                            $lot->details()->save($lotDetail);
+                            $savedTransactions->push($lotTransaction);
                         }
                         // End of lot number Transaction
-
-                        $lotTransaction->load(['details.metas']);
-
-                        $savedTransactions->push($lotTransaction);
                     }
                 }
             }
