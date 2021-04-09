@@ -5,18 +5,44 @@ namespace App\Http\Controllers;
 use App\Farmer;
 use App\Village;
 use App\FileSystem;
+use App\Governerate;
+use App\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class FarmerController extends Controller
 {
 
     public function index()
     {
-        $data['farmer'] = Farmer::all();
-        return view('admin.farmer.allfarmer', $data);
+
+        $governorates = Governerate::all();
+        $regions = Region::all();
+        $villages = Village::all();
+        $farmers = Farmer::all();
+        $farmers =  $farmers->map(function ($farmer) {
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->region_title = $farmer->getRegion()->region_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->village_title = $farmer->getVillage()->village_title;
+            return $farmer;
+        });
+
+
+        return view('admin.farmer.allfarmer', [
+            'farmers' => $farmers ,
+            'governorates' =>$governorates ,
+            'regions' => $regions ,
+            'villages' => $villages
+        ]);
     }
 
     function getFarmerAjax(Request $request)
@@ -212,5 +238,59 @@ class FarmerController extends Controller
     public function delete(Request $request, $id)
     {
         Farmer::where('farmer_id', $id)->delete();
+    }
+    public function farmerProfile(Farmer  $farmer)
+    {
+        $governorate = $farmer->getgovernerate();
+        $region = $farmer->getRegion();
+        $village = $farmer->getVillage();
+        $image =
+            $farmer->governerate_title =   $governorate->governerate_title;
+        $farmer->region_title = $region->region_title;
+        $farmer->village_title = $village->village_title;
+
+        return view('admin.farmer.farmer_profile', [
+            'farmer' => $farmer
+        ]);
+    }
+    public function filterByDate(Request $request)
+    {
+        $farmers = Farmer::whereBetween('created_at', [$request->from, $request->to])
+            ->get();
+        $farmers =  $farmers->map(function ($farmer) {
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->region_title = $farmer->getRegion()->region_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->village_title = $farmer->getVillage()->village_title;
+            return $farmer;
+        });
+
+
+        return view('admin.farmer.views.index', compact('farmers'))->render();
+    }
+    public function fiterByRegion(Request $request)
+    {
+        $farmers = Farmer::all();
+        $farmers =  $farmers->map(function ($farmer) {
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->region_title = $farmer->getRegion()->region_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->village_title = $farmer->getVillage()->village_title;
+            return $farmer;
+        });
+       $farmers = $farmers->where();
+
+
+        return view('admin.farmer.views.index', compact('farmers'))->render();
     }
 }

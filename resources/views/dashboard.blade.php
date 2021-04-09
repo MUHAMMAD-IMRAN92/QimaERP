@@ -22,6 +22,14 @@
             background-color: purple !important;
         }
 
+        a {
+
+            color: rgb(0, 0, 0);
+            background-color: transparent;
+            text-decoration: none;
+
+        }
+
     </style>
 
     <script>
@@ -29,10 +37,10 @@
             $("#to").on('change', function() {
                 let from = $("#from").val();
                 let to = $("#to").val();
-               
+
                 $.ajax({
                     url: "{{ url('admin/dashboard') }}",
-                    data:  $('#data-form').serialize(),
+                    data: $('#data-form').serialize(),
                     success: function(data) {
                         alert(data);
                     }
@@ -61,7 +69,7 @@
             <hr>
             <div class="row ml-2">
                 <strong>
-                    <h5>Date Filter</h5>
+                    <b>Date Filter</b>
                 </strong>
             </div>
             <div class="row ml-2">
@@ -73,11 +81,15 @@
                 </form>
             </div>
             <div class="row ml-2 ">
-                <span> <a href="">TODAY</a></span> | <span> <a href=""> YESTERDAY</a></span> | <span> <a href=""> WEEK TO
-                        DATE </a></span> | <span> <a href="">MONTH TO DATE</a></span> | <span> <a href="">
-                        LAST MONTH</a></span> | <span> <a href="">YEAR TO DATE</a></span> | <span> <a href=""> 2021
-                        SEASON</a></span> | <span> <a href=""> 2021 SEASON</a></span> | <span> <a href=""> 2020
-                        SEASON</a></span>| <span> <a href=""> ALL TIME</a></span>
+                <span class="ml-2"> <a href="">TODAY</a></span> &nbsp | <span class="ml-2"> <a href=""> YESTERDAY</a></span>
+                &nbsp | <span class="ml-2"> <a href=""> WEEK TO
+                        DATE </a></span> &nbsp | <span class="ml-2"> <a href="">MONTH TO DATE</a></span> &nbsp | <span
+                    class="ml-2"> <a href="">
+                        LAST MONTH</a></span> &nbsp | <span class="ml-2"> <a href="">YEAR TO DATE</a></span> &nbsp | <span
+                    class="ml-2"> <a href=""> 2021
+                        SEASON</a></span> &nbsp | <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp | <span
+                    class="ml-2"> <a href=""> 2020
+                        SEASON</a></span> &nbsp | <span class="ml-2"> <a href=""> ALL TIME</a></span>
             </div>
             <hr>
             <div class="row ml-2">
@@ -421,149 +433,6 @@
         </div>
         <!-- /.content-header -->
 
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <!-- Small boxes (Stat box) -->
-                <div class="row">
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>{{ App\Farmer::count() }}</h3>
 
-                                <p>Farmers</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-bag"></i>
-                            </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                {{-- <h3>53<sup style="font-size: 20px">%</sup></h3> --}}
-                                <h3>{{ App\Village::count() }}</h3>
-                                <p>Villages</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
-                            </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3>{{ App\User::count() }}</h3>
-
-                                <p>User </p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person-add"></i>
-                            </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>65</h3>
-
-                                <p>Unique Visitors</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
-                            </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                </div>
-                <!-- /.row -->
-
-            </div><!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title"><b>Farmer</b> </h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 10px">Sr#</th>
-                                            <th>Farmer Code</th>
-                                            <th>Farmer Name</th>
-                                            <th>Village Code</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($farmer as $key => $row)
-                                            <tr>
-                                                <td>{{ $key + 1 }}</td>
-                                                <td>{{ $row->farmer_code }}</td>
-                                                <td>{{ $row->farmer_name }}</td>
-                                                <td>{{ $row->village_code }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-
-
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title"><b>Village</b> </h3>
-                            </div>
-                            <!-- /card-header -->
-                            <div class="card-body">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 10px">Sr#</th>
-                                            <th>Village Code</th>
-                                            <th>Village Name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($village as $key => $row)
-                                            <tr>
-                                                <td>{{ $key + 1 }}</td>
-                                                <td>{{ $row->village_code }}</td>
-                                                <td>{{ $row->village_title }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-            </div>
-        </section>
     </div>
 @endsection

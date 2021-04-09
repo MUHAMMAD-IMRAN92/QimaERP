@@ -62,14 +62,17 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('getfarmer', 'FarmerController@getFarmerAjax');
         Route::get('editfarmer/{id}', 'FarmerController@edit');
         Route::post('updatefarmer', 'FarmerController@update');
-
         Route::get('statusupdate/{id}', 'FarmerController@updatestatus');
-
-
         Route::get('deletefarmer/{id}', 'FarmerController@delete');
+        Route::get('filter_farmers', 'FarmerController@filterByDate');
+        Route::get('filter_farmers_by_region', 'FarmerController@fiterByRegion');
+
+        
 
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
+        Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
+       
         //BatchNumber Controller
         Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');
         Route::get('getbatch', 'BatchNumberController@getbatchAjax');

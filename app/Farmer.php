@@ -21,7 +21,34 @@ class Farmer extends Model
     {
         return $this->belongsTo(Governerate::class, 'governerate_code', 'governerate_code');
     }
+    public function getgovernerate()
+    {
+        $farmer_code = $this->farmer_code;
+        $governoratCode = explode('-', $this->farmer_code)[0];
+        $governerate = Governerate::where('governerate_code', $governoratCode)->first(['governerate_title']);
+        return $governerate;
+    }
 
+    
+    public function getVillage()
+    {
+        $village_code = $this->village_code;
+
+
+        $village = Village::where('village_code', $village_code)->first(['village_title']);
+
+        return $village;
+    }
+
+    public function getRegion()
+    {
+        $region = $this->farmer_code;
+        $regionCode = explode('-', $this->farmer_code)[0] . '-' . explode('-', $this->farmer_code)[1];
+
+        $region = Region::where('region_code', $regionCode)->first(['region_title']);
+
+        return $region;
+    }
     public function region()
     {
         return $this->belongsTo(Region::class, 'region_code', 'region_code');
