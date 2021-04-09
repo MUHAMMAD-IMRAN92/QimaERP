@@ -8,6 +8,7 @@ use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -116,6 +117,11 @@ class YemenOperativeController extends Controller
             foreach ($receivedTransactions as $key => $sentTransaction) {
                 if (isset($sentTransaction->transaction) && $sentTransaction->transaction && $sentTransaction->transaction->is_local == TRUE) {
 
+                    $parentTransaction = Transaction::where('transaction_id', $sentTransaction->transaction->transaction_id)->first();
+
+                    if(!$parentTransaction){
+                        throw new Exception('Parent Transaction not found.');
+                    }
                     if($sentTransaction->transaction->sent_to == 13){
                         $transaction = Transaction::create([
                             'batch_number' => $sentTransaction->transaction->batch_number,
@@ -125,6 +131,7 @@ class YemenOperativeController extends Controller
                             'is_local' => FALSE,
                             'transaction_type' => $sentTransaction->transaction->transaction_type,
                             'local_code' => $sentTransaction->transaction->local_code,
+                            'is_special' => $parentTransaction->is_special,
                             'transaction_status' => 'received',
                             'reference_id' => $sentTransaction->transaction->reference_id,
                             'is_server_id' => 1,
@@ -177,6 +184,7 @@ class YemenOperativeController extends Controller
                             'is_local' => FALSE,
                             'transaction_type' => $sentTransaction->transaction->transaction_type,
                             'local_code' => $sentTransaction->transaction->local_code,
+                            'is_special' => $parentTransaction->is_special,
                             'transaction_status' => 'sent',
                             'reference_id' => $sentTransaction->transaction->reference_id,
                             'is_server_id' => 1,
@@ -223,7 +231,7 @@ class YemenOperativeController extends Controller
             }
 
             DB::commit();
-        } catch (\PDOException $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }

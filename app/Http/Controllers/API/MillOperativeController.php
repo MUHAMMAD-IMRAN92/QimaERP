@@ -160,6 +160,7 @@ class MillOperativeController extends Controller
                         'created_by' => $request->user()->user_id,
                         'is_local' => FALSE,
                         'local_code' => $transactionData->local_code,
+                        'is_special' => $parentTransaction->is_special,
                         'is_mixed' => $transactionData->is_mixed,
                         'transaction_type' => $transactionData->transaction_type,
                         'reference_id' => $parentTransaction->transaction_id,
@@ -290,9 +291,10 @@ class MillOperativeController extends Controller
                             'created_by' => $request->user()->user_id,
                             'is_local' => FALSE,
                             'local_code' => $transactionData->local_code,
+                            'is_special' => $parentTransaction->is_special,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => $transactionData->transaction_type,
-                            'reference_id' => $transactionData->reference_id,
+                            'reference_id' => $parentTransaction->transaction_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sent_to,
@@ -389,6 +391,7 @@ class MillOperativeController extends Controller
                             'created_by' => $request->user()->user_id,
                             'is_local' => FALSE,
                             'local_code' => $transactionData->local_code,
+                            'is_special' => $parentTransaction->is_special,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => 2,
                             'reference_id' => $parentTransaction->transaction_id,
@@ -502,6 +505,7 @@ class MillOperativeController extends Controller
                                 'created_by' => $request->user()->user_id,
                                 'is_local' => FALSE,
                                 'local_code' => $transactionData->local_code,
+                                'is_special' => $transaction->is_special,
                                 'is_mixed' => $transactionData->is_mixed,
                                 'transaction_type' => 3,
                                 'reference_id' => $transaction->transaction_id,
@@ -541,6 +545,7 @@ class MillOperativeController extends Controller
                             $lot->is_in_process = $lotTransaction->is_in_process;
                             $lot->session_no = $lotTransaction->session_no;
                             $lot->is_sent = $lotTransaction->is_sent;
+                            $log->is_special = $lotTransaction->is_special;
 
                             $lot->save();
 

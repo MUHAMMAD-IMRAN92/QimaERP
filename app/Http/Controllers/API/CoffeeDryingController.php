@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
-use Illuminate\Http\Request;
-use App\TransactionDetail;
-use App\TransactionLog;
-use App\Transaction;
-use App\LoginUser;
-use App\User;
-use App\CenterUser;
-use App\MetaTransation;
-use App\Environment;
-use Carbon\Carbon;
 use DB;
+use App\User;
+use Exception;
+use App\LoginUser;
+use Carbon\Carbon;
+use App\CenterUser;
+use App\Environment;
+use App\Transaction;
+use App\MetaTransation;
+use App\TransactionLog;
+use App\TransactionDetail;
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CoffeeDryingController extends Controller
 {
@@ -104,6 +106,12 @@ class CoffeeDryingController extends Controller
                         $updateCoffees->update();
                     }
                 } else {
+
+                    $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
+
+                    if(!$parentTransaction){
+                        throw new Exception('Parent Transtion is not found.');
+                    }
                     if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 10) {
                         //::Recevied coffee transations
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
@@ -111,6 +119,7 @@ class CoffeeDryingController extends Controller
                             if ($receivedTransaction->transaction->is_server_id == FALSE) {
                                 $trans = FALSE;
                             }
+
                             $transaction = Transaction::create([
                                 'batch_number' => $receivedTransaction->transaction->batch_number,
                                 'is_parent' => $receivedTransaction->transaction->is_parent,
@@ -119,6 +128,7 @@ class CoffeeDryingController extends Controller
                                 'is_local' => FALSE,
                                 'transaction_type' => 1,
                                 'local_code' => $receivedTransaction->transaction->local_code,
+                                'is_special' => $parentTransaction->is_special,
                                 'transaction_status' => 'received',
                                 'reference_id' => $receivedTransaction->transaction->reference_id,
                                 'is_server_id' => 1,
@@ -180,6 +190,7 @@ class CoffeeDryingController extends Controller
                                 'is_local' => FALSE,
                                 'transaction_type' => 2,
                                 'local_code' => $receivedTransaction->transaction->local_code,
+                                'is_special' => $parentTransaction->is_special,
                                 'transaction_status' => 'sent',
                                 'reference_id' => $receivedTransaction->transaction->reference_id,
                                 'is_server_id' => 1,
@@ -245,6 +256,7 @@ class CoffeeDryingController extends Controller
                                 'is_local' => FALSE,
                                 'transaction_type' => 2,
                                 'local_code' => $receivedTransaction->transaction->local_code,
+                                'is_special' => $parentTransaction->is_special,
                                 'transaction_status' => 'sent',
                                 'reference_id' => $receivedTransId,
                                 'is_server_id' => 1,
@@ -311,6 +323,7 @@ class CoffeeDryingController extends Controller
                                 'is_local' => FALSE,
                                 'transaction_type' => 2,
                                 'local_code' => $receivedTransaction->transaction->local_code,
+                                'is_special' => $parentTransaction->is_special,
                                 'transaction_status' => 'sent',
                                 'reference_id' => $receivedTransId,
                                 'is_server_id' => 1,
@@ -374,6 +387,7 @@ class CoffeeDryingController extends Controller
                                 'is_local' => FALSE,
                                 'transaction_type' => 2,
                                 'local_code' => $receivedTransaction->transaction->local_code,
+                                'is_special' => $parentTransaction->is_special,
                                 'transaction_status' => 'sent',
                                 'reference_id' => $receivedTransId,
                                 'is_server_id' => 1,
@@ -424,10 +438,10 @@ class CoffeeDryingController extends Controller
                 }
             }
             DB::commit();
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             DB::rollback();
 
-            return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
+            return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
 
         $allTransactions = array();
