@@ -136,6 +136,12 @@ class MillOperativeController extends Controller
 
                 $transactionData = (object) $transactionArray['transaction'];
 
+                $parentTransaction = Transaction::where('transaction_id', $transactionData->transaction_id)->first();
+
+                if (!$parentTransaction) {
+                    throw new Exception('Parent Transaction does not exists');
+                }
+
                 // This is the recieved cofee
                 if ($transactionData->is_local == true && ($transactionData->sent_to == 17)) {
 
@@ -156,7 +162,7 @@ class MillOperativeController extends Controller
                         'local_code' => $transactionData->local_code,
                         'is_mixed' => $transactionData->is_mixed,
                         'transaction_type' => $transactionData->transaction_type,
-                        'reference_id' => $transactionData->reference_id,
+                        'reference_id' => $parentTransaction->transaction_id,
                         'transaction_status' => $status,
                         'is_new' => 0,
                         'sent_to' => $transactionData->sent_to,
@@ -385,7 +391,7 @@ class MillOperativeController extends Controller
                             'local_code' => $transactionData->local_code,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => 2,
-                            'reference_id' => $transactionData->reference_id,
+                            'reference_id' => $parentTransaction->transaction_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sent_to,
