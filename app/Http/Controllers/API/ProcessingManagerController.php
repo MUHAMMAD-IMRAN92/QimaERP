@@ -120,7 +120,7 @@ class ProcessingManagerController extends Controller
                         'is_mixed' => $sentTransaction->transaction->is_mixed,
                         'created_by' => $sentTransaction->transaction->created_by,
                         'is_local' => FALSE,
-                        'is_special' => true,
+                        'is_special' => $isSpecial,
                         'transaction_type' => 2,
                         'local_code' => $sentTransaction->transaction->local_code,
                         'transaction_status' => 'sent',
