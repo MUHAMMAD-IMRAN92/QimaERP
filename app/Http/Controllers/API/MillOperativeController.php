@@ -136,7 +136,7 @@ class MillOperativeController extends Controller
 
                 $transactionData = (object) $transactionArray['transaction'];
 
-                $parentTransaction = Transaction::where('transaction_id', $transactionData->transaction_id)->first();
+                $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
 
                 if (!$parentTransaction) {
                     throw new Exception('Parent Transaction does not exists');
@@ -163,7 +163,7 @@ class MillOperativeController extends Controller
                         'is_special' => $parentTransaction->is_special,
                         'is_mixed' => $transactionData->is_mixed,
                         'transaction_type' => $transactionData->transaction_type,
-                        'reference_id' => $parentTransaction->transaction_id,
+                        'reference_id' => $transactionData->reference_id,
                         'transaction_status' => $status,
                         'is_new' => 0,
                         'sent_to' => $transactionData->sent_to,

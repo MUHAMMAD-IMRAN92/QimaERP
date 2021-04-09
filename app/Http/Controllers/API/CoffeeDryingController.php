@@ -107,10 +107,10 @@ class CoffeeDryingController extends Controller
                     }
                 } else {
 
-                    $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
+                    $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
 
                     if(!$parentTransaction){
-                        throw new Exception('Parent Transtion is not found.');
+                        throw new Exception('Parent Transaction is not found.');
                     }
                     if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 10) {
                         //::Recevied coffee transations

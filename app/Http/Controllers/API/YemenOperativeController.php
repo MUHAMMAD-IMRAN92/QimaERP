@@ -117,7 +117,7 @@ class YemenOperativeController extends Controller
             foreach ($receivedTransactions as $key => $sentTransaction) {
                 if (isset($sentTransaction->transaction) && $sentTransaction->transaction && $sentTransaction->transaction->is_local == TRUE) {
 
-                    $parentTransaction = Transaction::where('transaction_id', $sentTransaction->transaction->transaction_id)->first();
+                    $parentTransaction = Transaction::where('transaction_id', $sentTransaction->transaction->reference_id)->first();
 
                     if(!$parentTransaction){
                         throw new Exception('Parent Transaction not found.');
