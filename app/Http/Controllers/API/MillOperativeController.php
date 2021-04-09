@@ -476,11 +476,7 @@ class MillOperativeController extends Controller
 
                         foreach ($marketDetailsGrouped as $product_id => $detailArrays) {
 
-                            $special = false;
-
-                            if (isset($transactionData->is_special) && $transaction->is_special) {
-                                $special = true;
-                            }
+                            $special = $parentTransaction->is_special;
 
                             $batchNumbers = $special ? $this->specialProductBatchNumbers : $this->normalProductBatchNumbers;
 
