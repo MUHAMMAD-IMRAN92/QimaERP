@@ -469,10 +469,29 @@ class MillOperativeController extends Controller
 
                             $special = false;
 
+                            if (isset($transactionData->is_special) && $transaction->is_special) {
+                                $special = true;
+                            }
+
                             $batchNumbers = $special ? $this->specialProductBatchNumbers : $this->normalProductBatchNumbers;
 
+                            $hardcodeBatchNumber = $batchNumbers[$product_id];
+
+                            $oldBatch = BatchNumber::where('batch_number', $transactionData->batch_number)->first();
+
+                            $batch = BatchNumber::firstOrCreate(
+                                ['batch_number' => $hardcodeBatchNumber],
+                                [
+                                    'created_by' => $request->user()->user_id,
+                                    'local_code' => $hardcodeBatchNumber,
+                                    'is_server_id' => 1,
+                                    'season_id' => $oldBatch->season_id,
+                                    'season_status' => $oldBatch->season_status,
+                                ]
+                            );
+
                             $lotTransaction =  Transaction::create([
-                                'batch_number' => $batchNumbers[$product_id],
+                                'batch_number' => $batch->batch_number,
                                 'is_parent' => $transactionData->is_parent,
                                 'created_by' => $request->user()->user_id,
                                 'is_local' => FALSE,
