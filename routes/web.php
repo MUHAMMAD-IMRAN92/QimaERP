@@ -67,6 +67,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('filter_farmers', 'FarmerController@filterByDate');
         Route::get('filter_farmers_by_region', 'FarmerController@fiterByRegion');
         Route::get('filter_villages', 'FarmerController@fiterVillages');
+        Route::get('farmer_by_villages', 'FarmerController@farmerByVillages');
+
 
 
         

@@ -92,13 +92,30 @@
                         let html =
                             ' <option value="0" selected disabled>Select Village</option>';
                         for (let [key, element] of Object.entries(data.villages)) {
-                            html += '<option value="' + element.id + '">' + element
+                            html += '<option value="' + element.village_id + '">' + element
                                 .village_title + '</option>';
                         }
+                        console.log(data.region);
 
                         $('#village_dropdown').append(html);
 
-                        //    alert(data);
+
+                    }
+                });
+            });
+            $('#village_dropdown').on('change', function(e) {
+                // let from = $('#regions_dropdown').val();
+                let from = e.target.value;
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_villages') }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+
+                    },
+                    success: function(data) {
+                        $('#famerstable').html(data);
+                        console.log(data);
                     }
                 });
             });

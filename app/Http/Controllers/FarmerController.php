@@ -296,17 +296,40 @@ class FarmerController extends Controller
     }
     public function fiterVillages(Request $request)
     {
-        $id = $request->from; 
+        $id = $request->from;
         $regionCode = Region::where('region_id', $id)->first()->region_code;
         $regionCode = explode('-', $regionCode)[1];
-       
+
         $villages = Village::all();
         $regVillage = $villages->filter(function ($village) use ($regionCode) {
             return explode('-', $village->village_code)[1] == $regionCode;
         });
-       
+
         return response()->json([
-            'villages' => $regVillage ,
+            'villages' => $regVillage,
+
         ]);
+    }
+    public function farmerByVillages(Request $request)
+    {
+        $id = $request->from;
+        $villageCode = Village::where('village_id', $id)->first()->village_code;
+
+        $farmers = Farmer::where('village_code', $villageCode)->get();
+
+
+        $farmers =  $farmers->map(function ($farmer) {
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->region_title = $farmer->getRegion()->region_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->village_title = $farmer->getVillage()->village_title;
+            return $farmer;
+        });
+        return view('admin.farmer.views.index', compact('farmers'))->render();
     }
 }
