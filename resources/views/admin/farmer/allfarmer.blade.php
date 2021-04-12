@@ -37,18 +37,68 @@
             $('#to').on('change', function() {
                 let from = $('#from').val();
                 let to = $('#to').val();
-           
+
                 $.ajax({
-                    url: "{{ url('admin/filter_farmers') }}" ,
-                    type: "GET" ,
+                    url: "{{ url('admin/filter_farmers') }}",
+                    type: "GET",
                     data: {
-                        'from': from ,
+                        'from': from,
                         'to': to
                     },
-                   success: function(data) {
-                         
-                          $('#famerstable').html(data);
-                    console.log(data);
+                    success: function(data) {
+
+                        $('#famerstable').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#governorate_dropdown').on('change', function(e) {
+                // let from = $('#governorate_dropdown').val();
+                let from = e.target.value;
+                $.ajax({
+                    url: "{{ url('admin/filter_farmers_by_region') }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+
+                    },
+                    success: function(data) {
+                        $('#regions_dropdown').empty();
+
+                        let html =
+                            ' <option value="0" selected disabled>Select Region</option>';
+                        for (let [key, element] of Object.entries(data)) {
+                            html += '<option value="' + element.region_id + '">' + element
+                                .region_title + '</option>';
+                        }
+
+                        $('#regions_dropdown').append(html);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#regions_dropdown').on('change', function(e) {
+                // let from = $('#regions_dropdown').val();
+                let from = e.target.value;
+                $.ajax({
+                    url: "{{ url('admin/filter_villages') }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+
+                    },
+                    success: function(data) {
+                        $('#village_dropdown').empty();
+                        let html =
+                            ' <option value="0" selected disabled>Select Village</option>';
+                        for (let [key, element] of Object.entries(data.villages)) {
+                            html += '<option value="' + element.id + '">' + element
+                                .village_title + '</option>';
+                        }
+
+                        $('#village_dropdown').append(html);
+
+                        //    alert(data);
                     }
                 });
             });
@@ -96,8 +146,7 @@
         <br>
         <div class="row ml-2 blacklink ">
             <span class="ml-2"> <a href="">TODAY</a></span> &nbsp |
-            <span class="ml-2"> <a href=""> YESTERDAY</a></span>
-            &nbsp |
+            <span class="ml-2"> <a href=""> YESTERDAY</a></span> &nbsp |
             <span class="ml-2"> <a href=""> WEEK TO DATE </a></span> &nbsp |
             <span class="ml-2"> <a href="">MONTH TO DATE</a></span> &nbsp |
             <span class="ml-2"> <a href=""> LAST MONTH</a></span> &nbsp |
@@ -116,21 +165,24 @@
         <div class="row">
             <div class="col-md-12">
                 <b class="ml-2"><a href=""> All Regions</a></b> |
-                Governrate <select name="" id="">
+                Governrate <select name="" id="governorate_dropdown">
+                    <option value="0" selected disabled>Select Governrate</option>
                     @foreach ($governorates as $governorate)
                         <option value="{{ $governorate->governerate_id }}">{{ $governorate->governerate_title }}
                         </option>
                     @endforeach
 
                 </select>
-                Sub Region <select name="" id="">
+                Sub Region <select name="" id="regions_dropdown">
+                    <option value="0" selected disabled>Select Region</option>
                     @foreach ($regions as $region)
-                        <option value="{{ $region->region_title }}">{{ $region->region_title }}</option>
+                        <option value="{{ $region->region_id }}">{{ $region->region_title }}</option>
                     @endforeach
                 </select>
-                Village <select name="" id="">
+                Village <select name="" id="village_dropdown">
+                    <option value="0" selected disabled>Select Village</option>
                     @foreach ($villages as $village)
-                        <option value="{{ $village->village_title }}">{{ $village->village_title }}</option>
+                        <option value="{{ $village->village_id }}">{{ $village->village_title }}</option>
                     @endforeach
                 </select>
             </div>
@@ -156,7 +208,7 @@
                         @endif
                         <!-- /.card -->
 
-                        <div class="card" >
+                        <div class="card">
                             <!-- /.card-header -->
                             <div class="table-responsive" id="famerstable">
                                 <table class="table" id="myTable">

@@ -38,9 +38,9 @@ class FarmerController extends Controller
 
 
         return view('admin.farmer.allfarmer', [
-            'farmers' => $farmers ,
-            'governorates' =>$governorates ,
-            'regions' => $regions ,
+            'farmers' => $farmers,
+            'governorates' => $governorates,
+            'regions' => $regions,
             'villages' => $villages
         ]);
     }
@@ -273,24 +273,40 @@ class FarmerController extends Controller
 
         return view('admin.farmer.views.index', compact('farmers'))->render();
     }
+
     public function fiterByRegion(Request $request)
     {
-        $farmers = Farmer::all();
-        $farmers =  $farmers->map(function ($farmer) {
-            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-            return $farmer;
-        });
-        $farmers = $farmers->map(function ($farmer) {
-            $farmer->region_title = $farmer->getRegion()->region_title;
-            return $farmer;
-        });
-        $farmers = $farmers->map(function ($farmer) {
-            $farmer->village_title = $farmer->getVillage()->village_title;
-            return $farmer;
-        });
-       $farmers = $farmers->where();
+        $id = $request->from;
+        $governorateCode = Governerate::where('governerate_id', $id)->first()->governerate_code;
 
 
-        return view('admin.farmer.views.index', compact('farmers'))->render();
+
+        $regions = Region::all();
+
+
+
+
+
+        $govRegions = $regions->filter(function ($region) use ($governorateCode) {
+            return explode('-', $region->region_code)[0] == $governorateCode;
+        });
+
+
+        return  $govRegions;
+    }
+    public function fiterVillages(Request $request)
+    {
+        $id = $request->from; 
+        $regionCode = Region::where('region_id', $id)->first()->region_code;
+        $regionCode = explode('-', $regionCode)[1];
+       
+        $villages = Village::all();
+        $regVillage = $villages->filter(function ($village) use ($regionCode) {
+            return explode('-', $village->village_code)[1] == $regionCode;
+        });
+       
+        return response()->json([
+            'villages' => $regVillage ,
+        ]);
     }
 }

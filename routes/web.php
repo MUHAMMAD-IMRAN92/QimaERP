@@ -66,6 +66,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('deletefarmer/{id}', 'FarmerController@delete');
         Route::get('filter_farmers', 'FarmerController@filterByDate');
         Route::get('filter_farmers_by_region', 'FarmerController@fiterByRegion');
+        Route::get('filter_villages', 'FarmerController@fiterVillages');
+
 
         
 
