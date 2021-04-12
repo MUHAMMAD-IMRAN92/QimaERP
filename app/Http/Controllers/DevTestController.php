@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Region;
 use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -18,11 +19,9 @@ class DevTestController extends Controller
     {
         $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv1';
         abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route.');
-
-        $result = Artisan::call('db:seed');
-
+        
         return response()->json([
-            'result' => $result
+            'message' => 'Hello Dev'
         ]);
     }
 }
