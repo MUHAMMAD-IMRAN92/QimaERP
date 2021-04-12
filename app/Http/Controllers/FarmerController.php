@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Farmer;
+use App\Region;
 use App\Village;
 use App\FileSystem;
 use App\Governerate;
-use App\Region;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class FarmerController extends Controller
 {
@@ -331,5 +332,40 @@ class FarmerController extends Controller
             return $farmer;
         });
         return view('admin.farmer.views.index', compact('farmers'))->render();
+    }
+    public function famerByDate(Request $request)
+    {
+        $date = $request->date;
+        if ($date == 'today') {
+            $mytime = Carbon::now()->toDateTimeString();
+        } 
+        elseif ($date == 'yesterday') {
+            $mytime = Carbon::now()->subDays(30)->toDateTimeString();
+                
+        }
+        return $mytime;
+        $farmers = Farmer::where('created_at', $mytime)->get();
+        $governorates = Governerate::all();
+        $regions = Region::all();
+        $villages = Village::all();
+        $farmers =  $farmers->map(function ($farmer) {
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->region_title = $farmer->getRegion()->region_title;
+            return $farmer;
+        });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->village_title = $farmer->getVillage()->village_title;
+            return $farmer;
+        });
+        return view('admin.farmer.allfarmer', [
+            'farmers' => $farmers,
+            'governorates' => $governorates,
+            'regions' => $regions,
+            'villages' => $villages
+
+        ]);
     }
 }

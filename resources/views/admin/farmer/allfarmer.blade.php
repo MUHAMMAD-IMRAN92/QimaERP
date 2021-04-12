@@ -162,16 +162,22 @@
         </div>
         <br>
         <div class="row ml-2 blacklink ">
-            <span class="ml-2"> <a href="">TODAY</a></span> &nbsp |
-            <span class="ml-2"> <a href=""> YESTERDAY</a></span> &nbsp |
-            <span class="ml-2"> <a href=""> WEEK TO DATE </a></span> &nbsp |
-            <span class="ml-2"> <a href="">MONTH TO DATE</a></span> &nbsp |
-            <span class="ml-2"> <a href=""> LAST MONTH</a></span> &nbsp |
-            <span class="ml-2"> <a href="">YEAR TO DATE</a></span> &nbsp |
-            <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-            <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-            <span class="ml-2"> <a href=""> 2020 SEASON</a></span> &nbsp |
-            <span class="ml-2"> <a href=""> ALL TIME</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
+            &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}"> WEEK TO DATE </a></span>
+            &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">MONTH TO DATE</a></span>
+            &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST MONTH</a></span>
+            &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">YEAR TO DATE</a></span>
+            &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'year')) }}"> 2021 SEASON</a></span>
+            &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020 SEASON</a></span>
+            &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}"> ALL TIME</a></span>
         </div>
         <hr>
         <div class="row ml-2">
