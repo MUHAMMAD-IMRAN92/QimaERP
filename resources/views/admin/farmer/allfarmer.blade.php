@@ -173,11 +173,11 @@
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">YEAR TO DATE</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'year')) }}"> 2021 SEASON</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021 SEASON</a></span>
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020 SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}"> ALL TIME</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
         </div>
         <hr>
         <div class="row ml-2">
