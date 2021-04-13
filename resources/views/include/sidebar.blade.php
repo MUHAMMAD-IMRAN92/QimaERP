@@ -172,6 +172,15 @@
                              </p>
                          </a>
                      </li>
+                     <li class="nav-item" @if ($segment == 'allfarmer') class="active" @endif>
+                        <a href="{{ URL::to('') }}/admin/allcoffeebuyer" class="nav-link ">
+                            <i class="nav-icon fas fa-user"></i>
+                            <p>
+                                Coffee Buyer
+
+                            </p>
+                        </a>
+                    </li>
                      @hasrole('Super Admin')
                      <li class="nav-item" @if ($segment == 'allbatchnumber') class="active" @endif>
                          <a href="{{ URL::to('') }}/admin/allbatchnumber" class="nav-link ">

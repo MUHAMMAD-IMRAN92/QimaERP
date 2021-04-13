@@ -268,7 +268,7 @@
                                               @if ($farmer->picture_id == null)
                                                    <td> <img  class="famerimg" src="{{ asset('public/dist/img/farmericon.png') }}" alt=""></td>
                                               @else
-                                              <td> <img  class="famerimg" src="{{ asset('public/storage/image/' . $farmer->image) }}"  alt=""></td>
+                                              <td> <img  class="famerimg" src="{{ asset('public/storage/images/' . $farmer->image) }}"  alt=""></td>
                                               @endif
                                                
                                                 <td>{{ $farmer->farmer_id }}</td>
