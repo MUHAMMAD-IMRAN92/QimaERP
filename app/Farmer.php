@@ -29,7 +29,7 @@ class Farmer extends Model
         return $governerate;
     }
 
-    
+
     public function getVillage()
     {
         $village_code = $this->village_code;
@@ -67,5 +67,15 @@ class Farmer extends Model
     public function idcardImage()
     {
         return $this->belongsTo(FileSystem::class, 'idcard_picture_id', 'file_id');
+    }
+    public function getImage()
+    {
+        $imageName = null;
+
+        if ($file = FileSystem::where('file_id', $this->picture_id)->first()) {
+            $imageName = $file->user_file_name;
+        }
+
+        return $imageName;
     }
 }

@@ -74,7 +74,7 @@
 
 
             <div class="row  margin-left anchor">
-                <span class="ml-2"> <a href="">EDIT INFORMATION</a></span> &nbsp |
+                <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">EDIT INFORMATION</a></span> &nbsp |
                 <span class="ml-2"> <a href=""> ADD CROPSTER REPORT</a></span> &nbsp |
                 <span class="ml-2"> <a href=""> OVERRIDE PRICE </a></span> &nbsp |
                 <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span> &nbsp |
@@ -84,8 +84,15 @@
             <hr>
             <div class="row">
                 <div class="col-md-4">
-                    <img src="" class="ml-5" alt=""
-                        style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;">
+                    @if ($farmer->picture_id == null)
+                        <td> <img class="famerimg" src="{{ asset('public/dist/img/farmericon.png') }}"
+                                style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;" alt=""></td>
+                    @else
+                        <td> <img class="famerimg"
+                                style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
+                                src="{{ asset('public/storage/image/'. $farmer->image) }}" alt=" no img"></td>
+                    @endif
+
                 </div>
                 <div class="col-md-8">
                     <table class="table table-borderless" id="farmerTable">

@@ -36,7 +36,10 @@ class FarmerController extends Controller
             $farmer->village_title = $farmer->getVillage()->village_title;
             return $farmer;
         });
-
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->image = $farmer->getImage();
+            return $farmer;
+        });
 
         return view('admin.farmer.allfarmer', [
             'farmers' => $farmers,
@@ -240,16 +243,15 @@ class FarmerController extends Controller
     {
         Farmer::where('farmer_id', $id)->delete();
     }
-    public function farmerProfile(Farmer  $farmer)
+    public function farmerProfile(Farmer $farmer)
     {
         $governorate = $farmer->getgovernerate();
         $region = $farmer->getRegion();
         $village = $farmer->getVillage();
-        $image =
-            $farmer->governerate_title =   $governorate->governerate_title;
+        $farmer->governerate_title =   $governorate->governerate_title;
         $farmer->region_title = $region->region_title;
         $farmer->village_title = $village->village_title;
-
+        $farmer->image = $farmer->getImage();
         return view('admin.farmer.farmer_profile', [
             'farmer' => $farmer
         ]);
@@ -271,6 +273,10 @@ class FarmerController extends Controller
             return $farmer;
         });
 
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->image = $farmer->getImage();
+            return $farmer;
+        });
 
         return view('admin.farmer.views.index', compact('farmers'))->render();
     }
@@ -331,6 +337,10 @@ class FarmerController extends Controller
             $farmer->village_title = $farmer->getVillage()->village_title;
             return $farmer;
         });
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->image = $farmer->getImage();
+            return $farmer;
+        });
         return view('admin.farmer.views.index', compact('farmers'))->render();
     }
     public function famerByDate(Request $request)
@@ -354,6 +364,10 @@ class FarmerController extends Controller
             });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->image = $farmer->getImage();
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [
@@ -381,6 +395,10 @@ class FarmerController extends Controller
                 $farmer->village_title = $farmer->getVillage()->village_title;
                 return $farmer;
             });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->image = $farmer->getImage();
+                return $farmer;
+            });
             return view('admin.farmer.allfarmer', [
                 'farmers' => $farmers,
                 'governorates' => $governorates,
@@ -396,7 +414,7 @@ class FarmerController extends Controller
             $year = $date->year;
 
             $farmers = Farmer::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
-           
+
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -412,6 +430,10 @@ class FarmerController extends Controller
                 $farmer->village_title = $farmer->getVillage()->village_title;
                 return $farmer;
             });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->image = $farmer->getImage();
+                return $farmer;
+            });
             return view('admin.farmer.allfarmer', [
                 'farmers' => $farmers,
                 'governorates' => $governorates,
@@ -419,16 +441,15 @@ class FarmerController extends Controller
                 'villages' => $villages
 
             ]);
-        }
-        elseif ($date == 'currentyear') {
+        } elseif ($date == 'currentyear') {
 
             $date = \Carbon\Carbon::now();
 
-         
+
             $year = $date->year;
 
             $farmers = Farmer::whereYear('created_at', $year)->get();
-           
+
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -442,6 +463,10 @@ class FarmerController extends Controller
             });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->image = $farmer->getImage();
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [
@@ -451,16 +476,15 @@ class FarmerController extends Controller
                 'villages' => $villages
 
             ]);
-        }
-        elseif ($date == 'lastyear') {
+        } elseif ($date == 'lastyear') {
 
             $date = Carbon::now();
-          
-         
+
+
             $year = $date->year - 1;
 
             $farmers = Farmer::whereYear('created_at', $year)->get();
-           
+
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -474,6 +498,10 @@ class FarmerController extends Controller
             });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->image = $farmer->getImage();
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [

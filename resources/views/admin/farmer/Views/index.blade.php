@@ -2,6 +2,7 @@
     <table class="table" id="myTable">
         <thead>
             <tr style="font-size:13px;">
+                <th></th>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Code</th>
@@ -23,7 +24,12 @@
         <tbody>
             @foreach ($farmers as $farmer)
                 <tr>
-
+                    @if ($farmer->picture_id == null)
+                        <td> <img class="famerimg" src="{{ asset('public/dist/img/farmericon.png') }}" alt=""></td>
+                    @else
+                        <td> <img class="famerimg" src="{{ asset('public/storage/image/' . $farmer->image) }}" alt="">
+                        </td>
+                    @endif
                     <td>{{ $farmer->farmer_id }}</td>
                     <td>{{ $farmer->farmer_name }}</td>
                     <td>{{ $farmer->farmer_code }}</td>
@@ -38,8 +44,7 @@
                     <td>{{ $farmer->id }}</td>
                     <td>{{ $farmer->id }}</td>
                     <td>{{ $farmer->id }}</td>
-                    <td> <a href="{{ route('farmer.profile', $farmer) }}"><i
-                                class="fas fa-eye"></i></a></td>
+                    <td> <a href="{{ route('farmer.profile', $farmer) }}"><i class="fas fa-eye"></i></a></td>
 
 
                 </tr>

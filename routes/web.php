@@ -70,9 +70,6 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('farmer_by_villages', 'FarmerController@farmerByVillages');
         Route::get('farmer_by_date/{date}', 'FarmerController@famerByDate');
 
-
-        
-
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
         Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
