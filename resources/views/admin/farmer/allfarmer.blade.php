@@ -171,13 +171,13 @@
             <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}"> WEEK TO DATE </a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO DATE </a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">MONTH TO DATE</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH TO DATE</a></span>
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST MONTH</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">YEAR TO DATE</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yearToDate')) }}">YEAR TO DATE</a></span>
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021 SEASON</a></span>
             &nbsp |

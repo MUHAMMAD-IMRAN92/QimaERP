@@ -75,7 +75,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
         //Coffee Buyer
         Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');
-
+        Route::get('filtercoffeebuyer', 'CoffeeBuyerController@filterByDate');
+        Route::get('coffeebuyer_by_villages', 'CoffeeBuyerController@coffeebuyerByVillages');
 
         //BatchNumber Controller
         Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');

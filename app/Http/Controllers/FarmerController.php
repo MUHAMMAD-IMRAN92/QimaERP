@@ -511,6 +511,112 @@ class FarmerController extends Controller
                 'villages' => $villages
 
             ]);
+        } elseif ($date == 'weekToDate') {
+
+            $now = Carbon::now();
+            $start = $now->startOfWeek(Carbon::SUNDAY);
+            $end = $now->endOfWeek(Carbon::SATURDAY);
+
+
+
+            $farmers = Farmer::whereBetween('created_at', [$start, $end])->get();
+
+
+            $governorates = Governerate::all();
+            $regions = Region::all();
+            $villages = Village::all();
+            $farmers =  $farmers->map(function ($farmer) {
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->region_title = $farmer->getRegion()->region_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->village_title = $farmer->getVillage()->village_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->image = $farmer->getImage();
+                return $farmer;
+            });
+            return view('admin.farmer.allfarmer', [
+                'farmers' => $farmers,
+                'governorates' => $governorates,
+                'regions' => $regions,
+                'villages' => $villages
+
+            ]);
+        } elseif ($date == 'monthToDate') {
+
+            $now = Carbon::now();
+            $date = Carbon::today()->toDateString();
+            $start = $now->firstOfMonth();
+
+            $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
+
+            $governorates = Governerate::all();
+            $regions = Region::all();
+            $villages = Village::all();
+            $farmers =  $farmers->map(function ($farmer) {
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->region_title = $farmer->getRegion()->region_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->village_title = $farmer->getVillage()->village_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->image = $farmer->getImage();
+                return $farmer;
+            });
+            return view('admin.farmer.allfarmer', [
+                'farmers' => $farmers,
+                'governorates' => $governorates,
+                'regions' => $regions,
+                'villages' => $villages
+
+            ]);
+        }
+        elseif ($date == 'yearToDate') {
+
+            $now = Carbon::now();
+            $date = Carbon::today()->toDateString();
+            $start = $now->startOfYear();
+
+            $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
+
+            $governorates = Governerate::all();
+            $regions = Region::all();
+            $villages = Village::all();
+            $farmers =  $farmers->map(function ($farmer) {
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->region_title = $farmer->getRegion()->region_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->village_title = $farmer->getVillage()->village_title;
+                return $farmer;
+            });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->image = $farmer->getImage();
+                return $farmer;
+            });
+            return view('admin.farmer.allfarmer', [
+                'farmers' => $farmers,
+                'governorates' => $governorates,
+                'regions' => $regions,
+                'villages' => $villages
+
+            ]);
         }
     }
 }
