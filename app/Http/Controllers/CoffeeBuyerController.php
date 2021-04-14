@@ -25,7 +25,7 @@ class CoffeeBuyerController extends Controller
         $farmers = Farmer::all();
         $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
         $coffeeBuyer = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
-
+        
 
         return view('admin.coffeBuyer.all_coffee_buyer', [
             'coffeeBuyerMangers' =>  $coffeeBuyingManagers,

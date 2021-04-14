@@ -240,10 +240,10 @@
                         @endif
                         <div class="row ml-2">
                             <div class="col-md-12">
-                                <h4 class="ml-2">Coffee Buying Manger</h4>
                                 <div class="row ">
-                                    <div class="col-md-4">
-                                        <table class="table table-responsive">
+                                    <div class="col-md-6">
+                                        <caption> <b> Coffee Buying Manger</b></caption>
+                                        <table class="table table-bordered" >
                                             <thead>
                                                 <tr>
                                                     <td></td>
@@ -267,18 +267,20 @@
                                                                 src="{{ asset('public/storage/images/' . $farmer->image) }}"
                                                                 alt=""></td>
                                                     @endif --}}
-                                                        <td>{{ $coffeeBuyerManger->first_name }}</td>
-                                                        <td>Doe</td>
-                                                        <td>john@example.com</td>
-                                                        <td>lahore</td>
+                                                        <td  >{{ $coffeeBuyerManger->first_name }}</td>
+                                                        <td >Doe</td>
+                                                        <td >john@example.com</td>
+                                                        <td >lahore</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-md-1"></div>
-                                    <div class="col-md-2">
+                                    
+                                    <div class="col-md-2 ml-2"> 
+                                        <caption>Specialty</caption>
                                         <table class="table table-bordered">
+                                           
                                             <thead>
                                                 <tr>
                                                     <td>CHREEY BOUGHT</td>
@@ -296,8 +298,9 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <div class="col-md-2">
+                                   
+                                    <div class="col-md-2 mi-2">
+                                        <caption>Non-Specialty</caption>
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -316,8 +319,9 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <div class="col-md-1 ">
+                                   
+                                    <div class="col-md-1 ml-2">
+                                      <caption>&nbsp;</caption>
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -338,10 +342,11 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <h4 class="ml-2">Coffee Buyer</h4>
+                                <h4 class="ml-2"></h4>
                                 <div class="row ">
-                                    <div class="col-md-4">
-                                        <table class="table table-responsive">
+                                    <div class="col-md-6">
+                                        <caption><b> Coffee Buyer</b></caption>
+                                        <table class="table table-bordered" >
                                             <thead>
                                                 <tr>
                                                     <td></td>
@@ -352,28 +357,33 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    {{-- @if ($farmer->picture_id == null) --}}
-                                                    <td> <img class="famerimg"
-                                                            src="{{ asset('public/dist/img/farmericon.png') }}" alt="">
-                                                    </td>
-                                                    {{-- @else
+                                                @foreach ($coffeeBuyers as $coffeeBuyer)
+                                                    <tr>
+
+                                                        {{-- @if ($farmer->picture_id == null) --}}
+                                                        <td> <img class="famerimg"
+                                                                src="{{ asset('public/dist/img/farmericon.png') }}"
+                                                                alt="">
+                                                        </td>
+                                                        {{-- @else
                                                         <td> <img class="famerimg"
                                                                 src="{{ asset('public/storage/images/' . $farmer->image) }}"
                                                                 alt=""></td>
                                                     @endif --}}
-                                                    <td>John</td>
-                                                    <td>Doe</td>
-                                                    <td>john@example.com</td>
-                                                    <td>lahore</td>
-                                                </tr>
-
+                                                        <td  >{{ $coffeeBuyer->first_name }}</td>
+                                                        <td >Doe</td>
+                                                        <td >john@example.com</td>
+                                                        <td >lahore</td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-md-1"></div>
-                                    <div class="col-md-2">
+                                    
+                                    <div class="col-md-2 ml-2"> 
+                                        <caption>Specialty</caption>
                                         <table class="table table-bordered">
+                                           
                                             <thead>
                                                 <tr>
                                                     <td>CHREEY BOUGHT</td>
@@ -391,8 +401,9 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <div class="col-md-2">
+                                   
+                                    <div class="col-md-2 mi-2">
+                                        <caption>Non-Specialty</caption>
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -411,8 +422,9 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <div class="col-md-1 ">
+                                   
+                                    <div class="col-md-1 ml-2">
+                                      <caption>&nbsp;</caption>
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
