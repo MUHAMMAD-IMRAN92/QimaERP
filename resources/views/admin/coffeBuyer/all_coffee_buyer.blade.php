@@ -168,25 +168,25 @@
         </div>
         <br>
         <div class="row ml-2 blacklink ">
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}"> WEEK TO DATE </a></span>
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}"> WEEK TO DATE </a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">MONTH TO DATE</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">MONTH TO DATE</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'lastmonth')) }}"> LAST
                     MONTH</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">YEAR TO DATE</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">YEAR TO DATE</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'currentyear')) }}"> 2021
                     SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'lastyear')) }}"> 2020
                     SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/allcoffeebuyer') }}"> ALL TIME</a></span>
         </div>
         <hr>
         <div class="row ml-2">

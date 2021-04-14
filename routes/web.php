@@ -77,7 +77,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');
         Route::get('filtercoffeebuyer', 'CoffeeBuyerController@filterByDate');
         Route::get('coffeebuyer_by_villages', 'CoffeeBuyerController@coffeebuyerByVillages');
-
+        Route::get('coffeeBuyerByDate/{date}', 'CoffeeBuyerController@coffeeBuyerByDate');
         //BatchNumber Controller
         Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');
         Route::get('getbatch', 'BatchNumberController@getbatchAjax');

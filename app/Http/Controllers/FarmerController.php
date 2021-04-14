@@ -582,8 +582,7 @@ class FarmerController extends Controller
                 'villages' => $villages
 
             ]);
-        }
-        elseif ($date == 'yearToDate') {
+        } elseif ($date == 'yearToDate') {
 
             $now = Carbon::now();
             $date = Carbon::today()->toDateString();
