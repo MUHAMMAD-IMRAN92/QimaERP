@@ -59,7 +59,7 @@
                                             <label for="customFile">Farmer Image</label>
                                             <input type="hidden" name="picture_id" value="{{$farmer->picture_id}}">
                                             <div class="">
-                                                <input type="file" class="  name="profile_picture" id="customFile"  @error('profile_picture') is-invalid @enderror>
+                                                <input type="file" class="" name="profile_picture" id="customFile"  @error('profile_picture') is-invalid @enderror>
                                                        @error('profile_picture')
                                                        <span  class="text-danger">{{ $message }}</span>
                                                 @enderror

@@ -9,7 +9,6 @@ use App\FileSystem;
 use App\Governerate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -106,7 +105,7 @@ class FarmerController extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->all());
+        //  dd($request->all());
         $validatedData = $request->validate([
             'farmer_nicn' => 'required|unique:farmers,farmer_id' . $request->farmer_ids,
         ]);
@@ -116,7 +115,7 @@ class FarmerController extends Controller
             $file = $request->profile_picture;
             $originalFileName = $file->getClientOriginalName();
             $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $request->file('profile_picture')->storeAs('images', $file_name);
+            $request->file('profile_picture')->storeAs('public/images', $file_name);
             if ($request->picture_id != '') {
                 $userProfileImage = FileSystem::find($request->picture_id);
                 $userProfileImage->user_file_name = $file_name;
@@ -196,7 +195,7 @@ class FarmerController extends Controller
         if ($request->profile_picture) {
             $file = $request->profile_picture;
             $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $request->file('profile_picture')->storeAs('images', $file_name);
+            $request->file('profile_picture')->storeAs('public/images', $file_name);
             $userProfileImage = FileSystem::create([
                 'user_file_name' => $file_name,
             ]);
@@ -245,6 +244,7 @@ class FarmerController extends Controller
     }
     public function farmerProfile(Farmer $farmer)
     {
+   
         $governorate = $farmer->getgovernerate();
         $region = $farmer->getRegion();
         $village = $farmer->getVillage();
@@ -378,8 +378,10 @@ class FarmerController extends Controller
 
             ]);
         } elseif ($date == 'yesterday') {
-            $date = Carbon::now()->subDays(30)->toDateTimeString();
-            $farmers = Farmer::whereDate('created_at', $date)->get();
+            $now = Carbon::now();
+            $yesterday = Carbon::yesterday();
+
+            $farmers = Farmer::whereDate('created_at', $yesterday)->get();
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();

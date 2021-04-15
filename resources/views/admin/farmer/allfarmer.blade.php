@@ -27,14 +27,15 @@
             color: rgb(0, 0, 0);
             background-color: transparent;
             text-decoration: none;
+            font-size: 14px; 
 
         }
-        .famerimg{
-          
+
+        .famerimg {
+
             height: 50px;
             border-radius: 50%;
         }
-
 
     </style>
     <script>
@@ -138,16 +139,15 @@
 
                     <div class="col-sm-6">
                         <h1>FARMERS
-                            <a href="{{ URL::to('') }}/admin/add_farmer" class="btn btn-add rounded-circle">
-                                <i class="fas fa-user-plus add-client-icon"></i>
-                            </a>
+                           
                         </h1>
                     </div>
                     <hr>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">All Farmer</li>
+                            <a href="{{ URL::to('') }}/admin/add_farmer" class="btn btn-add rounded-circle">
+                                <button class="btn btn-dark">Add Farmer</button>
+                            </a>
                         </ol>
                     </div>
                 </div>
@@ -171,17 +171,23 @@
             <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO DATE </a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO DATE
+                </a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH TO DATE</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH TO
+                    DATE</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST MONTH</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST
+                    MONTH</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yearToDate')) }}">YEAR TO DATE</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yearToDate')) }}">YEAR TO
+                    DATE</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021 SEASON</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021
+                    SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020 SEASON</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020
+                    SEASON</a></span>
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
         </div>
@@ -243,7 +249,7 @@
                                 <table class="table" id="myTable">
                                     <thead>
                                         <tr style="font-size:13px;">
-                                           <th></th>
+                                            <th></th>
                                             <th>ID</th>
                                             <th>Name</th>
                                             <th>Code</th>
@@ -265,12 +271,16 @@
                                     <tbody>
                                         @foreach ($farmers as $farmer)
                                             <tr>
-                                              @if ($farmer->picture_id == null)
-                                                   <td> <img  class="famerimg" src="{{ asset('public/dist/img/farmericon.png') }}" alt=""></td>
-                                              @else
-                                              <td> <img  class="famerimg" src="{{ asset('public/storage/images/' . $farmer->image) }}"  alt=""></td>
-                                              @endif
-                                               
+                                                @if ($farmer->picture_id == null)
+                                                    <td> <img class="famerimg"
+                                                            src="{{ asset('public/dist/img/farmericon.png') }}" alt="">
+                                                    </td>
+                                                @else
+                                                    <td> <img class="famerimg"
+                                                            src="{{ asset('public/storage/images/' . $farmer->image) }}"
+                                                            alt=""></td>
+                                                @endif
+
                                                 <td>{{ $farmer->farmer_id }}</td>
                                                 <td>{{ $farmer->farmer_name }}</td>
                                                 <td>{{ $farmer->farmer_code }}</td>

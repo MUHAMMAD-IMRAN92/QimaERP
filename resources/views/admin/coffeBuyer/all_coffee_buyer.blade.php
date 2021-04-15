@@ -36,7 +36,19 @@
             border-radius: 50%;
         }
 
+        .adduser a {
+            color: rgb(182, 18, 18);
+
+        }
+
+        .gap {
+            width: 10% !important;
+            border: none !important;
+            text-align: center !important;
+        }
+
     </style>
+    
     <script>
         $(document).ready(function() {
             $('#myTable').DataTable();
@@ -138,17 +150,15 @@
 
                     <div class="col-sm-6">
                         <h1>COFFE BUYERS
-                            <a href="{{ URL::to('') }}/admin/add_farmer" class="btn btn-add rounded-circle">
+                            {{-- <a href="{{ URL::to('') }}/admin/add_farmer" class="btn btn-add rounded-circle">
                                 <i class="fas fa-user-plus add-client-icon"></i>
-                            </a>
+                            </a> --}}
                         </h1>
                     </div>
                     <hr>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">All Farmer</li>
-                        </ol>
+                    <div class="col-sm-4 adduser ml-3">
+                        <a href="{{ url('admin/adduser') }}">Add Coffee Buyer</a> &nbsp;|
+                        <a href="{{ url('admin/adduser') }}">Add Coffee Buyer Manger</a>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -166,19 +176,25 @@
                 <input type="date" name="" id="to">
             </form>
         </div>
+ 
         <br>
         <div class="row ml-2 blacklink ">
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">TODAY</a></span> &nbsp
+            |
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'yesterday')) }}">
+                    YESTERDAY</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}"> WEEK TO DATE </a></span>
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'weekToDate')) }}"> WEEK TO DATE
+                </a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">MONTH TO DATE</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'monthToDate')) }}">MONTH TO
+                    DATE</a></span>
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'lastmonth')) }}"> LAST
                     MONTH</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">YEAR TO DATE</a></span>
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'yearToDate')) }}">YEAR TO
+                    DATE</a></span>
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'currentyear')) }}"> 2021
                     SEASON</a></span>
@@ -251,101 +267,124 @@
                                                     <td>First Purchase</td>
                                                     <td>Last Purchase</td>
                                                     <td>City</td>
+                                                    <td class="gap"></td>
+                                                    <td>CHREEY BOUGHT</td>
+                                                    <td>PRICE PAID</td>
+                                                    <td class="gap"></td>
+                                                    <td> <span>DRY COFFEE</span> BOUGHT</td>
+                                                    <td>PRICE PAID</td>
+                                                    <td class="gap"></td>
+                                                    <td>Firstname</td>
+                                                    <td>View Details</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($coffeeBuyerMangers as $coffeeBuyerManger)
                                                     <tr>
 
-                                                        {{-- @if ($farmer->picture_id == null) --}}
-                                                        <td> <img class="famerimg"
-                                                                src="{{ asset('public/dist/img/farmericon.png') }}"
-                                                                alt="">
-                                                        </td>
-                                                        {{-- @else
-                                                        <td> <img class="famerimg"
-                                                                src="{{ asset('public/storage/images/' . $farmer->image) }}"
-                                                                alt=""></td>
-                                                    @endif --}}
+                                                        @if ($coffeeBuyerManger->picture_id == null)
+                                                            <td> <img class="famerimg"
+                                                                    src="{{ asset('public/dist/img/farmericon.png') }}"
+                                                                    alt="">
+                                                            </td>
+                                                        @else
+                                                            <td> <img class="famerimg"
+                                                                    src="{{ asset('public/storage/images/' . $coffeeBuyerManger->image) }}"
+                                                                    alt=""></td>
+                                                        @endif
                                                         <td>{{ $coffeeBuyerManger->first_name }}</td>
                                                         <td>Doe</td>
                                                         <td>john@example.com</td>
+
                                                         <td>lahore</td>
+                                                        <td class="gap"></td>
+                                                        <td>John</td>
+                                                        <td>Doe</td>
+                                                        <td  class="gap"></td>
+                                                        <td>John</td>
+                                                        <td>Doe</td>
+                                                        <td class="gap"></td>
+
+                                                        <td>John</td>
+                                                       
+                                                        <td> <a href="{{ route('coffeBuyer.profile', $coffeeBuyerManger) }}"><i
+                                                            class="fas fa-eye"></i></a></td>
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </div>
 
-                                    <div class="col-md-2 ml-2">
-                                        <caption>Specialty</caption>
-                                        <table class="table table-bordered">
+                                        {{-- <div class="col-md-2 ml-2">
+                                            <caption>Specialty</caption>
+                                            <table class="table table-bordered">
 
-                                            <thead>
-                                                <tr>
-                                                    <td>CHREEY BOUGHT</td>
-                                                    <td>PRICE PAID</td>
+                                                <thead>
+                                                    <tr>
+                                                        <td>CHREEY BOUGHT</td>
+                                                        <td>PRICE PAID</td>
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>John</td>
-                                                    <td>Doe</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>John</td>
+                                                        <td>Doe</td>
 
-                                                </tr>
+                                                    </tr>
 
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
 
-                                    <div class="col-md-2 mi-2">
-                                        <caption>Non-Specialty</caption>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <td> <span style="white-space: nowrap;">DRY COFFEE</span> BOUGHT</td>
-                                                    <td>PRICE PAID</td>
+                                        <div class="col-md-2 mi-2">
+                                            <caption>Non-Specialty</caption>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <td> <span>DRY COFFEE</span> BOUGHT</td>
+                                                        <td>PRICE PAID</td>
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>John</td>
-                                                    <td>Doe</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>John</td>
+                                                        <td>Doe</td>
 
-                                                </tr>
+                                                    </tr>
 
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
 
-                                    <div class="col-md-1 ml-2">
-                                        <caption>&nbsp;</caption>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <td>Firstname</td>
-
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>John</td>
+                                        <div class="col-md-1 ml-2">
+                                            <caption>&nbsp;</caption>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <td>Firstname</td>
 
 
-                                                </tr>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>John</td>
 
-                                            </tbody>
-                                        </table>
-                                    </div>
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div> --}}
                                 </div>
                                 <hr>
 
                                 <div class="row ">
                                     <div class="col-md-6">
-                                        <caption><b> Coffee Buyer</b></caption>
+                                        <caption> <b> Coffee Buyer</b></caption>
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -354,95 +393,117 @@
                                                     <td>First Purchase</td>
                                                     <td>Last Purchase</td>
                                                     <td>City</td>
+                                                    <td class="gap"></td>
+                                                    <td>CHREEY BOUGHT</td>
+                                                    <td>PRICE PAID</td>
+                                                    <td class="gap"></td>
+                                                    <td> <span>DRY COFFEE</span> BOUGHT</td>
+                                                    <td>PRICE PAID</td>
+                                                    <td class="gap"></td>
+                                                    <td>Firstname</td>
+                                                    <td>View Details</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($coffeeBuyers as $coffeeBuyer)
                                                     <tr>
 
-                                                        {{-- @if ($farmer->picture_id == null) --}}
-                                                        <td> <img class="famerimg"
-                                                                src="{{ asset('public/dist/img/farmericon.png') }}"
-                                                                alt="">
-                                                        </td>
-                                                        {{-- @else
-                                                        <td> <img class="famerimg"
-                                                                src="{{ asset('public/storage/images/' . $farmer->image) }}"
-                                                                alt=""></td>
-                                                    @endif --}}
+                                                        @if ($coffeeBuyer->picture_id == null)
+                                                            <td> <img class="famerimg"
+                                                                    src="{{ asset('public/dist/img/farmericon.png') }}"
+                                                                    alt="">
+                                                            </td>
+                                                        @else
+                                                            <td> <img class="famerimg"
+                                                                    src="{{ asset('public/storage/images/' . $coffeeBuyer->image) }}"
+                                                                    alt=""></td>
+                                                        @endif
                                                         <td>{{ $coffeeBuyer->first_name }}</td>
                                                         <td>Doe</td>
                                                         <td>john@example.com</td>
+
                                                         <td>lahore</td>
+                                                        <td class="gap"></td>
+                                                        <td>John</td>
+                                                        <td>Doe</td>
+                                                        <td  class="gap"></td>
+                                                        <td>John</td>
+                                                        <td>Doe</td>
+                                                        <td class="gap"></td>
+
+                                                        <td>John</td>
+                                                       
+                                                        <td> <a href="{{ route('coffeBuyer.profile',$coffeeBuyer) }}"><i
+                                                            class="fas fa-eye"></i></a></td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </div>
 
-                                    <div class="col-md-2 ml-2">
-                                        <caption>Specialty</caption>
-                                        <table class="table table-bordered">
+                                        {{-- <div class="col-md-2 ml-2">
+                                            <caption>Specialty</caption>
+                                            <table class="table table-bordered">
 
-                                            <thead>
-                                                <tr>
-                                                    <td>CHREEY BOUGHT</td>
-                                                    <td>PRICE PAID</td>
+                                                <thead>
+                                                    <tr>
+                                                        <td>CHREEY BOUGHT</td>
+                                                        <td>PRICE PAID</td>
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>John</td>
-                                                    <td>Doe</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>John</td>
+                                                        <td>Doe</td>
 
-                                                </tr>
+                                                    </tr>
 
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
 
-                                    <div class="col-md-2 mi-2">
-                                        <caption>Non-Specialty</caption>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <td> <span style="white-space: nowrap;">DRY COFFEE</span> BOUGHT</td>
-                                                    <td>PRICE PAID</td>
+                                        <div class="col-md-2 mi-2">
+                                            <caption>Non-Specialty</caption>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <td> <span>DRY COFFEE</span> BOUGHT</td>
+                                                        <td>PRICE PAID</td>
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>John</td>
-                                                    <td>Doe</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>John</td>
+                                                        <td>Doe</td>
 
-                                                </tr>
+                                                    </tr>
 
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
 
-                                    <div class="col-md-1 ml-2">
-                                        <caption>&nbsp;</caption>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <td>Firstname</td>
-
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>John</td>
+                                        <div class="col-md-1 ml-2">
+                                            <caption>&nbsp;</caption>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <td>Firstname</td>
 
 
-                                                </tr>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>John</td>
 
-                                            </tbody>
-                                        </table>
-                                    </div>
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div> --}}
                                 </div>
                             </div>
                         </div>

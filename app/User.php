@@ -52,4 +52,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(CenterUser::class, 'user_id', 'user_id');
     }
+    public function getImage(){
+        $imageName = null;
+
+        if ($file = FileSystem::where('file_id', $this->picture_id)->first()) {
+            $imageName = $file->user_file_name;
+        }
+
+        return $imageName;
+        
+    }
 }

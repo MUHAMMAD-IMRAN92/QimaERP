@@ -73,11 +73,14 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
         Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
+
         //Coffee Buyer
         Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');
         Route::get('filtercoffeebuyer', 'CoffeeBuyerController@filterByDate');
         Route::get('coffeebuyer_by_villages', 'CoffeeBuyerController@coffeebuyerByVillages');
         Route::get('coffeeBuyerByDate/{date}', 'CoffeeBuyerController@coffeeBuyerByDate');
+        Route::get('coffeeBuyer/profile/{buyer}', 'CoffeeBuyerController@coffeeBuyerProfile')->name('coffeBuyer.profile');
+        
         //BatchNumber Controller
         Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');
         Route::get('getbatch', 'BatchNumberController@getbatchAjax');
