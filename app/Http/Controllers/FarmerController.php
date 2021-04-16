@@ -7,6 +7,7 @@ use App\Region;
 use App\Village;
 use App\FileSystem;
 use App\Governerate;
+use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -27,18 +28,18 @@ class FarmerController extends Controller
             $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
             return $farmer;
         });
+
         $farmers = $farmers->map(function ($farmer) {
             $farmer->region_title = $farmer->getRegion()->region_title;
-            return $farmer;
-        });
-        $farmers = $farmers->map(function ($farmer) {
             $farmer->village_title = $farmer->getVillage()->village_title;
-            return $farmer;
-        });
-        $farmers = $farmers->map(function ($farmer) {
             $farmer->image = $farmer->getImage();
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
+            $farmer->quantity = $farmer->quntity();
             return $farmer;
         });
+
+
 
         return view('admin.farmer.allfarmer', [
             'farmers' => $farmers,
@@ -244,7 +245,7 @@ class FarmerController extends Controller
     }
     public function farmerProfile(Farmer $farmer)
     {
-   
+
         $governorate = $farmer->getgovernerate();
         $region = $farmer->getRegion();
         $village = $farmer->getVillage();

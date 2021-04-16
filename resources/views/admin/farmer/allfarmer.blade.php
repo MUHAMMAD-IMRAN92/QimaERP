@@ -284,12 +284,12 @@
                                                 <td>{{ $farmer->farmer_id }}</td>
                                                 <td>{{ $farmer->farmer_name }}</td>
                                                 <td>{{ $farmer->farmer_code }}</td>
-                                                <td>{{ $farmer->id }}</td>
-                                                <td>{{ $farmer->id }}</td>
+                                                <td>{{ $farmer->first_purchase }}</td>
+                                                <td>{{ $farmer->last_purchase }}</td>
                                                 <td>{{ $farmer->governerate_title }}</td>
                                                 <td>{{ $farmer->region_title }}</td>
                                                 <td>{{ $farmer->village_title }}</td>
-                                                <td>{{ $farmer->id }}</td>
+                                                <td>{{ $farmer->quantity }}</td>
                                                 <td>{{ $farmer->id }}</td>
                                                 <td>{{ $farmer->id }}</td>
                                                 <td>{{ $farmer->id }}</td>

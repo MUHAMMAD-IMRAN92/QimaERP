@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -75,7 +76,35 @@ class Farmer extends Model
         if ($file = FileSystem::where('file_id', $this->picture_id)->first()) {
             $imageName = $file->user_file_name;
         }
-
         return $imageName;
+    }
+    public function getfirstTransaction()
+    {
+        $farmerCode = $this->farmer_code;
+
+        $transaction_created_at = Transaction::where('batch_number', 'LIKE', "$farmerCode%")->first()['created_at'];
+        return   $transaction_created_at;
+    }
+    public function getlastTransaction()
+    {
+        $farmerCode =  $this->farmer_code;
+        $transaction_last = Transaction::where('batch_number', 'LIKE', "$farmerCode%")->latest()->first()['created_at'];
+
+        return $transaction_last;
+    }
+    public function quntity()
+    {
+        $farmerCode = $this->farmer_code;
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
+            ->where('sent_to', 2)
+            ->get();
+
+        $sum = 0;
+        
+        foreach($transactions as $transaction){
+            $sum += $transaction->details->sum('container_weight');
+        }
+
+        return $sum;
     }
 }
