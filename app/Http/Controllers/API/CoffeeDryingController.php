@@ -385,7 +385,7 @@ class CoffeeDryingController extends Controller
                                     'container_weight' => $transactionContainer->container_weight,
                                     'weight_unit' => 'kg',
                                     'center_id' => $receivedTransaction->transaction->center_id,
-                                    'reference_id' => $receivedTransaction->transaction->reference_id,
+                                    'reference_id' => $parentTransaction->transaction_id,
                                 ]);
                             }
                             TransactionDetail::whereIn('transaction_id', $receivedTransIds)->update(['container_status' => 1]);
