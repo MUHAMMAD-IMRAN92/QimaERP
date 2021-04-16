@@ -341,7 +341,7 @@ class CoffeeDryingController extends Controller
 
                                 $receivedTransIds = $parentTransaction->pluck('transaction_id')->toArray();
 
-                                $receivedTransIdsString = implode(',', $receivedTransId);
+                                $receivedTransIdsString = implode(',', $receivedTransIds);
 
                                 $parentTransaction = $parentTransactions->first();
                             }
