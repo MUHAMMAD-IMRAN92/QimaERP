@@ -354,7 +354,7 @@ class CoffeeDryingController extends Controller
                                 'local_code' => $receivedTransaction->transaction->local_code,
                                 'is_special' => $parentTransaction->is_special,
                                 'transaction_status' => 'sent',
-                                'reference_id' => $parentTransaction->transaction_id,
+                                'reference_id' => $receivedTransaction->transaction->reference_id,
                                 'is_server_id' => 1,
                                 'is_new' => 0,
                                 'sent_to' => 12,
