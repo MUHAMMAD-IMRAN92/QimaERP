@@ -118,7 +118,7 @@ class CoffeeDryingController extends Controller
                             $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
 
                             if (!$parentTransaction) {
-                                throw new Exception('Parent Transaction is not found.');
+                                throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 10');
                             }
 
                             $transaction = Transaction::create([
@@ -248,7 +248,7 @@ class CoffeeDryingController extends Controller
                                 $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
 
                                 if (!$parentTransaction) {
-                                    throw new Exception('Parent Transaction is not found.');
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 11');
                                 }
                             } else {
                                 $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
@@ -322,7 +322,7 @@ class CoffeeDryingController extends Controller
                                 $parentTransaction = Transaction::where('transaction_id', explode(',', $receivedTransaction->transaction->reference_id)[0])->first();
 
                                 if (!$parentTransaction) {
-                                    throw new Exception('Parent Transaction is not found.');
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 12');
                                 }
 
                                 $receivedTransIds = Transaction::whereIn('transaction_id', explode(',', $receivedTransaction->transaction->reference_id))
@@ -407,7 +407,7 @@ class CoffeeDryingController extends Controller
                                 $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
 
                                 if (!$parentTransaction) {
-                                    throw new Exception('Parent Transaction is not found.');
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 0');
                                 }
                             } else {
                                 $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
