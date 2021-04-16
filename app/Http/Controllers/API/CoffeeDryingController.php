@@ -317,7 +317,7 @@ class CoffeeDryingController extends Controller
 
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
                             $receivedTransIds = [];
-                            if ($receivedTransaction->transaction->is_server_id == True) {
+                            if ($receivedTransaction->transaction->is_server_id == true) {
 
                                 $parentTransaction = Transaction::where('transaction_id', explode(',', $receivedTransaction->transaction->reference_id)[0])->first();
 
@@ -325,10 +325,9 @@ class CoffeeDryingController extends Controller
                                     throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 12');
                                 }
 
-                                $receivedTransIds = Transaction::whereIn('transaction_id', explode(',', $receivedTransaction->transaction->reference_id))
-                                    ->get('transaction_id')
-                                    ->pluck('transaction_id')
-                                    ->toArray();
+                                $receivedTransIds = $receivedTransaction->transaction->reference_id;
+
+                                $receivedTransIdsString = $receivedTransIds; 
                             } else {
 
                                 $refIds = $receivedTransaction->transaction->reference_id;
@@ -342,6 +341,8 @@ class CoffeeDryingController extends Controller
 
                                 $receivedTransIds = $parentTransaction->pluck('transaction_id')->toArray();
 
+                                $receivedTransIdsString = implode(',', $receivedTransId);
+
                                 $parentTransaction = $parentTransactions->first();
                             }
                             $processTransaction = Transaction::create([
@@ -354,7 +355,7 @@ class CoffeeDryingController extends Controller
                                 'local_code' => $receivedTransaction->transaction->local_code,
                                 'is_special' => $parentTransaction->is_special,
                                 'transaction_status' => 'sent',
-                                'reference_id' => $receivedTransaction->transaction->reference_id,
+                                'reference_id' => $receivedTransIdsString,
                                 'is_server_id' => 1,
                                 'is_new' => 0,
                                 'sent_to' => 12,
