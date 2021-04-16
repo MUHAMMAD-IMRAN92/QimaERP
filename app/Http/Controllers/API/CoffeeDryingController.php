@@ -325,7 +325,7 @@ class CoffeeDryingController extends Controller
                                     throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 12');
                                 }
 
-                                $receivedTransIds = $receivedTransaction->transaction->reference_id;
+                                $receivedTransIds = explode(',', $receivedTransaction->transaction->reference_id);
 
                                 $receivedTransIdsString = $receivedTransIds; 
                             } else {
