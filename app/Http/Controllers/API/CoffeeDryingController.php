@@ -331,14 +331,9 @@ class CoffeeDryingController extends Controller
                                 $receivedTransIdsString = $receivedTransaction->transaction->reference_id;
                             } else {
 
-                                $refIds = $receivedTransaction->transaction->reference_id;
+                                $localCodes = explode(',', $receivedTransaction->transaction->reference_id);
 
-                                $parentTransactions = Transaction::where(function ($query) use ($refIds, $userId) {
-                                    foreach (explode(',', $refIds) as $refId) {
-                                        $code = $refId . '_' . $userId . '-T';
-                                        $query->orWhere('local_code', 'like', "$code%");
-                                    }
-                                })->get();
+                                $parentTransactions = Transaction::whereIn('local_code', $localCodes)->get();
 
                                 $receivedTransIds = $parentTransaction->pluck('transaction_id')->toArray();
 
