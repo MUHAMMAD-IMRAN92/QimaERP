@@ -7,7 +7,6 @@ use App\Region;
 use App\Village;
 use App\FileSystem;
 use App\Governerate;
-use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -24,23 +23,20 @@ class FarmerController extends Controller
         $regions = Region::all();
         $villages = Village::all();
         $farmers = Farmer::all();
-        $farmers =  $farmers->map(function ($farmer) {
-            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-            return $farmer;
-        });
-
+        
         $farmers = $farmers->map(function ($farmer) {
             $farmer->region_title = $farmer->getRegion()->region_title;
             $farmer->village_title = $farmer->getVillage()->village_title;
             $farmer->image = $farmer->getImage();
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $farmer->quantity = $farmer->quntity();
+            $farmer->price = $farmer->price()->price_per_kg;
+
             return $farmer;
-        });
-
-
-
+        }); 
+     
         return view('admin.farmer.allfarmer', [
             'farmers' => $farmers,
             'governorates' => $governorates,
@@ -155,6 +151,7 @@ class FarmerController extends Controller
         // dd($updatefarmer);
         $updatefarmer->farmer_name = $request->farmer_name;
         $updatefarmer->farmer_nicn = $request->farmer_nicn;
+        $updatefarmer->price_per_kg = $request->price_per_kg;
 
         $updatefarmer->save();
         Session::flash('updatefarmer', 'farmer was updated Successfully.');
@@ -233,6 +230,7 @@ class FarmerController extends Controller
             'local_code' => $code . '_' . Auth::user()->user_id . '-F-' . strtotime("now"),
             'is_local' => 0,
             'is_status' => 1,
+            'price_per_kg' => $request->price_per_kg,
             'created_by' => Auth::user()->user_id,
         ]);
 

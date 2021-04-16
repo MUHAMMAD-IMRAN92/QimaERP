@@ -107,4 +107,12 @@ class Farmer extends Model
 
         return $sum;
     }
+    public function price()
+    {
+        $village_code = $this->village_code;
+        
+        $villagePrice = Village::where('village_code', $village_code)->first(['price_per_kg']);
+    
+        return $villagePrice;
+    }
 }

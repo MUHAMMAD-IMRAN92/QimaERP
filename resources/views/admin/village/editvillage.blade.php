@@ -70,7 +70,14 @@
                                                <span  class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
-
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Price Per Kg </label>
+                                        <input type="number" id="price_per_kg" class="form-control" value="{{ $village->price_per_kg }}" name="price_per_kg"
+                                            placeholder="Price Per Kg" @error('farmer_nicn') is-invalid @enderror>
+                                        @error('price_per_kg')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
                                 <!-- /.card-body -->
 

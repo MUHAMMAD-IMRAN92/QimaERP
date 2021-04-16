@@ -29,16 +29,15 @@
         <div class="row mb-2">
 
           <div class="col-sm-6">
-            <h1>Add New Village 
-              <a href="{{URL::to('')}}/admin/addnewvillage" class="btn btn-add rounded-circle"> 
-                <i class="fas fa-user-plus add-client-icon"></i>
-              </a>
+            <h1>Add New Village  <a href="{{ URL::to('') }}/admin/addnewvillage" class="btn btn-add rounded-circle">
+                <button class="btn btn-dark">Add Farmer</button>
+            </a>
+              
             </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">All Village</li>
+             
             </ol>
           </div>
         </div>
