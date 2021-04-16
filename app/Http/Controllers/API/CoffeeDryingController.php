@@ -255,7 +255,7 @@ class CoffeeDryingController extends Controller
                                 $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
                                 $receivedTransId = $checkTransaction->transaction_id;
 
-                                $parentTransaction = $receivedTransId;
+                                $parentTransaction = $checkTransaction;
                             }
 
                             $processTransaction = Transaction::create([
@@ -333,14 +333,16 @@ class CoffeeDryingController extends Controller
 
                                 $refIds = $receivedTransaction->transaction->reference_id;
 
-                                $receivedTransIds = Transaction::where(function ($query) use ($refIds, $userId) {
+                                $parentTransactions = Transaction::where(function ($query) use ($refIds, $userId) {
                                     foreach (explode(',', $refIds) as $refId) {
-                                        $code = $refIds . '_' . $userId . '-T';
+                                        $code = $refId . '_' . $userId . '-T';
                                         $query->orWhere('local_code', 'like', "$code%");
                                     }
-                                })->get('transaction_id')
-                                    ->pluck('transaction_id')
-                                    ->toArray();
+                                })->get();
+
+                                $receivedTransIds = $parentTransaction->pluck('transaction_id')->toArray();
+
+                                $parentTransaction = $parentTransactions->first();
                             }
                             $processTransaction = Transaction::create([
                                 'batch_number' => $receivedTransaction->transaction->batch_number,
