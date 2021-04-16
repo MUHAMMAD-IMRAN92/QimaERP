@@ -27,13 +27,13 @@
             color: rgb(0, 0, 0);
             background-color: transparent;
             text-decoration: none;
-            font-size: 14px; 
+            font-size: 14px;
 
         }
 
         .famerimg {
 
-            height: 50px;
+            width: 50px;
             border-radius: 50%;
         }
 
@@ -139,7 +139,7 @@
 
                     <div class="col-sm-6">
                         <h1>FARMERS
-                           
+
                         </h1>
                     </div>
                     <hr>
