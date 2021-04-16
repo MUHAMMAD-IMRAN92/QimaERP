@@ -316,6 +316,7 @@ class CoffeeDryingController extends Controller
                     if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 12) {
 
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
+
                             $receivedTransIds = [];
                             if ($receivedTransaction->transaction->is_server_id == true) {
 
@@ -327,7 +328,7 @@ class CoffeeDryingController extends Controller
 
                                 $receivedTransIds = explode(',', $receivedTransaction->transaction->reference_id);
 
-                                $receivedTransIdsString = $receivedTransIds; 
+                                $receivedTransIdsString = $receivedTransaction->transaction->reference_id;
                             } else {
 
                                 $refIds = $receivedTransaction->transaction->reference_id;
