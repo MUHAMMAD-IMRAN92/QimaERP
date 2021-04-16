@@ -335,7 +335,7 @@ class CoffeeDryingController extends Controller
 
                                 $parentTransactions = Transaction::whereIn('local_code', $localCodes)->get();
 
-                                $receivedTransIds = $parentTransaction->pluck('transaction_id')->toArray();
+                                $receivedTransIds = $parentTransactions->pluck('transaction_id')->toArray();
 
                                 $receivedTransIdsString = implode(',', $receivedTransIds);
 
