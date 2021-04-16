@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use DB;
-use App\User;
 use Exception;
-use App\LoginUser;
 use Carbon\Carbon;
 use App\CenterUser;
 use App\Environment;
@@ -14,7 +11,7 @@ use App\MetaTransation;
 use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
