@@ -116,14 +116,14 @@ class CoffeeDryingController extends Controller
                                 $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
 
                                 if (!$parentTransaction) {
-                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 10');
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 10 server');
                                 }
                             } else {
                                 $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
                                 $parentTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
 
                                 if (!$parentTransaction) {
-                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 10');
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 10 local');
                                 }
                             }
 
