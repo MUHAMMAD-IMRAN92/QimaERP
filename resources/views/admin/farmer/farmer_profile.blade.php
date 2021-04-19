@@ -223,18 +223,23 @@
             <hr>
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger">
-                    <h3>{{ App\Village::count() }}</h3>
-                    <p>Villages</p>
+                    <h3 style="font-size: 16px !important">{{ $farmer->first_purchase->toDateString() }}</h3>
+                    <p>First Purchade</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ App\Farmer::count() }}</h3>
+                    <h3 style="font-size: 16px !important">{{ $farmer->last_purchase->toDateString() }}</h3>
 
-                    <p>Farmers</p>
+                    <p>Last Purchase</p>
                 </div>
                 <div class="col-sm-1 color bg-warning">
-                    <h3>{{ App\User::count() }}</h3>
+                    @if ($farmer->price_per_kg == null)
+                        <h3 style="font-size: 16px !important">{{ number_format($farmer->price * $farmer->quantity) }}</h3>
+                    @else
+                        <h3 style="font-size: 16px !important">{{ number_format($farmer->price_per_kg * $farmer->quantity) }}
+                        </h3>
+                    @endif
 
-                    <p>User </p>
+                    <p>yer total coffee purchased </p>
                 </div>
                 <div class="col-sm-1 color bg-info"></div>
                 <div class="col-sm-1 color bg-dark"></div>

@@ -297,8 +297,6 @@
                                                     </td>
                                                 @endif
 
-
-
                                                 <td>{{ $farmer->id }}</td>
                                                 <td>{{ $farmer->id }}</td>
                                                 <td>{{ $farmer->id }}</td>
@@ -328,6 +326,5 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-
 
 @endsection

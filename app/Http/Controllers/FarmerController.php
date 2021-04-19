@@ -7,11 +7,13 @@ use App\Region;
 use App\Village;
 use App\FileSystem;
 use App\Governerate;
+use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class FarmerController extends Controller
 {
@@ -23,7 +25,7 @@ class FarmerController extends Controller
         $regions = Region::all();
         $villages = Village::all();
         $farmers = Farmer::all();
-        
+
         $farmers = $farmers->map(function ($farmer) {
             $farmer->region_title = $farmer->getRegion()->region_title;
             $farmer->village_title = $farmer->getVillage()->village_title;
@@ -35,8 +37,8 @@ class FarmerController extends Controller
             $farmer->price = $farmer->price()->price_per_kg;
 
             return $farmer;
-        }); 
-     
+        });
+
         return view('admin.farmer.allfarmer', [
             'farmers' => $farmers,
             'governorates' => $governorates,
@@ -250,6 +252,10 @@ class FarmerController extends Controller
         $farmer->governerate_title =   $governorate->governerate_title;
         $farmer->region_title = $region->region_title;
         $farmer->village_title = $village->village_title;
+        $farmer->first_purchase = $farmer->getfirstTransaction();
+        $farmer->last_purchase = $farmer->getlastTransaction();
+        $farmer->quantity = $farmer->quntity();
+        $farmer->price = $farmer->price()->price_per_kg;
         $farmer->image = $farmer->getImage();
         return view('admin.farmer.farmer_profile', [
             'farmer' => $farmer
