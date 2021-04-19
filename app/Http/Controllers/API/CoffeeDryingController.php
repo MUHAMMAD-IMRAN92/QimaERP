@@ -400,7 +400,7 @@ class CoffeeDryingController extends Controller
                     }
                     if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 0) {
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-                            if ($receivedTransaction->transaction->is_server_id == True) {
+                            if ($receivedTransaction->transaction->is_server_id == true) {
                                 $receivedTransId = $receivedTransaction->transaction->reference_id;
 
                                 $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
@@ -414,6 +414,10 @@ class CoffeeDryingController extends Controller
                                 $receivedTransId = $checkTransaction->transaction_id;
 
                                 $parentTransaction = $checkTransaction;
+
+                                if (!$parentTransaction) {
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 0 [part dry cofee]');
+                                }
                             }
                             $processTransaction2 = Transaction::create([
                                 'batch_number' => $receivedTransaction->transaction->batch_number,
