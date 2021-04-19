@@ -27,6 +27,7 @@
             color: rgb(0, 0, 0);
             background-color: transparent;
             text-decoration: none;
+            font-size: 14px;
 
         }
 
@@ -156,7 +157,7 @@
                         </h1>
                     </div>
                     <hr>
-                    <div class="col-sm-4 adduser ml-3">
+                    <div class="col-sm-4 adduser ml-5">
                         <a href="{{ url('admin/adduser') }}">Add Coffee Buyer</a> &nbsp;|
                         <a href="{{ url('admin/adduser') }}">Add Coffee Buyer Manger</a>
                     </div>
@@ -284,7 +285,7 @@
 
                                                         @if ($coffeeBuyerManger->picture_id == null)
                                                             <td> <img class="famerimg"
-                                                                    src="{{ asset('public/dist/img/farmericon.png') }}"
+                                                                    src="{{ asset('public/images/farmericon.png') }}"
                                                                     alt="">
                                                             </td>
                                                         @else
@@ -305,7 +306,8 @@
                                                         <td>{{ $coffeeBuyerManger->non_special_price }}</td>
                                                         <td class="gap"></td>
 
-                                                        <td>{{  $coffeeBuyerManger->special_price +  $coffeeBuyerManger->non_special_price  }}</td>
+                                                        <td>{{ $coffeeBuyerManger->special_price + $coffeeBuyerManger->non_special_price }}
+                                                        </td>
 
                                                         <td> <a
                                                                 href="{{ route('coffeBuyer.profile', $coffeeBuyerManger) }}"><i
@@ -388,7 +390,7 @@
                                         <caption> <b> Coffee Buyer</b></caption>
                                         <table class="table table-bordered" style="font-size:13px;">
                                             <thead>
-                                                <tr align="center" >
+                                                <tr align="center">
                                                     <th></th>
                                                     <th>Name</th>
                                                     <th>First Purchase</th>
@@ -411,7 +413,7 @@
 
                                                         @if ($coffeeBuyer->picture_id == null)
                                                             <td> <img class="famerimg"
-                                                                    src="{{ asset('public/dist/img/farmericon.png') }}"
+                                                                    src="{{ asset('public/images/farmericon.png) }}"
                                                                     alt="">
                                                             </td>
                                                         @else
@@ -432,7 +434,8 @@
                                                         <td>{{ $coffeeBuyer->non_special_price }}</td>
                                                         <td class="gap"></td>
 
-                                                        <td>{{  $coffeeBuyer->special_price +  $coffeeBuyer->non_special_price  }}</td>
+                                                        <td>{{ $coffeeBuyer->special_price + $coffeeBuyer->non_special_price }}
+                                                        </td>
 
                                                         <td> <a href="{{ route('coffeBuyer.profile', $coffeeBuyer) }}"><i
                                                                     class="fas fa-eye"></i></a></td>

@@ -115,4 +115,12 @@ class Farmer extends Model
     
         return $villagePrice;
     }
+    public function transactions()
+    {
+        $village_code = $this->village_code;
+        
+        $transactions = Village::where('village_code', $village_code)->get();
+    
+        return $transactions;
+    }
 }

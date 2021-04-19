@@ -77,7 +77,8 @@
                 <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">EDIT
                         INFORMATION</a></span> &nbsp |
                 <span class="ml-2"> <a href=""> ADD CROPSTER REPORT</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> OVERRIDE PRICE </a></span> &nbsp |
+                <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}"> OVERRIDE PRICE
+                    </a></span> &nbsp |
                 <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span> &nbsp |
                 <span class="ml-2"> <a href="">ADD PREMIUM</a></span>&nbsp |
                 <span class="ml-2"> <a href="">SETTLE LOAN</a></span>
@@ -86,7 +87,7 @@
             <div class="row">
                 <div class="col-md-4">
                     @if ($farmer->picture_id == null)
-                        <td> <img class="famerimg" src="{{ asset('public/dist/img/farmericon.png') }}"
+                        <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;" alt=""></td>
                     @else
                         <td> <img class="famerimg"
@@ -223,28 +224,34 @@
             <hr>
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger">
-                    <h3 style="font-size: 16px !important">{{ $farmer->first_purchase}}</h3>
+                    <h3 style="font-size: 16px !important">{{ $farmer->first_purchase }}</h3>
                     <p>First Purchade</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3 style="font-size: 16px !important">{{ $farmer->last_purchase}}</h3>
+                    <h3 style="font-size: 16px !important">{{ $farmer->last_purchase }}</h3>
 
                     <p>Last Purchase</p>
                 </div>
                 <div class="col-sm-1 color bg-warning">
                     @if ($farmer->price_per_kg == null)
-                        <h3 style="font-size: 16px !important">{{ number_format($farmer->price * $farmer->quantity) }}</h3>
+                        <h3 style="font-size: 16px !important">{{ number_format($farmer->price * $farmer->quantity) }}
+                        </h3>
                     @else
-                        <h3 style="font-size: 16px !important">{{ number_format($farmer->price_per_kg * $farmer->quantity) }}
+                        <h3 style="font-size: 16px !important">
+                            {{ number_format($farmer->price_per_kg * $farmer->quantity) }}
                         </h3>
                     @endif
 
                     <p>yer total coffee purchased </p>
                 </div>
-                <div class="col-sm-1 color bg-info"></div>
+                <div class="col-sm-1 color bg-info">
+                    <h3 style="font-size: 16px !important">{{ $farmer->quantity }}</h3>
+
+                    <p>Quantity</p>
+                </div>
                 <div class="col-sm-1 color bg-dark"></div>
                 <div class="col-sm-1 color bg-danger"></div>
-                <div class="col-sm-1 color bg-warning"></div>
+                <div class="col-sm-1 color bg-success"></div>
 
             </div>
             <hr>
@@ -299,12 +306,15 @@
             <div class="row">
 
                 <div class="">
-                    <ol class="breadcrumb float-sm-right txt-size">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active"> Farmer / Profile</li>
-                        <li class="breadcrumb-item active"> Farmer / Profile</li>
-                        <li class="breadcrumb-item active"> Farmer / Profile</li>
-                    </ol>
+                    @foreach ($transactions as $transaction)
+                        <ol class="breadcrumb float-sm-right txt-size">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active"> Farmer / Profile</li>
+                            <li class="breadcrumb-item active"> Farmer / Profile</li>
+                            <li class="breadcrumb-item active"> Farmer / Profile</li>
+                        </ol>
+                    @endforeach
+
                 </div>
 
             </div>

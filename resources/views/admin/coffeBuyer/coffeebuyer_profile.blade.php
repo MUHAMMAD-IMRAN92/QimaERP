@@ -83,7 +83,7 @@
             <div class="row">
                 <div class="col-md-4">
                     @if ($buyer->image == null)
-                        <td> <img class="famerimg ml-4" src="{{ asset('public/dist/img/farmericon.png') }}"
+                        <td> <img class="famerimg ml-4" src="{{ asset('public/images/farmericon.png') }}"
                                 style="width: 200px ; height:200px; border-radius:50%; border: 1px solid gray;" alt=""></td>
                     @else
                         <td> <img class="famerimg ml-4"
@@ -174,7 +174,7 @@
                 <div class="col-sm-1 color bg-info"></div>
                 <div class="col-sm-1 color bg-dark"></div>
                 <div class="col-sm-1 color bg-danger"></div>
-                <div class="col-sm-1 color bg-warning"></div>
+                <div class="col-sm-1 color bg-success"></div>
 
             </div>
             <hr>

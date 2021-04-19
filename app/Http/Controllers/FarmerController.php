@@ -256,10 +256,12 @@ class FarmerController extends Controller
         $farmer->last_purchase = $farmer->getlastTransaction();
         $farmer->quantity = $farmer->quntity();
         $farmer->price = $farmer->price()->price_per_kg;
+        $farmer->transactions = $farmer->transactions();
         $farmer->image = $farmer->getImage();
-        return view('admin.farmer.farmer_profile', [
-            'farmer' => $farmer
-        ]);
+        return $farmer;
+        // return view('admin.farmer.farmer_profile', [
+        //     'farmer' => $farmer
+        // ]);
     }
     public function filterByDate(Request $request)
     {
