@@ -108,14 +108,23 @@ class CoffeeDryingController extends Controller
                         //::Recevied coffee transations
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
                             $trans = true;
-                            if ($receivedTransaction->transaction->is_server_id == FALSE) {
-                                $trans = FALSE;
+                            if ($receivedTransaction->transaction->is_server_id == false) {
+                                $trans = false;
                             }
 
-                            $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
+                            if ($trans) {
+                                $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
 
-                            if (!$parentTransaction) {
-                                throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 10');
+                                if (!$parentTransaction) {
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 10');
+                                }
+                            } else {
+                                $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
+                                $parentTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+
+                                if (!$parentTransaction) {
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 10');
+                                }
                             }
 
                             $transaction = Transaction::create([
