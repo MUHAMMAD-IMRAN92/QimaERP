@@ -258,10 +258,9 @@ class FarmerController extends Controller
         $farmer->price = $farmer->price()->price_per_kg;
         $farmer->transactions = $farmer->transactions();
         $farmer->image = $farmer->getImage();
-        return $farmer;
-        // return view('admin.farmer.farmer_profile', [
-        //     'farmer' => $farmer
-        // ]);
+        return view('admin.farmer.farmer_profile', [
+            'farmer' => $farmer
+        ]);
     }
     public function filterByDate(Request $request)
     {

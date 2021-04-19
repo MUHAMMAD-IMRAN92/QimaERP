@@ -306,14 +306,15 @@
             <div class="row">
 
                 <div class="">
-                    @foreach ($transactions as $transaction)
+                   
                         <ol class="breadcrumb float-sm-right txt-size">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active"> Farmer / Profile</li>
-                            <li class="breadcrumb-item active"> Farmer / Profile</li>
-                            <li class="breadcrumb-item active"> Farmer / Profile</li>
+                        @foreach ($farmer->transactions as $transaction )
+                              <li class="breadcrumb-item active"> {{$transaction->created_at}} / </li>
+                            
+                        @endforeach
+                          
                         </ol>
-                    @endforeach
+                 
 
                 </div>
 
