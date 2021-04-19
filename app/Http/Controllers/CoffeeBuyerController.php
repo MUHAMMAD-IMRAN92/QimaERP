@@ -24,19 +24,29 @@ class CoffeeBuyerController extends Controller
         $governorates = Governerate::all();
         $regions = Region::all();
         $villages = Village::all();
-        $image = collect();
+
         $coffeeBuyingManagers = Role::with(['users'])->where('name', 'Coffee Buying Manager')->first()->users;
         $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
         $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
             $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+            $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+            $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+            $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+            $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+            $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
             return   $coffeeBuyingManager;
         });
         $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
             $coffeeBuyer->image = $coffeeBuyer->getImage();
+            $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+            $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+            $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+            $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+            $coffeeBuyer = $coffeeBuyer->specialPrice();
             return   $coffeeBuyer;
         });
-        
-
+   
+        // return $coffeeBuyingManagers;
         return view('admin.coffeBuyer.all_coffee_buyer', [
             'coffeeBuyerMangers' =>  $coffeeBuyingManagers,
             'coffeeBuyers' => $coffeeBuyers,
@@ -122,7 +132,24 @@ class CoffeeBuyerController extends Controller
 
         $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$request->from, $request->to]);
         $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$request->from, $request->to]);
-
+        $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+            $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+            $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+            $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+            $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+            $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+            return   $coffeeBuyingManager;
+        });
+        $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+            $coffeeBuyer->image = $coffeeBuyer->getImage();
+            $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+            $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+            $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+            $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+            $coffeeBuyer = $coffeeBuyer->specialPrice();
+            return   $coffeeBuyer;
+        });
         return view('admin.coffeBuyer.views.index', [
             'coffeeBuyerMangers' =>  $coffeeBuyingManagers,
             'coffeeBuyers' => $coffeeBuyers,
@@ -137,7 +164,6 @@ class CoffeeBuyerController extends Controller
         $date = $request->date;
         if ($date == 'today') {
             $date = Carbon::today()->toDateString();
-
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -147,7 +173,24 @@ class CoffeeBuyerController extends Controller
 
             $coffeeBuyingManagers =  $coffeeBuyingManagers->where('created_at', $date);
             $coffeeBuyers =  $coffeeBuyers->where('created_at', $date);
-
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+                $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+                $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+                $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+                $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                return   $coffeeBuyingManager;
+            });
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+                $coffeeBuyer->image = $coffeeBuyer->getImage();
+                $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+                $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+                $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                return   $coffeeBuyer;
+            });
             return view('admin.coffeBuyer.all_coffee_buyer', [
                 'coffeeBuyerMangers' =>  $coffeeBuyingManagers,
                 'coffeeBuyers' => $coffeeBuyers,
@@ -165,6 +208,24 @@ class CoffeeBuyerController extends Controller
 
             $coffeeBuyingManagers =  $coffeeBuyingManagers->where('created_at', $yesterday);
             $coffeeBuyers =  $coffeeBuyers->where('created_at', $yesterday);
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+                $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+                $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+                $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+                $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                return   $coffeeBuyingManager;
+            });
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+                $coffeeBuyer->image = $coffeeBuyer->getImage();
+                $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+                $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+                $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                return   $coffeeBuyer;
+            });
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -197,7 +258,24 @@ class CoffeeBuyerController extends Controller
             }])->where('name', 'Coffee Buyer')->first();
 
             $coffeeBuyers = $role->users;
-
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+                $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+                $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+                $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+                $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                return   $coffeeBuyingManager;
+            });
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+                $coffeeBuyer->image = $coffeeBuyer->getImage();
+                $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+                $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+                $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                return   $coffeeBuyer;
+            });
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -227,7 +305,24 @@ class CoffeeBuyerController extends Controller
             }])->where('name', 'Coffee Buyer')->first();
             $coffeeBuyers = $role->users;
 
-
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+                $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+                $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+                $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+                $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                return   $coffeeBuyingManager;
+            });
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+                $coffeeBuyer->image = $coffeeBuyer->getImage();
+                $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+                $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+                $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                return   $coffeeBuyer;
+            });
 
 
 
@@ -253,7 +348,24 @@ class CoffeeBuyerController extends Controller
                 $query->whereYear('created_at', $year);
             }])->where('name', 'Coffee Buyer')->first();
             $coffeeBuyers = $role->users;
-
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+                $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+                $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+                $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+                $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                return   $coffeeBuyingManager;
+            });
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+                $coffeeBuyer->image = $coffeeBuyer->getImage();
+                $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+                $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+                $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                return   $coffeeBuyer;
+            });
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -277,7 +389,24 @@ class CoffeeBuyerController extends Controller
 
             $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$start, $end]);
             $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$start, $end]);
-
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+                $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+                $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+                $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+                $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                return   $coffeeBuyingManager;
+            });
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+                $coffeeBuyer->image = $coffeeBuyer->getImage();
+                $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+                $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+                $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                return   $coffeeBuyer;
+            });
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -301,7 +430,24 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$start, $date]);
             $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$start, $date]);
 
-
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+                $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+                $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+                $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+                $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                return   $coffeeBuyingManager;
+            });
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+                $coffeeBuyer->image = $coffeeBuyer->getImage();
+                $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+                $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+                $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                return   $coffeeBuyer;
+            });
 
             $governorates = Governerate::all();
             $regions = Region::all();
@@ -332,7 +478,24 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$start, $date]);
 
 
-
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+                $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+                $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+                $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+                $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                return   $coffeeBuyingManager;
+            });
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+                $coffeeBuyer->image = $coffeeBuyer->getImage();
+                $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+                $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+                $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
+                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
+                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                return   $coffeeBuyer;
+            });
             return view('admin.coffeBuyer.all_coffee_buyer', [
                 'coffeeBuyerMangers' =>  $coffeeBuyingManagers,
                 'coffeeBuyers' => $coffeeBuyers,

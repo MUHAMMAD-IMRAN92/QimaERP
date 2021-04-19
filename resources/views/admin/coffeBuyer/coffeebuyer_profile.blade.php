@@ -74,13 +74,10 @@
 
 
             <div class="row  margin-left anchor">
-                <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $buyer->buyer_id) }}">EDIT
+                <span class="ml-5" style="margin-left: 60% !important"> <a href="{{ url('admin/editfarmer/' . $buyer->buyer_id) }}">EDIT
                         INFORMATION</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> ADD CROPSTER REPORT</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> OVERRIDE PRICE </a></span> &nbsp |
-                <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span> &nbsp |
-                <span class="ml-2"> <a href="">ADD PREMIUM</a></span>&nbsp |
-                <span class="ml-2"> <a href="">SETTLE LOAN</a></span>
+                <span class="ml-2"> <a href=""> ADD PANELTY</a></span>  
+                
             </div>
             <hr>
             <div class="row">

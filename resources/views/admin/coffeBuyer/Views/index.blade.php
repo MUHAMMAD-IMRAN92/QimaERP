@@ -19,7 +19,6 @@
                             <td>PRICE PAID</td>
                             <td class="gap"></td>
                             <td>Firstname</td>
-                            <td class="gap"></td>
                             <td>View Details</td>
                         </tr>
                     </thead>
@@ -38,26 +37,31 @@
                                             alt=""></td>
                                 @endif
                                 <td>{{ $coffeeBuyerManger->first_name }}</td>
-                                <td>Doe</td>
-                                <td>john@example.com</td>
+                                <td>{{ $coffeeBuyerManger->first_purchase }}</td>
+                                <td>{{ $coffeeBuyerManger->last_purchase }}</td>
 
                                 <td>lahore</td>
                                 <td class="gap"></td>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td  class="gap"></td>
-                                <td>John</td>
-                                <td>Doe</td>
+                                <td>{{ $coffeeBuyerManger->special_weight }}</td>
+                                <td>{{ $coffeeBuyerManger->special_price }}</td>
+                                <td class="gap"></td>
+                                <td>{{ $coffeeBuyerManger->non_special_weight }}</td>
+                                <td>{{ $coffeeBuyerManger->non_special_price }}</td>
                                 <td class="gap"></td>
 
                                 <td>John</td>
+
+                                <td> <a
+                                        href="{{ route('coffeBuyer.profile', $coffeeBuyerManger) }}"><i
+                                            class="fas fa-eye"></i></a></td>
+
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
 
-                {{-- <div class="col-md-2 ml-2">
+            {{-- <div class="col-md-2 ml-2">
                     <caption>Specialty</caption>
                     <table class="table table-bordered">
 
@@ -125,7 +129,7 @@
 
         <div class="row ">
             <div class="col-md-6">
-                <caption> <b> Coffee Buying Manger</b></caption>
+                <caption> <b> Coffee Buyer</b></caption>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -142,43 +146,47 @@
                             <td>PRICE PAID</td>
                             <td class="gap"></td>
                             <td>Firstname</td>
+                            <td>View Details</td>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($coffeeBuyerMangers as $coffeeBuyerManger)
+                        @foreach ($coffeeBuyers as $coffeeBuyer)
                             <tr>
 
-                                @if ($coffeeBuyerManger->picture_id == null)
+                                @if ($coffeeBuyer->picture_id == null)
                                     <td> <img class="famerimg"
                                             src="{{ asset('public/dist/img/farmericon.png') }}"
                                             alt="">
                                     </td>
                                 @else
                                     <td> <img class="famerimg"
-                                            src="{{ asset('public/storage/images/' . $coffeeBuyerManger->image) }}"
+                                            src="{{ asset('public/storage/images/' . $coffeeBuyer->image) }}"
                                             alt=""></td>
                                 @endif
-                                <td>{{ $coffeeBuyerManger->first_name }}</td>
-                                <td>Doe</td>
-                                <td>john@example.com</td>
+                                <td>{{ $coffeeBuyer->first_name }}</td>
+                                <td>{{ $coffeeBuyer->first_purchase }}</td>
+                                <td>{{ $coffeeBuyer->last_purchase }}</td>
 
                                 <td>lahore</td>
                                 <td class="gap"></td>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td  class="gap"></td>
-                                <td>John</td>
-                                <td>Doe</td>
+                                <td>{{ $coffeeBuyer->special_weight }}</td>
+                                <td>{{ $coffeeBuyer->special_price }}</td>
+                                <td class="gap"></td>
+                                <td>{{ $coffeeBuyer->non_special_weight }}</td>
+                                <td>{{ $coffeeBuyer->non_special_price }}</td>
                                 <td class="gap"></td>
 
                                 <td>John</td>
+
+                                <td> <a href="{{ route('coffeBuyer.profile', $coffeeBuyer) }}"><i
+                                            class="fas fa-eye"></i></a></td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
 
-                {{-- <div class="col-md-2 ml-2">
+            {{-- <div class="col-md-2 ml-2">
                     <caption>Specialty</caption>
                     <table class="table table-bordered">
 

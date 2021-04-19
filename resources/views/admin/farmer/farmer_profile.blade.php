@@ -223,11 +223,11 @@
             <hr>
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger">
-                    <h3 style="font-size: 16px !important">{{ $farmer->first_purchase->toDateString() }}</h3>
+                    <h3 style="font-size: 16px !important">{{ $farmer->first_purchase}}</h3>
                     <p>First Purchade</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3 style="font-size: 16px !important">{{ $farmer->last_purchase->toDateString() }}</h3>
+                    <h3 style="font-size: 16px !important">{{ $farmer->last_purchase}}</h3>
 
                     <p>Last Purchase</p>
                 </div>
