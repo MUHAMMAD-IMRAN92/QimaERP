@@ -35,7 +35,7 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyer->image = $coffeeBuyer->getImage();
             return   $coffeeBuyer;
         });
-        // $transactions = Transaction::where('created_by',  $coffeeBuyer->user_id)->get();
+        
 
         return view('admin.coffeBuyer.all_coffee_buyer', [
             'coffeeBuyerMangers' =>  $coffeeBuyingManagers,
@@ -345,9 +345,8 @@ class CoffeeBuyerController extends Controller
     public function coffeeBuyerProfile(User $buyer)
     {
 
-
         $buyer->image = $buyer->getImage();
-  
+
         return   view('admin.coffeBuyer.coffeebuyer_profile', [
             'buyer' =>  $buyer,
         ]);
