@@ -411,13 +411,14 @@ class CoffeeDryingController extends Controller
                             } else {
                                 $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
                                 $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+
+                                if (!$checkTransaction) {
+                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] not found 0 [part dry cofee]');
+                                }
+
                                 $receivedTransId = $checkTransaction->transaction_id;
 
                                 $parentTransaction = $checkTransaction;
-
-                                if (!$parentTransaction) {
-                                    throw new Exception('Parent Transaction [' . $receivedTransaction->transaction->reference_id . '] is not found 0 [part dry cofee]');
-                                }
                             }
                             $processTransaction2 = Transaction::create([
                                 'batch_number' => $receivedTransaction->transaction->batch_number,
