@@ -388,7 +388,7 @@
                                         <caption> <b> Coffee Buyer</b></caption>
                                         <table class="table table-bordered" style="font-size:13px;">
                                             <thead>
-                                                <tr>
+                                                <tr align="center" >
                                                     <th></th>
                                                     <th>Name</th>
                                                     <th>First Purchase</th>
