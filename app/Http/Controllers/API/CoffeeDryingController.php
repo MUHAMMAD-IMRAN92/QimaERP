@@ -248,7 +248,7 @@ class CoffeeDryingController extends Controller
                     if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 11) {
 
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-                            if ($receivedTransaction->transaction->is_server_id == True) {
+                            if ($receivedTransaction->transaction->is_server_id == true) {
                                 $receivedTransId = $receivedTransaction->transaction->reference_id;
 
                                 $parentTransaction = Transaction::where('transaction_id', $receivedTransaction->transaction->reference_id)->first();
