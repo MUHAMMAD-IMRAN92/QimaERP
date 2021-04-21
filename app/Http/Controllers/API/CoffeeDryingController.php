@@ -319,7 +319,7 @@ class CoffeeDryingController extends Controller
                             }
                         }
                     }
-                    if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 12) {
+                    if ($receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 12) {
 
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
 
@@ -407,7 +407,7 @@ class CoffeeDryingController extends Controller
                             }
                         }
                     }
-                    if ($receivedTransaction->transaction && $receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 0) {
+                    if ($receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 0) {
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
                             if ($receivedTransaction->transaction->is_server_id == true) {
                                 $receivedTransId = $receivedTransaction->transaction->reference_id;
