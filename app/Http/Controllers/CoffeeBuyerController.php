@@ -509,6 +509,7 @@ class CoffeeBuyerController extends Controller
     {
 
         $buyer->image = $buyer->getImage();
+        
 
         return   view('admin.coffeBuyer.coffeebuyer_profile', [
             'buyer' =>  $buyer,

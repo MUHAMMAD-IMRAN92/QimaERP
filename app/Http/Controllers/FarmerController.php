@@ -256,7 +256,7 @@ class FarmerController extends Controller
         $farmer->last_purchase = $farmer->getlastTransaction();
         $farmer->quantity = $farmer->quntity();
         $farmer->price = $farmer->price()->price_per_kg;
-        $farmer->transactions = $farmer->transactions();
+        $farmer = $farmer->transactions();
         $farmer->image = $farmer->getImage();
         return view('admin.farmer.farmer_profile', [
             'farmer' => $farmer
@@ -376,6 +376,8 @@ class FarmerController extends Controller
                 $farmer->image = $farmer->getImage();
                 return $farmer;
             });
+
+
             return view('admin.farmer.allfarmer', [
                 'farmers' => $farmers,
                 'governorates' => $governorates,
@@ -625,5 +627,32 @@ class FarmerController extends Controller
 
             ]);
         }
+    }
+    public function filter_farmer_profile(Request $request, $id)
+    {
+        $farmer = Farmer::find($id);
+
+        $villageCode = $farmer->village_code;
+        $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+        $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$request->from, $request->to])
+            ->first()['created_at'];
+        $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$request->from, $request->to])
+            ->latest()->first()['created_at'];
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+            ->whereBetween('created_at', [$request->from, $request->to])
+            ->where('sent_to', 2)
+            ->get();
+        $sum = 0;
+        foreach ($transactions as $transaction) {
+            $sum += $transaction->details->sum('container_weight');
+        }
+        $farmer->quantity = $sum;
+
+        return view('admin.farmer.views.filter_transctions', [
+            'farmer' => $farmer
+        ])->render();
+    }
+    public function filter_farmer_profile_by_date(Request $request, $id){
+        return $request->date;
     }
 }

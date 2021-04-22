@@ -71,7 +71,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('filter_villages', 'FarmerController@fiterVillages');
         Route::get('farmer_by_villages', 'FarmerController@farmerByVillages');
         Route::get('farmer_by_date/{date}', 'FarmerController@famerByDate');
-
+        Route::get('filter_farmer_profile/{id}', 'FarmerController@filter_farmer_profile');
+        Route::get('farmer_by_date_profile/{date}', 'FarmerController@filter_farmer_profile_by_date');
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
         Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
