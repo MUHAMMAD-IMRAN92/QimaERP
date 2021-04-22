@@ -56,20 +56,33 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('addvillage', 'VillageController@store')->middleware('auth');
         Route::get('editvillage/{id}', 'VillageController@edit')->middleware('auth');
         Route::post('updatevillage', 'VillageController@update');
+        Route::get('village/profile/{village}', 'VillageController@villageProfile')->name('village.profile');
+
 
         //Farmer Controller
         Route::get('allfarmer', 'FarmerController@index')->middleware('auth');
         Route::get('getfarmer', 'FarmerController@getFarmerAjax');
         Route::get('editfarmer/{id}', 'FarmerController@edit');
         Route::post('updatefarmer', 'FarmerController@update');
-
         Route::get('statusupdate/{id}', 'FarmerController@updatestatus');
-
-
         Route::get('deletefarmer/{id}', 'FarmerController@delete');
+        Route::get('filter_farmers', 'FarmerController@filterByDate');
+        Route::get('filter_farmers_by_region', 'FarmerController@fiterByRegion');
+        Route::get('filter_villages', 'FarmerController@fiterVillages');
+        Route::get('farmer_by_villages', 'FarmerController@farmerByVillages');
+        Route::get('farmer_by_date/{date}', 'FarmerController@famerByDate');
 
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
+        Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
+
+        //Coffee Buyer
+        Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');
+        Route::get('filtercoffeebuyer', 'CoffeeBuyerController@filterByDate');
+        Route::get('coffeebuyer_by_villages', 'CoffeeBuyerController@coffeebuyerByVillages');
+        Route::get('coffeeBuyerByDate/{date}', 'CoffeeBuyerController@coffeeBuyerByDate');
+        Route::get('coffeeBuyer/profile/{buyer}', 'CoffeeBuyerController@coffeeBuyerProfile')->name('coffeBuyer.profile');
+        
         //BatchNumber Controller
         Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');
         Route::get('getbatch', 'BatchNumberController@getbatchAjax');

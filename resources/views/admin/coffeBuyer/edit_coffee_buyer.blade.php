@@ -53,21 +53,13 @@
                                            <span  class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>   
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Price Per Kg </label>
-                                    <input type="number" id="price_per_kg" class="form-control" value="{{$farmer->price_per_kg}}" name="price_per_kg"
-                                        placeholder="Price Per Kg" @error('price_per_kg') is-invalid @enderror>
-                                    @error('farmer_nicn')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="customFile">Farmer Image</label>
                                             <input type="hidden" name="picture_id" value="{{$farmer->picture_id}}">
                                             <div class="">
-                                                <input type="file" class="" name="profile_picture" id="customFile"  @error('profile_picture') is-invalid @enderror>
+                                                <input type="file" class="  name="profile_picture" id="customFile"  @error('profile_picture') is-invalid @enderror>
                                                        @error('profile_picture')
                                                        <span  class="text-danger">{{ $message }}</span>
                                                 @enderror

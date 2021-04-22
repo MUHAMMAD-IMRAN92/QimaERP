@@ -70,13 +70,20 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="exampleInputPassword1">Village Title (Arabic)</label>
-                                                    <input type="text" id="village_title" class="form-control" id="exampleInputPassword1" name="village_title_ar" placeholder="Village Title (Arabic)"  @error('village_title_ar') is-invalid @enderror>
+                                                    <label for="village_title_ar">Village Title (Arabic)</label>
+                                                    <input type="text" id="village_title" class="form-control" id="village_title_ar" name="village_title_ar" placeholder="Village Title (Arabic)"  @error('village_title_ar') is-invalid @enderror>
                                                            @error('village_title_ar')
                                                            <span  class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
-
+                                                <div class="form-group">
+                                                    <label for="price_per_kg">Price Per Kg </label>
+                                                    <input type="number" id="price_per_kg" class="form-control" value="" name="price_per_kg"
+                                                        placeholder="Price Per Kg" @error('price_per_kg') is-invalid @enderror>
+                                                    @error('price per kg')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
                                             </div>
                                             <!-- /.card-body -->
 

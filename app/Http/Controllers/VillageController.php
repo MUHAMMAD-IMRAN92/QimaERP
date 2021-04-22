@@ -13,8 +13,8 @@ class VillageController extends Controller
 
     public function index()
     {
-        $data['village'] = Village::all();
-        return view('admin.village.allvillage', $data);
+        $data = Village::all();
+        return view('admin.village.allvillage', compact('data'));
     }
 
     function getVillageAjax(Request $request)
@@ -71,6 +71,7 @@ class VillageController extends Controller
             'region_code' => 'required|max:100|unique:villages,village_code',
             'village_title' => 'required|max:100|unique:villages,village_title',
             'village_title_ar' => 'required|max:100|unique:villages,village_title_ar',
+
         ]);
         if ($validator->fails()) {
             //::validation failed
@@ -89,6 +90,8 @@ class VillageController extends Controller
         $village->village_title = $request->village_title;
         $village->village_title_ar = $request->village_title_ar;
         $village->created_by = Auth::user()->user_id;
+        $village->price_per_kg = $request->price_per_kg;
+
         $village->local_code = '';
         // dd($village->village_id);
         $village->save();
@@ -117,8 +120,18 @@ class VillageController extends Controller
         $updatevillage = Village::find($request->village_id);
         $updatevillage->village_title = $request->village_title;
         $updatevillage->village_title_ar = $request->village_title_ar;
+        $updatevillage->price_per_kg = $request->price_per_kg;
+
         // dd($updatevillage);
         $updatevillage->update();
         return redirect('admin/allvillage')->with('update', 'Village Update Successfully!');
+    }
+    public function villageProfile(Village $village)
+    {
+        $village = $village->gov_region();
+      
+        return   view('admin.village.village_profile', [
+            'village' =>  $village,
+        ]);
     }
 }

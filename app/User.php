@@ -2,12 +2,13 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -51,5 +52,105 @@ class User extends Authenticatable
     public function center_user()
     {
         return $this->hasOne(CenterUser::class, 'user_id', 'user_id');
+    }
+    public function getImage()
+    {
+        $imageName = null;
+
+        if ($file = FileSystem::where('file_id', $this->picture_id)->first()) {
+            $imageName = $file->user_file_name;
+        }
+
+        return $imageName;
+    }
+    public function firstPurchase()
+    {
+        $userId = $this->user_id;
+        $firstPurchase = Transaction::with('details')->where('created_by',   $userId)->first()['created_at'];
+        return  $firstPurchase;
+    }
+    public function lastPurchase()
+    {
+        $userId = $this->user_id;
+        $lastPurchase = Transaction::where('created_by',   $userId)->latest()->first()['created_at'];
+        return  $lastPurchase;
+    }
+    public function special()
+    {
+        $userId = $this->user_id;
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->get();
+        $sum = 0;
+        foreach ($transactions as $transaction) {
+            $sum += $transaction->details->sum('container_weight');
+        }
+        return  $sum;
+    }
+    public function nonSpecial()
+    {
+        $userId = $this->user_id;
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->get();
+        $sum = 0;
+        foreach ($transactions as $transaction) {
+            $sum += $transaction->details->sum('container_weight');
+        }
+        return  $sum;
+    }
+    public function nonSpecialPrice()
+    {
+        $userId = $this->user_id;
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->get();
+        $totalWeight = 0;
+        $totalPrice = 0;
+        foreach ($transactions as $transaction) {
+            $weight = $transaction->details->sum('container_weight');
+            $price = 0;
+            $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+           
+            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg; 
+            if (!$farmerPrice) {
+                $village_code = Str::beforeLast($farmer_code, '-');
+                $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+
+              
+            } else {
+                $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+            }
+
+            $totalPrice += $weight * $price;
+            $totalWeight += $weight;
+        }
+        
+        $this->non_special_weight =  $totalWeight ;
+        $this->non_special_price =  $totalPrice;
+        return $this;
+    }
+    public function specialPrice()
+    {
+        $userId = $this->user_id;
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->get();
+        $totalWeight = 0;
+        $totalPrice = 0;
+        foreach ($transactions as $transaction) {
+            $weight = $transaction->details->sum('container_weight');
+            $price = 0;
+            $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+           
+            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg; 
+            if (!$farmerPrice) {
+                $village_code = Str::beforeLast($farmer_code, '-');
+                $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+
+              
+            } else {
+                $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+            }
+
+            $totalPrice += $weight * $price;
+            $totalWeight += $weight;
+        }
+        
+        $this->special_weight =  $totalWeight ;
+        $this->special_price =  $totalPrice;
+        return $this;
     }
 }
