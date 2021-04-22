@@ -8,6 +8,11 @@
         }
 
     </style>
+<script>
+$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
 
 
     <div class="content-wrapper">
@@ -58,25 +63,31 @@
                         <div class="card">
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="village" class="table table-bordered table-striped">
+                                <table id="myTable" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th>S#</th>
                                             <th>Village Code</th>
                                             <th>Village Title (En)</th>
                                             <th>Village Title (Ar)</th>
+                                            <th>Price Per Kg</th>
+
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $village)
                                             <tr>
-                                                <td></td>
+                                                <td>{{ $village->village_id }}</td>
                                                 <td>{{ $village->village_code }}</td>
 
                                                 <td>{{ $village->village_title }}</td>
                                                 <td>{{ $village->village_title_ar }}</td>
-                                                <td></td>
+                                                <td>{{ $village->price_per_kg }}</td>
+
+                                                <td> <a  href="{{ url('admin/editvillage/' . $village->village_id) }}">Edit</a> &nbsp
+                                                <a href="{{ route('village.profile', $village) }}">View<i
+                                                            class="fas fa-eye"></i></a> </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -99,8 +110,4 @@
 
 
 @endsection
-<script>
-    $(document).ready(function() {
-                $('#village').DataTable();
-    });
-</script>
+

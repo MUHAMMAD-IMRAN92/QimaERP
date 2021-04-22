@@ -260,7 +260,7 @@
                                 <div class="row ">
                                     <div class="col-md-6">
                                         <caption> <b> Coffee Buying Manger</b></caption>
-                                        <table class="table table-bordered" style="font-size:13px;">
+                                        <table class="table table-bordered"     style="font-size:13px;">
                                             <thead>
                                                 <tr>
                                                     <th></th>

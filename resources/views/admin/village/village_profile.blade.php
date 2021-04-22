@@ -29,7 +29,7 @@
         }
 
         .margin-left {
-            margin-left: 306PX;
+            margin-left: 62%;
         }
 
         #farmerTable {
@@ -57,7 +57,7 @@
                 <div class="row mb-2">
 
                     <div class="col-sm-6">
-                        <h1>Farmer Profile
+                        <h1>Village Profile
 
                         </h1>
                     </div>
@@ -72,27 +72,25 @@
             </div><!-- /.container-fluid -->
 
 
-
             <div class="row  margin-left anchor">
-                <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">EDIT
+                <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}">EDIT
                         INFORMATION</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> ADD CROPSTER REPORT</a></span> &nbsp |
-                <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}"> OVERRIDE PRICE
+               
+                <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}"> OVERRIDE PRICE
                     </a></span> &nbsp |
-                <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span> &nbsp |
-                <span class="ml-2"> <a href="">ADD PREMIUM</a></span>&nbsp |
-                <span class="ml-2"> <a href="">SETTLE LOAN</a></span>
+                <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span> 
+              
             </div>
             <hr>
             <div class="row">
                 <div class="col-md-4">
-                    @if ($farmer->picture_id == null)
+                    @if ($village->picture_id == null)
                         <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;" alt=""></td>
                     @else
                         <td> <img class="famerimg"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ asset('public/storage/images/' . $farmer->image) }}" alt=" no img"></td>
+                                src="{{ asset('public/storage/images/' . $village->image) }}" alt=" no img"></td>
                     @endif
 
                 </div>
@@ -101,33 +99,19 @@
 
                         <tbody>
                             <tr>
-                                <td colspan=""> <strong>Name</strong> </td>
-                                <td colspan="4">{{ $farmer->farmer_name }}</td>
+                                <td colspan=""> <strong>Village</strong> </td>
+                                <td colspan="4">{{ $village->village_title }}</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
-                                <td colspan=""><strong>IDENTIFICATION NUMBER</strong></td>
-                                <td colspan="4">{{ $farmer->farmer_nicn }}</td>
+                                <td colspan=""><strong>Region</strong></td>
+                                <td colspan="4">{{ $village->region }}</td>
                                 <td colspan="4"></td>
                             </tr>
-                            <tr>
-                                <td colspan=""><strong>CODE </strong></td>
-                                <td colspan="4">{{ $farmer->farmer_code }}</td>
-                                <td colspan="4"></td>
-                            </tr>
+
                             <tr>
                                 <td colspan=""><strong>GOVERNORATE</strong></td>
-                                <td colspan="4">{{ $farmer->governerate_title }}</td>
-                                <td colspan="4"></td>
-                            </tr>
-                            <tr>
-                                <td colspan=""><strong>REGION</strong></td>
-                                <td colspan="4">{{ $farmer->region_title }}</td>
-                                <td colspan="4"></td>
-                            </tr>
-                            <tr>
-                                <td colspan=""><strong>VILLAGE</strong></td>
-                                <td colspan="4">{{ $farmer->village_title }}</td>
+                                <td colspan="4">{{ $village->governrate }}</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
@@ -136,51 +120,30 @@
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
-                                <td colspan=""><strong>HOUSE HOLD SIZE</strong></td>
+                                <td colspan=""><strong>VILLAGE INFORMATION</strong></td>
                                 <td colspan="4">pending</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
-                                <td colspan=""><strong>FARM SIZE</strong></td>
+                                <td colspan=""><strong>REGIONS INFORMATION</strong></td>
                                 <td colspan="4">pending</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
-                                <td colspan=""><strong>NO OF TREES</strong></td>
+                                <td colspan=""><strong>GOVERNORATE INFORMATION
+                                    </strong></td>
                                 <td colspan="4">pending</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
-                                <td colspan=""><strong>STARTED WORKING WITH QIMA</strong></td>
-                                <td colspan="4">{{ $farmer->created_at->toDateString() }}</td>
+                                <td colspan=""><strong>NUMBER OF FARMERS
+                                    </strong></td>
+                                <td colspan="4">{{ $village->farmers }}</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
-                                <td colspan=""><strong>FAMER INFORMATION</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
-                            </tr>
-                            <tr>
-                                <td colspan=""><strong>CUPPING SCORE</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
-                            </tr>
-                            <tr>
-                                <td colspan=""><strong>CUP PROFILE</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
-                            </tr>
-                            <tr>
-                                <td colspan=""><strong>TEL</strong>
-                                </td>
-                                <td colspan="8">pending</td>
-                                <td colspan="4"></td>
-                            </tr>
-                            <tr>
-                                <td colspan=""><strong>PRICE PER KG</strong>
-
-                                </td>
-                                <td colspan="4">pending</td>
+                                <td colspan=""><strong>PRICE PER KG</strong></td>
+                                <td colspan="4">{{ $village->price_per_kg }}</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
@@ -189,11 +152,39 @@
                                 <td colspan="4"></td>
                             </tr>
 
+
+
                         </tbody>
                     </table>
                 </div>
             </div>
+
             <hr>
+              <div class="row ml-2 blacklink">
+
+                <a href="" class="ml-2">
+                    <p>Photo Attachment &nbsp;</p>
+                </a>
+
+            </div>
+              <div class="row ml-2">
+                <div class="col-sm-1 color bg-danger">
+                    <h3>{{ App\Village::count() }}</h3>
+                    <p>Villages</p>
+                </div>
+                <div class="col-sm-1 color bg-primary">
+                    <h3>{{ App\Farmer::count() }}</h3>
+
+                    <p>Farmers</p>
+                </div>
+                <div class="col-sm-1 color bg-warning">
+                    <h3>{{ App\User::count() }}</h3>
+
+                    <p>User </p>
+                </div>
+
+
+            </div>  
 
             <div class="row ml-2">
                 <strong>
@@ -222,30 +213,31 @@
                 <span class="ml-2"> <a href=""> ALL TIME</a></span>
             </div>
             <hr>
+           
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger">
-                    <h3 style="font-size: 16px !important">{{ $farmer->first_purchase }}</h3>
+                    <h3 style="font-size: 16px !important">12345678</h3>
                     <p>First Purchade</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3 style="font-size: 16px !important">{{ $farmer->last_purchase }}</h3>
+                    <h3 style="font-size: 16px !important">1234567890</h3>
 
                     <p>Last Purchase</p>
                 </div>
                 <div class="col-sm-1 color bg-warning">
-                    @if ($farmer->price_per_kg == null)
-                        <h3 style="font-size: 16px !important">{{ number_format($farmer->price * $farmer->quantity) }}
+                    {{-- @if ($village->price_per_kg == null)
+                        <h3 style="font-size: 16px !important">1234567890
                         </h3>
                     @else
                         <h3 style="font-size: 16px !important">
-                            {{ number_format($farmer->price_per_kg * $farmer->quantity) }}
+                           123456789
                         </h3>
-                    @endif
+                    @endif --}}
 
                     <p>yer total coffee purchased </p>
                 </div>
                 <div class="col-sm-1 color bg-info">
-                    <h3 style="font-size: 16px !important">{{ $farmer->quantity }}</h3>
+                    <h3 style="font-size: 16px !important">123456789</h3>
 
                     <p>Quantity</p>
                 </div>
@@ -255,40 +247,8 @@
 
             </div>
             <hr>
-            <div class="row ml-2 blacklink">
-
-                <a href="" class="ml-2">
-                    <p>ID DOCUMENTS &nbsp;|</p>
-                </a>
-                <a href="" class="ml-2">
-                    <p> RECIEPTS &nbsp;|</p>
-                </a>
-                <a href="" class="ml-2">
-                    <p>LOANS &nbsp;|</p>
-                </a>
-                <a href="" class="ml-2">
-                    <p>PREMIUMS &nbsp;</p>
-                </a>
-
-            </div>
-            <div class="row ml-2">
-                <div class="col-sm-1 color bg-danger">
-                    <h3>{{ App\Village::count() }}</h3>
-                    <p>Villages</p>
-                </div>
-                <div class="col-sm-1 color bg-primary">
-                    <h3>{{ App\Farmer::count() }}</h3>
-
-                    <p>Farmers</p>
-                </div>
-                <div class="col-sm-1 color bg-warning">
-                    <h3>{{ App\User::count() }}</h3>
-
-                    <p>User </p>
-                </div>
-
-
-            </div>
+           
+          
             <hr>
             <b>
                 <p>TRANSACTIONS </p>
@@ -306,15 +266,15 @@
             <div class="row">
 
                 <div class="">
-                   
-                        <ol class="breadcrumb float-sm-right txt-size">
-                        @foreach ($farmer->transactions as $transaction )
+
+                    <ol class="breadcrumb float-sm-right txt-size">
+                        {{-- @foreach ($village->transactions as $transaction)
                               <li class="breadcrumb-item active"> {{$transaction->created_at}} / </li>
                             
-                        @endforeach
-                          
-                        </ol>
-                 
+                        @endforeach --}}
+
+                    </ol>
+
 
                 </div>
 

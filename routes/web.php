@@ -56,7 +56,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('addvillage', 'VillageController@store')->middleware('auth');
         Route::get('editvillage/{id}', 'VillageController@edit')->middleware('auth');
         Route::post('updatevillage', 'VillageController@update');
-        Route::get('village/profile/{farmer}', 'VillageController@farmerProfile')->name('village.profile');
+        Route::get('village/profile/{village}', 'VillageController@villageProfile')->name('village.profile');
 
 
         //Farmer Controller
