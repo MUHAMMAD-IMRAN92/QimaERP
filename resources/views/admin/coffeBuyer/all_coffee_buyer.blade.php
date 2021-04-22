@@ -413,7 +413,7 @@
 
                                                         @if ($coffeeBuyer->picture_id == null)
                                                             <td> <img class="famerimg"
-                                                                    src="{{ asset('public/images/farmericon.png) }}"
+                                                                    src="{{ asset('public/images/farmericon.png') }}"
                                                                     alt="">
                                                             </td>
                                                         @else
@@ -444,70 +444,6 @@
                                             </tbody>
                                         </table>
                                     </div>
-
-                                    {{-- <div class="col-md-2 ml-2">
-                                            <caption>Specialty</caption>
-                                            <table class="table table-bordered">
-
-                                                <thead>
-                                                    <tr>
-                                                        <td>CHREEY BOUGHT</td>
-                                                        <td>PRICE PAID</td>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>John</td>
-                                                        <td>Doe</td>
-
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div class="col-md-2 mi-2">
-                                            <caption>Non-Specialty</caption>
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <td> <span>DRY COFFEE</span> BOUGHT</td>
-                                                        <td>PRICE PAID</td>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>John</td>
-                                                        <td>Doe</td>
-
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div class="col-md-1 ml-2">
-                                            <caption>&nbsp;</caption>
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <td>Firstname</td>
-
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>John</td>
-
-
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                        </div> --}}
                                 </div>
                             </div>
                         </div>
