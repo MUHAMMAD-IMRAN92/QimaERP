@@ -281,7 +281,7 @@ class CoffeeDryingController extends Controller
                                 ]);
                             }
 
-                            TransactionDetail::where('transaction_id', $parentTransaction->transaction_id)->update(['container_status' => 1]);
+                            // TransactionDetail::where('transaction_id', $parentTransaction->transaction_id)->update(['container_status' => 1]);
 
                             array_push($receivedCofffee, $processTransaction->transaction_id);
 
