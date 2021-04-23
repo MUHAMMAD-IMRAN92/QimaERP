@@ -1,6 +1,8 @@
 <?php
 
+use App\Lot;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
 
 function timeago($ptime)
@@ -244,4 +246,30 @@ function getFileExtensionForBase64($file)
 function toSqlDT($string)
 {
     return Carbon::parse($string)->toDateTimeString();
+}
+
+function lotGen($maxId)
+{
+    return 'LOT-' . now()->year . '-' . Str::padLeft($maxId, 4, 0);
+}
+
+function lotNumberGen()
+{
+    $maxLotNumber = Lot::max('lot_number');
+
+    $currentYear = now()->year;
+    $year = $currentYear;
+    $serial = 1;
+
+    if($maxLotNumber) {
+        $maxLotNumber = explode('-', $maxLotNumber);
+        $year = $maxLotNumber[1];
+        $serial = $maxLotNumber[2] + 1;
+
+        if($currentYear > $year){
+            $year = $currentYear;
+            $serial = 1;
+        }
+    }
+    return 'LOT-' . $year . '-' . Str::padLeft($serial, 4, 0);
 }

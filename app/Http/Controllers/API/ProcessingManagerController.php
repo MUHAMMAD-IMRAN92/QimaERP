@@ -107,8 +107,10 @@ class ProcessingManagerController extends Controller
                 //                }
                 //            }
                 if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+                    $isSpecial = false;
                     if ($sentTransaction->transaction->sent_to == 5) {
                         $type = 'special_processing';
+                        $isSpecial = true;
                     } else {
                         $type = 'coffee_drying';
                     }
@@ -118,6 +120,7 @@ class ProcessingManagerController extends Controller
                         'is_mixed' => $sentTransaction->transaction->is_mixed,
                         'created_by' => $sentTransaction->transaction->created_by,
                         'is_local' => FALSE,
+                        'is_special' => $isSpecial,
                         'transaction_type' => 2,
                         'local_code' => $sentTransaction->transaction->local_code,
                         'transaction_status' => 'sent',

@@ -42,8 +42,14 @@ class Transaction extends Model
         'is_sent' => 'boolean',
         'is_in_process' => 'boolean',
         'is_update_center' => 'boolean',
-        'ready_to_milled' => 'boolean'
+        'ready_to_milled' => 'boolean',
+        'is_specially_processed' => 'boolean'
     ];
+
+    public function isSpecial()
+    {
+        return $this->is_special;
+    }
 
     public function transactionDetail()
     {
