@@ -418,7 +418,7 @@ class FarmerController extends Controller
             ]);
         } elseif ($date == 'lastmonth') {
 
-            $date = \Carbon\Carbon::now();
+            $date = Carbon::now();
 
             $lastMonth =  $date->subMonth()->format('m');
             $year = $date->year;
@@ -453,7 +453,7 @@ class FarmerController extends Controller
             ]);
         } elseif ($date == 'currentyear') {
 
-            $date = \Carbon\Carbon::now();
+            $date = Carbon::now();
 
 
             $year = $date->year;
@@ -652,7 +652,208 @@ class FarmerController extends Controller
             'farmer' => $farmer
         ])->render();
     }
-    public function filter_farmer_profile_by_date(Request $request, $id){
-        return $request->date;
+    public function filter_farmer_profile_by_date(Request $request, $id)
+    {
+        if ($request->date == 'today') {
+            $date = Carbon::today()->toDateString();
+            $farmer = Farmer::find($id);
+
+            $villageCode = $farmer->village_code;
+            $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->where('created_at', $date)
+                ->first()['created_at'];
+            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->where('created_at', $date)
+                ->latest()->first()['created_at'];
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+                ->where('created_at', $date)
+                ->where('sent_to', 2)
+                ->get();
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $sum;
+
+            return view('admin.farmer.views.filter_transctions', [
+                'farmer' => $farmer
+            ])->render();
+        } elseif ($request->date == 'yesterday') {
+            $now = Carbon::now();
+            $yesterday = Carbon::yesterday();
+            $farmer = Farmer::find($id);
+
+            $villageCode = $farmer->village_code;
+            $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->where('created_at', $yesterday)
+                ->first()['created_at'];
+            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->where('created_at', $yesterday)
+                ->latest()->first()['created_at'];
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+                ->where('created_at', $yesterday)
+                ->where('sent_to', 2)
+                ->get();
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $sum;
+
+            return view('admin.farmer.views.filter_transctions', [
+                'farmer' => $farmer
+            ])->render();
+        } elseif ($request->date == 'weekToDate') {
+            $now = Carbon::now();
+            $start = $now->startOfWeek(Carbon::SUNDAY);
+            $end = $now->endOfWeek(Carbon::SATURDAY);
+
+            $farmer = Farmer::find($id);
+
+            $villageCode = $farmer->village_code;
+            $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$start, $end])
+                ->first()['created_at'];
+            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$start, $end])
+                ->latest()->first()['created_at'];
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+                ->whereBetween('created_at', [$start, $end])
+                ->where('sent_to', 2)
+                ->get();
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $sum;
+
+            return view('admin.farmer.views.filter_transctions', [
+                'farmer' => $farmer
+            ])->render();
+        } elseif ($request->date == 'monthToDate') {
+            $now = Carbon::now();
+            $date = Carbon::today()->toDateString();
+            $start = $now->firstOfMonth();
+            $farmer = Farmer::find($id);
+
+            $villageCode = $farmer->village_code;
+            $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$start, $date])
+                ->first()['created_at'];
+            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$start, $date])
+                ->latest()->first()['created_at'];
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+                ->whereBetween('created_at', [$start, $date])
+                ->where('sent_to', 2)
+                ->get();
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $sum;
+
+            return view('admin.farmer.views.filter_transctions', [
+                'farmer' => $farmer
+            ])->render();
+        } elseif ($request->date == 'lastmonth') {
+            $date = Carbon::now();
+
+            $lastMonth =  $date->subMonth()->format('m');
+            $year = $date->year;
+            $farmer = Farmer::find($id);
+
+            $villageCode = $farmer->village_code;
+            $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
+                ->first()['created_at'];
+            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
+                ->latest()->first()['created_at'];
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+                ->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
+                ->where('sent_to', 2)
+                ->get();
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $sum;
+
+            return view('admin.farmer.views.filter_transctions', [
+                'farmer' => $farmer
+            ])->render();
+        } elseif ($request->date == 'yearToDate') {
+            $now = Carbon::now();
+            $date = Carbon::today()->toDateString();
+            $start = $now->startOfYear();
+            $farmer = Farmer::find($id);
+
+            $villageCode = $farmer->village_code;
+            $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$start, $date])
+                ->first()['created_at'];
+            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$start, $date])
+                ->latest()->first()['created_at'];
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+                ->whereBetween('created_at', [$start, $date])
+                ->where('sent_to', 2)
+                ->get();
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $sum;
+
+            return view('admin.farmer.views.filter_transctions', [
+                'farmer' => $farmer
+            ])->render();
+        } elseif ($request->date == 'currentyear') {
+            $date = Carbon::now();
+
+            $year = $date->year;
+            $farmer = Farmer::find($id);
+
+            $villageCode = $farmer->village_code;
+            $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereYear('created_at', $year)
+                ->first()['created_at'];
+            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereYear('created_at', $year)
+                ->latest()->first()['created_at'];
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+                ->whereYear('created_at', $year)
+                ->where('sent_to', 2)
+                ->get();
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $sum;
+
+            return view('admin.farmer.views.filter_transctions', [
+                'farmer' => $farmer
+            ])->render();
+        } elseif ($request->date == 'lastyear') {
+            $date = Carbon::now();
+
+
+            $year = $date->year - 1;
+            $farmer = Farmer::find($id);
+
+            $villageCode = $farmer->village_code;
+            $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereYear('created_at', $year)
+                ->first()['created_at'];
+            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereYear('created_at', $year)
+                ->latest()->first()['created_at'];
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+                ->whereYear('created_at', $year)
+                ->where('sent_to', 2)
+                ->get();
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $sum;
+
+            return view('admin.farmer.views.filter_transctions', [
+                'farmer' => $farmer
+            ])->render();
+        }
     }
 }

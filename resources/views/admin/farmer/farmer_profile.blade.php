@@ -45,17 +45,21 @@
             font-size: 12px;
         }
 
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
+
     </style>
-<script>
+    <script>
         $(document).ready(function() {
             $('#myTable').DataTable();
             $('#to').on('change', function() {
                 let from = $('#from').val();
                 let to = $('#to').val();
-                
+
 
                 $.ajax({
-                    url: "{{ url('admin/filter_farmer_profile/' .  $farmer->farmer_id) }}",
+                    url: "{{ url('admin/filter_farmer_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
                     data: {
                         'from': from,
@@ -63,23 +67,127 @@
                     },
                     success: function(data) {
 
-                         $('#transaction').html(data);
+                        $('#transaction').html(data);
                         console.log(data);
                     }
                 });
             });
-           $('#today').on('click', function() {
-                
+            $('#today').on('click', function() {
 
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
                     data: {
-                        $date = 'yesterday'
+                        'date': 'today'
                     },
                     success: function(data) {
 
-                         $('#transaction').html(data);
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
                         console.log(data);
                     }
                 });
@@ -249,29 +357,31 @@
                 </form>
             </div>
             <div class="row ml-2 blacklink ">
-            <span class="ml-2" id="today"> TODAY</span> &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date_profile/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
-            &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date_profile/' . ($date = 'weekToDate')) }}"> WEEK TO DATE
-                </a></span>
-            &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date_profile/' . ($date = 'monthToDate')) }}">MONTH TO
+                <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
+                <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
+                &nbsp |
+                <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
+                    </a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="monthToDate"> MONTH
+                    TO
                     DATE</a></span>
-            &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date_profile/' . ($date = 'lastmonth')) }}"> LAST
+                &nbsp |
+                <span class="ml-2 hover" id="lastmonth"> LAST
                     MONTH</a></span>
-            &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date_profile/' . ($date = 'yearToDate')) }}">YEAR TO
+                &nbsp |
+                <span class="ml-2 hover" id="yearToDate"> YEAR TO
                     DATE</a></span>
-            &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date_profile/' . ($date = 'currentyear')) }}"> 2021
+                &nbsp |
+                <span class="ml-2 hover" id="currentyear"> 2021
                     SEASON</a></span>
-            &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date_profile/' . ($date = 'lastyear')) }}"> 2020
+                &nbsp |
+                <span class="ml-2 hover" id="lastyear"> 2020
                     SEASON</a></span>
-            &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
-        </div>
+                &nbsp |
+                <span class="ml-2"> <a href="{{ route('farmer.profile', $farmer) }}">ALL
+                        TIME</a></span>
+            </div>
             <hr>
             <div class="row ml-2" id="transaction">
                 <div class="col-sm-1 color bg-danger">
@@ -324,19 +434,15 @@
             </div>
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger">
-                    <h3>{{ App\Village::count() }}</h3>
-                    <p>Villages</p>
+                    <h3>CNIC</h3>
+                    <p>Farmer</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ App\Farmer::count() }}</h3>
+                    <h3>LOAN</h3>
 
-                    <p>Farmers</p>
+                    <p>Farmer</p>
                 </div>
-                <div class="col-sm-1 color bg-warning">
-                    <h3>{{ App\User::count() }}</h3>
-
-                    <p>User </p>
-                </div>
+               
 
 
             </div>
@@ -351,8 +457,6 @@
                             <li class="breadcrumb-item active">
                                 {{ $transaction->created_at }} / {{ $farmer->governerate_title }} /
                                 {{ $farmer->region_title }} /
-
-                                
                             </li>
                         </ol>
                     </div>

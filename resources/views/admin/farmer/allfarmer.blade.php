@@ -246,7 +246,7 @@
                         <div class="card">
                             <!-- /.card-header -->
                             <div class="table-responsive" id="famerstable">
-                                <table class="table" id="myTable"  style="font-size:13px;">
+                                <table class="table" id="myTable" style="font-size:13px;">
                                     <thead>
                                         <tr align="center">
                                             <th></th>
