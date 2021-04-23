@@ -81,7 +81,6 @@ class Farmer extends Model
     public function getfirstTransaction()
     {
         $farmerCode = $this->farmer_code;
-
         $transaction_created_at = Transaction::where('batch_number', 'LIKE', "$farmerCode%")->first()['created_at'];
         return   $transaction_created_at;
     }
