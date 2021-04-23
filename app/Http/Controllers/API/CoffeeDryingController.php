@@ -102,6 +102,8 @@ class CoffeeDryingController extends Controller
             'transactions' => $receivedTransactions
         ]);
 
+        $elevens = collect();
+
         DB::beginTransaction();
 
         try {
@@ -179,6 +181,8 @@ class CoffeeDryingController extends Controller
 
                             $transactionContainers = $receivedTransaction->transactionMeta;
 
+                            $detailsDebug = collect();
+
                             foreach ($transactionContainers as $key => $transactionContainer) {
                                 if (
                                     strstr($transactionContainer->key, 'BS') ||
@@ -206,7 +210,7 @@ class CoffeeDryingController extends Controller
                                     $weight = $basketArray[1];
                                     $transationsExplodeId = $basketArray[2];
 
-                                    TransactionDetail::create([
+                                    $detail = TransactionDetail::create([
                                         'transaction_id' => $transaction->transaction_id,
                                         'container_number' => $basket,
                                         'created_by' => $userId,
@@ -216,6 +220,8 @@ class CoffeeDryingController extends Controller
                                         'center_id' => $receivedTransaction->transaction->center_id,
                                         'reference_id' => $receivedTransaction->transaction->reference_id,
                                     ]);
+
+                                    $detailsDebug->push($detail);
 
                                     if ($trans == true) {
                                         TransactionDetail::where('transaction_id', $transationsExplodeId)
@@ -241,6 +247,7 @@ class CoffeeDryingController extends Controller
                             Log::channel('dev')->debug('Saved Transactions', [
                                 'sent_to' => 10,
                                 'status' => 'received',
+                                'detailsDebug' => $detailsDebug,
                                 'transaction' => $transaction
                             ]);
 
@@ -360,6 +367,8 @@ class CoffeeDryingController extends Controller
                                 'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
 
+                            $elevens->push($processTransaction);
+
                             array_push($receivedCofffee, $processTransaction->transaction_id);
 
                             $transactionLog = TransactionLog::create([
@@ -463,7 +472,9 @@ class CoffeeDryingController extends Controller
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
                                 'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
+
                             array_push($receivedCofffee, $processTransaction->transaction_id);
+
                             $transactionLog = TransactionLog::create([
                                 'transaction_id' => $processTransaction->transaction_id,
                                 'action' => 'sent',
@@ -474,7 +485,9 @@ class CoffeeDryingController extends Controller
                                 'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at),
                                 'type' => 'sent_to_yemen',
                             ]);
+
                             $transactionContainers = $receivedTransaction->transactionDetails;
+
                             foreach ($transactionContainers as $key => $transactionContainer) {
                                 TransactionDetail::create([
                                     'transaction_id' => $processTransaction->transaction_id,
@@ -488,6 +501,7 @@ class CoffeeDryingController extends Controller
                                 ]);
                             }
                             TransactionDetail::whereIn('transaction_id', $receivedTransIds)->update(['container_status' => 1]);
+
                             $transactionMeta = $receivedTransaction->transactionMeta;
                             foreach ($transactionMeta as $key => $transactionMe) {
                                 MetaTransation::create([
@@ -616,6 +630,10 @@ class CoffeeDryingController extends Controller
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
 
+        $elevens->each(function($eleven){
+            $eleven->load(['details', 'log']);
+            Log::channel('dev')->debug('elevens', $eleven);
+        });
         $allTransactions = array();
         //        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $receivedCofffee)->with('transactionDetail', 'log', 'meta')->get();
         //        foreach ($currentlyReceivedCoffees as $key => $transaction) {
