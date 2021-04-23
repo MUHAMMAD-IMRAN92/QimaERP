@@ -98,12 +98,6 @@ class CoffeeDryingController extends Controller
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
 
-        Log::channel('dev')->debug('all transactions from request', [
-            'transactions' => $receivedTransactions
-        ]);
-
-        $elevens = collect();
-
         DB::beginTransaction();
 
         try {
@@ -244,13 +238,6 @@ class CoffeeDryingController extends Controller
 
                             $transaction->load(['details', 'log']);
 
-                            Log::channel('dev')->debug('Saved Transactions', [
-                                'sent_to' => 10,
-                                'status' => 'received',
-                                'detailsDebug' => $detailsDebug,
-                                'transaction' => $transaction
-                            ]);
-
                             // Start of Process Transaction
                             $processTransaction = Transaction::create([
                                 'batch_number' => $receivedTransaction->transaction->batch_number,
@@ -318,12 +305,6 @@ class CoffeeDryingController extends Controller
                         }
 
                         $processTransaction->load(['details', 'log']);
-
-                        Log::channel('dev')->debug('Saved Transactions', [
-                            'sent_to' => 10,
-                            'status' => 'sent',
-                            'transaction' => $processTransaction
-                        ]);
                     }
 
 
@@ -367,8 +348,6 @@ class CoffeeDryingController extends Controller
                                 'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
 
-                            $elevens->push($processTransaction);
-
                             array_push($receivedCofffee, $processTransaction->transaction_id);
 
                             $transactionLog = TransactionLog::create([
@@ -410,12 +389,6 @@ class CoffeeDryingController extends Controller
                             }
 
                             $processTransaction->load(['details', 'log']);
-
-                            Log::channel('dev')->debug('Saved Transactions', [
-                                'sent_to' => 11,
-                                'status' => 'sent',
-                                'transaction' => $processTransaction
-                            ]);
                         }
                     }
 
@@ -513,11 +486,6 @@ class CoffeeDryingController extends Controller
 
                             $processTransaction->load(['details', 'log']);
 
-                            Log::channel('dev')->debug('Saved Transactions', [
-                                'sent_to' => 12,
-                                'status' => 'sebt',
-                                'transaction' => $processTransaction
-                            ]);
                         }
                     }
 
@@ -609,11 +577,6 @@ class CoffeeDryingController extends Controller
 
                             $processTransaction2->load(['details', 'log']);
 
-                            Log::channel('dev')->debug('Saved Transactions', [
-                                'sent_to' => 0,
-                                'status' => 'sent',
-                                'transaction' => $processTransaction2
-                            ]);
                         }
                     }
                 }
@@ -630,12 +593,6 @@ class CoffeeDryingController extends Controller
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
 
-        $elevens->each(function ($eleven) {
-            $eleven->load(['details', 'log']);
-            Log::channel('dev')->debug('elevens', [
-                'transactions' => $eleven
-            ]);
-        });
         $allTransactions = array();
         //        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $receivedCofffee)->with('transactionDetail', 'log', 'meta')->get();
         //        foreach ($currentlyReceivedCoffees as $key => $transaction) {
