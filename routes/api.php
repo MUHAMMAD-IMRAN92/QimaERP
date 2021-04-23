@@ -7,7 +7,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
     Route::post('/login', 'API\AuthController@login');
 
     // Logged In users
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'logger'])->group(function () {
 
         //::Common Routes
 

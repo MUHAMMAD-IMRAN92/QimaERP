@@ -68,6 +68,7 @@ class Kernel extends HttpKernel {
         'checkSession' => \App\Http\Middleware\CheckUserSession::class,
         'headersmid' => \App\Http\Middleware\midheaders::class,
         'CheckRole' => \App\Http\Middleware\CheckRole::class,
+        'logger' => \App\Http\Middleware\LogRoute::class,
     ];
 
 }
