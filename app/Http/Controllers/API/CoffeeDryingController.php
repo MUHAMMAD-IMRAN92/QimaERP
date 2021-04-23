@@ -409,6 +409,7 @@ class CoffeeDryingController extends Controller
                             ]);
                         }
                     }
+
                     if ($receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 12) {
 
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
@@ -591,13 +592,13 @@ class CoffeeDryingController extends Controller
                                     'value' => $transactionMe->value,
                                 ]);
                             }
-                            
+
                             $processTransaction->load('details');
 
                             Log::channel('dev')->debug('Saved Transactions', [
                                 'sent_to' => 0,
                                 'status' => 'sent',
-                                'transaction' => $processTransaction
+                                'transaction' => $processTransaction2
                             ]);
                         }
                     }
@@ -606,6 +607,11 @@ class CoffeeDryingController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
+
+            Log::channel('error')->error('Coffee Drying Exception', [
+                'message' => $e->getMessage(),
+                'exception' => $e
+            ]);
 
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
