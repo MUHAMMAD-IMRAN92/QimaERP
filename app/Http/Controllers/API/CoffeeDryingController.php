@@ -98,7 +98,9 @@ class CoffeeDryingController extends Controller
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
 
-        Log::channel('dev')->debug($receivedTransactions);
+        Log::channel('dev')->debug('all transactions from request', [
+            'transactions' => $receivedTransactions
+        ]);
 
         DB::beginTransaction();
 
@@ -234,6 +236,13 @@ class CoffeeDryingController extends Controller
                                 }
                             }
 
+                            $transaction->load('details');
+
+                            Log::channel('dev')->debug('Saved Transactions', [
+                                'sent_to' => 10,
+                                'status' => 'received',
+                                'transaction' => $transaction
+                            ]);
 
                             // Start of Process Transaction
                             $processTransaction = Transaction::create([
@@ -300,6 +309,14 @@ class CoffeeDryingController extends Controller
                             }
                             // End of Process Transaction
                         }
+
+                        $processTransaction->load('details');
+
+                        Log::channel('dev')->debug('Saved Transactions', [
+                            'sent_to' => 10,
+                            'status' => 'received',
+                            'transaction' => $processTransaction
+                        ]);
                     }
 
 
@@ -382,6 +399,14 @@ class CoffeeDryingController extends Controller
                                     'value' => $transactionMe->value,
                                 ]);
                             }
+
+                            $processTransaction->load('details');
+
+                            Log::channel('dev')->debug('Saved Transactions', [
+                                'sent_to' => 10,
+                                'status' => 'received',
+                                'transaction' => $processTransaction
+                            ]);
                         }
                     }
                     if ($receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 12) {
@@ -470,6 +495,14 @@ class CoffeeDryingController extends Controller
                                     'value' => $transactionMe->value,
                                 ]);
                             }
+
+                            $processTransaction->load('details');
+
+                            Log::channel('dev')->debug('Saved Transactions', [
+                                'sent_to' => 10,
+                                'status' => 'received',
+                                'transaction' => $processTransaction
+                            ]);
                         }
                     }
 
@@ -558,6 +591,14 @@ class CoffeeDryingController extends Controller
                                     'value' => $transactionMe->value,
                                 ]);
                             }
+                            
+                            $processTransaction->load('details');
+
+                            Log::channel('dev')->debug('Saved Transactions', [
+                                'sent_to' => 10,
+                                'status' => 'received',
+                                'transaction' => $processTransaction
+                            ]);
                         }
                     }
                 }
