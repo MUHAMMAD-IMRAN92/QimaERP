@@ -45,8 +45,156 @@
             font-size: 12px;
         }
 
-    </style>
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
 
+    </style>
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable();
+            $('#to').on('change', function() {
+                let from = $('#from').val();
+                let to = $('#to').val();
+
+
+                $.ajax({
+                    url: "{{ url('admin/filter_farmer_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+                        'to': to
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#today').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'today'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+        });
+
+    </script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -178,9 +326,15 @@
                             </tr>
                             <tr>
                                 <td colspan=""><strong>PRICE PER KG</strong>
-
                                 </td>
-                                <td colspan="4">pending</td>
+
+                                @if ($farmer->price_per_kg == null)
+                                    <td colspan="4">{{ number_format($farmer->price * $farmer->quantity) }}</td>
+                                @else
+                                    <td colspan="4">{{ number_format($farmer->price_per_kg * $farmer->quantity) }}
+                                    </td>
+                                @endif
+
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
@@ -209,20 +363,33 @@
                 </form>
             </div>
             <div class="row ml-2 blacklink ">
-                <span class="ml-2"> <a href="">TODAY</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> YESTERDAY</a></span>
+                <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
+                <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
                 &nbsp |
-                <span class="ml-2"> <a href=""> WEEK TO DATE </a></span> &nbsp |
-                <span class="ml-2"> <a href="">MONTH TO DATE</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> LAST MONTH</a></span> &nbsp |
-                <span class="ml-2"> <a href="">YEAR TO DATE</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2020 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> ALL TIME</a></span>
+                <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
+                    </a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="monthToDate"> MONTH
+                    TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastmonth"> LAST
+                    MONTH</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="yearToDate"> YEAR TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="currentyear"> 2021
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastyear"> 2020
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2"> <a href="{{ route('farmer.profile', $farmer) }}">ALL
+                        TIME</a></span>
             </div>
             <hr>
-            <div class="row ml-2">
+            <div class="row ml-2" id="transaction">
                 <div class="col-sm-1 color bg-danger">
                     <h3 style="font-size: 16px !important">{{ $farmer->first_purchase }}</h3>
                     <p>First Purchade</p>
@@ -273,19 +440,15 @@
             </div>
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger">
-                    <h3>{{ App\Village::count() }}</h3>
-                    <p>Villages</p>
+                    <h3>CNIC</h3>
+                    <p>Farmer</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ App\Farmer::count() }}</h3>
+                    <h3>LOAN</h3>
 
-                    <p>Farmers</p>
+                    <p>Farmer</p>
                 </div>
-                <div class="col-sm-1 color bg-warning">
-                    <h3>{{ App\User::count() }}</h3>
 
-                    <p>User </p>
-                </div>
 
 
             </div>
@@ -293,39 +456,23 @@
             <b>
                 <p>TRANSACTIONS </p>
             </b>
-            <div class="row">
-
-                <div class="">
-                    <ol class="breadcrumb float-sm-right txt-size">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active"> Farmer / Profile</li>
-                    </ol>
-                </div>
-
-            </div>
-            <div class="row">
-
-                <div class="">
-                   
+            @foreach ($farmer->transactions as $transaction)
+                <div class="row ml-2">
+                    <div class="">
                         <ol class="breadcrumb float-sm-right txt-size">
-                        @foreach ($farmer->transactions as $transaction )
-                              <li class="breadcrumb-item active"> {{$transaction->created_at}} / </li>
-                            
-                        @endforeach
-                          
+                            <li class="breadcrumb-item active">
+                                {{ $transaction->created_at }} /{{$farmer->farmer_name}} / {{ $farmer->governerate_title }} /
+                                {{ $farmer->region_title }} / 
+                                 {{$transaction->details->sum('container_weight')}}.00
+
+                            </li>
                         </ol>
-                 
-
+                    </div>
                 </div>
-
-            </div>
+            @endforeach
         </section>
-
-        <!-- Main content -->
-
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
+
 
 
 @endsection

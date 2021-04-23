@@ -45,7 +45,7 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyer = $coffeeBuyer->specialPrice();
             return   $coffeeBuyer;
         });
-   
+
         // return $coffeeBuyingManagers;
         return view('admin.coffeBuyer.all_coffee_buyer', [
             'coffeeBuyerMangers' =>  $coffeeBuyingManagers,
@@ -507,8 +507,10 @@ class CoffeeBuyerController extends Controller
     }
     public function coffeeBuyerProfile(User $buyer)
     {
-
+        $buyer->farmers = $buyer->getFarmers();
+        $buyer->transactions = $buyer->getTransactions();
         $buyer->image = $buyer->getImage();
+        $buyer->villages = $buyer->getVillages();
 
         return   view('admin.coffeBuyer.coffeebuyer_profile', [
             'buyer' =>  $buyer,

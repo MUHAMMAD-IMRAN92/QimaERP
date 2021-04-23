@@ -81,7 +81,6 @@ class Farmer extends Model
     public function getfirstTransaction()
     {
         $farmerCode = $this->farmer_code;
-
         $transaction_created_at = Transaction::where('batch_number', 'LIKE', "$farmerCode%")->first()['created_at'];
         return   $transaction_created_at;
     }
@@ -98,29 +97,25 @@ class Farmer extends Model
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
             ->where('sent_to', 2)
             ->get();
-
         $sum = 0;
-        
-        foreach($transactions as $transaction){
+        foreach ($transactions as $transaction) {
             $sum += $transaction->details->sum('container_weight');
         }
-
         return $sum;
     }
     public function price()
     {
         $village_code = $this->village_code;
-        
+
         $villagePrice = Village::where('village_code', $village_code)->first(['price_per_kg']);
-    
+
         return $villagePrice;
     }
     public function transactions()
     {
         $village_code = $this->village_code;
-        
-        $transactions = Village::where('village_code', $village_code)->get();
-    
-        return $transactions;
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',  $village_code . '%')->get();
+        $this->transactions = $transactions;
+        return $this;
     }
 }
