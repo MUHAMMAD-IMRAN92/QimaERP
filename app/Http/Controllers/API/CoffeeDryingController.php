@@ -12,6 +12,7 @@ use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -96,6 +97,8 @@ class CoffeeDryingController extends Controller
 
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
+
+        Log::channel('dev')->debug($receivedTransactions);
 
         DB::beginTransaction();
 
