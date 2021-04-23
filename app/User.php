@@ -105,11 +105,13 @@ class User extends Authenticatable
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
-
-            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+           
+            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg; 
             if (!$farmerPrice) {
                 $village_code = Str::beforeLast($farmer_code, '-');
                 $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+
+              
             } else {
                 $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
             }
@@ -117,8 +119,8 @@ class User extends Authenticatable
             $totalPrice += $weight * $price;
             $totalWeight += $weight;
         }
-
-        $this->non_special_weight =  $totalWeight;
+        
+        $this->non_special_weight =  $totalWeight ;
         $this->non_special_price =  $totalPrice;
         return $this;
     }
@@ -132,11 +134,13 @@ class User extends Authenticatable
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
-
-            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+           
+            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg; 
             if (!$farmerPrice) {
                 $village_code = Str::beforeLast($farmer_code, '-');
                 $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+
+              
             } else {
                 $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
             }
@@ -144,52 +148,9 @@ class User extends Authenticatable
             $totalPrice += $weight * $price;
             $totalWeight += $weight;
         }
-
-
-        $this->special_weight =  $totalWeight;
+        
+        $this->special_weight =  $totalWeight ;
         $this->special_price =  $totalPrice;
         return $this;
-    }
-    public function getFarmers()
-    {
-        $userId = $this->user_id;
-        $transactions = Transaction::where('created_by', $userId)->get();
-        $batchNumbers = collect();
-        $farmers = collect();
-        foreach ($transactions as $transaction) {
-            $batchNumber = $transaction->batch_number;
-            $batchNumbers->push($batchNumber);
-        }
-        foreach ($batchNumbers as $batchNumber) {
-            $farmerCode = Str::beforeLast($batchNumber, '-');
-            $farmer = Farmer::where('farmer_code',  $farmerCode)->first();
-            $farmers->push($farmer);
-        }
-        return $farmers;
-    }
-    public function getRegions()
-    {
-        $userId = $this->user_id;
-        $transactions = Transaction::where('created_by', $userId)->get();
-        $batchNumbers = collect();
-        $villages = collect();
-        foreach ($transactions as $transaction) {
-            $batchNumber = $transaction->batch_number;
-            $batchNumbers->push($batchNumber);
-        }
-        foreach ($batchNumbers as $batchNumber) {
-            $village_code = explode('-', $batchNumber)[0] . '-' . explode('-', $batchNumber)[1]. '-' . explode('-', $batchNumber)[2];
-            $village = Village::where('village_code',  $village_code)->first();
-            $villages->push($village);
-        }
-        $uniqueVillages = $villages->unique();
-        return $uniqueVillages;
-    }
-    public function getTransactions()
-    {
-        $userId = $this->user_id;
-        $transactions = Transaction::where('created_by', $userId)->get();
-      return $transactions;
-        
     }
 }

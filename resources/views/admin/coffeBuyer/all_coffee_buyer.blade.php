@@ -257,18 +257,10 @@
                         @endif
                         <div class="row ml-2" id="tables">
                             <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-4"> <b>Coffe Buyer Manger</b> </div>
-                                    <div class="col-md-2 ml-2"> <b>Special</b> </div>
-
-                                    <div class="col-md-2"> <b>Non Special</b> </div>
-
-                                </div>
                                 <div class="row ">
-
                                     <div class="col-md-6">
-
-                                        <table class="table table-bordered" style="font-size:14px;">
+                                        <caption> <b> Coffee Buying Manger</b></caption>
+                                        <table class="table table-bordered"     style="font-size:13px;">
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -394,16 +386,9 @@
                                 <hr>
 
                                 <div class="row ">
-                                   <div class="col-md-4 "> <b> Coffee Buyer</b></div>
-                                     
-                                        <div class="col-md-2"> <b>Special</b> </div>
-    
-                                        <div class="col-md-2"> <b>Non Special</b> </div>
-    
-                                    
                                     <div class="col-md-6">
-                                      
-                                        <table class="table table-bordered" style="font-size:14px;">
+                                        <caption> <b> Coffee Buyer</b></caption>
+                                        <table class="table table-bordered" style="font-size:13px;">
                                             <thead>
                                                 <tr align="center">
                                                     <th></th>
