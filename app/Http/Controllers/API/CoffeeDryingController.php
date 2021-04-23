@@ -55,6 +55,8 @@ class CoffeeDryingController extends Controller
             ->with(['transactionDetail' => function ($query) {
                 $query->where('container_status', 0);
             }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+
+
         foreach ($transactions as $key => $transaction) {
             $transactionDetail = $transaction->transactionDetail;
             $transactionMata = $transaction->meta;
@@ -337,7 +339,9 @@ class CoffeeDryingController extends Controller
                                 'local_created_at' => date("Y-m-d H:i:s", strtotime($receivedTransaction->transaction->created_at)),
                                 'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at)
                             ]);
+
                             array_push($receivedCofffee, $processTransaction->transaction_id);
+
                             $transactionLog = TransactionLog::create([
                                 'transaction_id' => $processTransaction->transaction_id,
                                 'action' => 'sent',
@@ -348,7 +352,9 @@ class CoffeeDryingController extends Controller
                                 'local_updated_at' => toSqlDT($receivedTransaction->transaction->local_updated_at),
                                 'type' => 'coffee_drying_send',
                             ]);
+
                             $transactionContainers = $receivedTransaction->transactionDetails;
+
                             foreach ($transactionContainers as $key => $transactionContainer) {
                                 TransactionDetail::create([
                                     'transaction_id' => $processTransaction->transaction_id,
@@ -360,9 +366,12 @@ class CoffeeDryingController extends Controller
                                     'center_id' => $receivedTransaction->transaction->center_id,
                                     'reference_id' => $receivedTransaction->transaction->reference_id,
                                 ]);
+
                                 TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
                             }
+
                             $transactionMeta = $receivedTransaction->transactionMeta;
+
                             foreach ($transactionMeta as $key => $transactionMe) {
                                 MetaTransation::create([
                                     'transaction_id' => $processTransaction->transaction_id,
@@ -460,9 +469,8 @@ class CoffeeDryingController extends Controller
                             }
                         }
                     }
-                    if ($receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 0) {
 
-                        // return response()->json($receivedTransaction);
+                    if ($receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 0) {
 
                         if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
 
