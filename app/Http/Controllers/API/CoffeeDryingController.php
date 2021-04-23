@@ -236,7 +236,7 @@ class CoffeeDryingController extends Controller
                                 }
                             }
 
-                            $transaction->load('details');
+                            $transaction->load(['details', 'log']);
 
                             Log::channel('dev')->debug('Saved Transactions', [
                                 'sent_to' => 10,
@@ -310,7 +310,7 @@ class CoffeeDryingController extends Controller
                             // End of Process Transaction
                         }
 
-                        $processTransaction->load('details');
+                        $processTransaction->load(['details', 'log']);
 
                         Log::channel('dev')->debug('Saved Transactions', [
                             'sent_to' => 10,
@@ -400,7 +400,7 @@ class CoffeeDryingController extends Controller
                                 ]);
                             }
 
-                            $processTransaction->load('details');
+                            $processTransaction->load(['details', 'log']);
 
                             Log::channel('dev')->debug('Saved Transactions', [
                                 'sent_to' => 11,
@@ -497,7 +497,7 @@ class CoffeeDryingController extends Controller
                                 ]);
                             }
 
-                            $processTransaction->load('details');
+                            $processTransaction->load(['details', 'log']);
 
                             Log::channel('dev')->debug('Saved Transactions', [
                                 'sent_to' => 12,
@@ -593,7 +593,7 @@ class CoffeeDryingController extends Controller
                                 ]);
                             }
 
-                            $processTransaction->load('details');
+                            $processTransaction2->load(['details', 'log']);
 
                             Log::channel('dev')->debug('Saved Transactions', [
                                 'sent_to' => 0,
