@@ -266,8 +266,8 @@
                                 </div>
                                 <div class="row ">
                                     <div class="col-md-6">
-                                       
-                                        <table class="table table-bordered"     style="font-size:14px;">
+
+                                        <table class="table table-bordered" style="font-size:14px;">
                                             <thead>
                                                 <tr>
                                                     <th></th>
@@ -394,7 +394,7 @@
 
                                 <div class="row ">
                                     <div class="col-md-4 "> <b> Coffee Buyer</b></div>
-                                     
+
                                     <div class="col-md-2"> <b>Special</b> </div>
 
                                     <div class="col-md-2"> <b>Non Special</b> </div>

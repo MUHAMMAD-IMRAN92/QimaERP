@@ -240,10 +240,10 @@
                 </p>
             </b>
             @foreach ($buyer->farmers as $farmer)
-                @if ($farmer['picture_id'] == null)
+                @if ($farmer['farmer_image'] == null)
                     <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
                 @else
-                    <img src="{{ asset('public/storage/images/' . $farmer['picture_id']) }}" alt="no img"
+                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image'] ) }}" alt="no img"
                         id="region_farmer">
                 @endif
 
@@ -253,20 +253,20 @@
             <b>
                 <p>TRANSACTIONS </p>
             </b>
-            {{-- @foreach ($buyer->transactions as $transaction)
+            @foreach ($buyer['transactions'] as $transaction)
                 <div class="row ml-2">
                     <div class="">
                         <ol class="breadcrumb float-sm-right txt-size">
                             <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} /{{$farmer->farmer_name}} / {{ $farmer->governerate_title }} /
-                                {{ $farmer->region_title }} / 
-                                 {{$transaction->details->sum('container_weight')}}.00
+                                {{ $transaction->created_at }} /{{$buyer->first_name}} / {{ $buyer->last_name }} /
+                                
+                                {{$transaction->details->sum('container_weight')}}.00
 
                             </li>
                         </ol>
                     </div>
                 </div>
-            @endforeach --}}
+            @endforeach
 
         </section>
 
