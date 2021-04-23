@@ -224,7 +224,7 @@ class MillOperativeController extends Controller
                         $detail->weight_unit = $detailData->weight_unit;
                         $detail->container_status = $detailData->container_status;
                         $detail->center_id = $detailData->center_id;
-                        $detail->reference_id = $detailData->reference_id;
+                        $detail->reference_id = $transaction->reference_id;
 
                         $transaction->details()->save($detail);
 
@@ -355,7 +355,7 @@ class MillOperativeController extends Controller
                             $detail->weight_unit = $detailData->weight_unit;
                             $detail->container_status = $detailData->container_status;
                             $detail->center_id = $detailData->center_id;
-                            $detail->reference_id = $detailData->reference_id;
+                            $detail->reference_id = $transaction->reference_id;
 
                             $transaction->details()->save($detail);
 
@@ -455,7 +455,7 @@ class MillOperativeController extends Controller
                             $detail->weight_unit = $detailData->weight_unit;
                             $detail->container_status = $detailData->container_status;
                             $detail->center_id = $detailData->center_id;
-                            $detail->reference_id = $detailData->reference_id;
+                            $detail->reference_id = $transaction->reference_id;
 
                             $transaction->details()->save($detail);
 
@@ -580,7 +580,7 @@ class MillOperativeController extends Controller
                                 $detail->weight_unit = $detailData->weight_unit;
                                 $detail->container_status = $detailData->container_status;
                                 $detail->center_id = $detailData->center_id;
-                                $detail->reference_id = $detailData->reference_id;
+                                $detail->reference_id = $lotTransaction->reference_id;
 
                                 $lotTransaction->details()->save($detail);
 
