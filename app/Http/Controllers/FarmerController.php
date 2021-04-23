@@ -634,13 +634,13 @@ class FarmerController extends Controller
     {
         $farmer = Farmer::find($id);
 
-        $villageCode = $farmer->village_code;
-        $farmer->price = Village::where('village_code', $villageCode)->first()['price_per_kg'];
-        $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$request->from, $request->to])
+        $farmerCode = $farmer->farmer_code;
+        $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
+        $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$request->from, $request->to])
             ->first()['created_at'];
-        $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $villageCode . '%')->whereBetween('created_at', [$request->from, $request->to])
+        $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$request->from, $request->to])
             ->latest()->first()['created_at'];
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$villageCode%")
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
             ->whereBetween('created_at', [$request->from, $request->to])
             ->where('sent_to', 2)
             ->get();

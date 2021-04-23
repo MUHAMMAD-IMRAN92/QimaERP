@@ -461,8 +461,10 @@
                     <div class="">
                         <ol class="breadcrumb float-sm-right txt-size">
                             <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} / {{ $farmer->governerate_title }} /
-                                {{ $farmer->region_title }} /
+                                {{ $transaction->created_at }} /{{$farmer->farmer_name}} / {{ $farmer->governerate_title }} /
+                                {{ $farmer->region_title }} / 
+                                 {{$transaction->details->sum('container_weight')}}.00
+
                             </li>
                         </ol>
                     </div>

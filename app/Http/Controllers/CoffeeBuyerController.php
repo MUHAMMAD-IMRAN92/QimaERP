@@ -509,8 +509,8 @@ class CoffeeBuyerController extends Controller
     {
 
         $buyer->image = $buyer->getImage();
-        
-
+        $buyer->villages = $buyer->getRegions();
+        $buyer->farmers = $buyer->getFarmers();
         return   view('admin.coffeBuyer.coffeebuyer_profile', [
             'buyer' =>  $buyer,
         ]);
