@@ -400,8 +400,7 @@
                                     <div class="col-md-2"> <b>Non Special</b> </div>
 
                                     <div class="col-md-6">
-                                        <caption> <b> Coffee Buyer</b></caption>
-                                        <table class="table table-bordered" style="font-size:14px;">
+                                            <table class="table table-bordered" style="font-size:14px;">
                                             <thead>
                                                 <tr align="center">
                                                     <th></th>

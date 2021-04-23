@@ -43,7 +43,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    public function file()
+    {
+        return $this->belongsTo(FileSystem::class , 'picture_id' , 'file_id');
+    }
     public function getIdAttribute()
     {
         return $this->user_id;

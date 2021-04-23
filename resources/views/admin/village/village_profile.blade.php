@@ -45,6 +45,12 @@
             font-size: 12px;
         }
 
+        #region_farmer {
+            border-radius: 50%;
+            width: 3% !important;
+
+        }
+
     </style>
 
 
@@ -75,11 +81,11 @@
             <div class="row  margin-left anchor">
                 <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}">EDIT
                         INFORMATION</a></span> &nbsp |
-               
+
                 <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}"> OVERRIDE PRICE
                     </a></span> &nbsp |
-                <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span> 
-              
+                <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span>
+
             </div>
             <hr>
             <div class="row">
@@ -138,7 +144,7 @@
                             <tr>
                                 <td colspan=""><strong>NUMBER OF FARMERS
                                     </strong></td>
-                                <td colspan="4">{{ $village->farmers }}</td>
+                                <td colspan="4">{{ count($village->farmers) }}</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
@@ -160,14 +166,14 @@
             </div>
 
             <hr>
-              <div class="row ml-2 blacklink">
+            <div class="row ml-2 blacklink">
 
                 <a href="" class="ml-2">
                     <p>Photo Attachment &nbsp;</p>
                 </a>
 
             </div>
-              <div class="row ml-2">
+            <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger">
                     <h3>{{ App\Village::count() }}</h3>
                     <p>Villages</p>
@@ -184,7 +190,7 @@
                 </div>
 
 
-            </div>  
+            </div>
 
             <div class="row ml-2">
                 <strong>
@@ -213,7 +219,7 @@
                 <span class="ml-2"> <a href=""> ALL TIME</a></span>
             </div>
             <hr>
-           
+
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger">
                     <h3 style="font-size: 16px !important">12345678</h3>
@@ -247,22 +253,41 @@
 
             </div>
             <hr>
-           
-          
-            <hr>
+
+
+
             <b>
-                <p>TRANSACTIONS </p>
+                <p>Farmers Bought From
+                </p>
             </b>
-            <div class="row">
+            @foreach ($village->farmers as $farmer)
+                @if ($farmer['farmer_image'] == null)
+                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
+                @else
+                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image']) }}" alt="no img"
+                        id="region_farmer">
+                @endif
 
-                <div class="">
-                    <ol class="breadcrumb float-sm-right txt-size">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active"> Farmer / Profile</li>
-                    </ol>
-                </div>
+                <span class="mr-3">{{ $farmer['farmer_name'] }}</span>
+            @endforeach
+            <hr>
 
-            </div>
+
+
+            <b>
+                <p>Coffee Buyers
+                </p>
+            </b>
+            @foreach ($village->buyers as $buyer)
+                @if ($buyer['farmer_image'] == null)
+                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
+                @else
+                    <img src="{{ asset('public/storage/images/' . $buyer['farmer_image']) }}" alt="no img"
+                        id="region_farmer">
+                @endif
+
+                <span class="mr-3">{{ $buyer['first_name'] }}</span>
+            @endforeach
             <div class="row">
 
                 <div class="">
