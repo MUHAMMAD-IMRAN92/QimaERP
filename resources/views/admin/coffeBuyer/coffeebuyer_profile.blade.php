@@ -45,6 +45,12 @@
             font-size: 12px;
         }
 
+        #region_farmer {
+            border-radius: 50%;
+            width: 3% !important;
+
+        }
+
     </style>
 
 
@@ -57,7 +63,7 @@
                 <div class="row mb-2">
 
                     <div class="col-sm-6">
-                        <h1>Farmer Profile
+                        <h1> Profile
 
                         </h1>
                     </div>
@@ -74,10 +80,11 @@
 
 
             <div class="row  margin-left anchor">
-                <span class="ml-5" style="margin-left: 60% !important"> <a href="{{ url('admin/editfarmer/' . $buyer->buyer_id) }}">EDIT
+                <span class="ml-5" style="margin-left: 60% !important"> <a
+                        href="{{ url('admin/editfarmer/' . $buyer->buyer_id) }}">EDIT
                         INFORMATION</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> ADD PANELTY</a></span>  
-                
+                <span class="ml-2"> <a href=""> ADD PANELTY</a></span>
+
             </div>
             <hr>
             <div class="row">
@@ -121,7 +128,7 @@
                                 <td colspan="4">{{ $buyer->created_at }}</td>
                                 <td colspan="4"></td>
                             </tr>
-                    
+
 
                         </tbody>
                     </table>
@@ -212,6 +219,40 @@
 
 
             </div>
+
+            <hr>
+            <b>
+                <p> Villages Responsible For
+                </p>
+            </b>
+            @foreach ($buyer->villages as $village)
+                @if ($village['picture_id'] == null)
+                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
+                @else
+                    <img src="{{ asset('public/storage/images/' . $farmer['picture_id']) }}" alt="no img"
+                        id="region_farmer">
+                @endif
+
+                <span class="mr-3">{{ $village['village_title'] }}</span>
+            @endforeach
+
+            <hr>
+            <hr>
+            <b>
+                <p>Farmers Bought From
+                </p>
+            </b>
+            @foreach ($buyer->farmers as $farmer)
+                @if ($farmer['picture_id'] == null)
+                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
+                @else
+                    <img src="{{ asset('public/storage/images/' . $farmer['picture_id']) }}" alt="no img"
+                        id="region_farmer">
+                @endif
+
+                <span class="mr-3">{{ $farmer['farmer_name'] }}</span>
+            @endforeach
+
             <hr>
             <b>
                 <p>TRANSACTIONS </p>
