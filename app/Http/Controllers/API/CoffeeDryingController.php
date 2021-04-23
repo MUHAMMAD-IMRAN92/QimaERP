@@ -630,9 +630,11 @@ class CoffeeDryingController extends Controller
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
 
-        $elevens->each(function($eleven){
+        $elevens->each(function ($eleven) {
             $eleven->load(['details', 'log']);
-            Log::channel('dev')->debug('elevens', $eleven);
+            Log::channel('dev')->debug('elevens', [
+                'transactions' => $eleven
+            ]);
         });
         $allTransactions = array();
         //        $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $receivedCofffee)->with('transactionDetail', 'log', 'meta')->get();
