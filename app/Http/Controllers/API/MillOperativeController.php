@@ -136,14 +136,25 @@ class MillOperativeController extends Controller
 
                 $transactionData = (object) $transactionArray['transaction'];
 
-                $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
+                if ($transactionData->is_server_id == true) {
+                    $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
 
-                if (!$parentTransaction) {
-                    throw new Exception('Parent Transaction does not exists');
+                    if (!$parentTransaction) {
+                        throw new Exception('Parent Transaction does not exists');
+                    }
+                } else {
+                    $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
+                    $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                        ->latest('transaction_id')
+                        ->first();
+
+                    if (!$parentTransaction) {
+                        throw new Exception('Parent Transaction does not exists');
+                    }
                 }
 
                 // This is the recieved cofee
-                if ($transactionData->is_local == true && ($transactionData->sent_to == 17)) {
+                if ($transactionData->is_local == true && $transactionData->sent_to == 17) {
 
                     $status = 'received';
                     $type = 'received_by_mill';
@@ -163,7 +174,7 @@ class MillOperativeController extends Controller
                         'is_special' => $parentTransaction->is_special,
                         'is_mixed' => $transactionData->is_mixed,
                         'transaction_type' => $transactionData->transaction_type,
-                        'reference_id' => $transactionData->reference_id,
+                        'reference_id' => $parentTransaction->transaction_id,
                         'transaction_status' => $status,
                         'is_new' => 0,
                         'sent_to' => $transactionData->sent_to,
@@ -294,7 +305,7 @@ class MillOperativeController extends Controller
                             'is_special' => $parentTransaction->is_special,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => $transactionData->transaction_type,
-                            'reference_id' => $transactionData->reference_id,
+                            'reference_id' => $parentTransaction->transaction_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sent_to,
@@ -359,6 +370,10 @@ class MillOperativeController extends Controller
 
                             $transaction->details()->save($detail);
 
+                            TransactionDetail::where('transaction_id', $transaction->reference_id)
+                                ->where('container_number', $detail->container_number)
+                                ->update(['container_status' => 1]);
+
                             foreach ($detailArray['metas'] as $metaArray) {
                                 $metaData = (object) $metaArray;
 
@@ -369,8 +384,6 @@ class MillOperativeController extends Controller
                             }
                         }
                         // End of batch number Transaction
-
-                        // End of lot number Transaction
 
                         $transaction->load(['details.metas']);
 
@@ -458,6 +471,10 @@ class MillOperativeController extends Controller
                             $detail->reference_id = $transaction->reference_id;
 
                             $transaction->details()->save($detail);
+
+                            TransactionDetail::where('transaction_id', $transaction->reference_id)
+                                ->where('container_number', $detail->container_number)
+                                ->update(['container_status' => 1]);
 
                             foreach ($detailArray['metas'] as $metaArray) {
                                 $metaData = (object) $metaArray;
@@ -630,7 +647,7 @@ class MillOperativeController extends Controller
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
 
-        if ($savedTransactions->last()) {
+        if ($savedTransactions->isNotEmpty()) {
             CoffeeSession::create([
                 'user_id' => $request->user()->user_id,
                 'local_session_id' => $savedTransactions->last()->local_session_no,
