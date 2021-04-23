@@ -314,7 +314,7 @@ class CoffeeDryingController extends Controller
 
                         Log::channel('dev')->debug('Saved Transactions', [
                             'sent_to' => 10,
-                            'status' => 'received',
+                            'status' => 'sent',
                             'transaction' => $processTransaction
                         ]);
                     }
@@ -403,8 +403,8 @@ class CoffeeDryingController extends Controller
                             $processTransaction->load('details');
 
                             Log::channel('dev')->debug('Saved Transactions', [
-                                'sent_to' => 10,
-                                'status' => 'received',
+                                'sent_to' => 11,
+                                'status' => 'sent',
                                 'transaction' => $processTransaction
                             ]);
                         }
@@ -499,8 +499,8 @@ class CoffeeDryingController extends Controller
                             $processTransaction->load('details');
 
                             Log::channel('dev')->debug('Saved Transactions', [
-                                'sent_to' => 10,
-                                'status' => 'received',
+                                'sent_to' => 12,
+                                'status' => 'sebt',
                                 'transaction' => $processTransaction
                             ]);
                         }
@@ -595,8 +595,8 @@ class CoffeeDryingController extends Controller
                             $processTransaction->load('details');
 
                             Log::channel('dev')->debug('Saved Transactions', [
-                                'sent_to' => 10,
-                                'status' => 'received',
+                                'sent_to' => 0,
+                                'status' => 'sent',
                                 'transaction' => $processTransaction
                             ]);
                         }
