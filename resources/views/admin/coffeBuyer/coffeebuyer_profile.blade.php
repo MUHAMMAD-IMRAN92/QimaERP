@@ -57,151 +57,151 @@
 
     </style>
 
-<script>
-    $(document).ready(function() {
-       
-        $('#to').on('change', function() {
-            let from = $('#from').val();
-            let to = $('#to').val();
+    <script>
+        $(document).ready(function() {
+
+            $('#to').on('change', function() {
+                let from = $('#from').val();
+                let to = $('#to').val();
 
 
-            $.ajax({
-            url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'from': from,
-                    'to': to
-                },
-                success: function(data) {
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+                        'to': to
+                    },
+                    success: function(data) {
 
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#today').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'today'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
             });
         });
-        $('#today').on('click', function() {
 
-            $.ajax({
-                url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'date': 'today'
-                },
-                success: function(data) {
-
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
-            });
-        });
-        $('#yesterday').on('click', function() {
-
-            $.ajax({
-                url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'date': 'yesterday'
-                },
-                success: function(data) {
-
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
-            });
-        });
-        $('#weekToDate').on('click', function() {
-
-            $.ajax({
-                url: "{{ url('admin/daysFilter/' .$buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'date': 'weekToDate'
-                },
-                success: function(data) {
-
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
-            });
-        });
-        $('#monthToDate').on('click', function() {
-
-            $.ajax({
-                url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'date': 'monthToDate'
-                },
-                success: function(data) {
-
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
-            });
-        });
-        $('#lastmonth').on('click', function() {
-
-            $.ajax({
-                url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'date': 'lastmonth'
-                },
-                success: function(data) {
-
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
-            });
-        });
-        $('#yearToDate').on('click', function() {
-
-            $.ajax({
-                url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'date': 'yearToDate'
-                },
-                success: function(data) {
-
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
-            });
-        });
-        $('#currentyear').on('click', function() {
-
-            $.ajax({
-                url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'date': 'currentyear'
-                },
-                success: function(data) {
-
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
-            });
-        });
-        $('#lastyear').on('click', function() {
-
-            $.ajax({
-                url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
-                type: "GET",
-                data: {
-                    'date': 'lastyear'
-                },
-                success: function(data) {
-
-                    $('#transaction').html(data);
-                    console.log(data);
-                }
-            });
-        });
-    });
-
-</script>
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
 
@@ -334,13 +334,13 @@
 
                     <p>Last Puchase</p>
                 </div>
-                <div class="col-sm-1 color bg-secondary ">
-                    <h3 style="font-size: 16px !important">{{ $buyer->sum }}</h3>
+                <div class="col-sm-1 color bg-info">
+                    <h3 style="font-size: 16px !important">{{ number_format($buyer->sum) }}</h3>
 
                     <p>Quantity</p>
                 </div>
                 <div class="col-sm-1 color bg-secondary ">
-                    <h3 style="font-size: 16px !important">{{ $buyer->price }}</h3>
+                    <h3 style="font-size: 16px !important">{{ number_format($buyer->price) }}</h3>
 
                     <p>yer total coffee purchased</p>
                 </div>
@@ -426,7 +426,8 @@
                     <div class="">
                         <ol class="breadcrumb float-sm-right txt-size">
                             <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} /{{ $buyer->first_name }} / {{ $buyer->last_name }} /
+                                {{ $transaction->created_at }} /{{ $buyer->first_name }} / {{ $buyer->last_name }}
+                                /
 
                                 {{ $transaction->details->sum('container_weight') }}.00
 
