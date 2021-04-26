@@ -33,7 +33,7 @@ class FarmerController extends Controller
             $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
-            
+
             $farmer->quantity = $farmer->quntity();
             $farmer->price = $farmer->price()->price_per_kg;
 
@@ -247,6 +247,7 @@ class FarmerController extends Controller
     public function farmerProfile(Farmer $farmer)
     {
 
+
         $governorate = $farmer->getgovernerate();
         $region = $farmer->getRegion();
         $village = $farmer->getVillage();
@@ -259,7 +260,8 @@ class FarmerController extends Controller
         $farmer->price = $farmer->price()->price_per_kg;
         $farmer = $farmer->transactions();
         $farmer->image = $farmer->getImage();
-  
+        $farmer->cnicImage = $farmer->cnic();
+
         return view('admin.farmer.farmer_profile', [
             'farmer' => $farmer
         ]);
@@ -736,7 +738,7 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
-         
+
             $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
             $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $date])
                 ->first()['created_at'];

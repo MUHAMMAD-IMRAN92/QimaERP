@@ -439,16 +439,15 @@
 
             </div>
             <div class="row ml-2">
-                <div class="col-sm-1 color bg-danger">
-                    <h3>CNIC</h3>
-                    <p>Farmer</p>
-                </div>
-                <div class="col-sm-1 color bg-primary">
-                    <h3>LOAN</h3>
 
-                    <p>Farmer</p>
-                </div>
-
+                @if ($farmer->cnicImage == null)
+                    <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
+                            style="width: 150px ; height:80px ; border-radius:50%; border: 1px solid gray;" alt=""></td>
+                @else
+                    <td> <img class="famerimg"
+                            style="width: 150px  ; height:80px ; border-radius:50%; border: 1px solid gray;"
+                            src="{{ asset('public/storage/images/' . $farmer->cnicImage) }}" alt="no img"></td>
+                @endif
 
 
             </div>
@@ -461,9 +460,10 @@
                     <div class="">
                         <ol class="breadcrumb float-sm-right txt-size">
                             <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} /{{$farmer->farmer_name}} / {{ $farmer->governerate_title }} /
-                                {{ $farmer->region_title }} / 
-                                 {{$transaction->details->sum('container_weight')}}.00
+                                {{ $transaction->created_at }} /{{ $farmer->farmer_name }} /
+                                {{ $farmer->governerate_title }} /
+                                {{ $farmer->region_title }} /
+                                {{ $transaction->details->sum('container_weight') }}.00
 
                             </li>
                         </ol>
