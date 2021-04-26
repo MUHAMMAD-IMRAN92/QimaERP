@@ -518,7 +518,27 @@ class CoffeeBuyerController extends Controller
             $sum += $transaction->details->sum('container_weight');
         }
         $buyer->sum = $sum;
+        $price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
         return   view('admin.coffeBuyer.coffeebuyer_profile', [
             'buyer' =>  $buyer,
         ]);
@@ -536,7 +556,27 @@ class CoffeeBuyerController extends Controller
             $sum += $transaction->details->sum('container_weight');
         }
         $buyer->sum = $sum;
+        $price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
         return   view('admin.coffeBuyer.views.filter_transctions', [
             'buyer' =>  $buyer,
         ])->render();
@@ -558,7 +598,27 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
-
+            $price = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
+    
+                $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+                if (!$farmerPrice) {
+    
+                    $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                    $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                    foreach ($buyer->transactions as $transaction) {
+                        $quantity = $transaction->details->sum('container_weight');
+                        $price +=  $quantity * $vilagePrice;
+                    }
+                } else {
+                    foreach ($buyer->transactions as $transaction) {
+                        $quantity = $transaction->details->sum('container_weight');
+                        $price +=  $quantity * $farmerPrice;
+                    }
+                }
+            }
+             $buyer->price = $price;
             return   view('admin.coffeBuyer.views.filter_transctions', [
                 'buyer' =>  $buyer,
             ])->render();
@@ -575,7 +635,27 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
+$price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
             return   view('admin.coffeBuyer.views.filter_transctions', [
                 'buyer' =>  $buyer,
             ])->render();
@@ -594,7 +674,27 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
+$price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
             return   view('admin.coffeBuyer.views.filter_transctions', [
                 'buyer' =>  $buyer,
             ])->render();
@@ -611,7 +711,27 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
+$price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
             return   view('admin.coffeBuyer.views.filter_transctions', [
                 'buyer' =>  $buyer,
             ])->render();
@@ -630,7 +750,27 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
+$price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
             return   view('admin.coffeBuyer.views.filter_transctions', [
                 'buyer' =>  $buyer,
             ])->render();
@@ -648,7 +788,27 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
+$price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
             return   view('admin.coffeBuyer.views.filter_transctions', [
                 'buyer' =>  $buyer,
             ])->render();
@@ -666,7 +826,27 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
+$price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
             return   view('admin.coffeBuyer.views.filter_transctions', [
                 'buyer' =>  $buyer,
             ])->render();
@@ -685,7 +865,27 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
+$price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($buyer->transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+         $buyer->price = $price;
             return   view('admin.coffeBuyer.views.filter_transctions', [
                 'buyer' =>  $buyer,
             ])->render();

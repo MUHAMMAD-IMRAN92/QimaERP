@@ -296,13 +296,7 @@ class FarmerController extends Controller
         $id = $request->from;
         $governorateCode = Governerate::where('governerate_id', $id)->first()->governerate_code;
 
-
-
         $regions = Region::all();
-
-
-
-
 
         $govRegions = $regions->filter(function ($region) use ($governorateCode) {
             return explode('-', $region->region_code)[0] == $governorateCode;
