@@ -129,7 +129,7 @@ class VillageController extends Controller
     public function villageProfile(Village $village)
     {
         $village = $village->gov_region();
-        return $village;
+      
         return   view('admin.village.village_profile', [
             'village' =>  $village,
         ]);

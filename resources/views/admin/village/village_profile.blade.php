@@ -96,7 +96,7 @@
                     @else
                         <td> <img class="famerimg"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ asset('public/storage/images/' . $village->image) }}" alt=" no img"></td>
+                                src="{{ asset('public/storage/images/' . $village->image) }}" alt=""></td>
                     @endif
 
                 </div>
@@ -261,10 +261,10 @@
                 </p>
             </b>
             @foreach ($village->farmers as $farmer)
-                @if ($farmer['farmer_image'] == null)
+                @if ($farmer->file == null)
                     <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
                 @else
-                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image']) }}" alt="no img"
+                    <img src="{{ asset('public/storage/images/' . $farmer->file->user_file_name) }}" alt="no img"
                         id="region_farmer">
                 @endif
 
@@ -279,31 +279,16 @@
                 </p>
             </b>
             @foreach ($village->buyers as $buyer)
-                @if ($buyer['farmer_image'] == null)
-                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
+                @if ($buyer->file == null)
+                    <img src="{{ asset('public/images/farmericon.png') }}" alt="" id="region_farmer">
                 @else
-                    <img src="{{ asset('public/storage/images/' . $buyer['farmer_image']) }}" alt="no img"
+                    <img src="{{ asset('public/storage/images/' . $buyer->file->user_file_name) }}" alt="no img"
                         id="region_farmer">
                 @endif
 
                 <span class="mr-3">{{ $buyer['first_name'] }}</span>
             @endforeach
-            <div class="row">
 
-                <div class="">
-
-                    <ol class="breadcrumb float-sm-right txt-size">
-                        {{-- @foreach ($village->transactions as $transaction)
-                              <li class="breadcrumb-item active"> {{$transaction->created_at}} / </li>
-                            
-                        @endforeach --}}
-
-                    </ol>
-
-
-                </div>
-
-            </div>
         </section>
 
         <!-- Main content -->

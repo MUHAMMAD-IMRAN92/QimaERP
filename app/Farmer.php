@@ -22,6 +22,10 @@ class Farmer extends Model
     {
         return $this->belongsTo(Governerate::class, 'governerate_code', 'governerate_code');
     }
+    public function file()
+    {
+        return $this->belongsTo(FileSystem::class , 'picture_id' , 'file_id');
+    }
     public function getgovernerate()
     {
         $farmer_code = $this->farmer_code;
