@@ -511,9 +511,184 @@ class CoffeeBuyerController extends Controller
         $buyer->transactions = $buyer->getTransactions();
         $buyer->image = $buyer->getImage();
         $buyer->villages = $buyer->getVillages();
+        $buyer->first_purchase = $buyer->firstPurchase();
+        $buyer->last_purchase = $buyer->lastPurchase();
+        $sum = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $sum += $transaction->details->sum('container_weight');
+        }
+        $buyer->sum = $sum;
 
         return   view('admin.coffeBuyer.coffeebuyer_profile', [
             'buyer' =>  $buyer,
         ]);
+    }
+    public function filterByDateprofile(Request $request, $id)
+    {
+
+        $buyer = User::find($id);
+
+        $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$request->from, $request->to])->get();
+        $buyer->first_purchase = $buyer->firstPurchase();
+        $buyer->last_purchase = $buyer->lastPurchase();
+        $sum = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $sum += $transaction->details->sum('container_weight');
+        }
+        $buyer->sum = $sum;
+
+        return   view('admin.coffeBuyer.views.filter_transctions', [
+            'buyer' =>  $buyer,
+        ])->render();
+    }
+
+    public function daysFilter(Request $request, $id)
+    {
+        if ($request->date == 'today') {
+            $date = Carbon::today()->toDateString();
+
+
+            $buyer = User::find($id);
+
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $date)->get();
+            $buyer->first_purchase = $buyer->firstPurchase();
+            $buyer->last_purchase = $buyer->lastPurchase();
+            $sum = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $buyer->sum = $sum;
+
+            return   view('admin.coffeBuyer.views.filter_transctions', [
+                'buyer' =>  $buyer,
+            ])->render();
+        } elseif ($request->date == 'yesterday') {
+            $now = Carbon::now();
+            $yesterday = Carbon::yesterday();
+            $buyer = User::find($id);
+
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $yesterday)->get();
+            $buyer->first_purchase = $buyer->firstPurchase();
+            $buyer->last_purchase = $buyer->lastPurchase();
+            $sum = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $buyer->sum = $sum;
+
+            return   view('admin.coffeBuyer.views.filter_transctions', [
+                'buyer' =>  $buyer,
+            ])->render();
+        } elseif ($request->date == 'weekToDate') {
+            $now = Carbon::now();
+            $start = $now->startOfWeek(Carbon::SUNDAY);
+            $end = $now->endOfWeek(Carbon::SATURDAY);
+
+            $buyer = User::find($id);
+
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at', [$start,   $end])->get();
+            $buyer->first_purchase = $buyer->firstPurchase();
+            $buyer->last_purchase = $buyer->lastPurchase();
+            $sum = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $buyer->sum = $sum;
+
+            return   view('admin.coffeBuyer.views.filter_transctions', [
+                'buyer' =>  $buyer,
+            ])->render();
+        } elseif ($request->date == 'monthToDate') {
+            $now = Carbon::now();
+            $date = Carbon::today()->toDateString();
+            $start = $now->firstOfMonth();
+            $buyer = User::find($id);
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->get();
+            $buyer->first_purchase = $buyer->firstPurchase();
+            $buyer->last_purchase = $buyer->lastPurchase();
+            $sum = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $buyer->sum = $sum;
+
+            return   view('admin.coffeBuyer.views.filter_transctions', [
+                'buyer' =>  $buyer,
+            ])->render();
+        } elseif ($request->date == 'lastmonth') {
+            $date = Carbon::now();
+
+            $lastMonth =  $date->subMonth()->format('m');
+            $year = $date->year;
+            $buyer = User::find($id);
+
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            $buyer->first_purchase = $buyer->firstPurchase();
+            $buyer->last_purchase = $buyer->lastPurchase();
+            $sum = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $buyer->sum = $sum;
+
+            return   view('admin.coffeBuyer.views.filter_transctions', [
+                'buyer' =>  $buyer,
+            ])->render();
+        } elseif ($request->date == 'yearToDate') {
+            $now = Carbon::now();
+            $date = Carbon::today()->toDateString();
+            $start = $now->startOfYear();
+            $buyer = User::find($id);
+
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->get();
+            $buyer->first_purchase = $buyer->firstPurchase();
+            $buyer->last_purchase = $buyer->lastPurchase();
+            $sum = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $buyer->sum = $sum;
+
+            return   view('admin.coffeBuyer.views.filter_transctions', [
+                'buyer' =>  $buyer,
+            ])->render();
+        } elseif ($request->date == 'currentyear') {
+            $date = Carbon::now();
+
+            $year = $date->year;
+            $buyer = User::find($id);
+
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->get();
+            $buyer->first_purchase = $buyer->firstPurchase();
+            $buyer->last_purchase = $buyer->lastPurchase();
+            $sum = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $buyer->sum = $sum;
+
+            return   view('admin.coffeBuyer.views.filter_transctions', [
+                'buyer' =>  $buyer,
+            ])->render();
+        } elseif ($request->date == 'lastyear') {
+            $date = Carbon::now();
+
+
+            $year = $date->year - 1;
+            $buyer = User::find($id);
+
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->get();
+            $buyer->first_purchase = $buyer->firstPurchase();
+            $buyer->last_purchase = $buyer->lastPurchase();
+            $sum = 0;
+            foreach ($buyer->transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            $buyer->sum = $sum;
+
+            return   view('admin.coffeBuyer.views.filter_transctions', [
+                'buyer' =>  $buyer,
+            ])->render();
+        }
     }
 }
