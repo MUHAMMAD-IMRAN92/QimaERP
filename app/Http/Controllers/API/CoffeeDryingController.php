@@ -175,8 +175,6 @@ class CoffeeDryingController extends Controller
 
                             $transactionContainers = $receivedTransaction->transactionMeta;
 
-                            $detailsDebug = collect();
-
                             foreach ($transactionContainers as $key => $transactionContainer) {
                                 if (
                                     strstr($transactionContainer->key, 'BS') ||
@@ -215,8 +213,6 @@ class CoffeeDryingController extends Controller
                                         'reference_id' => $receivedTransaction->transaction->reference_id,
                                     ]);
 
-                                    $detailsDebug->push($detail);
-
                                     if ($trans == true) {
                                         TransactionDetail::where('transaction_id', $transationsExplodeId)
                                             ->where('container_number', $basket)
@@ -235,8 +231,6 @@ class CoffeeDryingController extends Controller
                                     }
                                 }
                             }
-
-                            $transaction->load(['details', 'log']);
 
                             // Start of Process Transaction
                             $processTransaction = Transaction::create([
@@ -303,8 +297,6 @@ class CoffeeDryingController extends Controller
                             }
                             // End of Process Transaction
                         }
-
-                        $processTransaction->load(['details', 'log']);
                     }
 
 
@@ -387,8 +379,6 @@ class CoffeeDryingController extends Controller
                                     'value' => $transactionMe->value,
                                 ]);
                             }
-
-                            $processTransaction->load(['details', 'log']);
                         }
                     }
 
@@ -483,9 +473,6 @@ class CoffeeDryingController extends Controller
                                     'value' => $transactionMe->value,
                                 ]);
                             }
-
-                            $processTransaction->load(['details', 'log']);
-
                         }
                     }
 
@@ -574,9 +561,6 @@ class CoffeeDryingController extends Controller
                                     'value' => $transactionMe->value,
                                 ]);
                             }
-
-                            $processTransaction2->load(['details', 'log']);
-
                         }
                     }
                 }

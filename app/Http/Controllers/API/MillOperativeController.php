@@ -50,9 +50,9 @@ class MillOperativeController extends Controller
 
     public function sendCoffee()
     {
-        $transactions = Transaction::where('is_parent', 0)
+        $transactions = Transaction::where('is_parent', 0)->where('transaction_type', 1)
             ->whereHas('log', function ($q) {
-                $q->where('action', 'sent')
+                $q->whereIn('action', ['sent', 'received'])
                     ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
             })->whereHas(
                 'details',
@@ -156,7 +156,7 @@ class MillOperativeController extends Controller
                 // This is the recieved cofee
                 if ($transactionData->is_local == true && $transactionData->sent_to == 17) {
 
-                    $status = 'sent';
+                    $status = 'received';
                     $type = 'received_by_mill';
 
                     $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
@@ -406,7 +406,7 @@ class MillOperativeController extends Controller
                             'local_code' => $transactionData->local_code,
                             'is_special' => $parentTransaction->is_special,
                             'is_mixed' => $transactionData->is_mixed,
-                            'transaction_type' => 2,
+                            'transaction_type' => 1,
                             'reference_id' => $parentTransaction->transaction_id,
                             'transaction_status' => 'received',
                             'is_new' => 0,
