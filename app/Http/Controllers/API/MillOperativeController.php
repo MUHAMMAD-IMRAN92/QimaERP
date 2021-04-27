@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use App\TransactionDetailProduct;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -755,6 +756,9 @@ class MillOperativeController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
+            Log::channel('error')->debug('exception in mill operative', [
+                'exception' => $e
+            ]);
             return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
         }
 
