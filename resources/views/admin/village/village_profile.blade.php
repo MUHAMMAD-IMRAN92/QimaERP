@@ -51,8 +51,156 @@
 
         }
 
-    </style>
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
 
+    </style>
+    <script>
+        $(document).ready(function() {
+
+            $('#to').on('change', function() {
+                let from = $('#from').val();
+                let to = $('#to').val();
+
+
+                $.ajax({
+                    url: "{{ url('admin/filter_village_profile/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+                        'to': to
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#today').on('click', function() {
+               
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'today'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+        });
+
+    </script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -206,37 +354,50 @@
                 </form>
             </div>
             <div class="row ml-2 blacklink ">
-                <span class="ml-2"> <a href="">TODAY</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> YESTERDAY</a></span>
+                <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
+                <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
                 &nbsp |
-                <span class="ml-2"> <a href=""> WEEK TO DATE </a></span> &nbsp |
-                <span class="ml-2"> <a href="">MONTH TO DATE</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> LAST MONTH</a></span> &nbsp |
-                <span class="ml-2"> <a href="">YEAR TO DATE</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2020 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> ALL TIME</a></span>
+                <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
+                    </a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="monthToDate"> MONTH
+                    TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastmonth"> LAST
+                    MONTH</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="yearToDate"> YEAR TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="currentyear"> 2021
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastyear"> 2020
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2"> <a href="{{ route('village.profile', $village) }}">ALL
+                        TIME</a></span>
             </div>
             <hr>
 
-            <div class="row ml-2">
+            <div class="row ml-2" id="transaction">
                 <div class="col-sm-1 color bg-danger">
-                    <h3 style="font-size: 16px !important">{{$village->first_purchase}}</h3>
+                    <h3 style="font-size: 16px !important">{{ $village->first_purchase }}</h3>
                     <p>First Purchade</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3 style="font-size: 16px !important">{{$village->last_purchase}}  </h3>
+                    <h3 style="font-size: 16px !important">{{ $village->last_purchase }} </h3>
 
                     <p>Last Purchase</p>
                 </div>
                 <div class="col-sm-1 color bg-warning">
-                    <h3 style="font-size: 16px !important">{{$village->price}}</h3>
+                    <h3 style="font-size: 16px !important">{{ $village->price }}</h3>
 
                     <p>yer total coffee purchased </p>
                 </div>
                 <div class="col-sm-1 color bg-info">
-                    <h3 style="font-size: 16px !important">{{$village->quantity}}</h3>
+                    <h3 style="font-size: 16px !important">{{ $village->quantity }}</h3>
 
                     <p>Quantity</p>
                 </div>

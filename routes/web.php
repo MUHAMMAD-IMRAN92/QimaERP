@@ -57,7 +57,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('editvillage/{id}', 'VillageController@edit')->middleware('auth');
         Route::post('updatevillage', 'VillageController@update');
         Route::get('village/profile/{village}', 'VillageController@villageProfile')->name('village.profile');
-
+        Route::get('filter_village_profile/{id}', 'VillageController@filter_village_profile');    
+        Route::get('village_profile_days_filter/{id}', 'VillageController@village_profile_days_filter');    
 
         //Farmer Controller
         Route::get('allfarmer', 'FarmerController@index')->middleware('auth');
