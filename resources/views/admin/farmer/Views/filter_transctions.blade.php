@@ -6,7 +6,7 @@
 
     .color {
 
-        width: 200px ;
+        width: 200px;
         height: 80px fit-content;
         margin-left: 4px;
     }
@@ -45,7 +45,7 @@
 <div class="row ml-2">
     <div class="col-sm-1 color bg-danger">
         <h3 style="font-size: 16px !important">{{ $farmer->first_purchase }}</h3>
-        <p>First Purchase</p>
+        <p>First Purchade</p>
     </div>
     <div class="col-sm-1 color bg-primary">
         <h3 style="font-size: 16px !important">{{ $farmer->last_purchase }}</h3>
@@ -53,7 +53,7 @@
         <p>Last Purchase</p>
     </div>
     <div class="col-sm-1 color bg-warning">
-        @if ($farmer->price_per_kg == null)
+        @if (!$farmer->price_per_kg )
             <h3 style="font-size: 16px !important">{{ number_format($farmer->price * $farmer->quantity) }}
             </h3>
         @else

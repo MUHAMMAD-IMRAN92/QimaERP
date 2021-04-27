@@ -127,7 +127,7 @@ class Farmer extends Model
     public function transactions()
     {
         $village_code = $this->village_code;
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',  $village_code . '%')->get();
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',  $village_code . '%')->where('sent_to' , 2)->get();
         $this->transactions = $transactions;
         return $this;
     }

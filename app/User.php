@@ -195,7 +195,7 @@ class User extends Authenticatable
     public function getTransactions()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where('created_by', $userId)->get();
+        $transactions = Transaction::with('details')->where('created_by', $userId)->where('sent_to' , 2)->get();
         return $transactions;
     }
 }
