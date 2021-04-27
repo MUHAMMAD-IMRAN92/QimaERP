@@ -18,6 +18,16 @@ class Product extends Model
         return $query->where('for', 2);
     }
 
+    public function scopePeaberry($query)
+    {
+        return $query->where('id', 8);
+    }
+
+    public function scopeGreen($query)
+    {
+        return $query->whereIn('for', [6, 7]);
+    }
+
     public function details()
     {
         return $this->hasMany(TransactionDetailProduct::class, 'product_id', 'id');
