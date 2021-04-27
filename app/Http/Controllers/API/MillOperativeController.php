@@ -69,6 +69,7 @@ class MillOperativeController extends Controller
 
         $allTransactions = array();
 
+        // Transaction creation begins from here.
         foreach ($transactions as $transaction) {
 
             $transactionDetails = $transaction->details;
