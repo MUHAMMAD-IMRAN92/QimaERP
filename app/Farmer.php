@@ -22,6 +22,10 @@ class Farmer extends Model
     {
         return $this->belongsTo(Governerate::class, 'governerate_code', 'governerate_code');
     }
+    public function file()
+    {
+        return $this->belongsTo(FileSystem::class, 'picture_id', 'file_id');
+    }
     public function getgovernerate()
     {
         $farmer_code = $this->farmer_code;
@@ -78,6 +82,15 @@ class Farmer extends Model
         }
         return $imageName;
     }
+    public function cnic()
+    {
+        $imageName = null;
+
+        if ($file = FileSystem::where('file_id', $this->idcard_picture_id)->first()) {
+            $imageName = $file->user_file_name;
+        }
+        return $imageName;
+    }
     public function getfirstTransaction()
     {
         $farmerCode = $this->farmer_code;
@@ -114,7 +127,7 @@ class Farmer extends Model
     public function transactions()
     {
         $village_code = $this->village_code;
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',  $village_code . '%')->get();
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',  $village_code . '%')->where('sent_to', 2)->get();
         $this->transactions = $transactions;
         return $this;
     }

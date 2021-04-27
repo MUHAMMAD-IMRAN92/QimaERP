@@ -33,7 +33,7 @@ class FarmerController extends Controller
             $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
-            
+
             $farmer->quantity = $farmer->quntity();
             $farmer->price = $farmer->price()->price_per_kg;
 
@@ -247,6 +247,7 @@ class FarmerController extends Controller
     public function farmerProfile(Farmer $farmer)
     {
 
+
         $governorate = $farmer->getgovernerate();
         $region = $farmer->getRegion();
         $village = $farmer->getVillage();
@@ -259,7 +260,8 @@ class FarmerController extends Controller
         $farmer->price = $farmer->price()->price_per_kg;
         $farmer = $farmer->transactions();
         $farmer->image = $farmer->getImage();
-  
+        $farmer->cnicImage = $farmer->cnic();
+
         return view('admin.farmer.farmer_profile', [
             'farmer' => $farmer
         ]);
@@ -294,13 +296,7 @@ class FarmerController extends Controller
         $id = $request->from;
         $governorateCode = Governerate::where('governerate_id', $id)->first()->governerate_code;
 
-
-
         $regions = Region::all();
-
-
-
-
 
         $govRegions = $regions->filter(function ($region) use ($governorateCode) {
             return explode('-', $region->region_code)[0] == $governorateCode;
@@ -635,6 +631,7 @@ class FarmerController extends Controller
         $farmer = Farmer::find($id);
 
         $farmerCode = $farmer->farmer_code;
+        $farmer->price = $farmer->price()->price_per_kg;
         $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
         $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$request->from, $request->to])
             ->first()['created_at'];
@@ -649,6 +646,7 @@ class FarmerController extends Controller
             $sum += $transaction->details->sum('container_weight');
         }
         $farmer->quantity = $sum;
+        $farmer->price = $farmer->price()->price_per_kg;
 
         return view('admin.farmer.views.filter_transctions', [
             'farmer' => $farmer
@@ -675,7 +673,7 @@ class FarmerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $farmer->quantity = $sum;
-
+            $farmer->price = $farmer->price()->price_per_kg;
             return view('admin.farmer.views.filter_transctions', [
                 'farmer' => $farmer
             ])->render();
@@ -685,6 +683,7 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+
             $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
             $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->where('created_at', $yesterday)
                 ->first()['created_at'];
@@ -699,6 +698,7 @@ class FarmerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $farmer->quantity = $sum;
+            $farmer->price = $farmer->price()->price_per_kg;;
 
             return view('admin.farmer.views.filter_transctions', [
                 'farmer' => $farmer
@@ -711,6 +711,7 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+
             $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
             $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $end])
                 ->first()['created_at'];
@@ -725,7 +726,7 @@ class FarmerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $farmer->quantity = $sum;
-
+            $farmer->price = $farmer->price()->price_per_kg;
             return view('admin.farmer.views.filter_transctions', [
                 'farmer' => $farmer
             ])->render();
@@ -736,7 +737,8 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
-         
+
+
             $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
             $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $date])
                 ->first()['created_at'];
@@ -751,6 +753,7 @@ class FarmerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $farmer->quantity = $sum;
+            $farmer->price = $farmer->price()->price_per_kg;
 
             return view('admin.farmer.views.filter_transctions', [
                 'farmer' => $farmer
@@ -763,6 +766,7 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+
 
             $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
             $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
@@ -778,7 +782,7 @@ class FarmerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $farmer->quantity = $sum;
-
+            $farmer->price = $farmer->price()->price_per_kg;
             return view('admin.farmer.views.filter_transctions', [
                 'farmer' => $farmer
             ])->render();
@@ -789,6 +793,7 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+
 
             $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
             $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $date])
@@ -804,7 +809,7 @@ class FarmerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $farmer->quantity = $sum;
-
+            $farmer->price = $farmer->price()->price_per_kg;
             return view('admin.farmer.views.filter_transctions', [
                 'farmer' => $farmer
             ])->render();
@@ -815,6 +820,7 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+
 
             $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
             $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereYear('created_at', $year)
@@ -830,7 +836,7 @@ class FarmerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $farmer->quantity = $sum;
-
+            $farmer->price = $farmer->price()->price_per_kg;
             return view('admin.farmer.views.filter_transctions', [
                 'farmer' => $farmer
             ])->render();
@@ -843,6 +849,7 @@ class FarmerController extends Controller
 
             $farmerCode = $farmer->farmer_code;
 
+
             $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
             $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereYear('created_at', $year)
                 ->first()['created_at'];
@@ -857,7 +864,7 @@ class FarmerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $farmer->quantity = $sum;
-
+            $farmer->price = $farmer->price()->price_per_kg;
             return view('admin.farmer.views.filter_transctions', [
                 'farmer' => $farmer
             ])->render();

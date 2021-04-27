@@ -51,8 +51,156 @@
 
         }
 
-    </style>
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
 
+    </style>
+    <script>
+        $(document).ready(function() {
+
+            $('#to').on('change', function() {
+                let from = $('#from').val();
+                let to = $('#to').val();
+
+
+                $.ajax({
+                    url: "{{ url('admin/filter_village_profile/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+                        'to': to
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#today').on('click', function() {
+               
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'today'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+        });
+
+    </script>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -96,7 +244,7 @@
                     @else
                         <td> <img class="famerimg"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ asset('public/storage/images/' . $village->image) }}" alt=" no img"></td>
+                                src="{{ asset('public/storage/images/' . $village->image) }}" alt=""></td>
                     @endif
 
                 </div>
@@ -206,44 +354,50 @@
                 </form>
             </div>
             <div class="row ml-2 blacklink ">
-                <span class="ml-2"> <a href="">TODAY</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> YESTERDAY</a></span>
+                <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
+                <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
                 &nbsp |
-                <span class="ml-2"> <a href=""> WEEK TO DATE </a></span> &nbsp |
-                <span class="ml-2"> <a href="">MONTH TO DATE</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> LAST MONTH</a></span> &nbsp |
-                <span class="ml-2"> <a href="">YEAR TO DATE</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2020 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> ALL TIME</a></span>
+                <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
+                    </a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="monthToDate"> MONTH
+                    TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastmonth"> LAST
+                    MONTH</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="yearToDate"> YEAR TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="currentyear"> 2021
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastyear"> 2020
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2"> <a href="{{ route('village.profile', $village) }}">ALL
+                        TIME</a></span>
             </div>
             <hr>
 
-            <div class="row ml-2">
+            <div class="row ml-2" id="transaction">
                 <div class="col-sm-1 color bg-danger">
-                    <h3 style="font-size: 16px !important">12345678</h3>
+                    <h3 style="font-size: 16px !important">{{ $village->first_purchase }}</h3>
                     <p>First Purchade</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3 style="font-size: 16px !important">1234567890</h3>
+                    <h3 style="font-size: 16px !important">{{ $village->last_purchase }} </h3>
 
                     <p>Last Purchase</p>
                 </div>
                 <div class="col-sm-1 color bg-warning">
-                    {{-- @if ($village->price_per_kg == null)
-                        <h3 style="font-size: 16px !important">1234567890
-                        </h3>
-                    @else
-                        <h3 style="font-size: 16px !important">
-                           123456789
-                        </h3>
-                    @endif --}}
+                    <h3 style="font-size: 16px !important">{{ $village->price }}</h3>
 
                     <p>yer total coffee purchased </p>
                 </div>
                 <div class="col-sm-1 color bg-info">
-                    <h3 style="font-size: 16px !important">123456789</h3>
+                    <h3 style="font-size: 16px !important">{{ $village->quantity }}</h3>
 
                     <p>Quantity</p>
                 </div>
@@ -261,10 +415,10 @@
                 </p>
             </b>
             @foreach ($village->farmers as $farmer)
-                @if ($farmer['farmer_image'] == null)
+                @if ($farmer->file == null)
                     <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
                 @else
-                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image']) }}" alt="no img"
+                    <img src="{{ asset('public/storage/images/' . $farmer->file->user_file_name) }}" alt="no img"
                         id="region_farmer">
                 @endif
 
@@ -279,31 +433,16 @@
                 </p>
             </b>
             @foreach ($village->buyers as $buyer)
-                @if ($buyer['farmer_image'] == null)
-                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
+                @if ($buyer->file == null)
+                    <img src="{{ asset('public/images/farmericon.png') }}" alt="" id="region_farmer">
                 @else
-                    <img src="{{ asset('public/storage/images/' . $buyer['farmer_image']) }}" alt="no img"
+                    <img src="{{ asset('public/storage/images/' . $buyer->file->user_file_name) }}" alt="no img"
                         id="region_farmer">
                 @endif
 
                 <span class="mr-3">{{ $buyer['first_name'] }}</span>
             @endforeach
-            <div class="row">
 
-                <div class="">
-
-                    <ol class="breadcrumb float-sm-right txt-size">
-                        {{-- @foreach ($village->transactions as $transaction)
-                              <li class="breadcrumb-item active"> {{$transaction->created_at}} / </li>
-                            
-                        @endforeach --}}
-
-                    </ol>
-
-
-                </div>
-
-            </div>
         </section>
 
         <!-- Main content -->

@@ -44,14 +44,164 @@
         .txt-size {
             font-size: 12px;
         }
+
         #region_farmer {
             border-radius: 50%;
             width: 3% !important;
 
         }
+
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
+
     </style>
 
+    <script>
+        $(document).ready(function() {
 
+            $('#to').on('change', function() {
+                let from = $('#from').val();
+                let to = $('#to').val();
+
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+                        'to': to
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#today').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'today'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
+                        $('#transaction').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+        });
+
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
 
@@ -148,33 +298,51 @@
                 </form>
             </div>
             <div class="row ml-2 blacklink ">
-                <span class="ml-2"> <a href="">TODAY</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> YESTERDAY</a></span>
+                <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
+                <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
                 &nbsp |
-                <span class="ml-2"> <a href=""> WEEK TO DATE </a></span> &nbsp |
-                <span class="ml-2"> <a href="">MONTH TO DATE</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> LAST MONTH</a></span> &nbsp |
-                <span class="ml-2"> <a href="">YEAR TO DATE</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> 2020 SEASON</a></span> &nbsp |
-                <span class="ml-2"> <a href=""> ALL TIME</a></span>
+                <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
+                    </a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="monthToDate"> MONTH
+                    TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastmonth"> LAST
+                    MONTH</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="yearToDate"> YEAR TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="currentyear"> 2021
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastyear"> 2020
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2"> <a href="{{ route('coffeBuyer.profile', $buyer) }}">ALL
+                        TIME</a></span>
             </div>
             <hr>
-            <div class="row ml-2">
+            <div class="row ml-2" id="transaction">
                 <div class="col-sm-1 color bg-danger">
-                    <h3>{{ App\Village::count() }}</h3>
-                    <p>Villages</p>
+                    <h3 style="font-size: 16px !important">{{ $buyer->first_purchase }}</h3>
+                    <p>First Purchase</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ App\Farmer::count() }}</h3>
+                    <h3 style="font-size: 16px !important">{{ $buyer->last_purchase }}</h3>
 
-                    <p>Farmers</p>
+                    <p>Last Puchase</p>
                 </div>
-                <div class="col-sm-1 color bg-warning">
-                    <h3>{{ App\User::count() }}</h3>
+                <div class="col-sm-1 color bg-info">
+                    <h3 style="font-size: 16px !important">{{ number_format($buyer->sum) }}</h3>
 
-                    <p>User </p>
+                    <p>Quantity</p>
+                </div>
+                <div class="col-sm-1 color bg-secondary ">
+                    <h3 style="font-size: 16px !important">{{ number_format($buyer->price) }}</h3>
+
+                    <p>yer total coffee purchased</p>
                 </div>
                 <div class="col-sm-1 color bg-info"></div>
                 <div class="col-sm-1 color bg-dark"></div>
@@ -243,7 +411,7 @@
                 @if ($farmer['farmer_image'] == null)
                     <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
                 @else
-                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image'] ) }}" alt="no img"
+                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image']) }}" alt="no img"
                         id="region_farmer">
                 @endif
 
@@ -258,9 +426,10 @@
                     <div class="">
                         <ol class="breadcrumb float-sm-right txt-size">
                             <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} /{{$buyer->first_name}} / {{ $buyer->last_name }} /
-                                
-                                {{$transaction->details->sum('container_weight')}}.00
+                                {{ $transaction->created_at }} /{{ $buyer->first_name }} / {{ $buyer->last_name }}
+                                /
+
+                                {{ $transaction->details->sum('container_weight') }}.00
 
                             </li>
                         </ol>

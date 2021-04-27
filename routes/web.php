@@ -57,7 +57,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('editvillage/{id}', 'VillageController@edit')->middleware('auth');
         Route::post('updatevillage', 'VillageController@update');
         Route::get('village/profile/{village}', 'VillageController@villageProfile')->name('village.profile');
-
+        Route::get('filter_village_profile/{id}', 'VillageController@filter_village_profile');    
+        Route::get('village_profile_days_filter/{id}', 'VillageController@village_profile_days_filter');    
 
         //Farmer Controller
         Route::get('allfarmer', 'FarmerController@index')->middleware('auth');
@@ -83,7 +84,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('coffeebuyer_by_villages', 'CoffeeBuyerController@coffeebuyerByVillages');
         Route::get('coffeeBuyerByDate/{date}', 'CoffeeBuyerController@coffeeBuyerByDate');
         Route::get('coffeeBuyer/profile/{buyer}', 'CoffeeBuyerController@coffeeBuyerProfile')->name('coffeBuyer.profile');
-        
+        Route::get('filterByDateprofile/{date}', 'CoffeeBuyerController@filterByDateprofile');
+        Route::get('daysFilter/{id}', 'CoffeeBuyerController@daysFilter');
         //BatchNumber Controller
         Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');
         Route::get('getbatch', 'BatchNumberController@getbatchAjax');
