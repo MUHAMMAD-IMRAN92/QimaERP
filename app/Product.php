@@ -22,4 +22,19 @@ class Product extends Model
     {
         return $this->hasMany(TransactionDetailProduct::class, 'product_id', 'id');
     }
+
+    public static function peaberryWithoutDefectsIds()
+    {
+        return self::where('for', 3)->get(['id']);
+    }
+
+    public static function greenWithoutDefectsIds()
+    {
+        return self::where('for', 4)->get(['id']);
+    }
+
+    public static function allDefectiveIds()
+    {
+        return self::where('for', 5)->get(['id']);
+    }
 }

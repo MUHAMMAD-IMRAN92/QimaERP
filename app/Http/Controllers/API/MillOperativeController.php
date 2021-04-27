@@ -113,7 +113,7 @@ class MillOperativeController extends Controller
 
     public function receiveCoffee(Request $request)
     {
-        $validator = validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
 
@@ -234,7 +234,6 @@ class MillOperativeController extends Controller
                         $detail->is_local = FALSE;
                         $detail->container_weight = $detailData->container_weight;
                         $detail->weight_unit = $detailData->weight_unit;
-                        $detail->container_status = $detailData->container_status;
                         $detail->center_id = $detailData->center_id;
                         $detail->reference_id = $transaction->reference_id;
 
@@ -365,7 +364,6 @@ class MillOperativeController extends Controller
                             $detail->is_local = FALSE;
                             $detail->container_weight = $detailData->container_weight;
                             $detail->weight_unit = $detailData->weight_unit;
-                            $detail->container_status = $detailData->container_status;
                             $detail->center_id = $detailData->center_id;
                             $detail->reference_id = $transaction->reference_id;
 
@@ -467,7 +465,6 @@ class MillOperativeController extends Controller
                             $detail->is_local = FALSE;
                             $detail->container_weight = $detailData->container_weight;
                             $detail->weight_unit = $detailData->weight_unit;
-                            $detail->container_status = $detailData->container_status;
                             $detail->center_id = $detailData->center_id;
                             $detail->reference_id = $transaction->reference_id;
 
@@ -596,7 +593,6 @@ class MillOperativeController extends Controller
                                 $detail->is_local = FALSE;
                                 $detail->container_weight = $detailData->container_weight;
                                 $detail->weight_unit = $detailData->weight_unit;
-                                $detail->container_status = $detailData->container_status;
                                 $detail->center_id = $detailData->center_id;
                                 $detail->reference_id = $lotTransaction->reference_id;
 
