@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Farmer;
 use App\Region;
 use App\Village;
+use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -129,7 +131,38 @@ class VillageController extends Controller
     public function villageProfile(Village $village)
     {
         $village = $village->gov_region();
-      
+        $villageCode = $village->village_code;
+        $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first()['created_at'];
+        $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first()['created_at'];
+
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
+        $quantity = 0;
+        foreach ($transactions as $transaction) {
+            $quantity += $transaction->details->sum('container_weight');
+        }
+        $village->quantity = $quantity;
+        $price = 0;
+        foreach ($transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
+
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            if (!$farmerPrice) {
+
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                foreach ($transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
+                }
+            } else {
+                foreach ($transactions as $transaction) {
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
+                }
+            }
+        }
+        $village->price = $price;
+
         return   view('admin.village.village_profile', [
             'village' =>  $village,
         ]);
