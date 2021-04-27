@@ -2,41 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Governerate;
-use App\Region;
-use App\Center;
 use Auth;
 use Session;
+use App\Center;
+use App\Region;
+use App\Village;
+use App\Governerate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class RegionController extends Controller {
+class RegionController extends Controller
+{
 
-    public function index() {
-        $data['region'] = Region::all();
-        return view('admin.region.allregion', $data);
+    public function index()
+    {
+        $governorates = Governerate::all();
+        $regions = Region::all();
+        $villages = Village::all();
+
+        return view('admin.region.allregion', [
+            'governorates' =>   $governorates,
+            'regions' => $regions,
+            'villages' => $villages,
+
+        ]);
     }
 
-    public function addnewregion() {
+    public function addnewregion()
+    {
         $data['governor'] = Governerate::all();
         $data['center'] = Center::all();
         return view('admin.region.addnewregion', $data);
     }
 
-    function getRegionAjax(Request $request) {
+    function getRegionAjax(Request $request)
+    {
         $draw = $request->get('draw');
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
         $orderby = 'DESC';
         $column = 'region_id';
-//::count total record
+        //::count total record
         $total_members = Region::count();
         $members = Region::query();
         //::select columns
         $members = $members->select('region_id', 'region_code', 'region_title');
         //::search with farmername or farmer_code or  region_code
-        $members = $members->when($search, function($q)use ($search) {
+        $members = $members->when($search, function ($q) use ($search) {
             $q->where('region_code', 'like', "%$search%")->orWhere('region_title', 'like', "%$search%");
         });
         if ($request->has('order') && !is_null($request['order'])) {
@@ -64,10 +77,11 @@ class RegionController extends Controller {
         return json_encode($data);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-                    'region_code' => 'required|max:100|unique:regions,region_code',
-                    'region_title' => 'required|max:100|unique:regions,region_title',
+            'region_code' => 'required|max:100|unique:regions,region_code',
+            'region_title' => 'required|max:100|unique:regions,region_title',
         ]);
         if ($validator->fails()) {
             //::validation failed
@@ -86,17 +100,18 @@ class RegionController extends Controller {
         return redirect('admin/allregion');
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $data['center'] = Center::all();
         $data['region'] = Region::find($id);
         return view('admin.region.editregion', $data);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $region = Region::find($id);
         $region->delete();
         Session::flash('message', 'Region Has Been Deleted Successfully.');
         return redirect('admin/allregion');
     }
-
 }
