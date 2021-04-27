@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Session;
 use App\Center;
 use App\Region;
 use App\Village;
 use App\Governerate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class RegionController extends Controller
