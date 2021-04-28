@@ -141,6 +141,7 @@ class MillOperativeController extends Controller
 
                 $transactionData = (object) $transactionArray['transaction'];
 
+                // We are trying to find parent transaction here.
                 if ($transactionData->is_server_id == true) {
                     $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
 
