@@ -74,13 +74,18 @@
 
                         let html =
                             ' <option value="0" selected disabled>Select Region</option>';
-                        for (let [key, element] of Object.entries(data)) {
-                            html += '<option value="' + element.region_id + '">' + element
+                        data.regions.forEach(region => {
+                            html += '<option value="' + region.region_id + '">' + region
                                 .region_title + '</option>';
-                        }
+                        });
+
 
                         $('#regions_dropdown').append(html);
                         console.log(data);
+
+                        $('#famerstable').html(data.view);
+
+
                     }
                 });
             });
@@ -98,14 +103,15 @@
                         $('#village_dropdown').empty();
                         let html =
                             ' <option value="0" selected disabled>Select Village</option>';
-                        for (let [key, element] of Object.entries(data.villages)) {
-                            html += '<option value="' + element.village_id + '">' + element
+                        data.villages.forEach(village => {
+                            html += '<option value="' + village.village_id + '">' +
+                                village
                                 .village_title + '</option>';
-                        }
-                        console.log(data.region);
+                        });
+                        console.log(data);
 
                         $('#village_dropdown').append(html);
-
+                        $('#famerstable').html(data.view);
 
                     }
                 });
@@ -153,12 +159,12 @@
                 </div>
             </div><!-- /.container-fluid -->
         </section>
-        <div class="row ml-2">
+        <div class="row ml-3">
             <strong>
                 <b>Date Filter</b>
             </strong>
         </div>
-        <div class="row ml-2">
+        <div class="row ml-3">
             <form action="" method="POST" id="data-form">
                 <label for="from">From</label>
                 <input type="date" name="" id="from">
@@ -167,39 +173,39 @@
             </form>
         </div>
         <br>
-        <div class="row ml-2 blacklink ">
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
+        <div class="row ml-3 blacklink ">
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO DATE
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO DATE
                 </a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH TO
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH TO
                     DATE</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST
                     MONTH</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yearToDate')) }}">YEAR TO
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yearToDate')) }}">YEAR TO
                     DATE</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021
                     SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020
                     SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
+            <span class="ml-3"> <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
         </div>
         <hr>
-        <div class="row ml-2">
+        <div class="row ml-3">
             <strong>
                 <b>REGION FILTER</b>
             </strong>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <b class="ml-2"><a href=""> All Regions</a></b> |
+                <b class="ml-3"><a href=""> All Regions</a></b> |
                 Governrate <select name="" id="governorate_dropdown">
                     <option value="0" selected disabled>Select Governrate</option>
                     @foreach ($governorates as $governorate)

@@ -1,3 +1,9 @@
+<script>
+    $(document).ready(function() {
+                $('#myTable').DataTable();
+            });
+
+</script>
 <div class="table-responsive">
     <table class="table" id="myTable">
         <thead>
@@ -33,13 +39,18 @@
                     <td>{{ $farmer->farmer_id }}</td>
                     <td>{{ $farmer->farmer_name }}</td>
                     <td>{{ $farmer->farmer_code }}</td>
-                    <td>{{ $farmer->id }}</td>
-                    <td>{{ $farmer->id }}</td>
+                    <td>{{ $farmer->first_purchase }}</td>
+                    <td>{{ $farmer->last_purchase }}</td>
                     <td>{{ $farmer->governerate_title }}</td>
                     <td>{{ $farmer->region_title }}</td>
                     <td>{{ $farmer->village_title }}</td>
-                    <td>{{ $farmer->id }}</td>
-                    <td>{{ $farmer->id }}</td>
+                    <td>{{ number_format($farmer->quantity) }}</td>
+                    @if ($farmer->price_per_kg == null)
+                        <td>{{ number_format($farmer->price * $farmer->quantity) }}</td>
+                    @else
+                        <td>{{ number_format($farmer->price_per_kg * $farmer->quantity) }}
+                        </td>
+                    @endif
                     <td>{{ $farmer->id }}</td>
                     <td>{{ $farmer->id }}</td>
                     <td>{{ $farmer->id }}</td>
