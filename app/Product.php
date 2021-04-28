@@ -25,7 +25,7 @@ class Product extends Model
 
     public function scopeGreen($query)
     {
-        return $query->whereIn('for', [6, 7]);
+        return $query->whereIn('id', [6, 7]);
     }
 
     public function details()

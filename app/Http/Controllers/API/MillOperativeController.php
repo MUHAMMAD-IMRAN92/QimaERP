@@ -182,7 +182,7 @@ class MillOperativeController extends Controller
                         'reference_id' => $parentTransaction->transaction_id,
                         'transaction_status' => $status,
                         'is_new' => 0,
-                        'sent_to' => $transactionData->sent_to,
+                        'sent_to' => 17,
                         'is_server_id' => 1,
                         'is_sent' => $transactionData->is_sent,
                         'session_no' => $sessionNo,
@@ -265,7 +265,6 @@ class MillOperativeController extends Controller
                 // This coffe is sent further to next managers [sorting manager for sorting, yemen operative for local market]
                 if ($transactionData->is_local == true && ($transactionData->sent_to == 21)) {
 
-
                     $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
 
                     if (!$batchCheck) {
@@ -294,7 +293,7 @@ class MillOperativeController extends Controller
 
                                     $marketDetails->push($detailArray);
                                 } elseif ($greenIds->contains($metaData->value)) {
-                                    array_push($$greenDetails, $detailArray);
+                                    array_push($greenDetails, $detailArray);
                                 } elseif ($peaberryIds->contains($metaData->value)) {
                                     array_push($peaberryDetails,  $detailArray);
                                 }
@@ -516,7 +515,7 @@ class MillOperativeController extends Controller
                             'local_code' => $transactionData->local_code,
                             'is_special' => $parentTransaction->is_special,
                             'is_mixed' => $transactionData->is_mixed,
-                            'transaction_type' => 3,
+                            'transaction_type' => 1,
                             'reference_id' => $parentTransaction->transaction_id,
                             'transaction_status' => 'received',
                             'is_new' => 0,
@@ -633,7 +632,7 @@ class MillOperativeController extends Controller
                                 'local_code' => $transactionData->local_code,
                                 'is_special' => $transaction->is_special,
                                 'is_mixed' => $transactionData->is_mixed,
-                                'transaction_type' => 1,
+                                'transaction_type' => 3,
                                 'reference_id' => $transaction->transaction_id,
                                 'transaction_status' => $status,
                                 'is_new' => 0,
