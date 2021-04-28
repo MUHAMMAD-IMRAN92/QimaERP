@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
@@ -104,5 +105,78 @@ class Transaction extends Model
     public function child()
     {
         return $this->hasMany(ChildTransaction::class, 'parent_transaction_id', 'transaction_id');
+    }
+
+    public static function findParent($isServerId, $referenceId, $userId)
+    {
+        $parentTransaction = null;
+
+        if ($isServerId) {
+            $parentTransaction = static::where('transaction_id', $referenceId)->first();
+        } else {
+            $localCode = $referenceId . '_' . $userId . '-T';
+
+            $parentTransaction = static::where('local_code', 'like', "$localCode%")
+                ->latest('transaction_id')
+                ->first();
+        }
+
+        return $parentTransaction;
+    }
+
+    public static function createAndLog($transactionData, $userId, $status, $sessionNo, $type)
+    {
+        $parentTransaction = self::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $userId);
+
+        if (!$parentTransaction) {
+            throw new Exception('Parent transaction not found. reference_id = ' . $transactionData['reference_id']);
+        }
+
+        $batchCheck = BatchNumber::where('batch_number', $transactionData['batch_number'])->exists();
+
+        if (!$batchCheck) {
+            throw new Exception("Batch Number [{$transactionData['batch_number']}] does not exists.");
+        }
+
+        $transaction =  static::create([
+            'batch_number' => $transactionData['batch_number'],
+            'is_parent' => 0,
+            'created_by' => $userId,
+            'is_local' => FALSE,
+            'local_code' => $transactionData['local_code'],
+            'is_special' => $parentTransaction->is_special,
+            'is_mixed' => $transactionData['is_mixed'],
+            'transaction_type' => 1,
+            'reference_id' => $parentTransaction->transaction_id,
+            'transaction_status' => $status,
+            'is_new' => 0,
+            'sent_to' => $transactionData['sent_to'],
+            'is_server_id' => true,
+            'is_sent' => $transactionData['is_sent'],
+            'session_no' => $sessionNo,
+            'ready_to_milled' => $transactionData['ready_to_milled'],
+            'is_in_process' => $transactionData['is_in_process'],
+            'is_update_center' => $transactionData['is_update_center'],
+            'local_session_no' => $transactionData['local_session_no'],
+            'local_created_at' => toSqlDT($transactionData['local_created_at']),
+            'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
+        ]);
+
+        $log = new TransactionLog();
+        $log->action = $status;
+        $log->created_by = $userId;
+        $log->entity_id = $transactionData['center_id'];
+        $log->local_created_at = $transaction->local_created_at;
+        $log->local_updated_at = $transaction->local_updated_at;
+        $log->type =  $type;
+        $log->center_name = $transactionData['center_name'];
+
+        $transaction->log()->save($log);
+
+        return $transaction;
+    }
+
+    public function createAll($transactionObj, $extras = [])
+    {
     }
 }
