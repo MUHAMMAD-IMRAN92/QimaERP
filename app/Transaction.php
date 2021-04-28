@@ -124,7 +124,7 @@ class Transaction extends Model
         return $parentTransaction;
     }
 
-    public static function createAndLog($transactionData, $userId, $status, $sessionNo, $type)
+    public static function createAndLog($transactionData, $userId, $status, $sessionNo, $type, $transactionType = 1)
     {
         $parentTransaction = self::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $userId);
 
@@ -146,7 +146,7 @@ class Transaction extends Model
             'local_code' => $transactionData['local_code'],
             'is_special' => $parentTransaction->is_special,
             'is_mixed' => $transactionData['is_mixed'],
-            'transaction_type' => 1,
+            'transaction_type' => $transactionType,
             'reference_id' => $parentTransaction->transaction_id,
             'transaction_status' => $status,
             'is_new' => 0,
