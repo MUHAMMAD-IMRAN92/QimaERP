@@ -90,137 +90,136 @@ class SOCoffeeSortingController extends Controller
     }
 
 
-    public function sendCoffee(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'transactions' => 'required',
-        ]);
+    // public function sendCoffee(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'transactions' => 'required',
+    //     ]);
 
-        if ($validator->fails()) {
-            $errors = implode(', ', $validator->errors()->all());
-            return sendError($errors, 400);
-        }
+    //     if ($validator->fails()) {
+    //         $errors = implode(', ', $validator->errors()->all());
+    //         return sendError($errors, 400);
+    //     }
 
-        $savedTransactions = collect();
+    //     $savedTransactions = collect();
 
-        $sessionNo = CoffeeSession::max('server_session_id') + 1;
+    //     $sessionNo = CoffeeSession::max('server_session_id') + 1;
 
-        DB::beginTransaction();
+    //     DB::beginTransaction();
 
-        try {
+    //     try {
 
-            // Start of Transaction saving loop
-            foreach ($request->transactions as $transactionObj) {
-                $transactionData = $transactionObj['transaction'];
+    //         // Start of Transaction saving loop
+    //         foreach ($request->transactions as $transactionObj) {
+    //             $transactionData = $transactionObj['transaction'];
 
-                if (isset($transactionData) && $transactionData['is_local']) {
+    //             if (isset($transactionData) && $transactionData['is_local']) {
 
-                    $status = null;
-                    $type = null;
-                    $sentTo = $transactionData['sent_to'];
+    //                 $status = null;
+    //                 $type = null;
+    //                 $sentTo = $transactionData['sent_to'];
 
-                    if($sentTo == 22){
-                        $status = 'received';
-                        $type = 'received_by_so';
-                    } elseif($sentTo == 23){
-                        $status = 'sent';
-                        $type = 'sent_by_so';
-                    }
+    //                 if($sentTo == 22){
+    //                     $status = 'received';
+    //                     $type = 'received_by_so';
+    //                 } elseif($sentTo == 23){
+    //                     $status = 'sent';
+    //                     $type = 'sent_by_so';
+    //                 }
 
-                    if($status && $type){
-                        $transaction = Transaction::createAndLog(
-                            $transactionData, 
-                            $request->user()->user_id,
-                            $status, 
-                            $sessionNo, 
-                            $type
-                        );
+    //                 if($status && $type){
+    //                     $transaction = Transaction::createAndLog(
+    //                         $transactionData, 
+    //                         $request->user()->user_id,
+    //                         $status, 
+    //                         $sessionNo, 
+    //                         $type
+    //                     );
 
-                        $transactionDetails = TransactionDetail::createFromArray(
-                            $transactionObj, 
-                            $request->user()->user_id, 
-                            $transaction->transaction_id, 
-                            $transaction->reference_id
-                        );
+    //                     $transactionDetails = TransactionDetail::createFromArray(
+    //                         $transactionObj, 
+    //                         $request->user()->user_id, 
+    //                         $transaction->transaction_id, 
+    //                         $transaction->reference_id
+    //                     );
                         
-                        $transaction->load(['details.metas']);
-                        $savedTransactions->push($transaction);
-                    }
+    //                     $transaction->load(['details.metas']);
+    //                     $savedTransactions->push($transaction);
+    //                 }
 
-                    if($sentTo == 22){
-                        $peaberryIds = Product::peaberryWithoutDefectsIds();
-                        $greenIds = Product::greenWithoutDefectsIds();
-                        $defectiveIds = Product::allDefectiveIds();
+    //                 if($sentTo == 22){
+    //                     $peaberryIds = Product::peaberryWithoutDefectsIds();
+    //                     $greenIds = Product::greenWithoutDefectsIds();
+    //                     $defectiveIds = Product::allDefectiveIds();
 
-                        $peaberryDetails = collect();
-                        $greenDetails = collect();
-                        $defectiveDetails = collect();
+    //                     $peaberryDetails = collect();
+    //                     $greenDetails = collect();
+    //                     $defectiveDetails = collect();
 
-                        foreach ($transaction->details as $detail) {
-                            $productIdMeta = $detail->metas->first(function ($value, $key) {
-                                return $key == 'product_id';
-                            });
+    //                     foreach ($transaction->details as $detail) {
+    //                         $productIdMeta = $detail->metas->first(function ($value, $key) {
+    //                             return $key == 'product_id';
+    //                         });
 
-                            if ($productIdMeta) {
-                                $productId = $productIdMeta->value;
+    //                         if ($productIdMeta) {
+    //                             $productId = $productIdMeta->value;
 
-                                if ($peaberryIds->contains($productId)) {
-                                    $peaberryDetails->push($detail);
-                                } elseif ($greenIds->contains($productId)) {
-                                    $greenDetails->push($detail);
-                                } elseif ($defectiveIds->contains($productId)) {
-                                    $defectiveDetails->push($detail);
-                                }
-                            }
-                        }
+    //                             if ($peaberryIds->contains($productId)) {
+    //                                 $peaberryDetails->push($detail);
+    //                             } elseif ($greenIds->contains($productId)) {
+    //                                 $greenDetails->push($detail);
+    //                             } elseif ($defectiveIds->contains($productId)) {
+    //                                 $defectiveDetails->push($detail);
+    //                             }
+    //                         }
+    //                     }
 
-                        // Start of Peaberry transaction
-                        if ($peaberryDetails->isNotEmpty()) {
-                        }
-                        // End of Peaberry Transaction
+    //                     // Start of Peaberry transaction
+    //                     if ($peaberryDetails->isNotEmpty()) {
+    //                     }
+    //                     // End of Peaberry Transaction
 
-                        // Start of Export Green transaction
-                        if ($greenDetails->isNotEmpty()) {
-                        }
-                        // End of Export Green transaction
+    //                     // Start of Export Green transaction
+    //                     if ($greenDetails->isNotEmpty()) {
+    //                     }
+    //                     // End of Export Green transaction
 
-                        return response()->json([
-                            'peaberry' => $peaberryDetails,
-                            'green' => $greenDetails,
-                            'defective' => $defectiveDetails,
-                            'already_saved' => $savedTransactions
-                        ]);
-                    }
+    //                     return response()->json([
+    //                         'peaberry' => $peaberryDetails,
+    //                         'green' => $greenDetails,
+    //                         'defective' => $defectiveDetails,
+    //                         'already_saved' => $savedTransactions
+    //                     ]);
+    //                 }
 
                         
-                    }
-                }
-            }
-            // End of Transaction saving loop
+    //                 }
+    //             }
+    //         }
+    //         // End of Transaction saving loop
+    //         DB::commit();
+    //     } catch (Throwable $th) {
+    //         DB::rollback();
+    //         return Response::json(array('status' => 'error', 'message' => $th->getMessage(), 'data' => [
+    //             'line' => $th->getLine()
+    //         ]), 499);
+    //     }
 
-            DB::commit();
-        } catch (Throwable $th) {
-            DB::rollback();
-            return Response::json(array('status' => 'error', 'message' => $th->getMessage(), 'data' => [
-                'line' => $th->getLine()
-            ]), 499);
-        }
+    //     // Start of setting session
+    //     if ($savedTransactions->isNotEmpty()) {
+    //         CoffeeSession::create([
+    //             'user_id' => $request->user()->user_id,
+    //             'local_session_id' => $savedTransactions->first()->local_session_no,
+    //             'server_session_id' => $sessionNo
+    //         ]);
+    //     } else {
+    //         $sessionNo--;
+    //     }
+    //     // End of setting session
 
-        // Start of setting session
-        if ($savedTransactions->isNotEmpty()) {
-            CoffeeSession::create([
-                'user_id' => $request->user()->user_id,
-                'local_session_id' => $savedTransactions->first()->local_session_no,
-                'server_session_id' => $sessionNo
-            ]);
-        } else {
-            $sessionNo--;
-        }
-        // End of setting session
-
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
-            'session_no' => $sessionNo,
-            'transactions' => $savedTransactions,
-        ]);
-    }
+    //     return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
+    //         'session_no' => $sessionNo,
+    //         'transactions' => $savedTransactions,
+    //     ]);
+    // }
 }
