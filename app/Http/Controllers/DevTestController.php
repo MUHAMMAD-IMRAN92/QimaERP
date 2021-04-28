@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Farmer;
 use Illuminate\Http\Request;
 
 class DevTestController extends Controller
@@ -19,7 +18,7 @@ class DevTestController extends Controller
         abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
 
         return response()->json([
-            'message' => 'Hello Dev! How is your day?'
+            'message' => 'hello dev!'
         ]);
     }
 }
