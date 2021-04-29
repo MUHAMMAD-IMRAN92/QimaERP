@@ -28,15 +28,15 @@ class FarmerController extends Controller
         $farmers = Farmer::all();
 
         $farmers = $farmers->map(function ($farmer) {
-            $farmer->region_title = $farmer->getRegion()->region_title;
-            $farmer->village_title = $farmer->getVillage()->village_title;
+            $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+            $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
-            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
 
             $farmer->quantity = $farmer->quntity();
-            $farmer->price = $farmer->price()->price_per_kg;
+            $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
             return $farmer;
         });
@@ -249,12 +249,12 @@ class FarmerController extends Controller
     {
 
 
-        $governorate = $farmer->getgovernerate();
-        $region = $farmer->getRegion();
-        $village = $farmer->getVillage();
-        $farmer->governerate_title =   $governorate->governerate_title;
-        $farmer->region_title = $region->region_title;
-        $farmer->village_title = $village->village_title;
+        $governorate = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
+        $region = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+        $village = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
+        $farmer->governerate_title =  $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
+        $farmer->region_title =$farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+        $farmer->village_title =  $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
         $farmer->first_purchase = $farmer->getfirstTransaction();
         $farmer->last_purchase = $farmer->getlastTransaction();
         $farmer->quantity = $farmer->quntity();

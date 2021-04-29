@@ -224,18 +224,18 @@
         <hr>
         <div class="row ml-2">
             <div class="col-sm-1 color bg-danger">
-                <h3>{{ App\Village::count() }}</h3>
-                <p>Villages</p>
+                <h3>{{ count($governorates) }}</h3>
+                <p>Governorate</p>
             </div>
             <div class="col-sm-1 color bg-primary">
-                <h3>{{ App\Farmer::count() }}</h3>
+                <h3>{{ count($regions) }}</h3>
 
-                <p>Farmers</p>
+                <p>Regions</p>
             </div>
             <div class="col-sm-1 color bg-warning">
-                <h3>{{ App\User::count() }}</h3>
+                <h3>{{ count($villages) }}</h3>
 
-                <p>User </p>
+                <p>Villages </p>
             </div>
             <div class="col-sm-1 color bg-info"></div>
             <div class="col-sm-1 color bg-dark"></div>
@@ -300,7 +300,7 @@
                                 <table id="myTable" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>S#</th>
+                                           
                                             <th>Region Code</th>
                                             <th>Region Title</th>
                                             <th>Action</th>
@@ -310,7 +310,7 @@
                                     <tbody>
                                         @foreach ($regions as $row)
                                             <tr>
-                                                <td>{{ $row->region_id }}</td>
+                                                    
                                                 <td>{{ $row->region_code }}</td>
                                                 <td>{{ $row->region_title }}</td>
                                                 <td>

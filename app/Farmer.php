@@ -94,15 +94,22 @@ class Farmer extends Model
     public function getfirstTransaction()
     {
         $farmerCode = $this->farmer_code;
-        $transaction_created_at = Transaction::where('batch_number', 'LIKE', "$farmerCode%")->first()['created_at'];
-        return   $transaction_created_at;
+        $transaction = Transaction::where('batch_number', 'LIKE', "$farmerCode%")->first();
+        if ($transaction) {
+            return  $transaction->created_at;
+        } else {
+            $transaction = null;
+        }
     }
     public function getlastTransaction()
     {
         $farmerCode =  $this->farmer_code;
-        $transaction_last = Transaction::where('batch_number', 'LIKE', "$farmerCode%")->latest()->first()['created_at'];
-
-        return $transaction_last;
+        $transaction = Transaction::where('batch_number', 'LIKE', "$farmerCode%")->latest()->first();
+        if ($transaction) {
+            return  $transaction->created_at;
+        } else {
+            $transaction = null;
+        }
     }
     public function quntity()
     {
@@ -110,11 +117,15 @@ class Farmer extends Model
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
             ->where('sent_to', 2)
             ->get();
-        $sum = 0;
-        foreach ($transactions as $transaction) {
-            $sum += $transaction->details->sum('container_weight');
+        if ($transactions) {
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            return $sum;
+        }else{
+          return  $transactions=null;
         }
-        return $sum;
     }
     public function price()
     {
