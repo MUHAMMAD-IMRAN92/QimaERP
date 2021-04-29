@@ -101,7 +101,7 @@ class User extends Authenticatable
     public function nonSpecialPrice()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('sent_to', 2)->get();
         $totalWeight = 0;
         $totalPrice = 0;
         foreach ($transactions as $transaction) {
@@ -128,7 +128,7 @@ class User extends Authenticatable
     public function specialPrice()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('sent_to', 2)->get();
         $totalWeight = 0;
         $totalPrice = 0;
         foreach ($transactions as $transaction) {
@@ -195,7 +195,7 @@ class User extends Authenticatable
     public function getTransactions()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where('created_by', $userId)->get();
+        $transactions = Transaction::with('details')->where('created_by', $userId)->where('sent_to', 2)->get();
         return $transactions;
     }
    
