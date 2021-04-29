@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
+use PhpParser\Node\Stmt\Return_;
 
 class FarmerController extends Controller
 {
@@ -270,23 +271,19 @@ class FarmerController extends Controller
     {
         $farmers = Farmer::whereBetween('created_at', [$request->from, $request->to])
             ->get();
-        $farmers =  $farmers->map(function ($farmer) {
-            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-            return $farmer;
-        });
-        $farmers = $farmers->map(function ($farmer) {
-            $farmer->region_title = $farmer->getRegion()->region_title;
-            return $farmer;
-        });
-        $farmers = $farmers->map(function ($farmer) {
-            $farmer->village_title = $farmer->getVillage()->village_title;
-            return $farmer;
-        });
-
-        $farmers = $farmers->map(function ($farmer) {
-            $farmer->image = $farmer->getImage();
-            return $farmer;
-        });
+            $farmers = $farmers->map(function ($farmer) {
+                $farmer->region_title = $farmer->getRegion()->region_title;
+                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
+                return $farmer;
+            });
 
         return view('admin.farmer.views.index', compact('farmers'))->render();
     }
@@ -300,25 +297,55 @@ class FarmerController extends Controller
 
         $govRegions = $regions->filter(function ($region) use ($governorateCode) {
             return explode('-', $region->region_code)[0] == $governorateCode;
+        })->values();
+        $farmers = Farmer::where('farmer_code', 'LIKE',   $governorateCode . '%')->get();
+
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->region_title = $farmer->getRegion()->region_title;
+            $farmer->village_title = $farmer->getVillage()->village_title;
+            $farmer->image = $farmer->getImage();
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
+
+            $farmer->quantity = $farmer->quntity();
+            $farmer->price = $farmer->price()->price_per_kg;
+
+            return $farmer;
         });
-
-
-        return  $govRegions;
+        return response()->json([
+            'regions' => $govRegions,
+            'view' =>  view('admin.farmer.views.index', compact('farmers'))->render(),
+        ]);
     }
     public function fiterVillages(Request $request)
     {
         $id = $request->from;
-        $regionCode = Region::where('region_id', $id)->first()->region_code;
-        $regionCode = explode('-', $regionCode)[1];
 
+        $regionCode = Region::where('region_id' , $id)->first()->region_code;
+        $region_Code = explode('-', $regionCode)[1];
         $villages = Village::all();
-        $regVillage = $villages->filter(function ($village) use ($regionCode) {
-            return explode('-', $village->village_code)[1] == $regionCode;
+        $villages = $villages->filter(function ($village) use ($region_Code) {
+            return explode('-', $village->village_code)[1] == $region_Code;
+        })->values();
+        $farmers = Farmer::where('farmer_code', 'LIKE', $regionCode . '%')->get();
+       
+        $farmers = $farmers->map(function ($farmer) {
+            $farmer->region_title = $farmer->getRegion()->region_title;
+            $farmer->village_title = $farmer->getVillage()->village_title;
+            $farmer->image = $farmer->getImage();
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
+
+            $farmer->quantity = $farmer->quntity();
+            $farmer->price = $farmer->price()->price_per_kg;
+
+            return $farmer;
         });
-
         return response()->json([
-            'villages' => $regVillage,
-
+            'villages' => $villages,
+            'view' =>  view('admin.farmer.views.index', compact('farmers'))->render(),
         ]);
     }
     public function farmerByVillages(Request $request)
@@ -329,22 +356,20 @@ class FarmerController extends Controller
         $farmers = Farmer::where('village_code', $villageCode)->get();
 
 
-        $farmers =  $farmers->map(function ($farmer) {
-            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-            return $farmer;
-        });
         $farmers = $farmers->map(function ($farmer) {
             $farmer->region_title = $farmer->getRegion()->region_title;
-            return $farmer;
-        });
-        $farmers = $farmers->map(function ($farmer) {
             $farmer->village_title = $farmer->getVillage()->village_title;
-            return $farmer;
-        });
-        $farmers = $farmers->map(function ($farmer) {
             $farmer->image = $farmer->getImage();
+            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
+
+            $farmer->quantity = $farmer->quntity();
+            $farmer->price = $farmer->price()->price_per_kg;
+
             return $farmer;
         });
+
         return view('admin.farmer.views.index', compact('farmers'))->render();
     }
     public function famerByDate(Request $request)
@@ -358,20 +383,17 @@ class FarmerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $farmers =  $farmers->map(function ($farmer) {
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-                return $farmer;
-            });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->region_title = $farmer->getRegion()->region_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
                 return $farmer;
             });
 
@@ -391,20 +413,17 @@ class FarmerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $farmers =  $farmers->map(function ($farmer) {
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-                return $farmer;
-            });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->region_title = $farmer->getRegion()->region_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [
@@ -426,20 +445,17 @@ class FarmerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $farmers =  $farmers->map(function ($farmer) {
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-                return $farmer;
-            });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->region_title = $farmer->getRegion()->region_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [
@@ -461,20 +477,17 @@ class FarmerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $farmers =  $farmers->map(function ($farmer) {
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-                return $farmer;
-            });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->region_title = $farmer->getRegion()->region_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [
@@ -496,20 +509,17 @@ class FarmerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $farmers =  $farmers->map(function ($farmer) {
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-                return $farmer;
-            });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->region_title = $farmer->getRegion()->region_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [
@@ -533,20 +543,17 @@ class FarmerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $farmers =  $farmers->map(function ($farmer) {
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-                return $farmer;
-            });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->region_title = $farmer->getRegion()->region_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [
@@ -567,20 +574,17 @@ class FarmerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $farmers =  $farmers->map(function ($farmer) {
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-                return $farmer;
-            });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->region_title = $farmer->getRegion()->region_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [
@@ -601,20 +605,17 @@ class FarmerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $farmers =  $farmers->map(function ($farmer) {
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
-                return $farmer;
-            });
             $farmers = $farmers->map(function ($farmer) {
                 $farmer->region_title = $farmer->getRegion()->region_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->village_title = $farmer->getVillage()->village_title;
-                return $farmer;
-            });
-            $farmers = $farmers->map(function ($farmer) {
                 $farmer->image = $farmer->getImage();
+                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->first_purchase = $farmer->getfirstTransaction();
+                $farmer->last_purchase = $farmer->getlastTransaction();
+    
+                $farmer->quantity = $farmer->quntity();
+                $farmer->price = $farmer->price()->price_per_kg;
+    
                 return $farmer;
             });
             return view('admin.farmer.allfarmer', [

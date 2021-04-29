@@ -8,6 +8,7 @@ use App\Region;
 use App\Village;
 use App\Governerate;
 use App\Transaction;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Spatie\Permission\Models\Role;
@@ -31,7 +32,6 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
             $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
             $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
-            $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
             $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
             $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
             return   $coffeeBuyingManager;
@@ -40,7 +40,6 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyer->image = $coffeeBuyer->getImage();
             $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
             $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
-            $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
             $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
             $coffeeBuyer = $coffeeBuyer->specialPrice();
             return   $coffeeBuyer;
@@ -507,6 +506,7 @@ class CoffeeBuyerController extends Controller
     }
     public function coffeeBuyerProfile(User $buyer)
     {
+
         $buyer->farmers = $buyer->getFarmers();
         $buyer->transactions = $buyer->getTransactions();
         $buyer->image = $buyer->getImage();
@@ -541,14 +541,14 @@ class CoffeeBuyerController extends Controller
         $buyer->price = $price;
         return   view('admin.coffeBuyer.coffeebuyer_profile', [
             'buyer' =>  $buyer,
-        ]);
+        ])->render();
     }
     public function filterByDateprofile(Request $request, $id)
     {
 
         $buyer = User::find($id);
 
-        $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$request->from, $request->to])->get();
+        $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 2)->get();
         $buyer->first_purchase = $buyer->firstPurchase();
         $buyer->last_purchase = $buyer->lastPurchase();
         $sum = 0;
@@ -590,7 +590,7 @@ class CoffeeBuyerController extends Controller
 
             $buyer = User::find($id);
 
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $date)->get();
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $date)->where('sent_to', 2)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -627,7 +627,7 @@ class CoffeeBuyerController extends Controller
             $yesterday = Carbon::yesterday();
             $buyer = User::find($id);
 
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $yesterday)->get();
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $yesterday)->where('sent_to', 2)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -666,7 +666,7 @@ class CoffeeBuyerController extends Controller
 
             $buyer = User::find($id);
 
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at', [$start,   $end])->get();
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at', [$start,   $end])->where('sent_to', 2)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -703,7 +703,7 @@ class CoffeeBuyerController extends Controller
             $date = Carbon::today()->toDateString();
             $start = $now->firstOfMonth();
             $buyer = User::find($id);
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->get();
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -742,7 +742,7 @@ class CoffeeBuyerController extends Controller
             $year = $date->year;
             $buyer = User::find($id);
 
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', 2)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -780,7 +780,7 @@ class CoffeeBuyerController extends Controller
             $start = $now->startOfYear();
             $buyer = User::find($id);
 
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->get();
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -818,7 +818,7 @@ class CoffeeBuyerController extends Controller
             $year = $date->year;
             $buyer = User::find($id);
 
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->get();
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', 2)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -857,7 +857,7 @@ class CoffeeBuyerController extends Controller
             $year = $date->year - 1;
             $buyer = User::find($id);
 
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->get();
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', 2)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -890,5 +890,372 @@ class CoffeeBuyerController extends Controller
                 'buyer' =>  $buyer,
             ])->render();
         }
+    }
+    public function filterBygovernrate(Request $request)
+    {
+        $governorates = Governerate::all();
+
+        $villages = Village::all();
+        $id = $request->from;
+        $governorateCode = Governerate::where('governerate_id', $id)->first()->governerate_code;
+        $regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
+
+        $coffeeBuyingManagers = Role::with(['users'])->where('name', 'Coffee Buying Manager')->first()->users;
+        $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
+        $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager)  use ($governorateCode) {
+            $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+            $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+            $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 0])->where('batch_number', 'LIKE', $governorateCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyingManager->non_special_price = $totalPrice;
+            $coffeeBuyingManager->non_special_weight = $totalWeight;
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'LIKE', $governorateCode . '%')->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyingManager->special_price = $totalPrice;
+            $coffeeBuyingManager->special_weight = $totalWeight;
+            return   $coffeeBuyingManager;
+        });
+
+        $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($governorateCode) {
+            $coffeeBuyer->image = $coffeeBuyer->getImage();
+            $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+            $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyer->user_id, 'is_special' => 0])->where('batch_number', 'LIKE', $governorateCode . '%')->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyer->non_special_price = $totalPrice;
+            $coffeeBuyer->non_special_weight = $totalWeight;
+
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyer->user_id, 'is_special' => 1])->where('batch_number', 'LIKE', $governorateCode . '%')->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyer->special_price = $totalPrice;
+            $coffeeBuyer->special_weight = $totalWeight;
+            return   $coffeeBuyer;
+        });
+
+
+
+        return response()->json([
+            'regions' => $regions,
+            'view' => view('admin.coffeBuyer.views.index', [
+                'coffeeBuyerMangers' => $coffeeBuyingManagers,
+                'coffeeBuyers' => $coffeeBuyers
+            ])->render()
+        ]);
+    }
+    public function filterByregions(Request $request)
+    {
+
+        $id = $request->from;
+        $regionCode = Region::where('region_id', $id)->first()->region_code;
+        $villages = Village::where('village_code', 'LIKE', $regionCode . '%')->get();
+
+        $coffeeBuyingManagers = Role::with(['users'])->where('name', 'Coffee Buying Manager')->first()->users;
+        $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
+        $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager)  use ($regionCode) {
+            $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+            $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+            $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 0])->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyingManager->non_special_price = $totalPrice;
+            $coffeeBuyingManager->non_special_weight = $totalWeight;
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyingManager->special_price = $totalPrice;
+            $coffeeBuyingManager->special_weight = $totalWeight;
+            return   $coffeeBuyingManager;
+        });
+
+        $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($regionCode) {
+            $coffeeBuyer->image = $coffeeBuyer->getImage();
+            $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+            $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyer->user_id, 'is_special' => 0])->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyer->non_special_price = $totalPrice;
+            $coffeeBuyer->non_special_weight = $totalWeight;
+
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyer->user_id, 'is_special' => 1])->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyer->special_price = $totalPrice;
+            $coffeeBuyer->special_weight = $totalWeight;
+            return   $coffeeBuyer;
+        });
+
+
+
+        return response()->json([
+            'villages' => $villages,
+            'view' => view('admin.coffeBuyer.views.index', [
+                'coffeeBuyerMangers' => $coffeeBuyingManagers,
+                'coffeeBuyers' => $coffeeBuyers
+            ])->render()
+        ]);
+    }
+    public function filterByvillage(Request $request)
+    {
+
+        $id = $request->from;
+        $villageCode = Village::where('village_id', $id)->first()->village_code;
+
+
+        $coffeeBuyingManagers = Role::with(['users'])->where('name', 'Coffee Buying Manager')->first()->users;
+        $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
+        $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager)  use ($villageCode) {
+            $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
+            $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
+            $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 0])->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyingManager->non_special_price = $totalPrice;
+            $coffeeBuyingManager->non_special_weight = $totalWeight;
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyingManager->special_price = $totalPrice;
+            $coffeeBuyingManager->special_weight = $totalWeight;
+            return   $coffeeBuyingManager;
+        });
+
+        $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($villageCode) {
+            $coffeeBuyer->image = $coffeeBuyer->getImage();
+            $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
+            $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyer->user_id, 'is_special' => 0])->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyer->non_special_price = $totalPrice;
+            $coffeeBuyer->non_special_weight = $totalWeight;
+
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyer->user_id, 'is_special' => 1])->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
+            }
+
+            $coffeeBuyer->special_price = $totalPrice;
+            $coffeeBuyer->special_weight = $totalWeight;
+            return   $coffeeBuyer;
+        });
+
+
+
+        return response()->json([
+            'view' => view('admin.coffeBuyer.views.index', [
+                'coffeeBuyerMangers' => $coffeeBuyingManagers,
+                'coffeeBuyers' => $coffeeBuyers
+            ])->render()
+        ]);
     }
 }

@@ -417,18 +417,18 @@
 
                 <span class="mr-3">{{ $farmer['farmer_name'] }}</span>
             @endforeach
+            
             <hr>
             <b>
                 <p>TRANSACTIONS </p>
             </b>
-            @foreach ($buyer['transactions'] as $transaction)
+            @foreach ($buyer->transactions as $transaction)
                 <div class="row ml-2">
                     <div class="">
                         <ol class="breadcrumb float-sm-right txt-size">
                             <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} /{{ $buyer->first_name }} / {{ $buyer->last_name }}
-                                /
-
+                                {{ $transaction->created_at }} /{{ $buyer->first_name }} /
+                                {{explode('-' , $transaction->batch_number)[0] . '-' . explode('-' , $transaction->batch_number)[1]}} /
                                 {{ $transaction->details->sum('container_weight') }}.00
 
                             </li>
@@ -436,7 +436,6 @@
                     </div>
                 </div>
             @endforeach
-
         </section>
 
         <!-- Main content -->
