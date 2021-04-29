@@ -18,15 +18,20 @@ class ProductSeeder extends Seeder
         ['name' => 'SIZE2 GREEN COFFEE', 'container_code' => 'GSB', 'for' => 2],
         ['name' => 'PEABERRY', 'container_code' => 'PS', 'for' => 2],
 
-        // for = 3 is export after sorting
+        // for = 3 
         ['name' => 'PEABERRY WITHOUT DEFECTS', 'container_code' => 'PS', 'for' => 3],
-        ['name' => 'SIZE 1 GREEN COFFEE WITHOUT DEFECTS', 'container_code' => 'ESA', 'for' => 3],
-        ['name' => 'SIZE 2 GREEN COFFEE WITHOUT DEFECTS', 'container_code' => 'ESB', 'for' => 3],
 
-        // for = 4 is defective for local market sales
-        ['name' => 'PEABERRY DEFECTS', 'container_code' => 'LS', 'for' => 4],
-        ['name' => 'SIZE 1 DEFECT GREEN COFFEE', 'container_code' => 'LS', 'for' => 4],
-        ['name' => 'SIZE 2 DEFECT GREEN COFFEE', 'container_code' => 'LS', 'for' => 4],
+        // for = 4 
+        ['name' => 'SIZE 1 GREEN COFFEE WITHOUT DEFECTS', 'container_code' => 'ESA', 'for' => 4],
+        ['name' => 'SIZE 2 GREEN COFFEE WITHOUT DEFECTS', 'container_code' => 'ESB', 'for' => 4],
+
+        // for = 5 is defective for local market sales
+        ['name' => 'PEABERRY DEFECTS', 'container_code' => 'LS', 'for' => 5],
+        ['name' => 'SIZE 1 DEFECT GREEN COFFEE', 'container_code' => 'LS', 'for' => 5],
+        ['name' => 'SIZE 2 DEFECT GREEN COFFEE', 'container_code' => 'LS', 'for' => 5],
+
+        // for = 6 is all defective mix in local market sales
+        ['name' => 'DEFECTS GREEN COFFEE', 'container_code' => 'LS', 'for' => 6],
     ];
 
     /**

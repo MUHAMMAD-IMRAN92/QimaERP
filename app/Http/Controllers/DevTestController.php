@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\TransactionDetail;
 use Illuminate\Http\Request;
 
 class DevTestController extends Controller
@@ -14,11 +15,14 @@ class DevTestController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv3';
-        abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
+        // $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv3';
+        // abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
 
-        return response()->json([
-            'message' => 'hello dev!'
-        ]);
+        $detail = TransactionDetail::first();
+
+        return [
+            'original' => $detail,
+            'replicate' => $detail->replicate()
+        ];
     }
 }
