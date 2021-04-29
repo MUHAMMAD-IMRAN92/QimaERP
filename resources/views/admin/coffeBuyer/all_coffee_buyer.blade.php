@@ -52,7 +52,6 @@
 
     <script>
         $(document).ready(function() {
-            $('#myTable').DataTable();
             $('#to').on('change', function() {
                 let from = $('#from').val();
                 let to = $('#to').val();
@@ -75,24 +74,27 @@
                 // let from = $('#governorate_dropdown').val();
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/filter_farmers_by_region') }}",
+                    url: "{{ url('admin/filterBygovernrate') }}",
                     type: "GET",
                     data: {
                         'from': from,
 
                     },
                     success: function(data) {
+                        console.log(data.view);
                         $('#regions_dropdown').empty();
 
                         let html =
                             ' <option value="0" selected disabled>Select Region</option>';
-                        for (let [key, element] of Object.entries(data)) {
-                            html += '<option value="' + element.region_id + '">' + element
+                        data.regions.forEach(region => {
+                            html += '<option value="' + region.region_id + '">' + region
                                 .region_title + '</option>';
-                        }
+                        });
+
 
                         $('#regions_dropdown').append(html);
-                        console.log(data);
+                        $('#tables').html(data.view);
+
                     }
                 });
             });
@@ -100,24 +102,25 @@
                 // let from = $('#regions_dropdown').val();
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/filter_villages') }}",
+                    url: "{{ url('admin/filterByregions') }}",
                     type: "GET",
                     data: {
                         'from': from,
 
                     },
                     success: function(data) {
-                        $('#village_dropdown').empty();
-                        let html =
-                            ' <option value="0" selected disabled>Select Village</option>';
-                        for (let [key, element] of Object.entries(data.villages)) {
-                            html += '<option value="' + element.village_id + '">' + element
-                                .village_title + '</option>';
-                        }
-                        console.log(data.region);
+                            $('#village_dropdown').empty();
+                            let html =
+                                ' <option value="0" selected disabled>Select Village</option>';
+                           data.villages.forEach(village =>{
+                            html += '<option value="' + village.village_id + '">' + village
+                                    .village_title + '</option>';
+                           });
 
-                        $('#village_dropdown').append(html);
 
+                            $('#village_dropdown').append(html);
+                            $('#tables').html(data.view);
+                        
 
                     }
                 });
@@ -126,15 +129,15 @@
                 // let from = $('#regions_dropdown').val();
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/farmer_by_villages') }}",
+                    url: "{{ url('admin/filterByvillage') }}",
                     type: "GET",
                     data: {
                         'from': from,
 
                     },
                     success: function(data) {
-                        // $('#tables').html(data);
-                        console.log(data);
+                        $('#tables').html(data.view);
+                        // console.log(data.view);
                     }
                 });
             });
@@ -326,69 +329,6 @@
                                         </table>
                                     </div>
 
-                                    {{-- <div class="col-md-2 ml-2">
-                                            <caption>Specialty</caption>
-                                            <table class="table table-bordered">
-
-                                                <thead>
-                                                    <tr>
-                                                        <td>CHREEY BOUGHT</td>
-                                                        <td>PRICE PAID</td>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>John</td>
-                                                        <td>Doe</td>
-
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div class="col-md-2 mi-2">
-                                            <caption>Non-Specialty</caption>
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <td> <span>DRY COFFEE</span> BOUGHT</td>
-                                                        <td>PRICE PAID</td>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>John</td>
-                                                        <td>Doe</td>
-
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div class="col-md-1 ml-2">
-                                            <caption>&nbsp;</caption>
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <td>Firstname</td>
-
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>John</td>
-
-
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                        </div> --}}
                                 </div>
                                 <hr>
 
@@ -400,7 +340,7 @@
                                     <div class="col-md-2"> <b>Non Special</b> </div>
 
                                     <div class="col-md-6">
-                                            <table class="table table-bordered" style="font-size:14px;">
+                                        <table class="table table-bordered" style="font-size:14px;">
                                             <thead>
                                                 <tr align="center">
                                                     <th></th>
