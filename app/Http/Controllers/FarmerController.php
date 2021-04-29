@@ -272,10 +272,10 @@ class FarmerController extends Controller
         $farmers = Farmer::whereBetween('created_at', [$request->from, $request->to])
             ->get();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
@@ -301,10 +301,10 @@ class FarmerController extends Controller
         $farmers = Farmer::where('farmer_code', 'LIKE',   $governorateCode . '%')->get();
 
         $farmers = $farmers->map(function ($farmer) {
-            $farmer->region_title = $farmer->getRegion()->region_title;
-            $farmer->village_title = $farmer->getVillage()->village_title;
+            $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+            $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
-            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
 
@@ -331,10 +331,10 @@ class FarmerController extends Controller
         $farmers = Farmer::where('farmer_code', 'LIKE', $regionCode . '%')->get();
        
         $farmers = $farmers->map(function ($farmer) {
-            $farmer->region_title = $farmer->getRegion()->region_title;
-            $farmer->village_title = $farmer->getVillage()->village_title;
+            $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+            $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
-            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
 
@@ -357,10 +357,10 @@ class FarmerController extends Controller
 
 
         $farmers = $farmers->map(function ($farmer) {
-            $farmer->region_title = $farmer->getRegion()->region_title;
-            $farmer->village_title = $farmer->getVillage()->village_title;
+            $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+            $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
-            $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+            $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
 
@@ -384,10 +384,10 @@ class FarmerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
@@ -414,10 +414,10 @@ class FarmerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
@@ -446,10 +446,10 @@ class FarmerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
@@ -478,10 +478,10 @@ class FarmerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
@@ -510,10 +510,10 @@ class FarmerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
@@ -544,10 +544,10 @@ class FarmerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
@@ -575,10 +575,10 @@ class FarmerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
@@ -606,10 +606,10 @@ class FarmerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $farmers = $farmers->map(function ($farmer) {
-                $farmer->region_title = $farmer->getRegion()->region_title;
-                $farmer->village_title = $farmer->getVillage()->village_title;
+                $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+                $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
-                $farmer->governerate_title = $farmer->getgovernerate()->governerate_title;
+                $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title :null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
     
