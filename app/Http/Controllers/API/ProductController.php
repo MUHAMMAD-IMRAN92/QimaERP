@@ -8,7 +8,7 @@ use App\Product;
 class ProductController extends Controller
 {
     protected $millingFors = [1, 2];
-    protected $sortingFors = [3, 4];
+    protected $sortingFors = [3, 4, 5];
 
     public function all()
     {
