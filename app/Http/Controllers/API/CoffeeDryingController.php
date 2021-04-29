@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -709,7 +710,7 @@ class CoffeeDryingController extends Controller
                     $basketArray = explode("_", $value->key);
 
                     $basket = $basketArray[0];
-                    $weight = $basketArray[1];
+                    $weight = Arr::exists($basketArray, 1) ? $basketArray[1] : 0;
 
                     $alreadyExistBasketMeta = MetaTransation::where('transaction_id', $value->transaction_id)
                         ->where('key', 'like', "$basket%")
