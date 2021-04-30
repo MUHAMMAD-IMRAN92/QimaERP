@@ -69,93 +69,124 @@ class User extends Authenticatable
     public function firstPurchase()
     {
         $userId = $this->user_id;
-        $firstPurchase = Transaction::with('details')->where('created_by',   $userId)->first()['created_at'];
-        return  $firstPurchase;
+        $firstPurchase = Transaction::with('details')->where('created_by',   $userId)->first();
+        if ($firstPurchase) {
+            return  $firstPurchase->created_at;
+        }
     }
     public function lastPurchase()
     {
         $userId = $this->user_id;
-        $lastPurchase = Transaction::where('created_by',   $userId)->latest()->first()['created_at'];
-        return  $lastPurchase;
+        $lastPurchase = Transaction::where('created_by',   $userId)->latest()->first();
+        if ($lastPurchase) {
+            return  $lastPurchase->created_at;
+        }
     }
     public function special()
     {
         $userId = $this->user_id;
         $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->get();
-        $sum = 0;
-        foreach ($transactions as $transaction) {
-            $sum += $transaction->details->sum('container_weight');
+        if ($transactions) {
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            return  $sum;
         }
-        return  $sum;
     }
     public function nonSpecial()
     {
         $userId = $this->user_id;
         $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->get();
-        $sum = 0;
-        foreach ($transactions as $transaction) {
-            $sum += $transaction->details->sum('container_weight');
+        if ($transactions) {
+            $sum = 0;
+            foreach ($transactions as $transaction) {
+                $sum += $transaction->details->sum('container_weight');
+            }
+            return  $sum;
         }
-        return  $sum;
     }
     public function nonSpecialPrice()
     {
         $userId = $this->user_id;
         $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('sent_to', 2)->get();
-        $totalWeight = 0;
-        $totalPrice = 0;
-        foreach ($transactions as $transaction) {
-            $weight = $transaction->details->sum('container_weight');
-            $price = 0;
-            $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+        if ($transactions) {
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-            if (!$farmerPrice) {
-                $village_code = Str::beforeLast($farmer_code, '-');
-                $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
-            } else {
-                $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
             }
 
-            $totalPrice += $weight * $price;
-            $totalWeight += $weight;
+            $this->non_special_weight =  $totalWeight;
+            $this->non_special_price =  $totalPrice;
+            return $this;
         }
-
-        $this->non_special_weight =  $totalWeight;
-        $this->non_special_price =  $totalPrice;
-        return $this;
     }
     public function specialPrice()
     {
         $userId = $this->user_id;
         $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('sent_to', 2)->get();
-        $totalWeight = 0;
-        $totalPrice = 0;
-        foreach ($transactions as $transaction) {
-            $weight = $transaction->details->sum('container_weight');
-            $price = 0;
-            $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+        if ($transactions) {
+            $totalWeight = 0;
+            $totalPrice = 0;
+            foreach ($transactions as $transaction) {
+                $weight = $transaction->details->sum('container_weight');
+                $price = 0;
+                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-            if (!$farmerPrice) {
-                $village_code = Str::beforeLast($farmer_code, '-');
-                $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
-            } else {
-                $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                if (!$farmerPrice) {
+                    $village_code = Str::beforeLast($farmer_code, '-');
+                    $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                } else {
+                    $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                }
+
+                $totalPrice += $weight * $price;
+                $totalWeight += $weight;
             }
 
-            $totalPrice += $weight * $price;
-            $totalWeight += $weight;
+            $this->special_weight =  $totalWeight;
+            $this->special_price =  $totalPrice;
+            return $this;
         }
-
-        $this->special_weight =  $totalWeight;
-        $this->special_price =  $totalPrice;
-        return $this;
     }
     public function getFarmers()
     {
         $userId = $this->user_id;
         $transactions = Transaction::where('created_by', $userId)->get();
+        if( $transactions){
+             $batchNumbers = collect();
+        $farmers = collect();
+        foreach ($transactions as $transaction) {
+            $batchNumber = $transaction->batch_number;
+            $batchNumbers->push($batchNumber);
+        }
+        foreach ($batchNumbers as $batchNumber) {
+            $farmerCode = Str::beforeLast($batchNumber, '-');
+            $farmer = Farmer::where('farmer_code',  $farmerCode)->first();
+
+            if ($farmer) {
+                $farmer->farmer_image = $farmer->getImage();
+
+                $farmers->push($farmer);
+            }
+        }
+        return $farmers;
+        }
         $batchNumbers = collect();
         $farmers = collect();
         foreach ($transactions as $transaction) {
@@ -178,7 +209,8 @@ class User extends Authenticatable
     {
         $userId = $this->user_id;
         $transactions = Transaction::where('created_by', $userId)->get();
-        $batchNumbers = collect();
+        if( $transactions){
+             $batchNumbers = collect();
         $villages = collect();
         foreach ($transactions as $transaction) {
             $batchNumber = $transaction->batch_number;
@@ -191,12 +223,16 @@ class User extends Authenticatable
         }
         $uniqueVillages = $villages->unique();
         return $uniqueVillages;
+        }
+       
     }
     public function getTransactions()
     {
         $userId = $this->user_id;
         $transactions = Transaction::with('details')->where('created_by', $userId)->where('sent_to', 2)->get();
-        return $transactions;
+        if(  $transactions ){
+             return $transactions;
+        }
+      
     }
-   
 }
