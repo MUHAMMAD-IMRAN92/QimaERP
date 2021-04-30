@@ -2,9 +2,11 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
-class BatchNumber extends Model {
+class BatchNumber extends Model
+{
 
     protected $primaryKey = 'batch_id';
     protected $fillable = ['batch_id', 'batch_number', 'is_parent', 'created_by', 'is_local', 'local_code', 'is_mixed', 'is_server_id', 'season_id', 'season_status'];
@@ -14,36 +16,58 @@ class BatchNumber extends Model {
         'is_server_id' => 'boolean',
     ];
 
-    public function childBatchNumber() {
+    public function childBatchNumber()
+    {
         return $this->hasMany(BatchNumber::class, 'is_parent', 'batch_id');
     }
 
-    public function transaction() {
+    public function transaction()
+    {
         return $this->hasMany(Transaction::class, 'batch_number', 'batch_number');
     }
 
-    public function season() {
+    public function season()
+    {
         return $this->hasMany(Season::class, 'season_id', 'season_id');
     }
 
-    public function sent_transaction() {
+    public function sent_transaction()
+    {
         return $this->hasMany(Transaction::class, 'batch_number', 'batch_number');
     }
 
-    public function center_manager_received_transaction() {
+    public function center_manager_received_transaction()
+    {
         return $this->hasMany(Transaction::class, 'batch_number', 'batch_number');
     }
 
-    public function latestTransation() {
+    public function latestTransation()
+    {
         return $this->hasOne(Transaction::class, 'batch_number', 'batch_number');
     }
 
-    public function childBatches() {
+    public function childBatches()
+    {
         return $this->hasMany(BatchNumber::class, 'is_parent', 'batch_id');
     }
 
-    public function buyer() {
+    public function buyer()
+    {
         return $this->belongsTo('App\User', 'created_by', 'user_id');
     }
 
+    public static function newBatchNumber($batchPrefix)
+    {
+        $maxId = 0;
+
+        $latestBatch = BatchNumber::where('batch_number', 'like', "$batchPrefix%")
+            ->latest('batch_id')
+            ->first();
+
+        if ($latestBatch) {
+            $maxId = intval(Str::afterLast($latestBatch->batch_number, '-'));
+        }
+
+        return $batchPrefix . '-' . Str::padLeft($maxId + 1, 3, 0);
+    }
 }
