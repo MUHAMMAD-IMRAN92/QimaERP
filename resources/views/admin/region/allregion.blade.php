@@ -297,32 +297,36 @@
                         <div class="card">
                             <!-- /.card-header -->
                             <div class="card-body">
-                                
+
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th colspan="3">Governrates</th>
-                                            <th colspan="3">regions</th>
-                                            <th colspan="3">villages</th>
+                                            <th>Governrates</th>
+                                            <th>regions</th>
+                                            <th>villages</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($governorates as $governorate)
-                                            <tr style="border:1px solid">
-                                                <td colspan="3" style="border:1px solid">
+                                            <tr>
+                                                <td>
                                                     {{ $governorate->governerate_title }} </td>
-                                                <td colspan="3" style="border:1px solid">
-                                                    @foreach ($governorate->regions as $region)
-                                                        <span>{{ $region->region_title }} </span> <br>
-                                                    @endforeach
-                                                </td>
-                                                @if ($governorate->villages != null)
-                                                    <td colspan="3" style="border:1px solid">
-                                                        @foreach ($governorate->villages as $village)
-                                                            <span>{{ $village->village_title }}</span> <br>
+                                                <td>
+                                                    @if ($governorate->regions != null)
+
+                                                        @foreach ($governorate->regions as $region)
+                                                            {{ $region->region_title }} <br>
                                                         @endforeach
-                                                    </td>
-                                                @endif
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($governorate->villages != null)
+
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->village_title }} <br>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
 
                                             </tr>
                                         @endforeach

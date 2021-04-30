@@ -26,11 +26,10 @@ class RegionController extends Controller
                 if ($governorate->regions) {
                     foreach ($governorate->regions as $region) {
                         $governorate->villages = Village::where('village_code', 'LIKE', $region->region_code . '%')->get();
+                       
                         return   $governorate;
                     }
                 }
-
-
                 return $governorate;
             });
         }
