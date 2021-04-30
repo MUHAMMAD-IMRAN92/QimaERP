@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', 'All Regions')
 @section('content')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <style type="text/css">
         .dataTables_wrapper .dataTables_filter input {
             margin-left: 0.5em;
@@ -246,46 +246,46 @@
         </div>
         <hr>
         <div class="row ml-2">
-          <h5>QUANTITY CHERRY BOUGHT</h5>
-      </div>
-      <div class="row">
-          <div class="col-md-11 ml-4">
-              <canvas id="myChart" style="width:100%;max-height:300px"></canvas>
+            <h5>QUANTITY CHERRY BOUGHT</h5>
+        </div>
+        <div class="row">
+            <div class="col-md-11 ml-4">
+                <canvas id="myChart" style="width:100%;max-height:300px"></canvas>
 
-              <script>
-                  var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
-                  var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+                <script>
+                    var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
+                    var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
 
-                  new Chart("myChart", {
-                      type: "line",
-                      data: {
-                          labels: xValues,
-                          datasets: [{
-                              fill: false,
-                              lineTension: 0,
-                              backgroundColor: "rgba(0,0,255,1.0)",
-                              borderColor: "rgba(0,0,255,0.1)",
-                              data: yValues
-                          }]
-                      },
-                      options: {
-                          legend: {
-                              display: false
-                          },
-                          scales: {
-                              yAxes: [{
-                                  ticks: {
-                                      min: 6,
-                                      max: 16
-                                  }
-                              }],
-                          }
-                      }
-                  });
+                    new Chart("myChart", {
+                        type: "line",
+                        data: {
+                            labels: xValues,
+                            datasets: [{
+                                fill: false,
+                                lineTension: 0,
+                                backgroundColor: "rgba(0,0,255,1.0)",
+                                borderColor: "rgba(0,0,255,0.1)",
+                                data: yValues
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        min: 6,
+                                        max: 16
+                                    }
+                                }],
+                            }
+                        }
+                    });
 
-              </script>
-          </div>
-      </div>
+                </script>
+            </div>
+        </div>
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
@@ -297,35 +297,36 @@
                         <div class="card">
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="myTable" class="table table-bordered table-striped">
+                                
+                                <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                           
-                                            <th>Region Code</th>
-                                            <th>Region Title</th>
-                                            <th>Action</th>
-
+                                            <th colspan="3">Governrates</th>
+                                            <th colspan="3">regions</th>
+                                            <th colspan="3">villages</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($regions as $row)
-                                            <tr>
-                                                    
-                                                <td>{{ $row->region_code }}</td>
-                                                <td>{{ $row->region_title }}</td>
-                                                <td>
-                                                    <a href="editregion/{{ $row->region_id }}"
-                                                        class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a>
-
-                                                    <a href="deleteregion/{{ $row->region_id }}"
-                                                        class="btn btn-danger btn-sm trigger-btn"><i
-                                                            class="fas fa-trash-alt"></i></a>
+                                        @foreach ($governorates as $governorate)
+                                            <tr style="border:1px solid">
+                                                <td colspan="3" style="border:1px solid">
+                                                    {{ $governorate->governerate_title }} </td>
+                                                <td colspan="3" style="border:1px solid">
+                                                    @foreach ($governorate->regions as $region)
+                                                        <span>{{ $region->region_title }} </span> <br>
+                                                    @endforeach
                                                 </td>
+                                                @if ($governorate->villages != null)
+                                                    <td colspan="3" style="border:1px solid">
+                                                        @foreach ($governorate->villages as $village)
+                                                            <span>{{ $village->village_title }}</span> <br>
+                                                        @endforeach
+                                                    </td>
+                                                @endif
 
                                             </tr>
                                         @endforeach
                                     </tbody>
-
                                 </table>
                             </div>
                             <!-- /.card-body -->

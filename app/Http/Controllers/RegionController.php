@@ -19,18 +19,24 @@ class RegionController extends Controller
         $governorates = Governerate::all();
         $regions = Region::all();
         $villages = Village::all();
-        $governorates = $governorates->map(function ($governorate) {
-            $governorateCode = $governorate->governerate_code;
+        if ($governorates) {
+            $governorates = $governorates->map(function ($governorate) use ($governorates) {
+                $governorateCode = $governorate->governerate_code;
+                $governorate->regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
+                if ($governorate->regions) {
+                    foreach ($governorate->regions as $region) {
+                        $governorate->villages = Village::where('village_code', 'LIKE', $region->region_code . '%')->get();
+                        return   $governorate;
+                    }
+                }
 
-            $governorate->regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
 
-            $governorate->regions =  $governorate->regions->map(function ($region) {
-                $regionCode = $region->region_code;
-                return $region->village =  Village::where('village_code', 'LIKE', $regionCode . '%')->get();
+                return $governorate;
             });
-            return $governorate;
-        });
-        return   $governorates;
+        }
+
+
+
         return view('admin.region.allregion', [
             'governorates' =>   $governorates,
             'regions' => $regions,
