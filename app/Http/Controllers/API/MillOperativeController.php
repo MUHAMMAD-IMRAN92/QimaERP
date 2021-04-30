@@ -28,19 +28,19 @@ class MillOperativeController extends Controller
     private $app_lang;
 
     private $normalProductBatchNumbers = [
-        1 => 'GR1-HSK',
-        2 => 'GR2-HSK',
-        3 => 'GR3-HSK',
-        4 => 'GR2-CFE',
-        5 => 'GR2-CFE'
+        1 => 'GR1-HSK-00',
+        2 => 'GR2-HSK-00',
+        3 => 'GR3-HSK-00',
+        4 => 'GR2-CFE-00',
+        5 => 'GR2-CFE-00'
     ];
 
     private $specialProductBatchNumbers = [
-        1 => 'SGR1-HSK',
-        2 => 'SGR2-HSK',
-        3 => 'SGR3-HSK',
-        4 => 'SGR2-CFE',
-        5 => 'SGR2-CFE'
+        1 => 'SGR1-HSK-00',
+        2 => 'SGR2-HSK-00',
+        3 => 'SGR3-HSK-00',
+        4 => 'SGR2-CFE-00',
+        5 => 'SGR2-CFE-00'
     ];
 
     public function __construct(Request $request)
@@ -602,15 +602,11 @@ class MillOperativeController extends Controller
 
                         foreach ($marketDetailsGrouped as $product_id => $detailArrays) {
 
-                            $special = $parentTransaction->is_special;
+                            $batchNumbers = $parentTransaction->is_special ? $this->specialProductBatchNumbers : $this->normalProductBatchNumbers;
 
-                            $batchNumbers = $special ? $this->specialProductBatchNumbers : $this->normalProductBatchNumbers;
+                            $hardcodeBatchNumberPrefix = $batchNumbers[$product_id];
 
-                            $hardcodeBatchNumber = $batchNumbers[$product_id];
-
-                            $fromRegionBatchNumber = Str::after($transactionData->batch_number, '-');
-
-                            $hardcodeBatchNumber = $hardcodeBatchNumber . '-' . $fromRegionBatchNumber;
+                            $hardcodeBatchNumber = BatchNumber::newBatchNumber($hardcodeBatchNumberPrefix);
 
                             $oldBatch = BatchNumber::where('batch_number', $transactionData->batch_number)->first();
 
