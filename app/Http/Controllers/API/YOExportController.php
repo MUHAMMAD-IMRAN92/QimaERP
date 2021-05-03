@@ -33,6 +33,7 @@ class YOExportController extends Controller
             }])->with(['meta', 'child'])
             ->orderBy('transaction_id', 'desc')
             ->get();
+            
         $allTransactions = array();
 
 
