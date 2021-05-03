@@ -224,22 +224,30 @@
         <hr>
         <div class="row ml-2">
             <div class="col-sm-1 color bg-danger">
-                <h3>{{ count($governorates) }}</h3>
+                <h4>{{ count($governorates) }}</h4>
                 <p>Governorate</p>
             </div>
             <div class="col-sm-1 color bg-primary">
-                <h3>{{ count($regions) }}</h3>
+                <h4>{{ count($regions) }}</h4>
 
                 <p>Regions</p>
             </div>
             <div class="col-sm-1 color bg-warning">
-                <h3>{{ count($villages) }}</h3>
+                <h4>{{ count($villages) }}</h4>
 
                 <p>Villages </p>
             </div>
-            <div class="col-sm-1 color bg-info"></div>
-            <div class="col-sm-1 color bg-dark"></div>
-            <div class="col-sm-1 color bg-danger"></div>
+            <div class="col-sm-1 color bg-info">
+                <h4>{{ $total_coffee }}</h4>
+                <p>Quantity </p>
+            </div>
+            <div class="col-sm-1 color bg-dark">
+                <h4>{{ $totalPrice }}</h4>
+                <p>yer coffee bought </p>
+            </div>
+            <div class="col-sm-1 color bg-danger">
+               
+            </div>
             <div class="col-sm-1 color bg-warning"></div>
             <div class="col-sm-1 color bg-info"></div>
             <div class="col-sm-1 color bg-dark"></div>
@@ -301,10 +309,12 @@
                                     <thead>
                                         <tr>
 
-                                            <th>Governorate Title</th>
-                                            <th>Region Title</th>
-                                            <th>Village Title</th>
-
+                                            <th>Governorates </th>
+                                            <th>Regions </th>
+                                            <th>Villages </th>
+                                            <th>Quantity</th>
+                                            <th>Values</th>
+                                            <th>Farmers</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -314,19 +324,44 @@
                                                 <td>{{ $governorate->governerate_title }}</td>
                                                 <td>
                                                     @foreach ($governorate->regions as $region)
-                                                        {{ $region->region_title }}
+                                                        {{ $region->region_title }} <br>
                                                     @endforeach
                                                 </td>
                                                 <td>
                                                     @if ($governorate->villages)
 
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->village_title }} <br>
+                                                        @endforeach
+
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    @if ($governorate->villages)
 
                                                         @foreach ($governorate->villages as $village)
-                                                            {{ $village->village_title }}
+                                                            {{ $village->weight }} <br>
                                                         @endforeach
                                                     @endif
                                                 </td>
 
+                                                <td>
+                                                    @if ($governorate->villages)
+
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->weight * $village->price }} <br>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($governorate->villages)
+
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->farmers }} <br>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
