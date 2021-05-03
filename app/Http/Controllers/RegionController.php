@@ -273,9 +273,10 @@ class RegionController extends Controller
             $governorates = Governerate::whereDate('created_at',  $yesterday)->get();
             $regions = Region::whereDate('created_at',  $yesterday)->get();
             $transactions  = Transaction::with('details')->where('sent_to', 2)->whereDate('created_at', $yesterday)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
             if ($transactions) {
-                $totalWeight = 0;
-                $totalPrice = 0;
+
                 foreach ($transactions as $transaction) {
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -320,9 +321,10 @@ class RegionController extends Controller
             $governorates = Governerate::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $regions = Region::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
             if ($transactions) {
-                $totalWeight = 0;
-                $totalPrice = 0;
+
                 foreach ($transactions as $transaction) {
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -368,10 +370,10 @@ class RegionController extends Controller
             $governorates = Governerate::whereYear('created_at', $year)->get();
             $regions = Region::whereYear('created_at', $year)->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereYear('created_at', $year)->get();
-
+            $totalWeight = 0;
+            $totalPrice = 0;
             if ($transactions) {
-                $totalWeight = 0;
-                $totalPrice = 0;
+
                 foreach ($transactions as $transaction) {
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -417,9 +419,10 @@ class RegionController extends Controller
             $governorates = Governerate::whereYear('created_at', $year)->get();
             $regions = Region::whereYear('created_at', $year)->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereYear('created_at', $year)->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
             if ($transactions) {
-                $totalWeight = 0;
-                $totalPrice = 0;
+
                 foreach ($transactions as $transaction) {
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -467,9 +470,10 @@ class RegionController extends Controller
             $governorates = Governerate::whereBetween('created_at', [$start, $end])->get();
             $regions = Region::whereBetween('created_at', [$start, $end])->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $end])->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
             if ($transactions) {
-                $totalWeight = 0;
-                $totalPrice = 0;
+
                 foreach ($transactions as $transaction) {
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -514,9 +518,10 @@ class RegionController extends Controller
             $governorates = Governerate::whereBetween('created_at', [$start, $date])->get();
             $regions = Region::whereBetween('created_at', [$start, $date])->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
             if ($transactions) {
-                $totalWeight = 0;
-                $totalPrice = 0;
+
                 foreach ($transactions as $transaction) {
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -562,9 +567,10 @@ class RegionController extends Controller
             $governorates = Governerate::whereBetween('created_at', [$start, $date])->get();
             $regions = Region::whereBetween('created_at', [$start, $date])->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
+            $totalWeight = 0;
+            $totalPrice = 0;
             if ($transactions) {
-                $totalWeight = 0;
-                $totalPrice = 0;
+
                 foreach ($transactions as $transaction) {
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
