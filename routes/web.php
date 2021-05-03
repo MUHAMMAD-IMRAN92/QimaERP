@@ -48,6 +48,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('editregion/{id}', 'RegionController@edit')->middleware('auth');
         Route::get('deleteregion/{id}', 'RegionController@delete')->middleware('auth');
         Route::get('regionByDate', 'RegionController@regionByDate');
+        Route::get('regionByDays', 'RegionController@regionByDays');
 
 
 

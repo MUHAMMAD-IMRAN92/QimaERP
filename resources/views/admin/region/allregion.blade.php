@@ -35,6 +35,10 @@
 
         }
 
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
@@ -44,7 +48,7 @@
                 let to = $('#to').val();
 
                 $.ajax({
-                 
+
                     url: "{{ url('admin/regionByDate') }}",
                     type: "GET",
                     data: {
@@ -124,7 +128,125 @@
                     }
                 });
             });
-            
+            $('#today').on('click', function() {
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'today'
+                    },
+                    success: function(data) {
+
+                         $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
         });
 
     </script>
@@ -192,7 +314,7 @@
             <span class="ml-2 hover" id="lastyear"> 2020
                 SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="">ALL
+            <span class="ml-2"> <a href="{{ url('/admin/allregion') }}">ALL
                     TIME</a></span>
         </div>
         <hr>
