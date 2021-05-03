@@ -44,15 +44,15 @@
                 let to = $('#to').val();
 
                 $.ajax({
-                    url: "{{ url('admin/filter_farmers') }}",
+                 
+                    url: "{{ url('admin/regionByDate') }}",
                     type: "GET",
                     data: {
                         'from': from,
                         'to': to
                     },
                     success: function(data) {
-
-                        $('#famerstable').html(data);
+                        $('#transactions').html(data);
                         console.log(data);
                     }
                 });
@@ -124,6 +124,7 @@
                     }
                 });
             });
+            
         });
 
     </script>
@@ -222,7 +223,7 @@
 
         </div>
         <hr>
-        <div class="row ml-2">
+        <div class="row ml-2" id="transactions">
             <div class="col-sm-1 color bg-danger">
                 <h4>{{ count($governorates) }}</h4>
                 <p>Governorate</p>
@@ -246,7 +247,7 @@
                 <p>yer coffee bought </p>
             </div>
             <div class="col-sm-1 color bg-danger">
-               
+
             </div>
             <div class="col-sm-1 color bg-warning"></div>
             <div class="col-sm-1 color bg-info"></div>

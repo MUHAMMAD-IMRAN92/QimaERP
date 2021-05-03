@@ -174,4 +174,39 @@ class RegionController extends Controller
         Session::flash('message', 'Region Has Been Deleted Successfully.');
         return redirect('admin/allregion');
     }
+    public function regionByDate(Request $request)
+    {
+        $governorates = Governerate::whereBetween('created_at', [$request->from, $request->to])->get();
+        $regions = Region::whereBetween('created_at', [$request->from, $request->to])->get();
+        $villages = Village::whereBetween('created_at', [$request->from, $request->to])->get();
+        $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$request->from, $request->to])->get();
+
+        $totalWeight = 0;
+        $totalPrice = 0;
+        foreach ($transactions as $transaction) {
+            $weight = $transaction->details->sum('container_weight');
+            $price = 0;
+            $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+
+            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+            if (!$farmerPrice) {
+                $village_code = Str::beforeLast($farmer_code, '-');
+                $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+            } else {
+                $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+            }
+
+            $totalPrice += $weight * $price;
+            $totalWeight += $weight;
+        }
+
+        return view('admin.region.views.filter_transctions', [
+            'governorates' =>   $governorates,
+            'regions' => $regions,
+            'villages' => $villages,
+            'total_coffee' => $totalWeight,
+            'totalPrice' => $totalPrice
+
+        ]);
+    }
 }
