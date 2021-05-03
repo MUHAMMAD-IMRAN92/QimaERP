@@ -46,34 +46,36 @@ class RegionController extends Controller
         $governorates = $governorates->map(function ($governorate) {
             $governorateCode = $governorate->governerate_code;
             $governorate->regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
+            if ($governorate->regions) {
+                foreach ($governorate->regions as $region) {
+                    $regionCode = $region->region_code;
+                    $governorate->villages = Village::where('village_code', 'LIKE', $regionCode . '%')->get();
+                    foreach ($governorate->villages as $village) {
+                        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $village->village_code . '%')->where('sent_to', 2)->get();
+                        $weight = 0;
+                        foreach ($transactions as $transaction) {
+                            $weight += $transaction->details->sum('container_weight');
+                            $village->weight =   $weight;
 
-            foreach ($governorate->regions as $region) {
-                $regionCode = $region->region_code;
-                $governorate->villages = Village::where('village_code', 'LIKE', $regionCode . '%')->get();
-                foreach ($governorate->villages as $village) {
-                    $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $village->village_code . '%')->where('sent_to', 2)->get();
-                    $weight = 0;
-                    foreach ($transactions as $transaction) {
-                        $weight += $transaction->details->sum('container_weight');
-                        $village->weight =   $weight;
+                            $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-                        $farmer_code = Str::beforeLast($transaction->batch_number, '-');
-
-                        $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                        if (!$farmerPrice) {
-                            $village_code = Str::beforeLast($farmer_code, '-');
-                            $village->price  = Village::where('village_code',  $village_code)->first()->price_per_kg;
-                        } else {
-                            $village->price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                            $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                            if (!$farmerPrice) {
+                                $village_code = Str::beforeLast($farmer_code, '-');
+                                $village->price  = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                            } else {
+                                $village->price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                            }
+                            $farmers = Farmer::where('farmer_code', 'LIKE',  $village->village_code . '%')->get();
+                            $village->farmers = count($farmers);
+                            return $governorate;
                         }
-                        $farmers = Farmer::where('farmer_code', 'LIKE',  $village->village_code . '%')->get();
-                        $village->farmers = count($farmers);
-                        return $governorate;
+                        return  $governorate;
                     }
-                    return  $governorate;
+                    return $governorate;
                 }
-                return $governorate;
             }
+
 
             return $governorate;
         });
@@ -229,27 +231,30 @@ class RegionController extends Controller
 
             $totalWeight = 0;
             $totalPrice = 0;
-            foreach ($transactions as $transaction) {
-                $weight = $transaction->details->sum('container_weight');
-                $price = 0;
-                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+            if ($transactions) {
+                foreach ($transactions as $transaction) {
+                    $weight = $transaction->details->sum('container_weight');
+                    $price = 0;
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                if (!$farmerPrice) {
-                    $village_code = Str::beforeLast($farmer_code, '-');
-                    if ($village_code) {
-                        $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                    $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        if ($village_code) {
+                            $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                        }
+                    } else {
+                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($farmer) {
+                            $price =  $farmer->price_per_kg;
+                        }
                     }
-                } else {
-                    $farmer = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmer) {
-                        $price =  $farmer->price_per_kg;
-                    }
+
+                    $totalPrice += $weight * $price;
+                    $totalWeight += $weight;
                 }
-
-                $totalPrice += $weight * $price;
-                $totalWeight += $weight;
             }
+
 
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
@@ -267,30 +272,31 @@ class RegionController extends Controller
             $villages = Village::whereDate('created_at',  $yesterday)->get();
             $governorates = Governerate::whereDate('created_at',  $yesterday)->get();
             $regions = Region::whereDate('created_at',  $yesterday)->get();
-            $transactions = Transaction::with('details')->where('sent_to', 2)->whereDate('created_at', $yesterday)->get();
+            $transactions  = Transaction::with('details')->where('sent_to', 2)->whereDate('created_at', $yesterday)->get();
+            if ($transactions) {
+                $totalWeight = 0;
+                $totalPrice = 0;
+                foreach ($transactions as $transaction) {
+                    $weight = $transaction->details->sum('container_weight');
+                    $price = 0;
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $totalWeight = 0;
-            $totalPrice = 0;
-            foreach ($transactions as $transaction) {
-                $weight = $transaction->details->sum('container_weight');
-                $price = 0;
-                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+                    $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        if ($village_code) {
+                            $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                        }
+                    } else {
+                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($farmer) {
+                            $price =  $farmer->price_per_kg;
+                        }
+                    }
 
-                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                if (!$farmerPrice) {
-                    $village_code = Str::beforeLast($farmer_code, '-');
-                    if ($village_code) {
-                        $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
-                    }
-                } else {
-                    $farmer = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmer) {
-                        $price =  $farmer->price_per_kg;
-                    }
+                    $totalPrice += $weight * $price;
+                    $totalWeight += $weight;
                 }
-
-                $totalPrice += $weight * $price;
-                $totalWeight += $weight;
             }
 
             return view('admin.region.views.filter_transctions', [
@@ -314,29 +320,30 @@ class RegionController extends Controller
             $governorates = Governerate::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $regions = Region::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            if ($transactions) {
+                $totalWeight = 0;
+                $totalPrice = 0;
+                foreach ($transactions as $transaction) {
+                    $weight = $transaction->details->sum('container_weight');
+                    $price = 0;
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $totalWeight = 0;
-            $totalPrice = 0;
-            foreach ($transactions as $transaction) {
-                $weight = $transaction->details->sum('container_weight');
-                $price = 0;
-                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+                    $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        if ($village_code) {
+                            $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                        }
+                    } else {
+                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($farmer) {
+                            $price =  $farmer->price_per_kg;
+                        }
+                    }
 
-                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                if (!$farmerPrice) {
-                    $village_code = Str::beforeLast($farmer_code, '-');
-                    if ($village_code) {
-                        $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
-                    }
-                } else {
-                    $farmer = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmer) {
-                        $price =  $farmer->price_per_kg;
-                    }
+                    $totalPrice += $weight * $price;
+                    $totalWeight += $weight;
                 }
-
-                $totalPrice += $weight * $price;
-                $totalWeight += $weight;
             }
 
             return view('admin.region.views.filter_transctions', [
@@ -362,28 +369,30 @@ class RegionController extends Controller
             $regions = Region::whereYear('created_at', $year)->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereYear('created_at', $year)->get();
 
-            $totalWeight = 0;
-            $totalPrice = 0;
-            foreach ($transactions as $transaction) {
-                $weight = $transaction->details->sum('container_weight');
-                $price = 0;
-                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+            if ($transactions) {
+                $totalWeight = 0;
+                $totalPrice = 0;
+                foreach ($transactions as $transaction) {
+                    $weight = $transaction->details->sum('container_weight');
+                    $price = 0;
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                if (!$farmerPrice) {
-                    $village_code = Str::beforeLast($farmer_code, '-');
-                    if ($village_code) {
-                        $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                    $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        if ($village_code) {
+                            $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                        }
+                    } else {
+                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($farmer) {
+                            $price =  $farmer->price_per_kg;
+                        }
                     }
-                } else {
-                    $farmer = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmer) {
-                        $price =  $farmer->price_per_kg;
-                    }
+
+                    $totalPrice += $weight * $price;
+                    $totalWeight += $weight;
                 }
-
-                $totalPrice += $weight * $price;
-                $totalWeight += $weight;
             }
 
             return view('admin.region.views.filter_transctions', [
@@ -408,29 +417,30 @@ class RegionController extends Controller
             $governorates = Governerate::whereYear('created_at', $year)->get();
             $regions = Region::whereYear('created_at', $year)->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereYear('created_at', $year)->get();
+            if ($transactions) {
+                $totalWeight = 0;
+                $totalPrice = 0;
+                foreach ($transactions as $transaction) {
+                    $weight = $transaction->details->sum('container_weight');
+                    $price = 0;
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $totalWeight = 0;
-            $totalPrice = 0;
-            foreach ($transactions as $transaction) {
-                $weight = $transaction->details->sum('container_weight');
-                $price = 0;
-                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+                    $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        if ($village_code) {
+                            $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                        }
+                    } else {
+                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($farmer) {
+                            $price =  $farmer->price_per_kg;
+                        }
+                    }
 
-                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                if (!$farmerPrice) {
-                    $village_code = Str::beforeLast($farmer_code, '-');
-                    if ($village_code) {
-                        $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
-                    }
-                } else {
-                    $farmer = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmer) {
-                        $price =  $farmer->price_per_kg;
-                    }
+                    $totalPrice += $weight * $price;
+                    $totalWeight += $weight;
                 }
-
-                $totalPrice += $weight * $price;
-                $totalWeight += $weight;
             }
 
             return view('admin.region.views.filter_transctions', [
@@ -457,29 +467,30 @@ class RegionController extends Controller
             $governorates = Governerate::whereBetween('created_at', [$start, $end])->get();
             $regions = Region::whereBetween('created_at', [$start, $end])->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $end])->get();
+            if ($transactions) {
+                $totalWeight = 0;
+                $totalPrice = 0;
+                foreach ($transactions as $transaction) {
+                    $weight = $transaction->details->sum('container_weight');
+                    $price = 0;
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $totalWeight = 0;
-            $totalPrice = 0;
-            foreach ($transactions as $transaction) {
-                $weight = $transaction->details->sum('container_weight');
-                $price = 0;
-                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+                    $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        if ($village_code) {
+                            $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                        }
+                    } else {
+                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($farmer) {
+                            $price =  $farmer->price_per_kg;
+                        }
+                    }
 
-                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                if (!$farmerPrice) {
-                    $village_code = Str::beforeLast($farmer_code, '-');
-                    if ($village_code) {
-                        $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
-                    }
-                } else {
-                    $farmer = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmer) {
-                        $price =  $farmer->price_per_kg;
-                    }
+                    $totalPrice += $weight * $price;
+                    $totalWeight += $weight;
                 }
-
-                $totalPrice += $weight * $price;
-                $totalWeight += $weight;
             }
 
             return view('admin.region.views.filter_transctions', [
@@ -503,29 +514,30 @@ class RegionController extends Controller
             $governorates = Governerate::whereBetween('created_at', [$start, $date])->get();
             $regions = Region::whereBetween('created_at', [$start, $date])->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
+            if ($transactions) {
+                $totalWeight = 0;
+                $totalPrice = 0;
+                foreach ($transactions as $transaction) {
+                    $weight = $transaction->details->sum('container_weight');
+                    $price = 0;
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $totalWeight = 0;
-            $totalPrice = 0;
-            foreach ($transactions as $transaction) {
-                $weight = $transaction->details->sum('container_weight');
-                $price = 0;
-                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+                    $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        if ($village_code) {
+                            $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                        }
+                    } else {
+                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($farmer) {
+                            $price =  $farmer->price_per_kg;
+                        }
+                    }
 
-                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                if (!$farmerPrice) {
-                    $village_code = Str::beforeLast($farmer_code, '-');
-                    if ($village_code) {
-                        $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
-                    }
-                } else {
-                    $farmer = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmer) {
-                        $price =  $farmer->price_per_kg;
-                    }
+                    $totalPrice += $weight * $price;
+                    $totalWeight += $weight;
                 }
-
-                $totalPrice += $weight * $price;
-                $totalWeight += $weight;
             }
 
             return view('admin.region.views.filter_transctions', [
@@ -550,29 +562,30 @@ class RegionController extends Controller
             $governorates = Governerate::whereBetween('created_at', [$start, $date])->get();
             $regions = Region::whereBetween('created_at', [$start, $date])->get();
             $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
+            if ($transactions) {
+                $totalWeight = 0;
+                $totalPrice = 0;
+                foreach ($transactions as $transaction) {
+                    $weight = $transaction->details->sum('container_weight');
+                    $price = 0;
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $totalWeight = 0;
-            $totalPrice = 0;
-            foreach ($transactions as $transaction) {
-                $weight = $transaction->details->sum('container_weight');
-                $price = 0;
-                $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+                    $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        if ($village_code) {
+                            $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                        }
+                    } else {
+                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($farmer) {
+                            $price =  $farmer->price_per_kg;
+                        }
+                    }
 
-                $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
-                if (!$farmerPrice) {
-                    $village_code = Str::beforeLast($farmer_code, '-');
-                    if ($village_code) {
-                        $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
-                    }
-                } else {
-                    $farmer = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmer) {
-                        $price =  $farmer->price_per_kg;
-                    }
+                    $totalPrice += $weight * $price;
+                    $totalWeight += $weight;
                 }
-
-                $totalPrice += $weight * $price;
-                $totalWeight += $weight;
             }
 
             return view('admin.region.views.filter_transctions', [
