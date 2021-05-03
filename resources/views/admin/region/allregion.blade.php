@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('title', 'All Regions')
 @section('content')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <style type="text/css">
         .dataTables_wrapper .dataTables_filter input {
             margin-left: 0.5em;
@@ -246,46 +246,46 @@
         </div>
         <hr>
         <div class="row ml-2">
-          <h5>QUANTITY CHERRY BOUGHT</h5>
-      </div>
-      <div class="row">
-          <div class="col-md-11 ml-4">
-              <canvas id="myChart" style="width:100%;max-height:300px"></canvas>
+            <h5>QUANTITY CHERRY BOUGHT</h5>
+        </div>
+        <div class="row">
+            <div class="col-md-11 ml-4">
+                <canvas id="myChart" style="width:100%;max-height:300px"></canvas>
 
-              <script>
-                  var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
-                  var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+                <script>
+                    var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
+                    var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
 
-                  new Chart("myChart", {
-                      type: "line",
-                      data: {
-                          labels: xValues,
-                          datasets: [{
-                              fill: false,
-                              lineTension: 0,
-                              backgroundColor: "rgba(0,0,255,1.0)",
-                              borderColor: "rgba(0,0,255,0.1)",
-                              data: yValues
-                          }]
-                      },
-                      options: {
-                          legend: {
-                              display: false
-                          },
-                          scales: {
-                              yAxes: [{
-                                  ticks: {
-                                      min: 6,
-                                      max: 16
-                                  }
-                              }],
-                          }
-                      }
-                  });
+                    new Chart("myChart", {
+                        type: "line",
+                        data: {
+                            labels: xValues,
+                            datasets: [{
+                                fill: false,
+                                lineTension: 0,
+                                backgroundColor: "rgba(0,0,255,1.0)",
+                                borderColor: "rgba(0,0,255,0.1)",
+                                data: yValues
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        min: 6,
+                                        max: 16
+                                    }
+                                }],
+                            }
+                        }
+                    });
 
-              </script>
-          </div>
-      </div>
+                </script>
+            </div>
+        </div>
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
@@ -300,26 +300,31 @@
                                 <table id="myTable" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                           
-                                            <th>Region Code</th>
+
+                                            <th>Governorate Title</th>
                                             <th>Region Title</th>
-                                            <th>Action</th>
+                                            <th>Village Title</th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($regions as $row)
+                                        @foreach ($governorates as $governorate)
                                             <tr>
-                                                    
-                                                <td>{{ $row->region_code }}</td>
-                                                <td>{{ $row->region_title }}</td>
-                                                <td>
-                                                    <a href="editregion/{{ $row->region_id }}"
-                                                        class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a>
 
-                                                    <a href="deleteregion/{{ $row->region_id }}"
-                                                        class="btn btn-danger btn-sm trigger-btn"><i
-                                                            class="fas fa-trash-alt"></i></a>
+                                                <td>{{ $governorate->governerate_title }}</td>
+                                                <td>
+                                                    @foreach ($governorate->regions as $region)
+                                                        {{ $region->region_title }}
+                                                    @endforeach
+                                                </td>
+                                                <td>
+                                                    @if ($governorate->villages)
+
+
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->village_title }}
+                                                        @endforeach
+                                                    @endif
                                                 </td>
 
                                             </tr>
@@ -341,56 +346,5 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <script>
-        let base_path = '<?= asset(' / ') ?>';
-        $(document).ready(function() {
-            var t = $('#region').DataTable({
-                "processing": true,
-                "serverSide": true,
-                "deferRender": true,
-                "language": {
-                    "searchPlaceholder": "Search by Code And Title"
-                },
-                "ajax": {
-                    url: '<?= asset('
-                    admin / getregion ') ?>',
-                },
-                "columns": [{
-                        "data": null
-                    },
 
-                    {
-                        "data": 'region_code'
-                    },
-                    {
-                        "data": 'region_title'
-                    },
-                    {
-                        "mRender": function(data, type, row) {
-                            return '<a href=' + base_path + 'admin/deleteregion/' + row.region_id +
-                                ' class="editor_remove" data-id="' + row.region_id + '">Delete</a>';
-                        }
-                    }
-                ],
-                "columnDefs": [{
-                    "searchable": false,
-                    "orderable": false,
-                    "targets": [0, 2],
-                }],
-                "order": [], //Initial no order.
-                "aaSorting": [],
-            });
-
-            t.on('draw.dt', function() {
-                var PageInfo = $('#region').DataTable().page.info();
-                t.column(0, {
-                    page: 'current'
-                }).nodes().each(function(cell, i) {
-                    cell.innerHTML = i + 1 + PageInfo.start;
-                });
-
-            }).draw();
-        });
-
-    </script>
 @endsection

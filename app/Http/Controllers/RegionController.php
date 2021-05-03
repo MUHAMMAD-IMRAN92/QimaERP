@@ -24,13 +24,16 @@ class RegionController extends Controller
 
             $governorate->regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
 
-            $governorate->regions =  $governorate->regions->map(function ($region) {
+            foreach ($governorate->regions as $region) {
                 $regionCode = $region->region_code;
-                return $region->village =  Village::where('village_code', 'LIKE', $regionCode . '%')->get();
-            });
+                $governorate->villages = Village::where('village_code', 'LIKE', $regionCode . '%')->get();
+
+                return $governorate;
+            }
+
             return $governorate;
         });
-        return   $governorates;
+     
         return view('admin.region.allregion', [
             'governorates' =>   $governorates,
             'regions' => $regions,
