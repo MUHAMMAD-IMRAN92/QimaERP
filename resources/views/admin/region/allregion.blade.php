@@ -35,6 +35,10 @@
 
         }
 
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
@@ -44,15 +48,15 @@
                 let to = $('#to').val();
 
                 $.ajax({
-                    url: "{{ url('admin/filter_farmers') }}",
+
+                    url: "{{ url('admin/regionByDate') }}",
                     type: "GET",
                     data: {
                         'from': from,
                         'to': to
                     },
                     success: function(data) {
-
-                        $('#famerstable').html(data);
+                        $('#transactions').html(data);
                         console.log(data);
                     }
                 });
@@ -124,6 +128,125 @@
                     }
                 });
             });
+            $('#today').on('click', function() {
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'today'
+                    },
+                    success: function(data) {
+
+                         $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
         });
 
     </script>
@@ -191,7 +314,7 @@
             <span class="ml-2 hover" id="lastyear"> 2020
                 SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="">ALL
+            <span class="ml-2"> <a href="{{ url('/admin/allregion') }}">ALL
                     TIME</a></span>
         </div>
         <hr>
@@ -222,24 +345,32 @@
 
         </div>
         <hr>
-        <div class="row ml-2">
+        <div class="row ml-2" id="transactions">
             <div class="col-sm-1 color bg-danger">
-                <h3>{{ count($governorates) }}</h3>
+                <h4>{{ count($governorates) }}</h4>
                 <p>Governorate</p>
             </div>
             <div class="col-sm-1 color bg-primary">
-                <h3>{{ count($regions) }}</h3>
+                <h4>{{ count($regions) }}</h4>
 
                 <p>Regions</p>
             </div>
             <div class="col-sm-1 color bg-warning">
-                <h3>{{ count($villages) }}</h3>
+                <h4>{{ count($villages) }}</h4>
 
                 <p>Villages </p>
             </div>
-            <div class="col-sm-1 color bg-info"></div>
-            <div class="col-sm-1 color bg-dark"></div>
-            <div class="col-sm-1 color bg-danger"></div>
+            <div class="col-sm-1 color bg-info">
+                <h4>{{ $total_coffee }}</h4>
+                <p>Quantity </p>
+            </div>
+            <div class="col-sm-1 color bg-dark">
+                <h4>{{ $totalPrice }}</h4>
+                <p>yer coffee bought </p>
+            </div>
+            <div class="col-sm-1 color bg-danger">
+
+            </div>
             <div class="col-sm-1 color bg-warning"></div>
             <div class="col-sm-1 color bg-info"></div>
             <div class="col-sm-1 color bg-dark"></div>
@@ -301,33 +432,60 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Governrates</th>
-                                            <th>regions</th>
-                                            <th>villages</th>
+
+                                            <th>Governorates </th>
+                                            <th>Regions </th>
+                                            <th>Villages </th>
+                                            <th>Quantity</th>
+                                            <th>Values</th>
+                                            <th>Farmers</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($governorates as $governorate)
                                             <tr>
-                                                <td>
-                                                    {{ $governorate->governerate_title }} </td>
-                                                <td>
-                                                    @if ($governorate->regions != null)
 
-                                                        @foreach ($governorate->regions as $region)
-                                                            {{ $region->region_title }} <br>
-                                                        @endforeach
-                                                    @endif
+                                                <td>{{ $governorate->governerate_title }}</td>
+                                                <td>
+                                                    @foreach ($governorate->regions as $region)
+                                                        {{ $region->region_title }} <br>
+                                                    @endforeach
                                                 </td>
                                                 <td>
-                                                    @if ($governorate->villages != null)
+                                                    @if ($governorate->villages)
 
                                                         @foreach ($governorate->villages as $village)
                                                             {{ $village->village_title }} <br>
                                                         @endforeach
+
                                                     @endif
                                                 </td>
 
+                                                <td>
+                                                    @if ($governorate->villages)
+
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->weight }} <br>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    @if ($governorate->villages)
+
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->weight * $village->price }} <br>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($governorate->villages)
+
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->farmers }} <br>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -346,56 +504,5 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <script>
-        let base_path = '<?= asset(' / ') ?>';
-        $(document).ready(function() {
-            var t = $('#region').DataTable({
-                "processing": true,
-                "serverSide": true,
-                "deferRender": true,
-                "language": {
-                    "searchPlaceholder": "Search by Code And Title"
-                },
-                "ajax": {
-                    url: '<?= asset('
-                    admin / getregion ') ?>',
-                },
-                "columns": [{
-                        "data": null
-                    },
 
-                    {
-                        "data": 'region_code'
-                    },
-                    {
-                        "data": 'region_title'
-                    },
-                    {
-                        "mRender": function(data, type, row) {
-                            return '<a href=' + base_path + 'admin/deleteregion/' + row.region_id +
-                                ' class="editor_remove" data-id="' + row.region_id + '">Delete</a>';
-                        }
-                    }
-                ],
-                "columnDefs": [{
-                    "searchable": false,
-                    "orderable": false,
-                    "targets": [0, 2],
-                }],
-                "order": [], //Initial no order.
-                "aaSorting": [],
-            });
-
-            t.on('draw.dt', function() {
-                var PageInfo = $('#region').DataTable().page.info();
-                t.column(0, {
-                    page: 'current'
-                }).nodes().each(function(cell, i) {
-                    cell.innerHTML = i + 1 + PageInfo.start;
-                });
-
-            }).draw();
-        });
-
-    </script>
 @endsection
