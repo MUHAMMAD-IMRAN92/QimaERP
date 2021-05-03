@@ -45,7 +45,7 @@ class RegionController extends Controller
 
         $governorates = $governorates->map(function ($governorate) {
             $governorateCode = $governorate->governerate_code;
-
+            $governorate->regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
 
             foreach ($governorate->regions as $region) {
                 $regionCode = $region->region_code;
