@@ -76,10 +76,10 @@
 
                         let html =
                             ' <option value="0" selected disabled>Select Region</option>';
-                        for (let [key, element] of Object.entries(data)) {
-                            html += '<option value="' + element.region_id + '">' + element
+                   data.regions.forEach(region => {
+                        html += '<option value="' + region.region_id + '">' + region
                                 .region_title + '</option>';
-                        }
+                        });
 
                         $('#regions_dropdown').append(html);
                         console.log(data);
@@ -100,10 +100,11 @@
                         $('#village_dropdown').empty();
                         let html =
                             ' <option value="0" selected disabled>Select Village</option>';
-                        for (let [key, element] of Object.entries(data.villages)) {
-                            html += '<option value="' + element.village_id + '">' + element
+                            data.villages.forEach(village => {
+                            html += '<option value="' + village.village_id + '">' +
+                                village
                                 .village_title + '</option>';
-                        }
+                        });
                         console.log(data.region);
 
                         $('#village_dropdown').append(html);

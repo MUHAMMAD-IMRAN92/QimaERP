@@ -206,7 +206,7 @@ class RegionController extends Controller
             $totalPrice += $weight * $price;
             $totalWeight += $weight;
         }
-
+        
         return view('admin.region.views.filter_transctions', [
             'governorates' =>   $governorates,
             'regions' => $regions,
