@@ -65,7 +65,7 @@
                 // let from = $('#governorate_dropdown').val();
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/filter_farmers_by_region') }}",
+                    url: "{{ url('admin/filterRegionByGovernrate') }}",
                     type: "GET",
                     data: {
                         'from': from,
@@ -76,12 +76,13 @@
 
                         let html =
                             ' <option value="0" selected disabled>Select Region</option>';
-                        for (let [key, element] of Object.entries(data)) {
-                            html += '<option value="' + element.region_id + '">' + element
+                        data.regions.forEach(region => {
+                            html += '<option value="' + region.region_id + '">' + region
                                 .region_title + '</option>';
-                        }
+                        });
 
                         $('#regions_dropdown').append(html);
+                        $('#transactions').html(data.view);
                         console.log(data);
                     }
                 });
@@ -100,10 +101,11 @@
                         $('#village_dropdown').empty();
                         let html =
                             ' <option value="0" selected disabled>Select Village</option>';
-                        for (let [key, element] of Object.entries(data.villages)) {
-                            html += '<option value="' + element.village_id + '">' + element
+                        data.villages.forEach(village => {
+                            html += '<option value="' + village.village_id + '">' +
+                                village
                                 .village_title + '</option>';
-                        }
+                        });
                         console.log(data.region);
 
                         $('#village_dropdown').append(html);
@@ -137,7 +139,7 @@
                     },
                     success: function(data) {
 
-                         $('#transactions').html(data);
+                        $('#transactions').html(data);
                         console.log(data);
                     }
                 });
@@ -270,7 +272,8 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item btn btn-success"><a href="#">Add Village</a></li>
+                            <li class="breadcrumb-item btn btn-success"><a href="{{ url('admin/addnewvillage') }}">Add
+                                    Village</a></li>
                         </ol>
                     </div>
                 </div>
