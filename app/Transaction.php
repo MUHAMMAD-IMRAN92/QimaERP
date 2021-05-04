@@ -179,4 +179,44 @@ class Transaction extends Model
     public function createAll($transactionObj, $extras = [])
     {
     }
+
+    public static function createGeneric($batchNumber, $userId, $referenceIds, $status, $sentTo, $sessionNo, $type)
+    {
+        $transaction =  static::create([
+            'batch_number' => $batchNumber,
+            'is_parent' => 0,
+            'created_by' => $userId,
+            'is_local' => FALSE,
+            'local_code' => $batchNumber,
+            'is_special' => false,
+            'is_mixed' => true,
+            'transaction_type' => 1,
+            'reference_id' => $referenceIds,
+            'transaction_status' => $status,
+            'is_new' => 0,
+            'sent_to' => $sentTo,
+            'is_server_id' => true,
+            'is_sent' => false,
+            'session_no' => $sessionNo,
+            'ready_to_milled' => false,
+            'is_in_process' => false,
+            'is_update_center' => false,
+            'local_session_no' => $sessionNo,
+            'local_created_at' => now()->toDateTimeString(),
+            'local_updated_at' => now()->toDateTimeString()
+        ]);
+
+        $log = new TransactionLog();
+        $log->action = $status;
+        $log->created_by = $userId;
+        $log->entity_id = 0;
+        $log->local_created_at = $transaction->local_created_at;
+        $log->local_updated_at = $transaction->local_updated_at;
+        $log->type =  $type;
+        $log->center_name = null;
+
+        $transaction->log()->save($log);
+
+        return $transaction;
+    }
 }
