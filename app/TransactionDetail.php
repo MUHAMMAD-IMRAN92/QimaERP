@@ -56,51 +56,14 @@ class TransactionDetail extends Model
                 ->where('container_number', $detail->container_number)
                 ->update(['container_status' => 1]);
 
-            foreach ($detailObj['metas'] as $metaData) {
+            if (array_key_exists('metas', $detailObj)) {
+                foreach ($detailObj['metas'] as $metaData) {
 
-                $meta = new Meta();
-                $meta->key = $metaData['key'];
-                $meta->value = $metaData['value'];
-                $detail->metas()->save($meta);
-            }
-        }
-
-        return $savedDetails;
-    }
-
-    public static function createFromCollection($details, $transactionId)
-    {
-        $savedDetails = collect();
-
-        foreach ($details as $detail) {
-
-            // Start of saving one Detail
-            $detail = new self();
-
-            $detail->container_number = $container->container_number;
-            $detail->transaction_id = $transactionId;
-            $detail->created_by = $userId;
-            $detail->is_local = FALSE;
-            $detail->container_weight = $detailData['container_weight'];
-            $detail->weight_unit = $detailData['weight_unit'];
-            $detail->center_id = $detailData['center_id'];
-            $detail->reference_id = $referenceId;
-
-            $detail->save();
-
-            $savedDetails->push($detail);
-            // End of saving one Detail
-
-            TransactionDetail::where('transaction_id', $referenceId)
-                ->where('container_number', $detail->container_number)
-                ->update(['container_status' => 1]);
-
-            foreach ($detailObj['metas'] as $metaData) {
-
-                $meta = new Meta();
-                $meta->key = $metaData['key'];
-                $meta->value = $metaData['value'];
-                $detail->metas()->save($meta);
+                    $meta = new Meta();
+                    $meta->key = $metaData['key'];
+                    $meta->value = $metaData['value'];
+                    $detail->metas()->save($meta);
+                }
             }
         }
 
