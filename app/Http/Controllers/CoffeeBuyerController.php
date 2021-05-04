@@ -166,13 +166,11 @@ class CoffeeBuyerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($date) {
-                $query->where('created_at', $date);
-            }])->where('name', 'Coffee Buying Manager')->first()->users;
+            $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyers = Role::with(['users' => function ($query) use ($date) {
-                $query->where('created_at', $date);
-            }])->where('name', 'Coffee Buyer')->first()->users;
+            $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
+
+
 
             $coffeeBuyingManagers =  $coffeeBuyingManagers->where('created_at', $date);
             $coffeeBuyers =  $coffeeBuyers->where('created_at', $date);
@@ -205,13 +203,9 @@ class CoffeeBuyerController extends Controller
             $now = Carbon::now();
             $yesterday = Carbon::yesterday();
 
-            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($yesterday) {
-                $query->where('created_at', $yesterday);
-            }])->where('name', 'Coffee Buying Manager')->first()->users;
+            $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyers = Role::with(['users' => function ($query) use ($yesterday) {
-                $query->where('created_at', $yesterday);
-            }])->where('name', 'Coffee Buyer')->first()->users;
+            $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
 
             $coffeeBuyingManagers =  $coffeeBuyingManagers->where('created_at', $yesterday);
             $coffeeBuyers =  $coffeeBuyers->where('created_at', $yesterday);
@@ -1027,7 +1021,7 @@ class CoffeeBuyerController extends Controller
     }
     public function filterByregions(Request $request)
     {
-      
+
         $id = $request->from;
         $regionCode = Region::where('region_id', $id)->first()->region_code;
         $villages = Village::where('village_code', 'LIKE', $regionCode . '%')->get();
