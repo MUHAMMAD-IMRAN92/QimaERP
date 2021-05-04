@@ -99,28 +99,30 @@
                 });
             });
             $('#regions_dropdown').on('change', function(e) {
-                // let from = $('#regions_dropdown').val();
-                let from = e.target.value;
+                let from = $('#regions_dropdown').val();
+                // let from = e.target.value;
+
                 $.ajax({
                     url: "{{ url('admin/filterByregions') }}",
                     type: "GET",
                     data: {
                         'from': from,
-
                     },
                     success: function(data) {
-                            $('#village_dropdown').empty();
-                            let html =
-                                ' <option value="0" selected disabled>Select Village</option>';
-                           data.villages.forEach(village =>{
-                            html += '<option value="' + village.village_id + '">' + village
-                                    .village_title + '</option>';
-                           });
+                        $('#village_dropdown').empty();
+                        let html =
+                            ' <option value="0" selected disabled>Select Village</option>';
+                        data.villages.forEach(village => {
+                            html += '<option value="' + village.village_id + '">' +
+                                village
+                                .village_title + '</option>';
+                        });
 
 
-                            $('#village_dropdown').append(html);
-                            $('#tables').html(data.view);
-                        
+                        $('#village_dropdown').append(html);
+                        $('#tables').html(data.view);
+                        console.log(data);
+
 
                     }
                 });
