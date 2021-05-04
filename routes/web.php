@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 
@@ -171,5 +172,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('get_milling_sessions', 'MillingController@getMillingSessionAjax');
         Route::get('milling_coffee/{id}', 'MillingController@milling')->middleware('auth');
         Route::post('milling_coffee', 'MillingController@millingCoffee')->middleware('auth');
+
+        //packaging & export
+        Route::get('/export/mixing' , 'ExportMixingController@get')->name('mixing.index');
+        Route::post('/export/mixing' , 'ExportMixingController@post')->name('mixing.store');
+
     });
 });

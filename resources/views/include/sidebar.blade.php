@@ -241,6 +241,8 @@
                              </p>
                          </a>
                      </li>
+
+                     
                      <li class="nav-item" @if ($segment == 'milling_coffee') class="active" @endif>
                          <a href="{{ URL::to('') }}/admin/milling_coffee" class="nav-link ">
                              <i class="fal fa-trees"></i>
@@ -248,6 +250,31 @@
                              <p>Milling</p>
                          </a>
                      </li>
+                     <li class="nav-item" @if ($segment == 'allcenter') class="active" @endif>
+                        <a href="" class="nav-link ">
+                            <i class="nav-icon fab fa-centercode"></i>
+                            <p>
+                                Packaging Exprot Coffee
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview pl-2 nav-dropdown">
+                            <li class="nav-item">
+                                <a href="{{ url('admin/export/mixing') }}"
+                                    class="nav-link {{ request()->segment(1) == 'allcenter' ? 'active' : '' }}">
+                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <p>Mixing</p>
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item">
+                                       <a href="{{url('admin/centerdetail')}}" class="nav-link {{ (request()->segment(1) == 'centerdetail') ? 'active' : '' }}">
+                                           <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                           <p>Center Detail</p>
+                                       </a>
+                                   </li> --}}
+
+                        </ul>
+                    </li>
                      <!--            <li class="nav-item"   @if ($segment == 'addseason') class="active" @endif>
              <a href="{{ URL::to('') }}/admin/allseason" class="nav-link ">
               <i class="fal fa-trees"></i>
