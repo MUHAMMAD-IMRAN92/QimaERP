@@ -938,7 +938,7 @@ class CoffeeBuyerController extends Controller
 
             $coffeeBuyingManager->non_special_price = $totalPrice;
             $coffeeBuyingManager->non_special_weight = $totalWeight;
-            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'LIKE', $governorateCode . '%')->get();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'LIKE', $governorateCode . '%')->where('sent_to', 2)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             foreach ($transactions as $transaction) {
@@ -1041,7 +1041,6 @@ class CoffeeBuyerController extends Controller
             $totalWeight = 0;
             $totalPrice = 0;
             $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 0])->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 2)->get();
-
             foreach ($transactions as $transaction) {
                 $weight = $transaction->details->sum('container_weight');
                 $price = 0;
