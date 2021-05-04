@@ -261,7 +261,7 @@ class SOCoffeeSortingController extends Controller
                                 $transactionType
                             );
 
-                            $peaberryDetails->each(function ($detail) use ($transaction) {
+                            $greenDetails->each(function ($detail) use ($transaction) {
                                 $newDetail = $detail->replicate()->fill([
                                     'transaction_id' => $transaction->transaction_id
                                 ]);
@@ -278,6 +278,7 @@ class SOCoffeeSortingController extends Controller
                             });
 
                             $transaction->load(['details.metas']);
+
                             $savedTransactions->push($transaction);
                         }
 
@@ -295,7 +296,7 @@ class SOCoffeeSortingController extends Controller
                                 $transactionType
                             );
 
-                            $peaberryDetails->each(function ($detail) use ($transaction) {
+                            $defectiveDetails->each(function ($detail) use ($transaction) {
                                 $newDetail = $detail->replicate()->fill([
                                     'transaction_id' => $transaction->transaction_id
                                 ]);
