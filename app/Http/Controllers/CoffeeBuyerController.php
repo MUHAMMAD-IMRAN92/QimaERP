@@ -166,9 +166,13 @@ class CoffeeBuyerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
+            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($date) {
+                $query->where('created_at', $date);
+            }])->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
+            $coffeeBuyers = Role::with(['users' => function ($query) use ($date) {
+                $query->where('created_at', $date);
+            }])->where('name', 'Coffee Buyer')->first()->users;
 
             $coffeeBuyingManagers =  $coffeeBuyingManagers->where('created_at', $date);
             $coffeeBuyers =  $coffeeBuyers->where('created_at', $date);
@@ -201,9 +205,13 @@ class CoffeeBuyerController extends Controller
             $now = Carbon::now();
             $yesterday = Carbon::yesterday();
 
-            $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
+            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($yesterday) {
+                $query->where('created_at', $yesterday);
+            }])->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
+            $coffeeBuyers = Role::with(['users' => function ($query) use ($yesterday) {
+                $query->where('created_at', $yesterday);
+            }])->where('name', 'Coffee Buyer')->first()->users;
 
             $coffeeBuyingManagers =  $coffeeBuyingManagers->where('created_at', $yesterday);
             $coffeeBuyers =  $coffeeBuyers->where('created_at', $yesterday);
@@ -246,17 +254,14 @@ class CoffeeBuyerController extends Controller
             $year = $date->year;
             $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $role = Role::with(['users' => function ($query) use ($lastMonth, $year) {
-                $query->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year);
-            }])->where('name', 'Coffee Buying Manager')->first();
+            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($lastMonth, $year) {
+                $query->whereMonth('created_at', $lastMonth)->whereYear('created_at',  $year);
+            }])->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyingManagers = $role->users;
+            $coffeeBuyers = Role::with(['users' => function ($query) use ($lastMonth, $year) {
+                $query->whereMonth('created_at', $lastMonth)->whereYear('created_at',  $year);
+            }])->where('name', 'Coffee Buyer')->first()->users;
 
-            $role = Role::with(['users' => function ($query) use ($lastMonth, $year) {
-                $query->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year);
-            }])->where('name', 'Coffee Buyer')->first();
-
-            $coffeeBuyers = $role->users;
             $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
@@ -382,10 +387,14 @@ class CoffeeBuyerController extends Controller
             $start = $now->startOfWeek(Carbon::SUNDAY);
 
             $end = $now->endOfWeek(Carbon::SATURDAY);
-            $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
+            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $end) {
+                $query->whereBetween('created_at', [$start, $end]);
+            }])->where('name', 'Coffee Buying Manager')->first()->users;
 
+            $coffeeBuyers = Role::with(['users' => function ($query) use ($start, $end) {
+                $query->whereBetween('created_at', [$start, $end]);
+            }])->where('name', 'Coffee Buyer')->first()->users;
             $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$start, $end]);
             $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$start, $end]);
             $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
@@ -422,12 +431,13 @@ class CoffeeBuyerController extends Controller
             $now = Carbon::now();
             $date = Carbon::today()->toDateString();
             $start = $now->firstOfMonth();
-            $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
+            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $date) {
+                $query->whereBetween('created_at', [$start, $date]);
+            }])->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
-
-            $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$start, $date]);
-            $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$start, $date]);
+            $coffeeBuyers = Role::with(['users' => function ($query) use ($start, $date) {
+                $query->whereBetween('created_at', [$start, $date]);
+            }])->where('name', 'Coffee Buyer')->first()->users;
 
             $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
@@ -468,13 +478,14 @@ class CoffeeBuyerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
-            $coffeeBuyingManagers = Role::with('users')->where('name', 'Coffee Buying Manager')->first()->users;
+            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $date) {
+                $query->whereBetween('created_at', [$start, $date]);
+            }])->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
+            $coffeeBuyers = Role::with(['users' => function ($query) use ($start, $date) {
+                $query->whereBetween('created_at', [$start, $date]);
+            }])->where('name', 'Coffee Buyer')->first()->users;
 
-            $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$start, $date]);
-
-            $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$start, $date]);
 
 
             $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
@@ -586,7 +597,6 @@ class CoffeeBuyerController extends Controller
     {
         if ($request->date == 'today') {
             $date = Carbon::today()->toDateString();
-
 
             $buyer = User::find($id);
 
