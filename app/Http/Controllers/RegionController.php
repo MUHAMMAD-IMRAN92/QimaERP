@@ -11,6 +11,7 @@ use App\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +24,7 @@ class RegionController extends Controller
         $governorates = Governerate::all();
         $regions = Region::all();
         $villages = Village::all();
+      
         $transactions = Transaction::with('details')->where('sent_to', 2)->get();
         $totalWeight = 0;
         $totalPrice = 0;
