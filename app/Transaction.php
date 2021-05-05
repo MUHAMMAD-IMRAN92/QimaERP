@@ -156,8 +156,8 @@ class Transaction extends Model
             'session_no' => $sessionNo,
             'ready_to_milled' => $transactionData['ready_to_milled'],
             'is_in_process' => $transactionData['is_in_process'],
-            'is_update_center' => $transactionData['is_update_center'],
-            'local_session_no' => $transactionData['local_session_no'],
+            'is_update_center' => array_key_exists('is_update_center', $transactionData) ? $transactionData['is_update_center'] : false,
+            'local_session_no' => array_key_exists('local_session_no', $transactionData) ? $transactionData['local_session_no'] : false,
             'local_created_at' => toSqlDT($transactionData['local_created_at']),
             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
         ]);
