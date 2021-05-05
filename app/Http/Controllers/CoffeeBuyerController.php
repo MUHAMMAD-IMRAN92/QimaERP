@@ -203,7 +203,7 @@ class CoffeeBuyerController extends Controller
             ]);
         } elseif ($date == 'yesterday') {
             $now = Carbon::now();
-            $date = Carbon::yesterday();
+            $date = Carbon::yesterday()->toDateString();
 
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($date) {
                 $query->whereDate('created_at', $date);

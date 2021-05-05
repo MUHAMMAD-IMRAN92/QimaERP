@@ -24,7 +24,7 @@ class RegionController extends Controller
         $governorates = Governerate::all();
         $regions = Region::all();
         $villages = Village::all();
-     
+      
         $transactions = Transaction::with('details')->where('sent_to', 2)->get();
         $totalWeight = 0;
         $totalPrice = 0;
