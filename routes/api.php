@@ -130,5 +130,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         // Yemene Operative Export Coffee
         Route::get('yo_export_coffee', 'API\YOExportController@get');
         Route::post('yo_export_coffee', 'API\YOExportController@post');
+
+        Route::get('yo_coffee_mixing', 'API\YOMixingController@get');
     });
 });
