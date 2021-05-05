@@ -427,7 +427,7 @@ class CoffeeBuyerController extends Controller
 
             $now = Carbon::now();
             $date = Carbon::today()->toDateString();
-            $start = $now->firstOfMonth();
+            $start = $now->firstOfMonth()->toDateString();
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $date) {
                 $query->whereBetween('created_at', [$start, $date]);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
