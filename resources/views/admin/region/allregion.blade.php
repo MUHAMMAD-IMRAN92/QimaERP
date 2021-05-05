@@ -91,7 +91,7 @@
                 // let from = $('#regions_dropdown').val();
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/filter_villages') }}",
+                    url: "{{ url('admin/filterRegionByRegions') }}",
                     type: "GET",
                     data: {
                         'from': from,
@@ -106,9 +106,11 @@
                                 village
                                 .village_title + '</option>';
                         });
-                        console.log(data.region);
+                        
 
                         $('#village_dropdown').append(html);
+                        $('#transactions').html(data.view);
+                        console.log(data);
 
 
                     }
@@ -118,14 +120,14 @@
                 // let from = $('#regions_dropdown').val();
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/farmer_by_villages') }}",
+                    url: "{{ url('admin/filterRegionByVillages') }}",
                     type: "GET",
                     data: {
                         'from': from,
 
                     },
                     success: function(data) {
-                        $('#famerstable').html(data);
+                        $('#transactions').html(data.view);
                         console.log(data);
                     }
                 });
