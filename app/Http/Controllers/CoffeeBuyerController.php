@@ -174,7 +174,7 @@ class CoffeeBuyerController extends Controller
                 $query->whereDate('created_at', $date);
             }])->where('name', 'Coffee Buyer')->first()->users;
 
-          
+
 
             $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
@@ -251,11 +251,11 @@ class CoffeeBuyerController extends Controller
             $year = $date->year;
 
 
-            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($lastMonth , $year) {
+            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($lastMonth, $year) {
                 $query->whereMonth('created_at', $lastMonth)->whereYear('created_at',  $year);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
 
-            $coffeeBuyers = Role::with(['users' => function ($query) use ($lastMonth , $year) {
+            $coffeeBuyers = Role::with(['users' => function ($query) use ($lastMonth, $year) {
                 $query->whereMonth('created_at', $lastMonth)->whereYear('created_at',  $year);
             }])->where('name', 'Coffee Buyer')->first()->users;
 
@@ -381,10 +381,10 @@ class CoffeeBuyerController extends Controller
         } elseif ($date == 'weekToDate') {
 
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY);
+            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
 
-            $end = $now->endOfWeek(Carbon::SATURDAY);
-
+            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
+           
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $end) {
                 $query->whereBetween('created_at', [$start, $end]);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
