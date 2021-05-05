@@ -26,7 +26,7 @@ class YOExportController extends Controller
         $transactions = Transaction::where('is_parent', 0)
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent', 'received'])
-                    ->whereIn('type', ['sent_to_packaging', 'received_by_yo_wh']);
+                    ->whereIn('type', ['sent_to_packaging', 'received_by_yo_wh', 'sent_to_yo_mixing']);
             })->whereHas(
                 'details',
                 function ($q) {
