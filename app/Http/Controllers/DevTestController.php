@@ -25,5 +25,6 @@ class DevTestController extends Controller
             'message' => 'Hello Dev! How is your day?',
             'data' => []
         ]);
+    
     }
 }
