@@ -252,7 +252,7 @@
                      </li>
                      <li class="nav-item" @if ($segment == 'allcenter') class="active" @endif>
                         <a href="" class="nav-link ">
-                            <i class="nav-icon fab fa-centercode"></i>
+                            <i class="nav-icon fas fa-box"></i>
                             <p>
                                 Packaging Coffee
                                 <i class="fas fa-angle-left right"></i>
@@ -262,7 +262,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/export/mixing') }}"
                                     class="nav-link {{ request()->segment(1) == 'allcenter' ? 'active' : '' }}">
-                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <i class="fas fa-mortar-pestle nav-icon"></i>
                                     <p>Mixing</p>
                                 </a>
                             </li>
