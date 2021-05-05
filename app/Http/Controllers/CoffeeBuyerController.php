@@ -429,13 +429,9 @@ class CoffeeBuyerController extends Controller
             $date = $now->today()->toDateString();
             $start = $now->firstOfMonth()->toDateString();
         
-            $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $date) {
-                $query->whereBetween('created_at', [$start, $date]);
-            }])->where('name', 'Coffee Buying Manager')->first()->users;
+            $coffeeBuyingManagers = Role::with('users')->first()->users;
 
-            $coffeeBuyers = Role::with(['users' => function ($query) use ($start, $date) {
-                $query->whereBetween('created_at', [$start, $date]);
-            }])->where('name', 'Coffee Buyer')->first()->users;
+            $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
             $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$start, $date]);
             $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$start, $date]);
             $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
