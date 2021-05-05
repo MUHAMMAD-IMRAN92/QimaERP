@@ -51,7 +51,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('regionByDate', 'RegionController@regionByDate');
         Route::get('regionByDays', 'RegionController@regionByDays');
         Route::get('filterRegionByGovernrate', 'RegionController@filterRegionByGovernrate');
-
+        Route::get('filterRegionByRegions', 'RegionController@filterRegionByRegions');
+        Route::get('filterRegionByVillages', 'RegionController@filterRegionByVillages');
 
 
 

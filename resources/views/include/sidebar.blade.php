@@ -254,7 +254,7 @@
                         <a href="" class="nav-link ">
                             <i class="nav-icon fab fa-centercode"></i>
                             <p>
-                                Packaging Exprot Coffee
+                                Packaging Coffee
                                 <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
