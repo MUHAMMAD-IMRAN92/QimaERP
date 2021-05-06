@@ -22,7 +22,7 @@
             background-color: purple !important;
         }
 
-        a {
+      .blacklink a {
 
             color: rgb(0, 0, 0);
             background-color: transparent;
