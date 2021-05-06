@@ -21,6 +21,9 @@
             height: 70px fit-content;
             background-color: purple !important;
         }
+        a{
+            color: rgb(0, 0, 0);
+        }
 
       .blacklink a {
 

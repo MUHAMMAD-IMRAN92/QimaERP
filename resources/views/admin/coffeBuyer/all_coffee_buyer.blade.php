@@ -30,7 +30,9 @@
             font-size: 14px;
 
         }
-
+        a{
+            color: rgb(0, 0, 0);
+        }
         .famerimg {
 
             width: 20px;
