@@ -122,6 +122,9 @@ class CoffeeBuyerController extends Controller
     }
     public function filterByDate(Request $request)
     {
+        $from = Carbon::parse($request->from)->format('Y-m-d  H:i:s');
+        $to = Carbon::parse($request->to)->format('Y-m-d  H:i:s');
+
         $governorates = Governerate::all();
         $regions = Region::all();
         $villages = Village::all();
@@ -129,8 +132,8 @@ class CoffeeBuyerController extends Controller
 
         $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
 
-        $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$request->from, $request->to]);
-        $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$request->from, $request->to]);
+        $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$from, $to]);
+        $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$from,  $to]);
         $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
             $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
             $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
