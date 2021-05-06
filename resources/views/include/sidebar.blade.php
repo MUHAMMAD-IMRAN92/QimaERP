@@ -145,7 +145,7 @@
                     @endhasrole
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allregion"
-                            class="nav-link {{ Request::is('admin/allgovernor') ? 'active' : '' }}">
+                            class="nav-link {{ Request::is('admin/allregion') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-globe"></i>
                             <p>
                                 Region
@@ -155,7 +155,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allvillage" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/allvillage" class="nav-link {{ Request::is('admin/allvillages') ? 'active' : '' }} ">
                             <i class="nav-icon fas fa-tree"></i>
                             <p>
                                 Village
@@ -164,7 +164,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allfarmer" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/allfarmer" class="nav-link {{ Request::is('admin/allfarmer') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-tractor"></i>
                             <p>
                                 Farmer
@@ -173,7 +173,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allcoffeebuyer" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/allcoffeebuyer" class="nav-link  {{ Request::is('admin/allcoffeebuyer') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-user"></i>
                             <p>
                                 Coffee Buyer
@@ -183,7 +183,7 @@
                     </li>
                     @hasrole('Super Admin')
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allbatchnumber" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/allbatchnumber" class="nav-link  {{ Request::is('admin/allbatchnumber') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-sort-numeric-up-alt"></i>
                             <p>
                                 Batch Number
@@ -191,7 +191,7 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item {{ Request::is('admin/allcenter') ? 'menu-open' : '' }}">
                         <a href="{{ URL::to('') }}/admin/allcenter" class="nav-link ">
                             <i class="nav-icon fab fa-centercode"></i>
                             <p>
@@ -201,7 +201,7 @@
                         </a>
                         <ul class="nav nav-treeview pl-2 nav-dropdown">
                             <li class="nav-item">
-                                <a href="{{ url('admin/allcenter') }}" class="nav-link">
+                                <a href="{{ url('admin/allcenter') }}" class="nav-link  {{ Request::is('admin/allcenter') ? 'active' : '' }}">
                                     <i class="fas fa-long-arrow-alt-right nav-icon"></i>
                                     <p>All Center</p>
                                 </a>
@@ -210,7 +210,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/alltransection" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/alltransection" class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
                             <i class="nav-icon fas fa-exchange-alt"></i>
                             <p>
                                 Transaction
@@ -220,13 +220,13 @@
                     </li>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/environments" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/environments" class="nav-link  {{ Request::is('admin/environments') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-globe"></i>
                             <p>Environments</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allcontainer" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/allcontainer" class="nav-link  {{ Request::is('admin/allcontainer') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-shopping-basket"></i>
                             <p>
                                 Container
@@ -237,13 +237,13 @@
 
 
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/milling_coffee" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/milling_coffee" class="nav-link {{ Request::is('admin/milling_coffee') ? 'active' : '' }}">
                             <i class="fal fa-trees"></i>
                             <i class="nav-icon fas fa-tree"></i>
                             <p>Milling</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item {{ Request::is('admin/export/mixing') ? 'menu-open' : '' }}">
                         <a href="" class="nav-link ">
                             <i class="nav-icon fas fa-box"></i>
                             <p>
@@ -253,7 +253,7 @@
                         </a>
                         <ul class="nav nav-treeview pl-2 nav-dropdown">
                             <li class="nav-item">
-                                <a href="{{ url('admin/export/mixing') }}" class="nav-link">
+                                <a href="{{ url('admin/export/mixing') }}" class="nav-link {{ Request::is('admin/export/mixing') ? 'active' : '' }}">
                                     <i class="fas fa-mortar-pestle nav-icon"></i>
                                     <p>Mixing</p>
                                 </a>
@@ -262,7 +262,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/governorweight" class="nav-link ">
+                        <a href="{{ URL::to('') }}/admin/governorweight" class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
                             <i class="fal fa-trees"></i>
                             <i class="nav-icon fas fa-weight"></i>
                             <p>
