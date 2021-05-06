@@ -285,7 +285,8 @@ class SOCoffeeSortingController extends Controller
                         if ($defectiveDetails->isNotEmpty()) {
                             $status = 'sent';
                             $type = 'sent_to_sales';
-                            $transactionType = 3;
+                            $transactionType = 4;
+                            $sentTo = 193;
 
                             $transaction = Transaction::createAndLog(
                                 $transactionData,
@@ -293,7 +294,8 @@ class SOCoffeeSortingController extends Controller
                                 $status,
                                 $sessionNo,
                                 $type,
-                                $transactionType
+                                $transactionType,
+                                $sentTo
                             );
 
                             $defectiveDetails->each(function ($detail) use ($transaction) {
