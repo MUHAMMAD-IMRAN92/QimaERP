@@ -24,7 +24,16 @@ class RegionController extends Controller
         $governorates = Governerate::all();
         $regions = Region::all();
         $villages = Village::all();
-      
+        $now = Carbon::now();
+        $date = Carbon::today()->toDateString();
+        $start = $now->firstOfMonth();
+        $chartTransactions = Transaction::with('details')->where('sent_to', 2)
+           
+            ->get()
+            ->groupBy(function ($transaction) {
+                return $transaction->created_at->day;
+            });
+        //  ->whereBetween('created_at', [$start, $date])
         $transactions = Transaction::with('details')->where('sent_to', 2)->get();
         $totalWeight = 0;
         $totalPrice = 0;
@@ -87,7 +96,8 @@ class RegionController extends Controller
             'regions' => $regions,
             'villages' => $villages,
             'total_coffee' => $totalWeight,
-            'totalPrice' => $totalPrice
+            'totalPrice' => $totalPrice ,
+            'chartTransactions' =>  $chartTransactions
 
         ]);
     }
