@@ -13,7 +13,7 @@ class TransactionDetail extends Model
         'is_local' => 'boolean',
     ];
 
-    function transection()
+    function transaction()
     {
         return $this->hasOne(Transaction::class, 'transaction_id', 'transaction_id');
     }
