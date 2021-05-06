@@ -155,7 +155,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allvillage" class="nav-link {{ Request::is('admin/allvillages') ? 'active' : '' }} ">
+                        <a href="{{ URL::to('') }}/admin/allvillage" class="nav-link {{ Request::is('admin/allvillage') ? 'active' : '' }} ">
                             <i class="nav-icon fas fa-tree"></i>
                             <p>
                                 Village
