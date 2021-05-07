@@ -25,8 +25,12 @@ class InventoryController extends Controller
                 'name' => 'Grade 3 Husk'
             ],
             [
-                'batch_number' => 'GR3-CFE-00',
+                'batch_number' => 'GR2-CFE-00',
                 'name' => 'Grade 2 Green Cofee'
+            ],
+            [
+                'batch_number' => 'GR3-CFE-00',
+                'name' => 'Grade 3 Green Cofee'
             ],
         ]);
 
@@ -44,45 +48,42 @@ class InventoryController extends Controller
                 'name' => 'Special Grade 3 Husk'
             ],
             [
-                'batch_number' => 'SGR3-CFE-00',
+                'batch_number' => 'SGR2-CFE-00',
                 'name' => 'Special Grade 2 Green Cofee'
+            ],
+            [
+                'batch_number' => 'SGR3-CFE-00',
+                'name' => 'Special Grade 3 Green Cofee'
             ],
         ]);
 
         $products = $productsBatches->map(function ($productData) {
-            $productData['weight'] = TransactionDetail::whereHas('transaction', function (Builder $query) use ($productData) {
-                $query->where('batch_number', 'like', "{$productData['batch_number']}%");
-            })->sum('container_weight');
+            $transaction = Transaction::with('details')->where('batch_number', $productData['batch_number'])
+                ->where('is_parent', 0)
+                ->where('transaction_type', 5)
+                ->where('sent_to', 193)
+                ->first();
+
+            $weightDetail = $transaction ? $transaction->details->first() : null;
+
+            $productData['weight'] = $weightDetail ? $weightDetail->container_weight : 0;
 
             return $productData;
         });
 
         $specialProducts = $specialProductsBatches->map(function ($productData) {
-            $productData['weight'] = TransactionDetail::whereHas('transaction', function (Builder $query) use ($productData) {
-                $query->where('batch_number', 'like', "{$productData['batch_number']}%");
-            })->sum('container_weight');
+            $transaction = Transaction::with('details')->where('batch_number', $productData['batch_number'])
+                ->where('is_parent', 0)
+                ->where('transaction_type', 5)
+                ->where('sent_to', 193)
+                ->first();
+
+            $weightDetail = $transaction ? $transaction->details->first() : null;
+
+            $productData['weight'] = $weightDetail ? $weightDetail->container_weight : 0;
 
             return $productData;
         });
-
-        $defectsGreenCofee['name'] = 'Defects Green Coffee';
-        $defectsGreenCofee['batch_number'] = null;
-        $defectsGreenCofee['weight'] = TransactionDetail::whereHas('transaction', function (Builder $query) {
-            $query->where('transaction_type', 4)
-                ->where('sent_to', 193);
-        })->sum('container_weight');
-
-        $products->push($defectsGreenCofee);
-
-        $specialDefectsGreenCofee['name'] = 'Defects Green Coffee';
-        $specialDefectsGreenCofee['batch_number'] = null;
-        $specialDefectsGreenCofee['weight'] = TransactionDetail::whereHas('transaction', function (Builder $query) {
-            $query->where('transaction_type', 4)
-                ->where('sent_to', 193)
-                ->where('is_special', true);
-        })->sum('container_weight');
-
-        $specialProducts->push($specialDefectsGreenCofee);
 
         return view('admin.inventory.index', [
             'products' => $products,

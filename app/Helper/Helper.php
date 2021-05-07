@@ -202,6 +202,12 @@ function containerType()
             'type' => 'Pallet',
             'user_role' => 0,
         ),
+        28 => array(
+            'id' => 27,
+            'code' => '000',
+            'type' => 'Accumulation Container',
+            'user_role' => 0,
+        ),
     );
 
     return $arr;

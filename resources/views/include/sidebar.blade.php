@@ -264,7 +264,6 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/governorweight"
                             class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
-                            <i class="fal fa-trees"></i>
                             <i class="nav-icon fas fa-weight"></i>
                             <p>
                                 Total Weights
@@ -278,10 +277,18 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/inventory"
                             class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
-                            <i class="fal fa-trees"></i>
                             <i class="nav-icon fas fa-pallet"></i>
                             <p>
                                 Inventory
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/orders"
+                            class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-address-book"></i>
+                            <p>
+                                Orders
                             </p>
                         </a>
                     </li>

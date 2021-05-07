@@ -69,4 +69,19 @@ class TransactionDetail extends Model
 
         return $savedDetails;
     }
+
+    public static function createAccumulated($userId, $transactionId, $containerWeight)
+    {
+        $accumulationContainer = Container::findOrCreateAccumulated($userId);
+
+        $accumultedDetail = TransactionDetail::create([
+            'transaction_id' => $transactionId,
+            'container_number' => $accumulationContainer->container_number,
+            'created_by' => $userId,
+            'container_weight' => $containerWeight,
+            'weight_unit' => 'KG',
+        ]);
+
+        return $accumultedDetail;
+    }
 }
