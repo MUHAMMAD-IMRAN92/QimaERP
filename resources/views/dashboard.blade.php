@@ -29,7 +29,9 @@
             text-decoration: none;
 
         }
-
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
     </style>
 
     <script>
@@ -47,6 +49,125 @@
                         'to': to
                     },
                     success: function(data) {
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#today').on('click', function() {
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'today'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yesterday').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yesterday'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#weekToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'weekToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#monthToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'monthToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastmonth').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastmonth'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#yearToDate').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'yearToDate'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#currentyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'currentyear'
+                    },
+                    success: function(data) {
+
+                        $('#transactions').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#lastyear').on('click', function() {
+
+                $.ajax({
+                    url: "{{ url('admin/regionByDays') }}",
+                    type: "GET",
+                    data: {
+                        'date': 'lastyear'
+                    },
+                    success: function(data) {
+
                         $('#transactions').html(data);
                         console.log(data);
                     }
@@ -86,16 +207,31 @@
                     <input type="date" name="" id="to">
                 </form>
             </div>
-            <div class="row ml-2 ">
-                <span class="ml-2"> <a href="">TODAY</a></span> &nbsp | <span class="ml-2"> <a href=""> YESTERDAY</a></span>
-                &nbsp | <span class="ml-2"> <a href=""> WEEK TO
-                        DATE </a></span> &nbsp | <span class="ml-2"> <a href="">MONTH TO DATE</a></span> &nbsp | <span
-                    class="ml-2"> <a href="">
-                        LAST MONTH</a></span> &nbsp | <span class="ml-2"> <a href="">YEAR TO DATE</a></span> &nbsp | <span
-                    class="ml-2"> <a href=""> 2021
-                        SEASON</a></span> &nbsp | <span class="ml-2"> <a href=""> 2021 SEASON</a></span> &nbsp | <span
-                    class="ml-2"> <a href=""> 2020
-                        SEASON</a></span> &nbsp | <span class="ml-2"> <a href=""> ALL TIME</a></span>
+            <div class="row ml-2 blacklink ">
+                <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
+                <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
+                &nbsp |
+                <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
+                    </a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="monthToDate"> MONTH
+                    TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastmonth"> LAST
+                    MONTH</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="yearToDate"> YEAR TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="currentyear"> 2021
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="lastyear"> 2020
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-2"> <a href="{{ url('/admin/dashboard') }}">ALL
+                        TIME</a></span>
             </div>
             <hr>
             <div class="row ml-2" id="transactions">
@@ -113,7 +249,7 @@
 
                     <p>Villages </p>
                 </div>
-                <div class="col-sm-1 color bg-success">
+                <div class="col-sm-1 color bg-primary">
                     <h3>{{ $farmers->count() }}</h3>
 
                     <p>Farmers </p>
@@ -214,19 +350,19 @@
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
-                                    <tr>
+                                    <tr style="white-space:nowrap">
                                         <th style="width: 10px">Sr#</th>
-                                        <th>Region Code</th>
+                                       
                                         <th>Region Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
-                                    @foreach ($regions->take(3) as $region)
-                                        <tr>
+                                    @foreach ($regions->take(5) as $region)
+                                        <tr style="white-space:nowrap">
                                             <td>{{ $region->region_id }}</td>
-                                            <td>{{ $region->region_code }}</td>
-                                            <td>{{ $region->region_title }}</td>
+                                            
+                                            <td >{{ $region->region_title }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
