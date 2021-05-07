@@ -8,6 +8,8 @@ use App\Region;
 use App\Village;
 use App\Governerate;
 use App\Transaction;
+use App\TransactionDetail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -28,11 +30,34 @@ class RegionController extends Controller
         $date = Carbon::today()->toDateString();
         $start = $now->firstOfMonth();
         $chartTransactions = Transaction::with('details')->where('sent_to', 2)
-           
             ->get()
             ->groupBy(function ($transaction) {
                 return $transaction->created_at->day;
+            })->toArray();
+        $weights = TransactionDetail::whereHas('transection', function (Builder $query) {
+            $query->where('sent_to', 2);
+        })->get()
+            ->groupBy(function ($detail) {
+                return $detail->created_at->day;
+            })->map(function ($detailsGroup, $day) {
+                $totalWeight = $detailsGroup->sum('container_weight');
+
+                return [
+                    'day' => $day,
+                    'weight' => $totalWeight
+
+                ];
             });
+     
+        
+
+        for ($i = 1; $i <= 30; $i++) {
+            $weight= $weights->first(function($weight) use($i){
+                return $weight['day'] == $i;
+            });
+
+
+        }
         //  ->whereBetween('created_at', [$start, $date])
         $transactions = Transaction::with('details')->where('sent_to', 2)->get();
         $totalWeight = 0;
@@ -96,7 +121,7 @@ class RegionController extends Controller
             'regions' => $regions,
             'villages' => $villages,
             'total_coffee' => $totalWeight,
-            'totalPrice' => $totalPrice ,
+            'totalPrice' => $totalPrice,
             'chartTransactions' =>  $chartTransactions
 
         ]);

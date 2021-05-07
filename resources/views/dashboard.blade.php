@@ -39,10 +39,16 @@
                 let to = $("#to").val();
 
                 $.ajax({
-                    url: "{{ url('admin/dashboard') }}",
-                    data: $('#data-form').serialize(),
+
+                    url: "{{ url('admin/regionByDate') }}",
+                    type: "GET",
+                    data: {
+                        'from': from,
+                        'to': to
+                    },
                     success: function(data) {
-                        alert(data);
+                        $('#transactions').html(data);
+                        console.log(data);
                     }
                 });
             });
@@ -92,24 +98,34 @@
                         SEASON</a></span> &nbsp | <span class="ml-2"> <a href=""> ALL TIME</a></span>
             </div>
             <hr>
-            <div class="row ml-2">
+            <div class="row ml-2" id="transactions">
                 <div class="col-sm-1 color bg-danger">
-                    <h3>{{ App\Village::count() }}</h3>
-                    <p>Villages</p>
+                    <h3>{{ $governorate->count() }}</h3>
+                    <p>Governorate</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ App\Farmer::count() }}</h3>
+                    <h3>{{ $regions->count() }}</h3>
 
-                    <p>Farmers</p>
+                    <p>Regions</p>
                 </div>
                 <div class="col-sm-1 color bg-warning">
-                    <h3>{{ App\User::count() }}</h3>
+                    <h3>{{ $villages->count() }}</h3>
 
-                    <p>User </p>
+                    <p>Villages </p>
                 </div>
-                <div class="col-sm-1 color bg-info"></div>
-                <div class="col-sm-1 color bg-dark"></div>
-                <div class="col-sm-1 color bg-danger"></div>
+                <div class="col-sm-1 color bg-success">
+                    <h3>{{ $farmers->count() }}</h3>
+
+                    <p>Farmers </p>
+                </div>
+                <div class="col-sm-1 color bg-dark">
+                    <h3>{{ $totalWeight }}</h3>
+                    <p>Total Coffee </p>
+                </div>
+                <div class="col-sm-1 color bg-danger">
+                    <h3>{{ $totalPrice }}</h3>
+                    <p>Yer Coffee Purchased</p>
+                </div>
                 <div class="col-sm-1 color bg-warning"></div>
                 <div class="col-sm-1 color bg-info"></div>
                 <div class="col-sm-1 color bg-dark"></div>
@@ -174,11 +190,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($farmer as $key => $row)
+                                    @foreach ($farmers->take(5) as $farmer)
                                         <tr>
-                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ $loop->iteration }}</td>
 
-                                            <td>{{ $row->farmer_name }}</td>
+                                            <td>{{ $farmer->farmer_name }}</td>
 
                                         </tr>
                                     @endforeach
@@ -206,7 +222,7 @@
                                 </thead>
                                 <tbody>
 
-                                    @foreach ($regions as $region)
+                                    @foreach ($regions->take(3) as $region)
                                         <tr>
                                             <td>{{ $region->region_id }}</td>
                                             <td>{{ $region->region_code }}</td>
