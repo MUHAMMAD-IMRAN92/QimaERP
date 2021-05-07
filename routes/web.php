@@ -181,5 +181,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('local_market/sales', 'LocalMarketSales@get')->name('local_market.sales.index');
 
         Route::get('/inventory', 'InventoryController@index')->name('inventory.index');
+
+        Route::get('/orders', 'OrderController@index')->name('orders.index');
     });
 });
