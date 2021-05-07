@@ -161,6 +161,10 @@ class YOLocalMarketController extends Controller
                         $transaction->reference_id
                     );
 
+                    $transaction->load('details');
+
+                    $savedTransactions->push($transaction);
+
                     $transactionBatchNumberPrefix = Str::beforeLast($transaction->batch_number, '-');
 
                     if (!in_array($transactionBatchNumberPrefix, $this->fixedBatchNumbers)) {
@@ -172,9 +176,20 @@ class YOLocalMarketController extends Controller
                         ->where('transaction_type', 5)
                         ->first();
 
-                    if ($accumulatedTransaction) {
-                        $accumulatedBatch = BatchNumber::where('batch_number', '0000')->first();
+                    $oldBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
 
+                    $accumulatedBatch = BatchNumber::firstOrCreate(
+                        ['batch_number' => $transactionBatchNumberPrefix],
+                        [
+                            'created_by' => $request->user()->user_id,
+                            'local_code' => $transactionBatchNumberPrefix,
+                            'is_server_id' => 1,
+                            'season_id' => $oldBatch->season_id,
+                            'season_status' => $oldBatch->season_status,
+                        ]
+                    );
+
+                    if ($accumulatedTransaction) {
                         $status = 'stored';
                         $sentTo = 193;
                         $type = 'sent_to_inventory';
@@ -201,20 +216,15 @@ class YOLocalMarketController extends Controller
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
                         $accumulatedTransaction->save();
+
+                        $transaction->is_parent = $newAccumulatedTransaction->transaction_id;
+
+                        $transaction->save();
+
+                        $newAccumulatedTransaction->load('details');
+
+                        $savedTransactions->push($newAccumulatedTransaction);
                     } else {
-                        $oldBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
-
-                        $accumulatedBatch = BatchNumber::firstOrCreate(
-                            ['batch_number' => $transactionBatchNumberPrefix],
-                            [
-                                'created_by' => $request->user()->user_id,
-                                'local_code' => $transactionBatchNumberPrefix,
-                                'is_server_id' => 1,
-                                'season_id' => $oldBatch->season_id,
-                                'season_status' => $oldBatch->season_status,
-                            ]
-                        );
-
                         $status = 'stored';
                         $sentTo = 193;
                         $type = 'sent_to_inventory';
@@ -235,6 +245,13 @@ class YOLocalMarketController extends Controller
                         $accumulatedWeight = $transaction->details->sum('container_weight');
 
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $accumulatedWeight);
+
+                        $transaction->is_parent = $accumulatedTransaction->transaction_id;
+                        $transaction->save();
+
+                        $accumulatedTransaction->load('details');
+
+                        $savedTransactions->push($accumulatedTransaction);
                     }
                 }
             }

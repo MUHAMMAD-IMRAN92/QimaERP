@@ -85,7 +85,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Inventory</li>
+                        <li class="breadcrumb-item active">Orders</li>
                     </ol>
                 </div>
             </div>
@@ -94,8 +94,11 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <p>Orders coming soon</p>
-            <!-- /.row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Order coming soon.</h1>
+                </div>
+            </div>
         </div>
         <!-- /.container-fluid -->
     </section>
