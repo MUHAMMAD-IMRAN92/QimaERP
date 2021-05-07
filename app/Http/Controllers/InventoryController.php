@@ -25,7 +25,7 @@ class InventoryController extends Controller
                 'name' => 'Grade 3 Husk'
             ],
             [
-                'batch_number' => 'GR3-CFE-00',
+                'batch_number' => 'GR2-CFE-00',
                 'name' => 'Grade 2 Green Cofee'
             ],
         ]);
@@ -44,7 +44,7 @@ class InventoryController extends Controller
                 'name' => 'Special Grade 3 Husk'
             ],
             [
-                'batch_number' => 'SGR3-CFE-00',
+                'batch_number' => 'SGR2-CFE-00',
                 'name' => 'Special Grade 2 Green Cofee'
             ],
         ]);
