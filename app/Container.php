@@ -48,4 +48,30 @@ class Container extends Model
 
         return $container;
     }
+
+    public static function findOrCreateAccumulated($userId)
+    {
+        $containerNumber = '000';
+        $container = static::where('container_number', $containerNumber)->first();
+
+        if (!$container) {
+            $containerDetail = Arr::first(containerType(), function ($detail) use ($containerNumber) {
+                return $detail['code'] == $containerNumber;
+            });
+
+            if (!$containerDetail) {
+                throw new Exception('Container type not found.', 400);
+            }
+
+            $container = new self();
+            $container->container_number = $containerNumber;
+            $container->container_type = $containerDetail['id'];
+            $container->capacity = 100;
+            $container->created_by = $userId;
+
+            $container->save();
+        }
+
+        return $container;
+    }
 }

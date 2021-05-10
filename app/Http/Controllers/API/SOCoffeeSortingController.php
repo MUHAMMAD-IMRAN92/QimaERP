@@ -286,6 +286,36 @@ class SOCoffeeSortingController extends Controller
                             $status = 'sent';
                             $type = 'sent_to_sales';
                             $transactionType = 3;
+                            $sentTo = 192;
+
+                            $parentTransaction = Transaction::findParent(
+                                $transactionData['is_server_id'],
+                                $transactionData['reference_id'],
+                                $request->user()->user_id
+                            );
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction not found in sent to local market sales.');
+                            }
+
+                            $gradeThreeCoffeeBatchNumber = $parentTransaction->is_special ? 'SGR3-CFE-00' : 'GR3-CFE-00';
+
+                            $hardcodeBatchNumber = BatchNumber::newBatchNumber($gradeThreeCoffeeBatchNumber);
+
+                            $oldBatch = BatchNumber::where('batch_number', $transactionData->batch_number)->first();
+
+                            $batch = BatchNumber::firstOrCreate(
+                                ['batch_number' => $hardcodeBatchNumber],
+                                [
+                                    'created_by' => $request->user()->user_id,
+                                    'local_code' => $hardcodeBatchNumber,
+                                    'is_server_id' => 1,
+                                    'season_id' => $oldBatch->season_id,
+                                    'season_status' => $oldBatch->season_status,
+                                ]
+                            );
+
+                            $transactionData['batch_number'] = $batch->batch_number;
 
                             $transaction = Transaction::createAndLog(
                                 $transactionData,
@@ -293,7 +323,8 @@ class SOCoffeeSortingController extends Controller
                                 $status,
                                 $sessionNo,
                                 $type,
-                                $transactionType
+                                $transactionType,
+                                $sentTo
                             );
 
                             $defectiveDetails->each(function ($detail) use ($transaction) {
