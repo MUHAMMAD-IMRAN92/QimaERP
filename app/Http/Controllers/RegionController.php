@@ -29,9 +29,6 @@ class RegionController extends Controller
         $now = Carbon::now();
         $date = Carbon::today()->toDateString();
         $start = $now->firstOfMonth();
-<<<<<<< HEAD
-       
-=======
         // $chartTransactions = Transaction::with('details')->where('sent_to', 2)
         //     ->get()
         //     ->groupBy(function ($transaction) {
@@ -62,7 +59,6 @@ class RegionController extends Controller
 
         // }
         //  ->whereBetween('created_at', [$start, $date])
->>>>>>> admin-panel-feature
         $transactions = Transaction::with('details')->where('sent_to', 2)->get();
         $totalWeight = 0;
         $totalPrice = 0;
@@ -126,11 +122,7 @@ class RegionController extends Controller
             'villages' => $villages,
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice,
-<<<<<<< HEAD
-           
-=======
             // 'chartTransactions' =>  $chartTransactions
->>>>>>> admin-panel-feature
 
         ]);
     }
