@@ -118,6 +118,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/products', 'API\ProductController@all');
         Route::get('/products/sorting', 'API\ProductController@sorting');
         Route::get('/products/milling', 'API\ProductController@milling');
+        Route::get('/products/export', 'API\ProductController@export');
         Route::get('/mill_operative_coffee', 'API\MillOperativeController@sendCoffee');
         Route::post('/mill_operative_coffee', 'API\MillOperativeController@receiveCoffee');
         //For Sorting Coffee

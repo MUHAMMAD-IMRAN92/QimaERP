@@ -9,6 +9,7 @@ class ProductController extends Controller
 {
     protected $millingFors = [1, 2];
     protected $sortingFors = [3, 4, 5];
+    protected $exportFors = [3, 4];
 
     public function all()
     {
@@ -28,6 +29,14 @@ class ProductController extends Controller
     public function sorting()
     {
         $products = Product::whereIn('for', $this->sortingFors)
+            ->get(['id', 'name', 'container_code']);
+
+        return response()->json($products);
+    }
+
+    public function export()
+    {
+        $products = Product::whereIn('for', $this->exportFors)
             ->get(['id', 'name', 'container_code']);
 
         return response()->json($products);
