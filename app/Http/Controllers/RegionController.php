@@ -29,36 +29,7 @@ class RegionController extends Controller
         $now = Carbon::now();
         $date = Carbon::today()->toDateString();
         $start = $now->firstOfMonth();
-        $chartTransactions = Transaction::with('details')->where('sent_to', 2)
-            ->get()
-            ->groupBy(function ($transaction) {
-                return $transaction->created_at->day;
-            })->toArray();
-        $weights = TransactionDetail::whereHas('transection', function (Builder $query) {
-            $query->where('sent_to', 2);
-        })->get()
-            ->groupBy(function ($detail) {
-                return $detail->created_at->day;
-            })->map(function ($detailsGroup, $day) {
-                $totalWeight = $detailsGroup->sum('container_weight');
-
-                return [
-                    'day' => $day,
-                    'weight' => $totalWeight
-
-                ];
-            });
-     
-        
-
-        for ($i = 1; $i <= 30; $i++) {
-            $weight= $weights->first(function($weight) use($i){
-                return $weight['day'] == $i;
-            });
-
-
-        }
-        //  ->whereBetween('created_at', [$start, $date])
+       
         $transactions = Transaction::with('details')->where('sent_to', 2)->get();
         $totalWeight = 0;
         $totalPrice = 0;
@@ -122,7 +93,7 @@ class RegionController extends Controller
             'villages' => $villages,
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice,
-            'chartTransactions' =>  $chartTransactions
+           
 
         ]);
     }
