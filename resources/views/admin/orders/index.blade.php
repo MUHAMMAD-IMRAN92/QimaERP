@@ -80,7 +80,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><b>Mixing Coffee</b></h1>
+                    <h1><b>Create Order</b></h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -94,9 +94,23 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>Order coming soon.</h1>
+            <div id="app">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form action="">
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="customer">Select a Customer</label>
+                                        <select class="form-control" id="customer" name="customer">
+                                            <option :value="customer.id" v-for="customer in customers">@{{ customer.name }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,9 +120,31 @@
 </div>
 
 <script>
-    setTimeout(function(){
-        document.getElementById('alert').remove();
-    }, 3000)
+    // setTimeout(function(){
+    //     document.getElementById('alert').remove();
+    // }, 3000)
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            customers: [],
+            selectCustomerId: 0
+        },
+        methods: {
+            getCustomers : function(){
+                fetch('/admin/customers')
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data.customers);
+                        this.customers = data.customers;
+                    })
+            }
+        },
+        created(){
+            this.getCustomers();
+        }
+    });
+</script>
 @endsection
