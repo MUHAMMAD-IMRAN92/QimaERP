@@ -28,6 +28,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('login', 'AuthController@adminPostLogin');
     Route::group(['middleware' => ['CheckRole']], function () {
         Route::get('dashboard', 'AuthController@dashboard')->middleware('auth', 'CheckRole');
+        Route::get('dashboardByDate', 'AuthController@dashboardByDate');
+        Route::get('dashboardByDays', 'AuthController@dashboardByDays');
         Route::get('logout', 'AuthController@adminLogout');
 
 

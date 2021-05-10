@@ -65,7 +65,7 @@ class AuthController extends Controller
             'totalPrice' => $totalPrice
         ]);
     }
-    public function regionByDate(Request $request)
+    public function dashboardByDate(Request $request)
     {
         $governorates = Governerate::whereBetween('created_at', [$request->from, $request->to])->get();
         $regions = Region::whereBetween('created_at', [$request->from, $request->to])->get();
@@ -97,22 +97,23 @@ class AuthController extends Controller
             $totalWeight += $weight;
         }
 
-        return view('admin.region.views.filter_transctions', [
+        return view('filter_transctions', [
             'governorates' =>   $governorates,
             'regions' => $regions,
             'villages' => $villages,
+            'farmers' => $farmers,
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice
 
         ]);
     }
-    public function regionByDays(Request $request)
+    public function dashboardByDays(Request $request)
     {
         $date = $request->date;
 
         if ($date == 'today') {
             $date = Carbon::today()->toDateString();
-
+          
             $farmers = Farmer::whereDate('created_at',  $date)->get();
             $villages = Village::whereDate('created_at',  $date)->get();
             $governorates = Governerate::whereDate('created_at',  $date)->get();
@@ -146,14 +147,15 @@ class AuthController extends Controller
             }
 
 
-            return view('admin.region.views.filter_transctions', [
+            return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
-            ]);
+            ])->render();
         } elseif ($date == 'yesterday') {
             $now = Carbon::now();
             $yesterday = Carbon::yesterday();
@@ -190,14 +192,15 @@ class AuthController extends Controller
                 }
             }
 
-            return view('admin.region.views.filter_transctions', [
+            return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
-            ]);
+            ])->render();
         } elseif ($date == 'lastmonth') {
 
             $date = Carbon::now();
@@ -238,14 +241,15 @@ class AuthController extends Controller
                 }
             }
 
-            return view('admin.region.views.filter_transctions', [
+            return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
-            ]);
+            ])->render();
         } elseif ($date == 'currentyear') {
 
             $date = Carbon::now();
@@ -287,14 +291,15 @@ class AuthController extends Controller
                 }
             }
 
-            return view('admin.region.views.filter_transctions', [
+            return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
-            ]);
+            ])->render();
         } elseif ($date == 'lastyear') {
 
             $date = Carbon::now();
@@ -336,14 +341,15 @@ class AuthController extends Controller
                 }
             }
 
-            return view('admin.region.views.filter_transctions', [
+            return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
-            ]);
+            ])->render();
         } elseif ($date == 'weekToDate') {
 
             $now = Carbon::now();
@@ -387,14 +393,15 @@ class AuthController extends Controller
                 }
             }
 
-            return view('admin.region.views.filter_transctions', [
+            return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
-            ]);
+            ])->render();
         } elseif ($date == 'monthToDate') {
 
             $now = Carbon::now();
@@ -435,14 +442,15 @@ class AuthController extends Controller
                 }
             }
 
-            return view('admin.region.views.filter_transctions', [
+            return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
-            ]);
+            ])->render();
         } elseif ($date == 'yearToDate') {
 
             $now = Carbon::now();
@@ -484,14 +492,15 @@ class AuthController extends Controller
                 }
             }
 
-            return view('admin.region.views.filter_transctions', [
+            return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
-            ]);
+            ])->render();
         }
     }
     public function adminPostLogin(Request $request, $remember = true)

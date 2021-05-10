@@ -42,7 +42,7 @@
 
                 $.ajax({
 
-                    url: "{{ url('admin/regionByDate') }}",
+                    url: "{{ url('admin/dashboardByDate') }}",
                     type: "GET",
                     data: {
                         'from': from,
@@ -56,7 +56,7 @@
             });
             $('#today').on('click', function() {
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'today'
@@ -71,7 +71,7 @@
             $('#yesterday').on('click', function() {
 
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'yesterday'
@@ -86,7 +86,7 @@
             $('#weekToDate').on('click', function() {
 
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'weekToDate'
@@ -101,7 +101,7 @@
             $('#monthToDate').on('click', function() {
 
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'monthToDate'
@@ -116,7 +116,7 @@
             $('#lastmonth').on('click', function() {
 
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'lastmonth'
@@ -131,7 +131,7 @@
             $('#yearToDate').on('click', function() {
 
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'yearToDate'
@@ -146,7 +146,7 @@
             $('#currentyear').on('click', function() {
 
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'currentyear'
@@ -161,7 +161,7 @@
             $('#lastyear').on('click', function() {
 
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'lastyear'
