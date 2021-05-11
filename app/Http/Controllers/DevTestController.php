@@ -23,7 +23,9 @@ class DevTestController extends Controller
 
         return response()->json([
             'message' => 'Hello Dev! How is your day?',
-            'data' => []
+            'data' => [
+                'one' => 'we are just testing?'
+            ]
         ]);
     }
 }
