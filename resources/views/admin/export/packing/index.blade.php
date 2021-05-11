@@ -80,12 +80,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><b>Mixing Coffee</b></h1>
+                    <h1><b>Packaging Approval</b></h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Orders</li>
+                        <li class="breadcrumb-item active">Packaging And Export | Approval</li>
                     </ol>
                 </div>
             </div>
@@ -108,45 +108,69 @@
                             </div>
                             @endif
                             @if (session()->has('msg'))
-                            <div class="alert alert-success" id="alert">
-                                {{ session()->get('msg') }}
-                            </div>
+                                <div class="alert alert-success" id="alert">
+                                    {{ session()->get('msg') }}
+                                </div>
                             @endif
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h2 class="text-center">Normal Products</h2>
-                                @foreach ($products as $product)
-                                <div class="row">
-                                    <div class="col-md-10 offset-1">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">{{ $product['name'] }}</h5>
-                                                <p class="card-text">Total Weight: <b>{{ $product['weight'] }}</b></p>
-                                                {{-- <a href="#" class="btn btn-primary">Go somewhere</a> --}}
-                                            </div>
-                                        </div>
-                                    </div>
+                        <form action="{{ url('admin/packaging/approval') }}" method="POST">
+                            @csrf
+                            <table id="myTable" style="border: 1px solid black">
+                                <thead>
+                                    <tr style="border: 1px solid black">
+                                        <th>Sr#</th>
+                                        <th>Batch Number</th>
+                                        <th>Container_Number</th>
+                                        <th>Container_Weight</th>
+                                        <th>Select Batch_Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach ($transactions as $transaction)
+                                    <tr style="border: 1px solid black">
+                                        <td style="border: 1px solid black">{{ $loop->iteration }}</td>
+
+                                        <td style="border: 1px solid black">{{ $transaction->batch_number }}</td>
+
+
+                                        <td style="border: 1px solid black">
+                                            @foreach ($transaction->details as $detail)
+
+                                            {{ $detail->container_number }} <br>
+
+
+
+                                            @endforeach
+                                        </td>
+                                        <td style="border: 1px solid black">
+                                            @foreach ($transaction->details as $detail)
+
+                                            {{ $detail->container_weight }} <br>
+
+
+
+                                            @endforeach
+                                        </td>
+                                        <td style="border: 1px solid black">
+
+                                            <input type="checkbox" name="approvals[]"
+                                                value="{{$transaction->transaction_id}}">
+                                        </td>
+                                    </tr>
+                                    @endforeach
+
+
+                                </tbody>
+                            </table>
+                            <div class="row mt-2 mb-2">
+                                <div class="col-md-5"></div>
+                                <div class="col-md-2">
+                                    <input type="submit" value="Approve" class="btn btn-primary px-4">
                                 </div>
-                                @endforeach
                             </div>
-                            <div class="col-md-6">
-                                <h2 class="text-center">Special Products</h2>
-                                @foreach ($special_products as $product)
-                                <div class="row">
-                                    <div class="col-md-10 offset-1">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">{{ $product['name'] }}</h5>
-                                                <p class="card-text">Total Weight: <b>{{ $product['weight'] }}</b></p>
-                                                {{-- <a href="#" class="btn btn-primary">Go somewhere</a> --}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
+
+                        </form>
                     </div>
                 </div>
                 <!-- /.col -->

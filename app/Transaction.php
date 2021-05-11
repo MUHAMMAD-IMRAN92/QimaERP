@@ -169,7 +169,7 @@ class Transaction extends Model
         $log->local_created_at = $transaction->local_created_at;
         $log->local_updated_at = $transaction->local_updated_at;
         $log->type =  $type;
-        $log->center_name = $transactionData['center_name'];
+        $log->center_name = array_key_exists('center_name', $transactionData) ? $transactionData['center_name'] : null;
 
         $transaction->log()->save($log);
 

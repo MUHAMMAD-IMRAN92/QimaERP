@@ -177,13 +177,19 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('milling_coffee', 'MillingController@millingCoffee')->middleware('auth');
 
         //packaging & export
-        Route::get('/export/mixing', 'ExportMixingController@get')->name('mixing.index');
-        Route::post('/export/mixing', 'ExportMixingController@post')->name('mixing.store');
+        Route::get('/packaging/mixing', 'ExportMixingController@get')->name('mixing.index');
+        Route::post('/packaging/mixing', 'ExportMixingController@post')->name('mixing.store');
+
+        Route::get('/packaging/approval', 'PackingApprovalController@get');
+        Route::post('/packaging/approval', 'PackingApprovalController@post');
 
         Route::get('local_market/sales', 'LocalMarketSales@get')->name('local_market.sales.index');
 
         Route::get('/inventory', 'InventoryController@index')->name('inventory.index');
 
         Route::get('/orders', 'OrderController@index')->name('orders.index');
+
+        Route::get('/customers', 'CustomerController@index');
+        Route::get('local_products', 'LocalMarketProductsController@index');
     });
 });
