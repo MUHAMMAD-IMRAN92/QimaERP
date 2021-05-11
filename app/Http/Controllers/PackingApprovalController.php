@@ -56,8 +56,9 @@ class PackingApprovalController extends Controller
 
                 $replicatedTransaction->save();
 
-                $transaction->is_parent = $replicatedTransaction->transaction_id;
-                $transaction->save();
+                // commented for app team request
+                // $transaction->is_parent = $replicatedTransaction->transaction_id;
+                // $transaction->save();
 
                 $log = new TransactionLog();
                 $log->action = $status;
@@ -82,8 +83,9 @@ class PackingApprovalController extends Controller
 
                     $replicatedDetail->save();
 
-                    $detail->container_status = 1;
-                    $detail->save();
+                    // commented on just for now on app team request
+                    // $detail->container_status = 1;
+                    // $detail->save();
 
                     foreach($detail->metas as $meta){
                         $replicatedMeta = $meta->replicate()->fill([

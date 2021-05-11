@@ -96,44 +96,49 @@
         <div class="container-fluid">
             <div id="app">
                 <div class="row">
+                    <div class="col-md-3" v-for="product in products">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">@{{ product.name }}</h5>
+                                <p class="card-text">Weight: <b>@{{ product.weight }}</b> KG</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-12">
                         <form action="">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="customer">Select a Customer</label>
-                                        <select class="form-control" id="customer" name="customer"
-                                            v-model="selectCustomerId">
-                                            <option value="0" selected disabled>Select a Customer</option>
-                                            <option :value="customer.id" v-for="customer in customers">
-                                                @{{ customer.name }}</option>
-                                        </select>
-                                    </div>
+                                    <h5>Create Customer</h5>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
-                                    <h5>Create new Customer</h5>
+                                <div class="col-md-3">
+                                    <select class="form-control" id="customer" name="customer"
+                                        v-model="selectCustomerId">
+                                        <option value="0" selected class="text-indigo">Create Customer</option>
+                                        <option :value="customer.id" v-for="customer in customers">
+                                            @{{ customer.name }}</option>
+                                    </select>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <input v-model="customer.name" v-on:input="resetCustomer()" type="text"
-                                        class="form-control" placeholder="Name" required>
+                                        class="form-control" placeholder="Name" required :disabled="!newCustomer">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <input v-model="customer.phone" v-on:input="resetCustomer()" type="text"
-                                        class="form-control" placeholder="phone" required>
+                                        class="form-control" placeholder="phone" required :disabled="!newCustomer">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <input v-model="customer.email" v-on:input="resetCustomer()" type="email"
-                                        class="form-control" placeholder="email">
+                                        class="form-control" placeholder="email" :disabled="!newCustomer">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col-md-12">
                                     <input v-model="customer.address" v-on:input="resetCustomer()" type="text"
-                                        class="form-control" placeholder="Address" required>
+                                        class="form-control" placeholder="Address" required :disabled="!newCustomer">
                                 </div>
                             </div>
                             <div class="row">
@@ -155,12 +160,14 @@
 
                                 <div class="form-group col-md-4">
                                     <label for="weight">Weight</label>
-                                    <input v-model="order.weight" class="form-control" type="number" name="weight" id="weight">
+                                    <input v-model="order.weight" class="form-control" type="number" name="weight"
+                                        id="weight">
                                 </div>
 
                                 <div class="form-group col-md-4">
                                     <label for="price">Price</label>
-                                    <input v-model="order.price" class="form-control" type="number" name="price" id="price">
+                                    <input v-model="order.price" class="form-control" type="number" name="price"
+                                        id="price">
                                 </div>
                             </div>
                         </form>
@@ -208,13 +215,34 @@
                     });
             },
             getProducts: function(){
-                axios.get('/admin/local_products')
+                axios.get('/admin/product_weights')
                     .then(res => {
                         this.products = res.data.products;
                     });
             }, 
             resetCustomer: function(){
                 this.selectCustomerId = 0;
+            }
+        },
+        watch: {
+            selectCustomerId: function(customerId){
+                let customer = this.customers.find(customer => customer.id == customerId);
+
+                if(customer){
+                    this.customer = customer;
+                } else {
+                    this.customer = {
+                        name: '',
+                        phone: '',
+                        email: '',
+                        address: ''
+                    };
+                }
+            }
+        },
+        computed: {
+            newCustomer: function(){
+                return this.selectCustomerId == 0;
             }
         },
         created(){

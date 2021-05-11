@@ -9,6 +9,11 @@ class LocalMarketProductsController extends Controller
 {
     public function index()
     {
+        
+    }
+
+    public function weights()
+    {
         $productsBatches = collect([
             [
                 'id' => 1,
