@@ -11,6 +11,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         //::Common Routes
 
+        // Admin Panel Routes
+
         //::governerate
         Route::post('/add_governerate', 'API\CommonController@addGovernerate');
         Route::get('/governerate', 'API\CommonController@governerate');
