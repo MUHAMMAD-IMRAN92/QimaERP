@@ -240,7 +240,7 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item {{ Request::is('admin/export/mixing') ? 'menu-open' : '' }}">
+                    <li class="nav-item {{ Request::is('admin/packaging/*') ? 'menu-open' : '' }}">
                         <a href="" class="nav-link ">
                             <i class="nav-icon fas fa-box"></i>
                             <p>
@@ -250,15 +250,23 @@
                         </a>
                         <ul class="nav nav-treeview pl-2 nav-dropdown">
                             <li class="nav-item">
-                                <a href="{{ url('admin/export/mixing') }}"
-                                    class="nav-link {{ Request::is('admin/export/mixing') ? 'active' : '' }}">
+                                <a href="{{ url('admin/packaging/mixing') }}"
+                                    class="nav-link {{ Request::is('admin/packaging/mixing') ? 'active' : '' }}">
                                     <i class="fas fa-mortar-pestle nav-icon"></i>
                                     <p>
                                         Mixing
                                     </p>
                                 </a>
                             </li>
-
+                            <li class="nav-item">
+                                <a href="{{ url('admin/packaging/approval') }}"
+                                    class="nav-link {{ Request::is('admin/packaging/approval') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-stamp"></i>
+                                    <p>
+                                        Packaging Approval
+                                    </p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -275,7 +283,7 @@
                     @endhasrole
 
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/inventory"
+                        <a href="{{ url('admin/inventory') }}"
                             class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-pallet"></i>
                             <p>
@@ -284,7 +292,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/orders"
+                        <a href="{{ url('admin/orders') }}"
                             class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-address-book"></i>
                             <p>
@@ -292,6 +300,7 @@
                             </p>
                         </a>
                     </li>
+                    
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->

@@ -7,9 +7,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
     Route::post('/login', 'API\AuthController@login');
 
     // Logged In users
-    Route::middleware(['auth:sanctum'])->group(function () {
+    Route::middleware(['auth:sanctum', 'logger'])->group(function () {
 
         //::Common Routes
+
+        // Admin Panel Routes
 
         //::governerate
         Route::post('/add_governerate', 'API\CommonController@addGovernerate');
@@ -118,6 +120,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/products', 'API\ProductController@all');
         Route::get('/products/sorting', 'API\ProductController@sorting');
         Route::get('/products/milling', 'API\ProductController@milling');
+        Route::get('/products/export', 'API\ProductController@export');
         Route::get('/mill_operative_coffee', 'API\MillOperativeController@sendCoffee');
         Route::post('/mill_operative_coffee', 'API\MillOperativeController@receiveCoffee');
         //For Sorting Coffee
@@ -130,5 +133,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         // Yemene Operative Export Coffee
         Route::get('yo_export_coffee', 'API\YOExportController@get');
         Route::post('yo_export_coffee', 'API\YOExportController@post');
+
+        Route::get('yo_local_inventory', 'API\InventoryController@get');
     });
 });
