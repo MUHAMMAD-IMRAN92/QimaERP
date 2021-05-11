@@ -15,7 +15,7 @@
 
         .color {
 
-            width: 200px fit-content;
+            width: 200px  ;
             height: 80px fit-content;
             margin-left: 2px;
         }
@@ -83,7 +83,7 @@
 
                         $('#regions_dropdown').append(html);
                         $('#transactions').html(data.view);
-                        console.log(data);
+                        
                     }
                 });
             });
