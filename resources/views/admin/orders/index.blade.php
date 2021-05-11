@@ -141,14 +141,26 @@
                                     Create Orders
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <select class="form-control" name="product"
-                                        v-model="order.product">
+                            <div class="form-row mt-2">
+
+                                <div class="form-group col-md-4">
+                                    <label for="product">Products</label>
+                                    <select class="form-control" name="product" id="product" v-model="order.product">
                                         <option value="0" selected disabled>Select a Product</option>
                                         <option :value="product.id" v-for="product in products">
-                                            @{{ product.name }}</option>
+                                            @{{ product.name }}
+                                        </option>
                                     </select>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="weight">Weight</label>
+                                    <input v-model="order.weight" class="form-control" type="number" name="weight" id="weight">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="price">Price</label>
+                                    <input v-model="order.price" class="form-control" type="number" name="price" id="price">
                                 </div>
                             </div>
                         </form>
@@ -181,7 +193,11 @@
                 address: ''
             },
             products: [],
-            order: {},
+            order: {
+                product: 0,
+                weight: 0,
+                price: 0
+            },
             orders: []
         },
         methods: {
