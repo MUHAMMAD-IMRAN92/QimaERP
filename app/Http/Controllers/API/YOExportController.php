@@ -9,6 +9,7 @@ use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,7 +27,7 @@ class YOExportController extends Controller
         $transactions = Transaction::where('is_parent', 0)
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent', 'received'])
-                    ->whereIn('type', ['sent_to_packaging', 'received_by_yo_wh', 'sent_to_yo_mixing']);
+                    ->whereIn('type', ['sent_to_packaging', 'received_by_yo_wh', 'sent_to_yo_mixing', 'received_by_yo_mixed', 'sent_to_admin_approval']);
             })->whereHas(
                 'details',
                 function ($q) {
@@ -105,9 +106,20 @@ class YOExportController extends Controller
                 $transactionData = $transactionObj['transaction'];
                 $detailsData = $transactionObj['details'];
 
-                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 24) {
-                    $status = 'received';
-                    $type = 'received_by_yo_wh';
+                if (isset($transactionData) && $transactionData['is_local'] && in_array($transactionData['sent_to'], [24, 27, 29])) {
+                    $sentTo = $transactionData['sent_to'];
+
+                    if ($sentTo == 24) {
+                        $status = 'received';
+                        $type = 'received_by_yo_wh';
+                    } elseif ($sentTo == 27) {
+                        $status = 'received';
+                        $type = 'received_by_yo_mixed';
+                    } elseif ($sentTo == 29) {
+                        $status = 'sent';
+                        $type = 'sent_to_admin_approval';
+                    }
+
                     $transactionType = 1;
 
                     $transaction = Transaction::createAndLog(
