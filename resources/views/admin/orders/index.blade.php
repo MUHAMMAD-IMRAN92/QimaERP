@@ -274,25 +274,29 @@
             orderWeight: 0,
             orderPrice: 0,
             orders: [],
-            errors: []
+            errors: [],
+            csrfToken: '{{ csrf_token() }}'
         },
         methods: {
             getCustomers: function(){
-                axios.get('/admin/customers')
-                    .then(res => {
-                        this.customers = res.data.customers;
-                    });
+                fetch('/admin/customers')
+                    .then(res => res.json())
+                    .then(data => {
+                        this.customers = data.customers;
+                    })
             },
             getInventory: function(){
-                axios.get('/admin/local_inventory')
-                    .then(res => {
-                        this.inventory = res.data.inventory;
+                fetch('/admin/local_inventory')
+                    .then(res => res.json())
+                    .then(data => {
+                        this.inventory = data.inventory;
                     });
             },
             getLocalProducts: function(){
-                axios.get('/admin/local_products')
-                    .then(res => {
-                        this.products = res.data.products;
+                fetch('/admin/local_products')
+                    .then(res => res.json())
+                    .then(data => {
+                        this.products = data.products;
                     })
             },
             resetCustomer: function(){
@@ -367,9 +371,29 @@
                 }
 
                 if(!this.errors.length){
-                    console.log(this.selectCustomerId);
-                    console.log(this.customer);
-                    console.log(this.orders);
+                    // console.log(this.selectCustomerId);
+                    // console.log(this.customer);
+                    // console.log(this.orders);
+
+
+
+                    fetch('/admin/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            'X-CSRF-TOKEN': this.csrfToken
+                        },
+                        body: JSON.stringify({
+                            customerId: this.selectCustomerId,
+                            customer: this.customer,
+                            orders: this.orders
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                    })
                 }
             }
         },

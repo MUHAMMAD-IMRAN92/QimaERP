@@ -292,11 +292,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('admin/orders') }}"
-                            class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
+                        <a href="{{ url('admin/orders/create') }}"
+                            class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-address-book"></i>
                             <p>
-                                Orders
+                                Create Order
                             </p>
                         </a>
                     </li>
