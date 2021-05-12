@@ -253,7 +253,6 @@
     //     document.getElementById('alert').remove();
     // }, 3000)
 </script>
-<script src="{{ asset('/public/js/axios.js') }}"></script>
 <script src="{{ asset('/public/js/vue.js') }}"></script>
 <script>
     const app = new Vue({
@@ -371,12 +370,6 @@
                 }
 
                 if(!this.errors.length){
-                    // console.log(this.selectCustomerId);
-                    // console.log(this.customer);
-                    // console.log(this.orders);
-
-
-
                     fetch('/admin/orders', {
                         method: 'POST',
                         headers: {
