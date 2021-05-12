@@ -195,7 +195,8 @@ class CoffeeDryingController extends Controller
                                     strstr($transactionContainer->key, 'PB') ||
                                     strstr($transactionContainer->key, 'VP') ||
                                     strstr($transactionContainer->key, 'PP') ||
-                                    strstr($transactionContainer->key, 'SM')
+                                    strstr($transactionContainer->key, 'SM') ||
+                                    strstr($transactionContainer->key, 'PDC')
                                 ) {
 
                                     $basketArray = explode("_", $transactionContainer->key);
