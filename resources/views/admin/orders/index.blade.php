@@ -96,7 +96,7 @@
         <div class="container-fluid">
             <div id="app">
                 <div class="row">
-                    <div class="col-md-3" v-for="product in products">
+                    <div class="col-md-3" v-for="product in inventory">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">@{{ product.name }}</h5>
@@ -107,70 +107,90 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <form action="">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <h5>Create Customer</h5>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h5>Create Customer</h5>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <select class="form-control" id="customer" name="customer"
-                                        v-model="selectCustomerId">
-                                        <option value="0" selected class="text-indigo">Create Customer</option>
-                                        <option :value="customer.id" v-for="customer in customers">
-                                            @{{ customer.name }}</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <input v-model="customer.name" v-on:input="resetCustomer()" type="text"
-                                        class="form-control" placeholder="Name" required :disabled="!newCustomer">
-                                </div>
-                                <div class="col-md-3">
-                                    <input v-model="customer.phone" v-on:input="resetCustomer()" type="text"
-                                        class="form-control" placeholder="phone" required :disabled="!newCustomer">
-                                </div>
-                                <div class="col-md-3">
-                                    <input v-model="customer.email" v-on:input="resetCustomer()" type="email"
-                                        class="form-control" placeholder="email" :disabled="!newCustomer">
-                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <select class="form-control" id="customer" name="customer" v-model="selectCustomerId">
+                                    <option value="0" selected class="text-indigo">Create Customer</option>
+                                    <option :value="customer.id" v-for="customer in customers">
+                                        @{{ customer.name }}</option>
+                                </select>
                             </div>
-                            <div class="row mt-2">
-                                <div class="col-md-12">
-                                    <input v-model="customer.address" v-on:input="resetCustomer()" type="text"
-                                        class="form-control" placeholder="Address" required :disabled="!newCustomer">
-                                </div>
+                            <div class="col-md-3">
+                                <input v-model="customer.name" v-on:input="resetCustomer()" type="text"
+                                    class="form-control" placeholder="Name" required :disabled="!newCustomer">
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    Create Orders
-                                </div>
+                            <div class="col-md-3">
+                                <input v-model="customer.phone" v-on:input="resetCustomer()" type="text"
+                                    class="form-control" placeholder="phone" required :disabled="!newCustomer">
                             </div>
-                            <div class="form-row mt-2">
+                            <div class="col-md-3">
+                                <input v-model="customer.email" v-on:input="resetCustomer()" type="email"
+                                    class="form-control" placeholder="email" :disabled="!newCustomer">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <input v-model="customer.address" v-on:input="resetCustomer()" type="text"
+                                    class="form-control" placeholder="Address" required :disabled="!newCustomer">
+                            </div>
+                        </div>
 
-                                <div class="form-group col-md-4">
-                                    <label for="product">Products</label>
-                                    <select class="form-control" name="product" id="product" v-model="order.product">
-                                        <option value="0" selected disabled>Select a Product</option>
-                                        <option :value="product.id" v-for="product in products">
-                                            @{{ product.name }}
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group col-md-4">
-                                    <label for="weight">Weight</label>
-                                    <input v-model="order.weight" class="form-control" type="number" name="weight"
-                                        id="weight">
-                                </div>
-
-                                <div class="form-group col-md-4">
-                                    <label for="price">Price</label>
-                                    <input v-model="order.price" class="form-control" type="number" name="price"
-                                        id="price">
-                                </div>
+                        <div class="form-row mt-2">
+                            <div class="col-md-12">
+                                Create Orders
                             </div>
-                        </form>
+                            <div class="form-group col-md-2">
+                                <label for="order_product">Products</label>
+                                <select class="form-control" name="order_product" id="order_product"
+                                    v-model="orderProduct">
+                                    <option value="0" selected disabled>Select a Product</option>
+                                    <option :value="product.id" v-for="product in products">
+                                        @{{ product.name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="order_is_special">Variant</label>
+                                <select class="form-control" name="order_is_product" id="order_is_special"
+                                    v-model="orderIsSpecial">
+                                    <option value="0" selected>Reguler</option>
+                                    <option value="1">Special</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="order_weight">Weight</label>
+                                <input v-model="orderWeight" class="form-control" type="number" min="0"
+                                    name="order_weight" id="order_weight">
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="order_price">Price per KG</label>
+                                <input v-model="orderPrice" class="form-control" type="number" min="0"
+                                    name="order_price" id="order_price">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="order_total">Price</label>
+                                <input :value="orderTotal" class="form-control" type="number" name="order_total"
+                                    id="order_total" disabled>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="order_total">Action</label>
+                                <button @click="saveOrder()" class="btn btn-primary form-control">Add</button>
+                            </div>
+                        </div>
+                        <p v-if="errors.length" class="text-danger">
+                            <b>Please correct the following error(s):</b>
+                            <ul>
+                                <li v-for="error in errors">@{{ error }}</li>
+                            </ul>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -199,13 +219,14 @@
                 email: '',
                 address: ''
             },
+            inventory: [],
             products: [],
-            order: {
-                product: 0,
-                weight: 0,
-                price: 0
-            },
-            orders: []
+            orderProduct: 0,
+            orderIsSpecial: 0,
+            orderWeight: 0,
+            orderPrice: 0,
+            orders: [],
+            errors: []
         },
         methods: {
             getCustomers: function(){
@@ -214,14 +235,48 @@
                         this.customers = res.data.customers;
                     });
             },
-            getProducts: function(){
-                axios.get('/admin/product_weights')
+            getInventory: function(){
+                axios.get('/admin/local_inventory')
+                    .then(res => {
+                        this.inventory = res.data.inventory;
+                    });
+            },
+            getLocalProducts: function(){
+                axios.get('/admin/local_products')
                     .then(res => {
                         this.products = res.data.products;
-                    });
-            }, 
+                    })
+            },
             resetCustomer: function(){
                 this.selectCustomerId = 0;
+            },
+            saveOrder: function(){
+                this.errors = [];
+
+                if(this.orderProduct == 0){
+                    this.errors.push('Please select a product');
+                }
+
+                if(this.orderWeight == 0){
+                    this.errors.push('Weight should be more than zero.')
+                }
+
+                if(!this.errors.length){
+                    let order = {
+                        productId: this.orderProduct,
+                        isSpecial: this.orderIsSpecial,
+                        weight: this.orderWeight,
+                        price: this.orderPrice,
+                        total: this.orderTotal
+                    };
+
+                    this.orders.push(order);
+
+                    this.orderProduct = 0;
+                    this.orderIsSpecial = 0;
+                    this.orderWeight = 0;
+                    this.orderPrice = 0;
+                }
             }
         },
         watch: {
@@ -243,11 +298,15 @@
         computed: {
             newCustomer: function(){
                 return this.selectCustomerId == 0;
+            },
+            orderTotal: function(){
+                return this.orderWeight * this.orderPrice;
             }
         },
         created(){
             this.getCustomers();
-            this.getProducts();
+            this.getInventory();
+            this.getLocalProducts();
         }
     });
 </script>

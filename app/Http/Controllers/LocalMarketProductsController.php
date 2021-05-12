@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use App\Transaction;
 use Illuminate\Http\Request;
 
@@ -9,7 +10,11 @@ class LocalMarketProductsController extends Controller
 {
     public function index()
     {
-        
+        $products = Product::local()->get();
+
+        return response()->json([
+            'products' => $products
+        ]);
     }
 
     public function weights()
@@ -83,7 +88,7 @@ class LocalMarketProductsController extends Controller
 
         return response()->json([
             'count' => $products->count(),
-            'products' => $products
+            'inventory' => $products
         ]);
     }
 }
