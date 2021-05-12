@@ -100,7 +100,8 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">@{{ product.name }}</h5>
-                                <p class="card-text">Weight: <b>@{{ product.weight }}</b> KG</p>
+                                <p class="card-text">Regular Weight: <b>@{{ product.regular_weight }}</b> KG</p>
+                                <p class="card-text">Special Weight: <b>@{{ product.special_weight }}</b> KG</p>
                             </div>
                         </div>
                     </div>
@@ -140,6 +141,40 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">First</th>
+                                            <th scope="col">Last</th>
+                                            <th scope="col">Handle</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>Jacob</td>
+                                            <td>Thornton</td>
+                                            <td>@fat</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Larry</td>
+                                            <td>the Bird</td>
+                                            <td>@twitter</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                         <div class="form-row mt-2">
                             <div class="col-md-12">
                                 Create Orders
@@ -176,7 +211,7 @@
                                     name="order_price" id="order_price">
                             </div>
                             <div class="form-group col-md-2">
-                                <label for="order_total">Price</label>
+                                <label for="order_total">Total</label>
                                 <input :value="orderTotal" class="form-control" type="number" name="order_total"
                                     id="order_total" disabled>
                             </div>
