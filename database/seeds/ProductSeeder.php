@@ -27,8 +27,8 @@ class ProductSeeder extends Seeder
 
         // for = 5 is defective for local market sales
         ['name' => 'PEABERRY DEFECTS', 'container_code' => 'LS', 'for' => 5],
-        ['name' => 'SIZE 1 DEFECT GREEN COFFEE', 'container_code' => 'LS', 'for' => 5],
-        ['name' => 'SIZE 2 DEFECT GREEN COFFEE', 'container_code' => 'LS', 'for' => 5],
+        ['name' => 'SIZE 1 DEFECT GREEN COFFEE', 'container_code' => 'LS', 'for' => 6],
+        ['name' => 'SIZE 2 DEFECT GREEN COFFEE', 'container_code' => 'LS', 'for' => 6],
 
         // for = 6 is all defective mix in local market sales
         ['name' => 'DEFECTS GREEN COFFEE', 'container_code' => 'LS', 'for' => 6],
