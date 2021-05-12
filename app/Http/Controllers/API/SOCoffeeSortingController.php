@@ -302,7 +302,7 @@ class SOCoffeeSortingController extends Controller
 
                             $hardcodeBatchNumber = BatchNumber::newBatchNumber($gradeThreeCoffeeBatchNumber);
 
-                            $oldBatch = BatchNumber::where('batch_number', $transactionData->batch_number)->first();
+                            $oldBatch = BatchNumber::where('batch_number', $transactionData['batch_number'])->first();
 
                             $batch = BatchNumber::firstOrCreate(
                                 ['batch_number' => $hardcodeBatchNumber],
