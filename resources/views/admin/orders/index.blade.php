@@ -96,12 +96,12 @@
         <div class="container-fluid">
             <div id="app">
                 <div class="row">
-                    <div class="col-md-3" v-for="product in inventory">
+                    <div class="col-md-2" v-for="product in inventory" :key="product.id">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">@{{ product.name }}</h5>
-                                <p class="card-text">Regular Weight: <b>@{{ product.regular_weight }}</b> KG</p>
-                                <p class="card-text">Special Weight: <b>@{{ product.special_weight }}</b> KG</p>
+                                <div class="card-text">Regular Weight: <b>@{{ product.regular_weight }}</b> KG</div>
+                                <p class="card-text mt--1">Special Weight: <b>@{{ product.special_weight }}</b> KG</p>
                             </div>
                         </div>
                     </div>
@@ -141,35 +141,42 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" >
                             <div class="col-md-12">
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">First</th>
-                                            <th scope="col">Last</th>
-                                            <th scope="col">Handle</th>
+                                            <th scope="col">Product Name</th>
+                                            <th scope="col">Variant</th>
+                                            <th scope="col">Weight</th>
+                                            <th scope="col">Price per KG</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
+                                        <tr v-for="(order, index) in orders" :key="index">
+                                            <th scope="row">@{{ index + 1 }}</th>
+                                            <td>@{{ findProductName(order.productId) }}</td>
+                                            <td>@{{ getVariant(order.isSpecial) }}</td>
+                                            <td>@{{ order.weight }}</td>
+                                            <td>@{{ order.price }}</td>
+                                            <td>@{{ order.total }}</td>
+                                            <td>
+                                                <button @click="removeOrder(index)">
+                                                    <i class="fa fa-trash text-danger"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="!orders.length">
+                                            <td colspan="6" class="text-center">No order items yet.</td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">2</th>
-                                            <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>@fat</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>the Bird</td>
-                                            <td>@twitter</td>
+                                            <td colspan="4"></td>
+                                            <td>Grand Total</td>
+                                            <td>@{{ grandTotal }}</td>
+                                            <td></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -179,12 +186,12 @@
                             <div class="col-md-12">
                                 Create Orders
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="order_product">Products</label>
                                 <select class="form-control" name="order_product" id="order_product"
                                     v-model="orderProduct">
                                     <option value="0" selected disabled>Select a Product</option>
-                                    <option :value="product.id" v-for="product in products">
+                                    <option :value="product.id" v-for="product in products" :key="product.id">
                                         @{{ product.name }}
                                     </option>
                                 </select>
@@ -215,9 +222,15 @@
                                 <input :value="orderTotal" class="form-control" type="number" name="order_total"
                                     id="order_total" disabled>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-1">
                                 <label for="order_total">Action</label>
                                 <button @click="saveOrder()" class="btn btn-primary form-control">Add</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"></div>
+                            <div class="col-md-2">
+                                <button @click="createOrder()" class="btn btn-success">Create Order</button>
                             </div>
                         </div>
                         <p v-if="errors.length" class="text-danger">
@@ -240,8 +253,8 @@
     //     document.getElementById('alert').remove();
     // }, 3000)
 </script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="{{ asset('/public/js/axios.js') }}"></script>
+<script src="{{ asset('/public/js/vue.js') }}"></script>
 <script>
     const app = new Vue({
         el: '#app',
@@ -249,10 +262,10 @@
             customers: [],
             selectCustomerId: 0,
             customer: {
-                name: '',
-                phone: '',
-                email: '',
-                address: ''
+                name: null,
+                phone: null,
+                email: null,
+                address: null
             },
             inventory: [],
             products: [],
@@ -293,7 +306,11 @@
                 }
 
                 if(this.orderWeight == 0){
-                    this.errors.push('Weight should be more than zero.')
+                    this.errors.push('Weight should be not more than zero.')
+                }
+
+                if(this.orderPrice == 0){
+                    this.errors.push('Price should be not more than zero.')
                 }
 
                 if(!this.errors.length){
@@ -312,6 +329,48 @@
                     this.orderWeight = 0;
                     this.orderPrice = 0;
                 }
+            },
+            findProduct: function(productId){
+                return this.products.find(product => product.id == productId);
+            },
+            findProductName: function(productId){
+                let product = this.products.find(product => product.id == productId);
+                return product ? product.name : '';
+            },
+            getVariant: function(isSpecial){
+                return isSpecial ? 'Special' : 'Regular';
+            },
+            removeOrder: function(index){
+                this.orders.splice(index, 1);
+            },
+            clearErrors: function(){
+                this.errors = [];
+            },
+            createOrder: function(){
+                this.errors = [];
+
+                if(this.selectCustomerId == 0){
+                    if(!this.customer.name){
+                        this.errors.push('Customer name is required.');
+                    }
+
+                    if(!this.customer.phone){
+                        this.errors.push('Customers phone is required.');
+                    }
+                    if(!this.customer.address){
+                        this.errors.push('Customers address is required.');
+                    }
+                }
+
+                if(!this.orders.length){
+                    this.errors.push('Your order is empty');
+                }
+
+                if(!this.errors.length){
+                    console.log(this.selectCustomerId);
+                    console.log(this.customer);
+                    console.log(this.orders);
+                }
             }
         },
         watch: {
@@ -322,10 +381,10 @@
                     this.customer = customer;
                 } else {
                     this.customer = {
-                        name: '',
-                        phone: '',
-                        email: '',
-                        address: ''
+                        name: null,
+                        phone: null,
+                        email: null,
+                        address: null
                     };
                 }
             }
@@ -336,6 +395,11 @@
             },
             orderTotal: function(){
                 return this.orderWeight * this.orderPrice;
+            },
+            grandTotal: function() {
+                return this.orders.reduce((accumulator, order) => {
+                    return accumulator + order.total;
+                }, 0)
             }
         },
         created(){
