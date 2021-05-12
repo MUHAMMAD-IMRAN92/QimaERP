@@ -187,10 +187,11 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('/inventory', 'InventoryController@index')->name('inventory.index');
 
-        Route::get('/orders', 'OrderController@index')->name('orders.index');
+        Route::get('/orders/create', 'OrderController@create')->name('orders.index');
+        Route::post('/orders', 'OrderController@store');
 
         Route::get('/customers', 'CustomerController@index');
-        Route::get('product_weights', 'LocalMarketProductsController@weights');
-        Route::get('local_products', 'LocalMarketProductsController@index');
+        Route::get('/local_inventory', 'LocalMarketProductsController@weights');
+        Route::get('/local_products', 'LocalMarketProductsController@index');
     });
 });

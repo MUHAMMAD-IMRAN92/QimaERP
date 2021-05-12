@@ -28,6 +28,11 @@ class Product extends Model
         return $query->whereIn('id', [6, 7]);
     }
 
+    public function scopeLocal($query)
+    {
+        return $query->whereIn('id', [1, 2, 3, 16, 17]);
+    }
+
     public function details()
     {
         return $this->hasMany(TransactionDetailProduct::class, 'product_id', 'id');
