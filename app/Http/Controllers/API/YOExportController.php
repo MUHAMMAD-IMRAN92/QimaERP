@@ -35,7 +35,8 @@ class YOExportController extends Controller
                             'sent_to_yo_mixing',
                             'received_by_yo_mixed',
                             'sent_to_admin_approval',
-                            'sent_to_yo_preparing'
+                            'sent_to_yo_preparing',
+                            'sent_to_po_packaging'
                         ]
                     );
             })->whereHas(
@@ -116,20 +117,35 @@ class YOExportController extends Controller
                 $transactionData = $transactionObj['transaction'];
                 $detailsData = $transactionObj['details'];
 
-                if (isset($transactionData) && $transactionData['is_local'] && in_array($transactionData['sent_to'], [24, 27, 29])) {
+                if (isset($transactionData) && $transactionData['is_local'] && in_array($transactionData['sent_to'], [24, 27, 29, 31])) {
                     $sentTo = $transactionData['sent_to'];
 
-                    if ($sentTo == 24) {
-                        $status = 'received';
-                        $type = 'received_by_yo_wh';
-                    } elseif ($sentTo == 27) {
-                        $status = 'received';
-                        $type = 'received_by_yo_mixed';
-                    } elseif ($sentTo == 29) {
-                        $status = 'sent';
-                        $type = 'sent_to_admin_approval';
-                    }
+                    $status = null;
+                    $type = null;
 
+                    switch ($sentTo) {
+                        case 24:
+                            $status = 'received';
+                            $type = 'received_by_yo_wh';
+                            break;
+                        case 27:
+                            $status = 'received';
+                            $type = 'received_by_yo_mixed';
+                            break;
+                        case 29:
+                            $status = 'sent';
+                            $type = 'sent_to_admin_approval';
+                            break;
+                        case 31:
+                            $status = 'sent';
+                            $type = 'sent_to_po_packaging';
+                            break;
+                        default:
+                            $status = null;
+                            $type = null;
+                            break;
+                    }
+                    
                     $transactionType = 1;
 
                     $transaction = Transaction::createAndLog(
