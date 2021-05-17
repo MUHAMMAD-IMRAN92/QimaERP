@@ -135,5 +135,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::post('yo_export_coffee', 'API\YOExportController@post');
 
         Route::get('yo_local_inventory', 'API\InventoryController@get');
+
+        Route::get('/packaging_op', 'API\PackagingOpController@get');
     });
 });

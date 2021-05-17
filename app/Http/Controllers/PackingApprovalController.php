@@ -46,7 +46,7 @@ class PackingApprovalController extends Controller
             foreach ($transactions as $transaction) {
                 $replicatedTransaction = $transaction->replicate()->fill([
                     'created_by' => $request->user()->user_id,
-                    'local_code' => null,
+                    'local_code' => $transaction->batch_number,
                     'reference_id' => $transaction->transaction_id,
                     'sent_to' => $sentTo,
                     'session_no' => $sessionNo,

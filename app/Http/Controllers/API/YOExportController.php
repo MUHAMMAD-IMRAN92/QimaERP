@@ -56,16 +56,13 @@ class YOExportController extends Controller
 
 
         foreach ($transactions as $transaction) {
-
-            $transactionDetails = $transaction->details;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
-            $transactionMata = $transaction->meta;
 
             $detailMetas = [];
             $transactionChilds = [];
 
-            foreach ($transactionDetails as $detail) {
+            foreach ($transaction->details as $detail) {
                 foreach ($detail->metas as $meta) {
                     array_push($detailMetas, $meta);
                 }
@@ -83,8 +80,8 @@ class YOExportController extends Controller
 
             $data = [
                 'transaction' => $transaction,
-                'transactionDetails' => $transactionDetails,
-                'transactionMeta' => $transactionMata,
+                'transactionDetails' => $transaction->details,
+                'transactionMeta' => $transaction->meta,
                 'detail_metas' => $detailMetas,
                 'child_transactions' => $transactionChilds,
             ];
