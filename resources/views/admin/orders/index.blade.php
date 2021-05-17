@@ -141,7 +141,7 @@
                             </div>
                         </div>
 
-                        <div class="row" >
+                        <div class="row">
                             <div class="col-md-12">
                                 <table class="table">
                                     <thead>
@@ -208,8 +208,8 @@
 
                             <div class="form-group col-md-2">
                                 <label for="order_weight">Weight</label>
-                                <input v-model="orderWeight" class="form-control" type="number" min="0"
-                                    name="order_weight" id="order_weight">
+                                <input v-on:change="checkTenMulti" v-model="orderWeight" class="form-control"
+                                    type="number" min="0" step="10" name="order_weight" id="order_weight">
                             </div>
 
                             <div class="form-group col-md-2">
@@ -309,11 +309,15 @@
                 }
 
                 if(this.orderWeight == 0){
-                    this.errors.push('Weight should be not more than zero.')
+                    this.errors.push('Weight should be not more than zero.');
+                }
+
+                if(this.orderWeight % 10){
+                    this.errors.push('Weight should be mutiple of 10 like 10, 20, 60 etc.');
                 }
 
                 if(this.orderPrice == 0){
-                    this.errors.push('Price should be not more than zero.')
+                    this.errors.push('Price should be not more than zero.');
                 }
 
                 if(!this.errors.length){
@@ -387,6 +391,14 @@
                     .then(data => {
                         console.log(data);
                     })
+                }
+            },
+            checkTenMulti: function(event){
+                let value = event.target.value;
+                if(value % 10){
+                    this.errors.push('Weight should be mutiple of 10 like 10, 20, 60 etc.');
+                } else {
+                    this.errors = [];
                 }
             }
         },
