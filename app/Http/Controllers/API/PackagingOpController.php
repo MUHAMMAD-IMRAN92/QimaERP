@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Transaction;
-<<<<<<< HEAD
-=======
 use Illuminate\Support\Arr;
->>>>>>> admin-issues
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -84,8 +81,6 @@ class PackagingOpController extends Controller
 
         return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
-<<<<<<< HEAD
-=======
     // public function post(Request $request)
     // {
     //     $transactions = collect();
@@ -111,5 +106,4 @@ class PackagingOpController extends Controller
     //         "metas" => $metas,
     //     ]);
     // }
->>>>>>> admin-issues
 }
