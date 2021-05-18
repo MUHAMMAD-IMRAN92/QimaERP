@@ -70,7 +70,7 @@ class TransactionDetail extends Model
         return $savedDetails;
     }
 
-    public static function createAccumulated($userId, $transactionId, $containerWeight)
+    public static function createAccumulated($userId, $transactionId, $containerWeight, $referenceId = 0)
     {
         $accumulationContainer = Container::findOrCreateAccumulated($userId);
 
@@ -80,6 +80,7 @@ class TransactionDetail extends Model
             'created_by' => $userId,
             'container_weight' => $containerWeight,
             'weight_unit' => 'KG',
+            'reference_id' => $referenceId
         ]);
 
         return $accumultedDetail;

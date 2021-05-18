@@ -36,6 +36,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link href="{{ asset('public/css/theme-sugar.css') }}" rel="stylesheet">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -291,16 +292,36 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ url('admin/orders/create') }}"
-                            class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-address-book"></i>
+
+                    <li class="nav-item {{ Request::is('admin/orders/*') ? 'menu-open' : '' }}">
+                        <a href="" class="nav-link ">
+                            <i class="nav-icon fas fa-box"></i>
                             <p>
-                                Create Order
+                                Orders
+                                <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
+                        <ul class="nav nav-treeview pl-2 nav-dropdown">
+                            <li class="nav-item">
+                                <a href="{{ url('admin/orders/create') }}"
+                                    class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-address-book"></i>
+                                    <p>
+                                        Create Order
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('admin/orders') }}"
+                                    class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-address-book"></i>
+                                    <p>
+                                        All Orders
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
-                    
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
