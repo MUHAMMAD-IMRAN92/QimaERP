@@ -188,6 +188,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/inventory', 'InventoryController@index')->name('inventory.index');
 
         Route::get('/orders/create', 'OrderController@create')->name('orders.index');
+        Route::get('/orders', 'OrderController@index');
         Route::post('/orders', 'OrderController@store');
 
         Route::get('/customers', 'CustomerController@index');

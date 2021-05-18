@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->foreignId('customer_id');
             $table->string('order_number');
+            $table->boolean('is_prepared')->default(false);
             $table->timestamps();
         });
     }
