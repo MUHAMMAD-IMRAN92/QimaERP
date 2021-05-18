@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Transaction;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -79,5 +80,30 @@ class PackagingOpController extends Controller
         }
 
         return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+    }
+    public function post(Request $request)
+    {
+        $transactions = collect();
+        $details =  collect();
+        $metas  =  collect();
+
+        foreach ($request->transactions as $transactionData) {
+            $transactions->push($transactionData['transaction']);
+
+            foreach ($transactionData['details'] as $detail) {
+                $detailonly = Arr::only($detail, 'metas');
+                $details->push($detailonly);
+
+                foreach ($detail['metas'] as $metaData) {
+                    $metas->push($metaData);
+                }
+            }
+        }
+
+        return response()->json([
+            "transactions" => $transactions,
+            "details" => $details,
+            "metas" => $metas,
+        ]);
     }
 }
