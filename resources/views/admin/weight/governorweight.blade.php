@@ -56,7 +56,7 @@
                     @foreach($governor as $row)
                     @php
                     $gov=$row->governerate_code;
-                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($gov){
+                    $totalweight = App\TransactionDetail::whereHas('transaction', function($q) use($gov){
                             $q->where('is_parent', 0)
                             ->Where('batch_number','LIKE', "$gov%");
                         })->sum('container_weight');
