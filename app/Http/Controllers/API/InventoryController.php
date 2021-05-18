@@ -43,46 +43,26 @@ class InventoryController extends Controller
                 0
             )->with(['details' => function ($query) {
                 $query->where('container_status', 0)->with('metas');
-            }])->with(['meta'])
+            }])
             ->orderBy('batch_number')
             ->get();
 
-        $allTransactions = array();
+        $weights = collect();
 
-
-        foreach ($transactions as $transaction) {
-
-            $transactionDetails = $transaction->details;
-            $transaction->center_id = $transaction->log->entity_id;
-            $transaction->center_name = $transaction->log->center_name;
-            $transactionMata = $transaction->meta;
-
-            $detailMetas = [];
-            $transactionChilds = [];
-
-            foreach ($transactionDetails as $detail) {
-                foreach ($detail->metas as $meta) {
-                    array_push($detailMetas, $meta);
-                }
-
-                $detail->makeHidden('metas');
-            }
-
-            $transaction->makeHidden('details');
-            $transaction->makeHidden('log');
-            $transaction->makeHidden('meta');
-
-            $data = [
-                'transaction' => $transaction,
-                'transactionDetails' => $transactionDetails,
-                'transactionMeta' => $transactionMata,
-                'detail_metas' => $detailMetas,
-                'child_transactions' => $transactionChilds,
+        foreach($transactions as $transaction){
+            $weight = [
+                'batch_number' => $transaction->batch_number,
+                'weight' => $transaction->details->sum('container_weight')
             ];
 
-            array_push($allTransactions, $data);
+            $weights->push($weight);
         }
 
-        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+        return response()->json([
+            'trans_count' => $transactions->count(),
+            'weight_count' => $weights->count(),
+            'weights' => $weights,
+            'transaction' => $transactions
+        ]);
     }
 }
