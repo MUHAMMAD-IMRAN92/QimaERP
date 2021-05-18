@@ -53,7 +53,7 @@ class TransectionController extends Controller
     	// print_r($data['childs']);
     	$data['transaction']=Transaction::find($id);
 
-    	$data['TransactionDetail']=TransactionDetail::where('transaction_id', $id)->with('transection')->get();
+    	$data['TransactionDetail']=TransactionDetail::where('transaction_id', $id)->with('transaction')->get();
     	// dd($data['TransactionChild']);
     	return view('admin.transaction.transactiondetail',$data);
 
