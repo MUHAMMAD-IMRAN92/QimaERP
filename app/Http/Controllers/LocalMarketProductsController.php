@@ -48,7 +48,7 @@ class LocalMarketProductsController extends Controller
             [
                 'id' => 5,
                 'regular_batch_number' => 'GR3-CFE-00',
-                'special_batch_number' => 'SR3-CFE-00',
+                'special_batch_number' => 'SGR3-CFE-00',
                 'name' => 'Grade 3 Green Cofee'
             ]
         ]);
