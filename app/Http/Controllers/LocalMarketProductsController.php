@@ -57,22 +57,19 @@ class LocalMarketProductsController extends Controller
             $regularBatchNumber = $productData['regular_batch_number'];
             $specialBatchNumber = $productData['special_batch_number'];
 
-            $regularWeightDetail = TransactionDetail::whereHas('transaction', function ($query) use ($regularBatchNumber) {
+            $productData['regular_weight'] = TransactionDetail::whereHas('transaction', function ($query) use ($regularBatchNumber) {
                 $query->where('batch_number', $regularBatchNumber)
                     ->where('is_parent', 0)
                     ->where('transaction_type', 5)
                     ->where('sent_to', 193);
-            })->first();
+            })->sum('container_weight');
 
-            $specialWeightDetail = TransactionDetail::whereHas('transaction', function ($query) use ($specialBatchNumber) {
+            $productData['special_weight'] = TransactionDetail::whereHas('transaction', function ($query) use ($specialBatchNumber) {
                 $query->where('batch_number', $specialBatchNumber)
                     ->where('is_parent', 0)
                     ->where('transaction_type', 5)
                     ->where('sent_to', 193);
-            })->first();
-
-            $productData['regular_weight'] = $regularWeightDetail ? $regularWeightDetail->container_weight : 0;
-            $productData['special_weight'] = $specialWeightDetail ? $specialWeightDetail->container_weight : 0;
+            })->sum('container_weight');
 
             return $productData;
         });
