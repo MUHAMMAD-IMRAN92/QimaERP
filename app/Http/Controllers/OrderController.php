@@ -103,7 +103,11 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load(['details', 'customer']);
+        $order->load(['details.product', 'customer']);
+
+        $order->total = number_format($order->details->sum('total'), 2);
+
+        // return $order;
 
         return view('admin.orders.show', [
             'order' => $order
