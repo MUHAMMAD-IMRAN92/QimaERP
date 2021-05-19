@@ -153,6 +153,13 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('edituser/{id}', 'UserController@edit');
         Route::post('updateuser', 'UserController@update');
         Route::get('deleteuser/{id}', 'UserController@delete');
+
+        //roles
+        Route::get('roles', 'RoleController@index')->name('roles.index');
+        Route::get('roles/create', 'RoleController@create')->name('roles.create');
+        Route::post('roles', 'RoleController@store')->name('roles.store');
+
+
         //adminpasswordreset
         Route::get('resetpassword/{id}', 'UserController@resetpassword');
         Route::post('updatepassword', 'UserController@updatepassword');

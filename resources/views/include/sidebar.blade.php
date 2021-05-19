@@ -100,7 +100,7 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item has-treeview {{ Request::is('admin/allusers') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
                         <a href="{{ url('admin/allusers') }}" class="nav-link">
                             <i class="nav-icon fas fa-user"></i>
                             <p>
@@ -118,7 +118,15 @@
                                     </p>
                                 </a>
                             </li>
-
+                            <li class="nav-item">
+                                <a href="{{ url('admin/roles') }}"
+                                    class="nav-link {{ Request::is('admin/roles') ? 'active' : '' }}">
+                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <p>
+                                        Roles
+                                    </p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item active">
