@@ -9,7 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Font Awesome -->
     <script src="{{ asset('public/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('public/dist/js/jquery-jvectormap-2.0.5.min.js') }}"></script>
+    {{-- <script src="{{ asset('public/dist/js/jquery-jvectormap-2.0.5.min.js') }}"></script> --}}
+    {{-- <link rel="stylesheet" href="{{asset('public/plugins/jqvmap/jqvmap.min.css')}}"> --}}
+    
 
     <link rel="stylesheet" href="{{ asset('public/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Ionicons -->
@@ -21,7 +23,6 @@
     <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('public/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- JQVMap -->
-    <link rel="stylesheet" href="{{asset('public/plugins/jqvmap/jqvmap.min.css')}}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('public/dist/css/adminlte.min.css') }}">
     <!-- overlayScrollbars -->

@@ -13,7 +13,17 @@ class OrderController extends Controller
 
     public function index()
     {
-        return view('admin.orders.index');
+        $orders = Order::with('details')->get();
+
+        $orders = $orders->map(function($order){
+            $order->total = number_format($order->details->sum('total'), 2);
+
+            return $order;
+        });
+
+        return view('admin.orders.index', [
+            'orders' => $orders
+        ]);
     }
 
     public function create()
@@ -87,6 +97,15 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => "Order [{$order->order_number}] has been created successfully",
+            'order' => $order
+        ]);
+    }
+
+    public function show(Order $order)
+    {
+        $order->load(['details', 'customer']);
+
+        return view('admin.orders.show', [
             'order' => $order
         ]);
     }

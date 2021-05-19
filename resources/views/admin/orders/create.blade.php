@@ -1,5 +1,5 @@
 @extends('layouts.default')
-@section('title', 'Transection Detail')
+@section('title', 'Create Order')
 @section('content')
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -28,8 +28,10 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">@{{ product.name }}</h5>
-                                <div class="card-text">Regular Weight: <br> <b>@{{ product.regular_weight }}</b> KG</div>
-                                <p class="card-text mt--1">Special Weight: <br> <b>@{{ product.special_weight }}</b> KG</p>
+                                <div class="card-text">Regular Weight: <br> <b>@{{ product.regular_weight }}</b> KG
+                                </div>
+                                <p class="card-text mt--1">Special Weight: <br> <b>@{{ product.special_weight }}</b> KG
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -46,13 +48,13 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-4">
-                                <h5>Create Customer</h5>
+                                <h5>Customer</h5>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3">
                                 <select class="form-control" id="customer" name="customer" v-model="selectCustomerId">
-                                    <option value="0" selected class="text-indigo">Create Customer</option>
+                                    <option value="0" selected class="text-indigo">New Customer</option>
                                     <option :value="customer.id" v-for="customer in customers">
                                         @{{ customer.name }}</option>
                                 </select>
@@ -77,51 +79,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Product Name</th>
-                                            <th scope="col">Variant</th>
-                                            <th scope="col">Weight</th>
-                                            <th scope="col">Price per KG</th>
-                                            <th scope="col">Total</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(order, index) in orders" :key="index">
-                                            <th scope="row">@{{ index + 1 }}</th>
-                                            <td>@{{ findProductName(order.productId) }}</td>
-                                            <td>@{{ getVariant(order.isSpecial) }}</td>
-                                            <td>@{{ order.weight }}</td>
-                                            <td>@{{ order.price }}</td>
-                                            <td>@{{ order.total }}</td>
-                                            <td>
-                                                <button @click="removeOrder(index)">
-                                                    <i class="fa fa-trash text-danger"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr v-if="!orders.length">
-                                            <td colspan="6" class="text-center">No order items yet.</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4"></td>
-                                            <td>Grand Total</td>
-                                            <td>@{{ grandTotal }}</td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                         <div class="form-row mt-2">
-                            <div class="col-md-12">
-                                Create Orders
-                            </div>
                             <div class="form-group col-md-3">
                                 <label for="order_product">Products</label>
                                 <select class="form-control" name="order_product" id="order_product"
@@ -163,18 +121,62 @@
                                 <button @click="saveOrder()" class="btn btn-primary form-control">Add</button>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-5"></div>
-                            <div class="col-md-2">
-                                <button @click="createOrder()" class="btn btn-success">Create Order</button>
-                            </div>
-                        </div>
+                        
                         <p v-if="errors.length" class="text-danger">
                             <b>Please correct the following error(s):</b>
                             <ul>
                                 <li v-for="error in errors">@{{ error }}</li>
                             </ul>
                         </p>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Product Name</th>
+                                            <th scope="col">Variant</th>
+                                            <th scope="col">Weight</th>
+                                            <th scope="col">Price per KG</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(order, index) in orders" :key="index">
+                                            <th scope="row">@{{ index + 1 }}</th>
+                                            <td>@{{ findProductName(order.productId) }}</td>
+                                            <td>@{{ getVariant(order.isSpecial) }}</td>
+                                            <td>@{{ order.weight }}</td>
+                                            <td>@{{ formatNumber(order.price) }}</td>
+                                            <td>@{{ formatNumber(order.total) }}</td>
+                                            <td>
+                                                <button @click="removeOrder(index)">
+                                                    <i class="fa fa-trash text-danger"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="!orders.length">
+                                            <td colspan="6" class="text-center">No order items yet.</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td>Grand Total</td>
+                                            <td>@{{ formatNumber(grandTotal) }}</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5"></div>
+                            <div class="col-md-2">
+                                <button @click="createOrder()" class="btn btn-success">Create Order</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -369,6 +371,15 @@
                 } else {
                     this.errors = [];
                 }
+            },
+            formatNumber: function(num) {
+                // return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                var formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                });
+
+                return formatter.format(num).substring(1);
             }
         },
         watch: {
@@ -392,7 +403,7 @@
                 return this.selectCustomerId == 0;
             },
             orderTotal: function(){
-                return this.orderWeight * this.orderPrice;
+                return +(this.orderWeight * this.orderPrice).toFixed(2);
             },
             grandTotal: function() {
                 return this.orders.reduce((accumulator, order) => {
