@@ -68,7 +68,8 @@ class OrderController extends Controller
 
         $order = Order::create([
             'customer_id' => $customer->id,
-            'order_number' => Order::genOrderNumber()
+            'order_number' => Order::genOrderNumber(),
+            'status' => 1
         ]);
 
         foreach ($request->orders as $detailData) {
