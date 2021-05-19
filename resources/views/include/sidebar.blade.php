@@ -117,7 +117,15 @@
                                     </p>
                                 </a>
                             </li>
-
+                            <li class="nav-item">
+                                <a href="{{ url('admin/roles') }}"
+                                    class="nav-link {{ Request::is('admin/roles') ? 'active' : '' }}">
+                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <p>
+                                        Roles
+                                    </p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item active">
