@@ -47,8 +47,8 @@
                                 <div class="card-body col-md-6 ">
                                     <div class="form-group">
                                         <label for="name"> Name</label>
-                                        <input type="text" id="name" class="form-control " id="name"
-                                            name="name" placeholder="Role Name" @error('name') is-invalid @enderror>
+                                        <input type="text" id="name" class="form-control " id="name" name="name"
+                                            placeholder="Role Name" @error('name') is-invalid @enderror>
                                         @error('name')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -59,13 +59,11 @@
                                             <option value="web" selected>web</option>
                                         </select>
                                         @error('guard_name')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
 
-                                    <div class="card-footer">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
                                 </div>
 
                             </form>
