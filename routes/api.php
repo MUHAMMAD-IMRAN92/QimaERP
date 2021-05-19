@@ -136,6 +136,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         Route::get('yo_local_inventory', 'API\InventoryController@get');
 
+        Route::get('lm_inventory', 'API\LMInventoryController@index');
+
         Route::get('/packaging_op', 'API\PackagingOpController@get');
     });
 });
