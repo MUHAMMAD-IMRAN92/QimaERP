@@ -121,7 +121,7 @@
                                 <button @click="saveOrder()" class="btn btn-primary form-control">Add</button>
                             </div>
                         </div>
-                        
+
                         <p v-if="errors.length" class="text-danger">
                             <b>Please correct the following error(s):</b>
                             <ul>
@@ -152,9 +152,7 @@
                                             <td>@{{ formatNumber(order.price) }}</td>
                                             <td>@{{ formatNumber(order.total) }}</td>
                                             <td>
-                                                <button @click="removeOrder(index)">
-                                                    <i class="fa fa-trash text-danger"></i>
-                                                </button>
+                                                <i @click="removeOrder(index)" class="fa fa-trash text-danger" style="cursor: pointer;"></i>
                                             </td>
                                         </tr>
                                         <tr v-if="!orders.length">
