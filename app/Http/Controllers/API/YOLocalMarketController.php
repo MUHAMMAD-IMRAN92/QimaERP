@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Order;
 use Exception;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -72,6 +73,12 @@ class YOLocalMarketController extends Controller
             ->orderBy('transaction_id', 'desc')
             ->get();
 
+        $orders = Order::with('details')->where('status', 1)->get();
+
+        // $orders = $orders->map(function($order){
+
+        // });
+
         $allTransactions = array();
 
 
@@ -112,7 +119,10 @@ class YOLocalMarketController extends Controller
             array_push($allTransactions, $data);
         }
 
-        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
+            'transactions' => $allTransactions,
+            'orders' => $orders
+        ]);
     }
 
 
