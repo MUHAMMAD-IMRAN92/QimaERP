@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Container;
-use Auth;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Mockery\Matcher\Contains;
+use Illuminate\Support\Facades\Auth;
 
 class ContainerController extends Controller {
 
@@ -57,6 +58,13 @@ class ContainerController extends Controller {
 
             return redirect()->back()->with('message', 'Container Number Already Exists');
         }
+    }
+    public function detail($id)
+    {
+       $container = Container::find($id);
+       return view('admin.container.container_detail' ,[
+           'container' => $container
+       ])->render();
     }
 
 }

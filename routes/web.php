@@ -123,9 +123,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('gettransection', 'TransectionController@getTransectionAjax');
 
         //Container Controller
-        Route::get('allcontainer', 'ContainerController@index')->middleware('auth');
         Route::get('addcontainer', 'ContainerController@addcontainer')->middleware('auth');
         Route::post('storecontainer', 'ContainerController@store')->middleware('auth');
+        Route::get('allcontainer', 'ContainerController@index')->middleware('auth');
+        Route::get('container/detail/{id}', 'ContainerController@detail')->middleware('auth');
+        
 
         //Season Controller
         Route::get('allseason', 'SeasonController@index')->middleware('auth');
