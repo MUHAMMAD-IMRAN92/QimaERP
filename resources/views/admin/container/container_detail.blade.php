@@ -38,9 +38,10 @@
                                 <table id="transactiionall" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
+                                       
 
                                             <th>Container Number</th>
-                                            <th>Container Number</th>
+
                                             <th>Container Capacity</th>
                                         </tr>
                                     </thead>
@@ -50,7 +51,7 @@
                                         <tr>
 
                                             <td>{{ $container->container_number }}</td>
-                                            <td>{{ $container->container_number }} kg</td>
+
                                             <td>{{ $container->capacity }} </td>
                                         </tr>
 
