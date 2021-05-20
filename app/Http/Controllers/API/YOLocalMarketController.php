@@ -73,12 +73,6 @@ class YOLocalMarketController extends Controller
             ->orderBy('transaction_id', 'desc')
             ->get();
 
-        $orders = Order::with('details')->where('status', 1)->get();
-
-        // $orders = $orders->map(function($order){
-
-        // });
-
         $allTransactions = array();
 
 
@@ -118,6 +112,11 @@ class YOLocalMarketController extends Controller
 
             array_push($allTransactions, $data);
         }
+
+        $orders = Order::with('details')
+            ->where('status', 1)
+            ->where('is_sent', false)
+            ->get();
 
         return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
             'transactions' => $allTransactions,
