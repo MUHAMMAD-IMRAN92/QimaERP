@@ -34,7 +34,7 @@ class PackagingOpController extends Controller
             //             ]
             //         );
             // })
-            ->whereIn('sent_to', [31, 33])
+            ->whereIn('sent_to', [31, 33, 34, 36])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -89,6 +89,7 @@ class PackagingOpController extends Controller
     }
     public function post(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -107,11 +108,31 @@ class PackagingOpController extends Controller
                 $transactionData = $transactionObj['transaction'];
                 $detailsData = $transactionObj['details'];
 
-                if (isset($transactionData) && $transactionData['is_local'] && in_array($transactionData['sent_to'], [33])) {
+                if (isset($transactionData) && $transactionData['is_local'] && in_array($transactionData['sent_to'], [33, 34, 36])) {
                     $sentTo = $transactionData['sent_to'];
 
-                    $status = 'received';
-                    $type = 'received_by_po';
+                    $status = null;
+                    $type = null;
+
+                    switch ($sentTo) {
+                        case 33:
+                            $status = 'received';
+                            $type = 'received_by_po';
+                            break;
+                        case 34:
+                            $status = 'sent';
+                            $type = 'packaging_op_packs';
+                            break;
+                        case 36:
+                            $status = 'sent';
+                            $type = 'po_bags_into_shipping';
+                            break;
+                        default:
+                            $status = null;
+                            $type = null;
+                            break;
+                    }
+
 
                     $transactionType = 1;
 
