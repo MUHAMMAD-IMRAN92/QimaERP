@@ -278,31 +278,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/governorweight"
-                            class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-weight"></i>
-                            <p>
-                                Total Weights
-                            </p>
-                        </a>
-                    </li>
-                    @else
-
-                    @endhasrole
-
-                    <li class="nav-item">
-                        <a href="{{ url('admin/inventory') }}"
-                            class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-pallet"></i>
-                            <p>
-                                Inventory
-                            </p>
-                        </a>
-                    </li>
-
-                    <li class="nav-item {{ Request::is('admin/orders/*') ? 'menu-open' : '' }}">
+                    </li><li class="nav-item {{ Request::is('admin/orders/*') ? 'menu-open' : '' }}">
                         <a href="" class="nav-link ">
                             <i class="nav-icon fas fa-box"></i>
                             <p>
@@ -331,6 +307,30 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/governorweight"
+                            class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-weight"></i>
+                            <p>
+                                Total Weights
+                            </p>
+                        </a>
+                    </li>
+                    @else
+
+                    @endhasrole
+
+                    <li class="nav-item">
+                        <a href="{{ url('admin/inventory') }}"
+                            class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-pallet"></i>
+                            <p>
+                                Inventory
+                            </p>
+                        </a>
+                    </li>
+
+                    
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
