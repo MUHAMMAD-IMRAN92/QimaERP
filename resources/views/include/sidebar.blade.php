@@ -11,7 +11,7 @@
     <script src="{{ asset('public/plugins/jquery/jquery.min.js') }}"></script>
     {{-- <script src="{{ asset('public/dist/js/jquery-jvectormap-2.0.5.min.js') }}"></script> --}}
     {{-- <link rel="stylesheet" href="{{asset('public/plugins/jqvmap/jqvmap.min.css')}}"> --}}
-    
+
 
     <link rel="stylesheet" href="{{ asset('public/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Ionicons -->
@@ -101,7 +101,8 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
+                    <li
+                        class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
                         <a href="{{ url('admin/allusers') }}" class="nav-link">
                             <i class="nav-icon fas fa-user"></i>
                             <p>
@@ -140,7 +141,7 @@
                         </a>
                     </li>
 
-                    @else
+                @else
 
                     @endhasrole
                     <li class="nav-item">
@@ -208,6 +209,35 @@
                                 </a>
                             </li>
 
+                        </ul>
+                    </li>
+                    <li class="nav-item {{ Request::is('admin/orders/*') ? 'menu-open' : '' }}">
+                        <a href="" class="nav-link ">
+                            <i class="nav-icon fas fa-box"></i>
+                            <p>
+                                Orders
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview pl-2 nav-dropdown">
+                            <li class="nav-item">
+                                <a href="{{ url('admin/orders/create') }}"
+                                    class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-address-book"></i>
+                                    <p>
+                                        Create Order
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('admin/orders') }}"
+                                    class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-address-book"></i>
+                                    <p>
+                                        All Orders
+                                    </p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -278,35 +308,8 @@
                                 </a>
                             </li>
                         </ul>
-                    </li><li class="nav-item {{ Request::is('admin/orders/*') ? 'menu-open' : '' }}">
-                        <a href="" class="nav-link ">
-                            <i class="nav-icon fas fa-box"></i>
-                            <p>
-                                Orders
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview pl-2 nav-dropdown">
-                            <li class="nav-item">
-                                <a href="{{ url('admin/orders/create') }}"
-                                    class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-address-book"></i>
-                                    <p>
-                                        Create Order
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('admin/orders') }}"
-                                    class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-address-book"></i>
-                                    <p>
-                                        All Orders
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
+                 
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/governorweight"
                             class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
@@ -316,7 +319,7 @@
                             </p>
                         </a>
                     </li>
-                    @else
+                @else
 
                     @endhasrole
 
@@ -330,7 +333,7 @@
                         </a>
                     </li>
 
-                    
+
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
