@@ -24,6 +24,12 @@ class TransactionDetail extends Model
         return $this->hasMany(Meta::class, 'transaction_detail_id', 'transaction_detail_id');
     }
 
+    public function weight_meta()
+    {
+        return $this->hasOne(Meta::class, 'transaction_detail_id', 'transaction_detail_id')
+            ->where('key', 'rem_weight');
+    }
+
     public static function createFromArray($details, $userId, $transactionId, $referenceId, $is_server_id = false)
     {
         $savedDetails = collect();
@@ -72,15 +78,20 @@ class TransactionDetail extends Model
                         $weight = $meta->value;
 
                         if ($is_server_id) {
-                            $weightMeta = Meta::where('key', 'rem_weight')
-                                ->whereHas('transactionDetail', function (Builder $query) use ($referenceId, $containerNumber) {
-                                    $query->where('transaction_id', $referenceId)
-                                        ->where('container_number', $containerNumber);
-                                })->first();
+                            $weightDetail = TransactionDetail::with('weight_meta')
+                                ->where('transaction_id', 355)
+                                ->where('container_number', 'ESB100')
+                                ->get()
+                                ->first();
 
-                            if ($weightMeta) {
-                                $weightMeta->value -= $weight;
-                                $weightMeta->save();
+                            if ($weightDetail->weight_meta) {
+                                $weightDetail->weight_meta->value -= $weight;
+                                $weightDetail->weight_meta->save();
+
+                                if ($weightDetail->weight_meta->value <= 0) {
+                                    $weightDetail->container_status = 1;
+                                    $weightDetail->save();
+                                }
                             }
                         }
                     }
