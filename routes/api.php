@@ -140,7 +140,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         Route::get('/packaging_op', 'API\PackagingOpController@get');
         Route::post('/packaging_op', 'API\PackagingOpController@post');
-
+        //shipping
         Route::get('/shipping', 'API\ShipingController@get');
 
     });
