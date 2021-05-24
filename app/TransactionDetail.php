@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class TransactionDetail extends Model
 {
@@ -23,7 +24,7 @@ class TransactionDetail extends Model
         return $this->hasMany(Meta::class, 'transaction_detail_id', 'transaction_detail_id');
     }
 
-    public static function createFromArray($details, $userId, $transactionId, $referenceId)
+    public static function createFromArray($details, $userId, $transactionId, $referenceId, $is_server_id = false)
     {
         $savedDetails = collect();
 
@@ -63,6 +64,26 @@ class TransactionDetail extends Model
                     $meta->key = $metaData['key'];
                     $meta->value = $metaData['value'];
                     $detail->metas()->save($meta);
+
+                    $exploded = explode('_',  $meta->key);
+
+                    if ($exploded[0] == 'last') {
+                        $containerNumber  = $exploded[1];
+                        $weight = $meta->value;
+
+                        if ($is_server_id) {
+                            $weightMeta = Meta::where('key', 'rem_weight')
+                                ->whereHas('transactionDetail', function (Builder $query) use ($referenceId, $containerNumber) {
+                                    $query->where('transaction_id', $referenceId)
+                                        ->where('container_number', $containerNumber);
+                                })->first();
+
+                            if ($weightMeta) {
+                                $weightMeta->value -= $weight;
+                                $weightMeta->save();
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -150,7 +150,8 @@ class PackagingOpController extends Controller
                         $detailsData,
                         $request->user()->user_id,
                         $transaction->transaction_id,
-                        $transaction->reference_id
+                        $transaction->reference_id,
+                        $transactionData['is_server_id']
                     );
 
                     $transaction->load(['details.metas']);
