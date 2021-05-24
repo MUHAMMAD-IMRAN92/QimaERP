@@ -18,15 +18,11 @@ class DevTestController extends Controller
      */
     public function __invoke(Request $request)
     {
-        // $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv4';
-        // abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
+        $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv4';
+        abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
 
-        $detail = TransactionDetail::with('weight_meta')
-            ->where('transaction_id', 355)
-            ->where('container_number', 'ESB100')
-            ->get()
-            ->first();
-
-        return $detail;
+        return response()->json([
+            'msg' => 'Hello Dev, how is your day?'
+        ]);
     }
 }
