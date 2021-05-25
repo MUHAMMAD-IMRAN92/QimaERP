@@ -241,6 +241,15 @@
                         </ul>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/shipping"
+                            class="nav-link  {{ Request::is('admin/shipping') ? 'active' : '' }} ">
+                            <i class="nav-icon fas fa-exchange-alt"></i>
+                            <p>
+                                Shipping
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/alltransection"
                             class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
                             <i class="nav-icon fas fa-exchange-alt"></i>
