@@ -17,6 +17,11 @@
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         @endif
+        @if (session()->has('msg'))
+            <div class="alert alert-success" id="alert">
+                {{ session()->get('msg') }}
+            </div>
+        @endif
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
