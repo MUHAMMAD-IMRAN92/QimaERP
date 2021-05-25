@@ -23,7 +23,7 @@
                 <div class="row mb-2">
 
                     <div class="col-sm-6">
-                        <h1>Session Numbers
+                        <h1>Shipping
                             <a href="" class="btn btn-add rounded-circle">
                             </a>
                         </h1>
@@ -40,6 +40,7 @@
         <!--     Main      content -->
         <section class="content">
             <div class="container-fluid">
+
                 <div class="row">
                     <div class="col-12">
                         <!-- /.card -->
