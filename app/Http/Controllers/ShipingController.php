@@ -51,7 +51,7 @@ class ShipingController extends Controller
             $log->entity_id = $transaction->log->entity_id;
             $log->local_created_at = $replicatedTransaction->local_created_at;
             $log->local_updated_at = $replicatedTransaction->local_updated_at;
-            $log->type =  'sent_to_yemen_warehouse_op';
+            $log->type =  'sent_to_yemen_wh_op';
             $log->center_name = $transaction->log->center_name;
 
             $replicatedTransaction->log()->save($log);
