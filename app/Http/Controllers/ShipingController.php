@@ -15,7 +15,8 @@ class ShipingController extends Controller
     {
         $transactions = Transaction::with(['details' => function ($query) {
             return $query->with('metas');
-        }])->where('sent_to', 36)->get();
+        }])->where('is_parent', 0)
+            ->where('sent_to', 36)->get();
 
         return view('admin.shipping.index', [
             'transactions' => $transactions
@@ -40,6 +41,9 @@ class ShipingController extends Controller
                 'sent_to' => 41
             ]);
             $replicatedTransaction->save();
+
+            $transaction->is_parent = $replicatedTransaction->transaction_id;
+            $transaction->save();
 
             $log = new TransactionLog();
             $log->action = 'sent';
