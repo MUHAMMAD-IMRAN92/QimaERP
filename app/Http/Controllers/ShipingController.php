@@ -16,7 +16,7 @@ class ShipingController extends Controller
         $transactions = Transaction::with(['details' => function ($query) {
             return $query->with('metas');
         }])->where('is_parent', 0)
-            ->where('sent_to', 36)->get();
+            ->where('sent_to', 39)->get();
 
         return view('admin.shipping.index', [
             'transactions' => $transactions
