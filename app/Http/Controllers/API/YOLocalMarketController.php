@@ -116,7 +116,16 @@ class YOLocalMarketController extends Controller
         $orders = Order::with('details')
             ->where('status', 1)
             ->where('is_sent', false)
-            ->get();
+            ->get()
+            ->map(function ($order) {
+                $details = $order->details;
+                $order->makeHidden('details');
+
+                return [
+                    'order' => $order,
+                    'details' => $details
+                ];
+            });
 
         return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
             'transactions' => $allTransactions,

@@ -79,8 +79,8 @@ class TransactionDetail extends Model
 
                         if ($is_server_id) {
                             $weightDetail = TransactionDetail::with('weight_meta')
-                                ->where('transaction_id', 355)
-                                ->where('container_number', 'ESB100')
+                                ->where('transaction_id', $referenceId)
+                                ->where('container_number', $containerNumber)
                                 ->get()
                                 ->first();
 

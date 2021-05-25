@@ -204,5 +204,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/customers', 'CustomerController@index');
         Route::get('/local_inventory', 'LocalMarketProductsController@weights');
         Route::get('/local_products', 'LocalMarketProductsController@index');
+        //shipping
+        Route::get('/shipping', 'ShipingController@index')->name('shipping.index');
+        Route::post('/shipping', 'ShipingController@post')->name('shipping.post');
+
     });
 });
