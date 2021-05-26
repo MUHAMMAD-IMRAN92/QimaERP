@@ -71,13 +71,13 @@ class TransactionDetail extends Model
                     $meta->value = $metaData['value'];
                     $detail->metas()->save($meta);
 
-                    $exploded = explode('_',  $meta->key);
+                    if ($is_server_id) {
+                        $exploded = explode('_',  $meta->key);
 
-                    if ($exploded[0] == 'last') {
-                        $containerNumber  = $exploded[1];
-                        $weight = $meta->value;
+                        if ($exploded[0] == 'last') {
+                            $containerNumber  = $exploded[1];
+                            $weight = $meta->value;
 
-                        if ($is_server_id) {
                             $weightDetail = TransactionDetail::with('weight_meta')
                                 ->where('transaction_id', $referenceId)
                                 ->where('container_number', $containerNumber)
@@ -93,6 +93,11 @@ class TransactionDetail extends Model
                                     $weightDetail->save();
                                 }
                             }
+                        }
+                    } else{
+                        if($meta->key == 'rem_weight' && $meta->value <= 0){
+                            $detail->container_status = 1;
+                            $detail->save();
                         }
                     }
                 }
