@@ -55,8 +55,6 @@ class TransactionDetail extends Model
             $detail->reference_id = $referenceId;
 
             $detail->save();
-
-            $savedDetails->push($detail);
             // End of saving one Detail
 
             TransactionDetail::where('transaction_id', $referenceId)
@@ -102,6 +100,8 @@ class TransactionDetail extends Model
                     }
                 }
             }
+
+            $savedDetails->push($detail);
         }
 
         return $savedDetails;

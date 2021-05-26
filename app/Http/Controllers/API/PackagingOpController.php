@@ -144,8 +144,6 @@ class PackagingOpController extends Controller
                         $type,
                         $transactionType
                     );
-
-
                     $transactionDetails = TransactionDetail::createFromArray(
                         $detailsData,
                         $request->user()->user_id,
