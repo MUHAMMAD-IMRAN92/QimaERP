@@ -82,19 +82,27 @@ class ShipingController extends Controller
     }
     public function search(Request $request)
     {
-        $farmer =  Farmer::where('farmer_name', $request->farmer)->get();
-        $transactions = Transaction::whereHas('meta', function ($query) {
+        $farmer =  Farmer::where('farmer_name', $request->farmer)->first();
+
+        $farmerTransactions = collect();
+
+        if ($farmer) {
+            $transactions = Transaction::whereHas('meta', function ($query) {
                 $query->where('key', 'bacth_number');
             })->where('is_parent', 0)
-            ->where('sent_to', 26)->with('details')->get();
-        $transactions = $transactions->filter(function ($transaction) use ($farmer) {
-            return $transaction->meta->filter(function ($meta)  use ($farmer) {
-                $faremrId = explode('-', $meta->value)[3];
+                ->where('sent_to', 26)->with('details')->get();
 
-                return $farmer->farmer_id == $faremrId;
+            $farmerTransactions = $transactions->filter(function ($transaction) use ($farmer) {
+                $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmer) {
+                    $faremrId = explode('-', $meta->value)[3];
+
+                    return $farmer->farmer_id == $faremrId;
+                });
+
+                return $farmerMetas->isNotEmpty();
             });
-        });
+        }
 
-        return $transactions;
+        return $farmerTransactions;
     }
 }
