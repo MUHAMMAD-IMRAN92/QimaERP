@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Throwable;
 use App\Transaction;
 use App\CoffeeSession;
+use App\Region;
 use App\TransactionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -77,5 +78,9 @@ class ShipingController extends Controller
 
 
         return back()->with('msg', 'Shipping Approved');
+    }
+    public function search(Request $request)
+    {
+        return $request->all();
     }
 }

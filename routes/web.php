@@ -207,6 +207,7 @@ Route::group(['prefix' => 'admin'], function () {
         //shipping
         Route::get('/shipping', 'ShipingController@index')->name('shipping.index');
         Route::post('/shipping', 'ShipingController@post')->name('shipping.post');
+        Route::get('/search', 'ShipingController@search')->name('shipping.search');
 
     });
 });
