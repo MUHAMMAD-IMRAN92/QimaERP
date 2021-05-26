@@ -9,6 +9,14 @@
         }
 
     </style>
+    <script>
+        $(document).ready(function() {
+          $("search").on('click' , function(){
+            
+          });
+        });
+
+    </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         @if (Session::has('message'))
@@ -49,8 +57,17 @@
                 <div class="row">
                     <div class="col-12">
                         <!-- /.card -->
-                       
+
+
                         <div class="card">
+                            <div class="row">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4 "> <label for="search">Search: </label>
+                                    <input class="mt-3 ml-1" type="" value="" id="search_text" placeholder="search by farmer">
+                                    &nbsp;<i class="fa fa-search"  id="search" aria-hidden="true"></i>
+                                </div>
+
+                            </div>
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <form action="{{ url('admin/shipping') }}" method="POST">
