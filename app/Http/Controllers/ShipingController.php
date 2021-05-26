@@ -13,9 +13,7 @@ class ShipingController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::with(['details' => function ($query) {
-            return $query->with('metas');
-        }])->where('is_parent', 0)
+        $transactions = Transaction::with('details', 'meta')->where('is_parent', 0)
             ->where('sent_to', 39)->get();
 
         return view('admin.shipping.index', [
@@ -30,9 +28,7 @@ class ShipingController extends Controller
         ]);
         $sessionNo = CoffeeSession::max('server_session_id') + 1;
 
-        $transactions = Transaction::with('details')->whereIn('transaction_id', $request->bags)->get();
-
-        $transactionType = 1;
+        $transactions = Transaction::with('details', 'meta')->whereIn('transaction_id', $request->bags)->get();
 
         foreach ($transactions as $transaction) {
             $replicatedTransaction = $transaction->replicate()->fill([

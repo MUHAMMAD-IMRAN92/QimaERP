@@ -12,5 +12,9 @@ class MetaTransation extends Model
     // protected $fillable = ['transaction_meta_id', 'transaction_id', 'key', 'value'];
 
     protected $guarded = [];
+    // public function transaction()
+    // {
+    //     return $this->belongsTo(Transaction::class, 'transaction_id', 'transaction_id');
+    // }
 
 }

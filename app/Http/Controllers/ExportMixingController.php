@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Meta;
 use Throwable;
 use App\BatchNumber;
 use App\Transaction;
 use App\CoffeeSession;
+use App\MetaTransation;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -59,6 +61,16 @@ class ExportMixingController extends Controller
                 $sessionNo,
                 $type
             );
+
+            $transactions = Transaction::whereIn('transaction_id', $request->mixings)->get();
+
+            foreach ($transactions as $oldTransaction) {
+                $meta = new MetaTransation();
+                $meta->transaction_id = $transaction->transaction_id;
+                $meta->key = 'bacth_number';
+                $meta->value = $oldTransaction->batch_number;
+                $meta->save();
+            }
 
             $mixDetails = TransactionDetail::whereIn('transaction_id', $request->mixings)->get();
 

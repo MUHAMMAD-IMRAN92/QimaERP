@@ -243,7 +243,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/shipping"
                             class="nav-link  {{ Request::is('admin/shipping') ? 'active' : '' }} ">
-                            <i class="fas fa-shipping-fast"></i>
+                            <i class="fas fa-shipping-fast"> </i> &nbsp;
                             <p>
                                 Shipping
                             </p>
