@@ -71,6 +71,11 @@ class TransactionDetail extends Model
                     $meta->value = $metaData['value'];
                     $detail->metas()->save($meta);
 
+                    if ($meta->key == 'rem_weight' && $meta->value <= 0) {
+                        $detail->container_status = 1;
+                        $detail->save();
+                    }
+
                     if ($is_server_id) {
                         $exploded = explode('_',  $meta->key);
 
@@ -93,11 +98,6 @@ class TransactionDetail extends Model
                                     $weightDetail->save();
                                 }
                             }
-                        }
-                    } else{
-                        if($meta->key == 'rem_weight' && $meta->value <= 0){
-                            $detail->container_status = 1;
-                            $detail->save();
                         }
                     }
                 }
