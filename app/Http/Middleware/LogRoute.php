@@ -25,7 +25,7 @@ class LogRoute
             'RESPONSE' => $response->getContent()
         ];
 
-        Log::channel('requests')->debug('all request', $log);
+        Log::channel('requests')->info($log);
 
         return $response;
     }
