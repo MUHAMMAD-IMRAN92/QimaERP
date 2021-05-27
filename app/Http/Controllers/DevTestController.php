@@ -22,7 +22,8 @@ class DevTestController extends Controller
         abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
 
         return response()->json([
-            'msg' => 'Hello Dev, how is your day?'
+            'msg' => 'Hello Dev, how is your day?',
+            'live_test' => true
         ]);
     }
 }
