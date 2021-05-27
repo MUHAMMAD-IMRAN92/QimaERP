@@ -71,7 +71,7 @@ class TransactionDetail extends Model
 
                     if ($meta->key == 'rem_weight' && $meta->value <= 0) {
                         $detail->container_status = 1;
-                        $detail->update();
+                        $detail->save();
                     }
 
                     if ($is_server_id) {
