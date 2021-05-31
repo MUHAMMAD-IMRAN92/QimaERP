@@ -102,7 +102,10 @@ class ShipingController extends Controller
                 return $farmerMetas->isNotEmpty();
             });
         }
-
-        return $farmerTransactions;
+        return response()->json([
+            'view' => view('admin.shipping.shipping_view', [
+                'transactions' =>   $farmerTransactions
+            ])->render()
+        ]);
     }
 }
