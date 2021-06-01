@@ -36,7 +36,7 @@ class ShipingController extends Controller
             $replicatedTransaction = $transaction->replicate()->fill([
                 'transaction_status' => 'sent',
                 'created_by' =>   $request->user()->user_id,
-                'sent_to' => 41
+                'sent_to' => 40
             ]);
             $replicatedTransaction->save();
 
@@ -85,14 +85,26 @@ class ShipingController extends Controller
         $farmer =  Farmer::where('farmer_name', $request->farmer)->first();
 
         $farmerTransactions = collect();
+        $sameTransactions = collect();
+
 
         if ($farmer) {
-            $transactions = Transaction::whereHas('meta', function ($query) {
-                $query->where('key', 'bacth_number');
+            $oldTransactions = Transaction::whereHas('meta', function ($query) {
+                $query->where('key', 'batch_number');
             })->where('is_parent', 0)
                 ->where('sent_to', 26)->with('details')->get();
-
-            $farmerTransactions = $transactions->filter(function ($transaction) use ($farmer) {
+            $transactions = Transaction::whereHas('meta', function ($query) {
+                $query->where('key', 'batch_number');
+            })->where('is_parent', 0)
+                ->where('sent_to', 39)->with('details')->get();
+            foreach ($oldTransactions as $oldTransaction) {
+                foreach ($transactions as $transaction) {
+                    if ($oldTransaction->batch_number == $transaction->batch_number) {
+                        $sameTransactions->push($transaction);
+                    }
+                }
+            }
+            $farmerTransactions = $sameTransactions->filter(function ($transaction) use ($farmer) {
                 $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmer) {
                     $faremrId = explode('-', $meta->value)[3];
 
