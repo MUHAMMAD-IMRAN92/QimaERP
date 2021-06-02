@@ -137,7 +137,7 @@ class ShipingController extends Controller
                             $transaction->transaction_id,
                             $transaction->reference_id
                         );
-
+                        
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
                     }

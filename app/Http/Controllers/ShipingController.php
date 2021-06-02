@@ -64,6 +64,10 @@ class ShipingController extends Controller
                     'reference_id' => $transaction->transaction_id
                 ]);
 
+                $detail->container_status = 1;
+                $detail->save();
+
+
                 $replicatedDetail->save();
 
                 foreach ($detail->metas as $meta) {
