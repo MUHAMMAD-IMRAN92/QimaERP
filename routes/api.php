@@ -143,5 +143,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //shipping
         Route::get('/shipping', 'API\ShipingController@get');
         Route::post('/shipping', 'API\ShipingController@post');
+        Route::get('/shipping/sent_to_yemen_wop', 'API\ShipingController@sentToYemen');
+
     });
 });
