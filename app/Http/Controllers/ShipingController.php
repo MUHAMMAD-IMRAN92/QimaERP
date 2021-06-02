@@ -36,7 +36,7 @@ class ShipingController extends Controller
             $replicatedTransaction = $transaction->replicate()->fill([
                 'transaction_status' => 'sent',
                 'created_by' =>   $request->user()->user_id,
-                'sent_to' => 41
+                'sent_to' => 40
             ]);
             $replicatedTransaction->save();
 
@@ -82,19 +82,42 @@ class ShipingController extends Controller
     }
     public function search(Request $request)
     {
-        $farmer =  Farmer::where('farmer_name', $request->farmer)->get();
-        $transactions = Transaction::whereHas('meta', function ($query) {
-                $query->where('key', 'bacth_number');
+        $farmer =  Farmer::where('farmer_name', $request->farmer)->first();
+
+        $farmerTransactions = collect();
+        $sameTransactions = collect();
+
+
+        if ($farmer) {
+            $oldTransactions = Transaction::whereHas('meta', function ($query) {
+                $query->where('key', 'batch_number');
             })->where('is_parent', 0)
-            ->where('sent_to', 26)->with('details')->get();
-        $transactions = $transactions->filter(function ($transaction) use ($farmer) {
-            return $transaction->meta->filter(function ($meta)  use ($farmer) {
-                $faremrId = explode('-', $meta->value)[3];
+                ->where('sent_to', 26)->with('details')->get();
+            $transactions = Transaction::whereHas('meta', function ($query) {
+                $query->where('key', 'batch_number');
+            })->where('is_parent', 0)
+                ->where('sent_to', 39)->with('details')->get();
+            foreach ($oldTransactions as $oldTransaction) {
+                foreach ($transactions as $transaction) {
+                    if ($oldTransaction->batch_number == $transaction->batch_number) {
+                        $sameTransactions->push($transaction);
+                    }
+                }
+            }
+            $farmerTransactions = $sameTransactions->filter(function ($transaction) use ($farmer) {
+                $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmer) {
+                    $faremrId = explode('-', $meta->value)[3];
 
-                return $farmer->farmer_id == $faremrId;
+                    return $farmer->farmer_id == $faremrId;
+                });
+
+                return $farmerMetas->isNotEmpty();
             });
-        });
-
-        return $transactions;
+        }
+        return response()->json([
+            'view' => view('admin.shipping.shipping_view', [
+                'transactions' =>   $farmerTransactions
+            ])->render()
+        ]);
     }
 }

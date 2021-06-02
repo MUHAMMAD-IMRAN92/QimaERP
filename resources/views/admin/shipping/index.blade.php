@@ -19,7 +19,8 @@
                         'farmer': farmer
                     },
                     success: function(data) {
-
+                        $('#table').empty();
+                        $('#table').append(data.view);
                         console.log(data);
                     }
                 });
@@ -80,7 +81,7 @@
 
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body">
+                            <div class="card-body" id="table">
                                 <form action="{{ url('admin/shipping') }}" method="POST">
                                     @csrf
                                     <table id="get_batch_number" class="table table-bordered table-striped">

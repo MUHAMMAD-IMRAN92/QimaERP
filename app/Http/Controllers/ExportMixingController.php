@@ -67,7 +67,7 @@ class ExportMixingController extends Controller
             foreach ($transactions as $oldTransaction) {
                 $meta = new MetaTransation();
                 $meta->transaction_id = $transaction->transaction_id;
-                $meta->key = 'bacth_number';
+                $meta->key = 'batch_number';
                 $meta->value = $oldTransaction->batch_number;
                 $meta->save();
             }
