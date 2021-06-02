@@ -49,7 +49,7 @@ class CoffeeDryingController extends Controller
         }
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function ($q) use ($centerId) {
-            $q->where('action', 'sent')->whereIn('sent_to', ['9'])->where('entity_id', $centerId);
+            $q->where('action', 'sent')->whereIn('sent_to', ['9' , '0'])->where('entity_id', $centerId);
         })->whereHas('transactionDetail', function ($q) use ($centerId) {
             $q->where('container_status', 0);
         }, '>', 0)
