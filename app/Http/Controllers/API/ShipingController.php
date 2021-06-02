@@ -34,7 +34,7 @@ class ShipingController extends Controller
             //             ]
             //         );
             // })
-            ->where('sent_to', 36)
+            ->whereIn('sent_to', [36, 39])
             ->whereHas(
                 'details',
                 function ($q) {
