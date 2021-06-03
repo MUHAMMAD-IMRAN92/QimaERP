@@ -108,7 +108,6 @@ class ShipingController extends Controller
                 }
             }
         }
-
         // conditions on matching transactions
         if ($farmerByName) {
             $farmerTransactions = $sameTransactions->filter(function ($transaction) use ($farmerByName) {
@@ -116,7 +115,6 @@ class ShipingController extends Controller
                     $faremrId = explode('-', $meta->value)[3];
                     return $farmerByName->farmer_id == $faremrId;
                 });
-
                 return  $farmerMetas == !null;
             });
         } elseif ($farmerByCode) {
@@ -126,11 +124,9 @@ class ShipingController extends Controller
                     $farmer = Farmer::find($faremrId);
                     return $farmerByCode->farmer_code ==  $farmer->farmer_code;
                 });
-                // return $farmerMetas->isNotEmpty();
                 return  $farmerMetas == !null;
             });
         }
-
         //returning results
         return response()->json([
             'view' => view('admin.shipping.shipping_view', [
