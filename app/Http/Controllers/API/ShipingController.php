@@ -169,7 +169,7 @@ class ShipingController extends Controller
             'transactions' => $savedTransactions,
         ]);
     }
-    public function sentToYemen()
+    public function transport()
     {
         $transactions = Transaction::where('is_parent', 0)
             // ->whereHas('log', function ($q) {
