@@ -88,49 +88,76 @@ class ShipingController extends Controller
     {
         //finding farmer
         $farmerByName =  Farmer::where('farmer_name', $request->farmerName)->first();
+
         $farmerByCode =  Farmer::where('farmer_code', $request->farmerCode)->first();
 
-        $farmerTransactions = collect();
-        $sameTransactions = collect();
-        // old transactions
-        $oldTransactions = Transaction::whereHas('meta', function ($query) {
-            $query->where('key', 'batch_number');
-        })->where('is_parent', 0)
-            ->where('sent_to', 26)->with('details')->get();
-        // sent_to 39
-        $transactions = Transaction::where('is_parent', 0)
-            ->where('sent_to', 39)->with('details')->get();
-        //matching batch number
-        foreach ($oldTransactions as $oldTransaction) {
-            foreach ($transactions as $transaction) {
-                if ($oldTransaction->batch_number == $transaction->batch_number) {
-                    $sameTransactions->push($transaction);
+        $transactionBysearch = collect();
+
+        $oldtransactions = Transaction::with('details', 'meta')->where('is_parent', 0)
+            ->where('sent_to', 39)->get();
+
+        if ($farmerByName) {
+            foreach ($oldtransactions as $transaction) {
+                foreach ($transaction->meta as $metas) {
+                    $faremrId = explode('-', $metas->value)[3];
+                    $farmer = Farmer::find($faremrId);
+                    if ($farmer) {
+                        if ($farmer->farmer_name == $farmerByName->farmer_name) {
+                            $transactionBysearch->push($transaction);
+                        } else {
+                            return 'no batch number';
+                        }
+                    }
                 }
             }
-        }
-        // conditions on matching transactions
-        if ($farmerByName) {
-            $farmerTransactions = $sameTransactions->filter(function ($transaction) use ($farmerByName) {
-                $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmerByName) {
-                    $faremrId = explode('-', $meta->value)[3];
-                    return $farmerByName->farmer_id == $faremrId;
-                });
-                return  $farmerMetas == !null;
-            });
         } elseif ($farmerByCode) {
-            $farmerTransactions = $sameTransactions->filter(function ($transaction) use ($farmerByCode) {
-                $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmerByCode) {
-                    $faremrId = explode('-', $meta->value)[3];
+            foreach ($oldtransactions as $transaction) {
+                foreach ($transaction->meta as $metas) {
+                    $faremrId = explode('-', $metas->value)[3];
                     $farmer = Farmer::find($faremrId);
-                    return $farmerByCode->farmer_code ==  $farmer->farmer_code;
-                });
-                return  $farmerMetas == !null;
-            });
+                    if ($farmer) {
+                        if ($farmer->farmer_code == $farmerByCode->farmer_code) {
+                            $transactionBysearch->push($transaction);
+                        } else {
+                            return 'no batch number';
+                        }
+                    }
+                }
+            }
+        } else {
+            return 'Nothing found';
         }
-        //returning results
+
+
+
+        // if ($farmerByName) {
+        //     $transactions =   $oldtransactions->filter(function ($transaction) use ($farmerByName) {
+        //         $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmerByName) {
+        //             $faremrId = explode('-', $meta->value)[3];
+        //             $farmer = Farmer::find($faremrId);
+        //          return $farmerByName->farmer_name == $farmer->farmer_name;
+        //         });
+        //         return  $farmerMetas == !null;
+        //     });
+        //    $transactionBysearch->push($transactions);
+        // } 
+        // return $transactionBysearch;
+        // elseif ($farmerByCode) {
+        //      $transactionBysearch = $transactions->filter(function ($transaction) use ($farmerByCode) {
+        //         $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmerByCode) {
+        //             $faremrId = explode('-', $meta->value)[3];
+        //             $farmer = Farmer::find($faremrId);
+        //             return $farmerByCode->farmer_code ==  $farmer->farmer_code;
+        //         });
+        //         return  $farmerMetas == !null;
+        //     });
+
+        // }
+        //  return $transactionBysearch;
+        //     //returning results
         return response()->json([
             'view' => view('admin.shipping.shipping_view', [
-                'transactions' =>   $farmerTransactions
+                'transactions' =>  $transactionBysearch
             ])->render()
         ]);
     }

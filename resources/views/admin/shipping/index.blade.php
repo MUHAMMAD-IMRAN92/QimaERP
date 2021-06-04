@@ -14,16 +14,16 @@
             $('#search').on('click', function() {
                 let farmerName = $("#farmerName").val();
                 let farmerCode = $("#farmerCode").val();
-               
+
                 $.ajax({
                     url: "{{ url('admin/search') }}",
                     data: {
-                        'farmerName': farmerName ,
-                        'farmerCode' : farmerCode
+                        'farmerName': farmerName,
+                        'farmerCode': farmerCode
                     },
                     success: function(data) {
                         $('#table').empty();
-                        $('#table').append(data.view);
+                        $('#table').html(data.view);
                         console.log(data);
                     }
                 });
@@ -42,6 +42,11 @@
         @if (session()->has('msg'))
             <div class="alert alert-success alert-dismissible" id="alert">
                 {{ session()->get('msg') }}
+            </div>
+        @endif
+        @if (session()->has('alert'))
+            <div class="alert alert-success alert-dismissible" id="alert">
+                {{ session()->get('alert') }}
             </div>
         @endif
         <!-- Content Header (Page header) -->
@@ -86,7 +91,7 @@
 
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body" id="table">
+                            <div class="card-body">
                                 <form action="{{ url('admin/shipping') }}" method="POST">
                                     @csrf
                                     <table id="get_batch_number" class="table table-bordered table-striped">
@@ -98,7 +103,7 @@
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="table">
                                             @foreach ($transactions as $transaction)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>

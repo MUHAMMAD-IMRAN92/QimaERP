@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Meta;
 use Throwable;
 use App\Product;
 use App\BatchNumber;
 use App\Transaction;
 use App\CoffeeSession;
+use App\MetaTransation;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Framework\MockObject\MethodNameConstraint;
 
 class ShipingController extends Controller
 {
@@ -131,13 +134,27 @@ class ShipingController extends Controller
                             $transactionType
                         );
 
+                        $transactions = Transaction::with(['meta' => function ($query) {
+                            $query->where('key', 'batch_number');
+                        }])->where('batch_number',  $transaction->batch_number)
+                            ->where('sent_to', 26)
+                            ->get();
+                        foreach ($transactions as $metatransaction) {
+                            foreach ($metatransaction->meta as $metas) {
+                                $meta = new MetaTransation();
+                                $meta->key = $metas->key;
+                                $meta->value = $metas->value;
+                                $transaction->meta()->save($meta);
+                            }
+                        }
+
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,
                             $transaction->transaction_id,
                             $transaction->reference_id
                         );
-                        
+
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
                     }
