@@ -294,7 +294,7 @@ class ShipingController extends Controller
                             $type,
                             $transactionType
                         );
-
+                        
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,
