@@ -16,7 +16,6 @@ class UkWareHouse extends Controller
     }
     public function get()
     {
-        return 'imran';
         $transactions = Transaction::where('is_parent', 0)
             ->whereIn('sent_to', [41])
             ->whereHas(
