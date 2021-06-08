@@ -148,6 +148,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         //Uk WareHouse
         Route::get('/uk_warehouse', 'API\UkWareHouse@get');
+        Route::post('/uk_warehouse', 'API\UkWareHouse@post');
 
     });
 });
