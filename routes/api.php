@@ -145,5 +145,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::post('/shipping', 'API\ShipingController@post');
         Route::get('/shipping/transport', 'API\ShipingController@transport');
         Route::post('/shipping/transport', 'API\ShipingController@transportPost');
+
+        //Uk WareHouse
+        Route::get('/uk_warehouse', 'API\UkWareHouse@get');
+
     });
 });
