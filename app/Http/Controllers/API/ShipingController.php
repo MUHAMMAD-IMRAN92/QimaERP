@@ -282,8 +282,8 @@ class ShipingController extends Controller
 
                     if ($sentTo == 41) {
 
-                        $status = 'received';
-                        $type = 'received_by_admin';
+                        $status = 'sent';
+                        $type = 'sent_yemen_warehouse';
                         $transactionType = 1;
 
                         $transaction = Transaction::createAndLog(
