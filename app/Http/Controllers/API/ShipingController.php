@@ -283,7 +283,7 @@ class ShipingController extends Controller
                     if ($sentTo == 41) {
 
                         $status = 'received';
-                        $type = 'received_by_admin';
+                        $type = 'sent_to_UK';
                         $transactionType = 1;
 
                         $transaction = Transaction::createAndLog(
