@@ -128,32 +128,6 @@ class ShipingController extends Controller
             return 'Nothing found';
         }
 
-
-
-        // if ($farmerByName) {
-        //     $transactions =   $oldtransactions->filter(function ($transaction) use ($farmerByName) {
-        //         $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmerByName) {
-        //             $faremrId = explode('-', $meta->value)[3];
-        //             $farmer = Farmer::find($faremrId);
-        //          return $farmerByName->farmer_name == $farmer->farmer_name;
-        //         });
-        //         return  $farmerMetas == !null;
-        //     });
-        //    $transactionBysearch->push($transactions);
-        // } 
-        // return $transactionBysearch;
-        // elseif ($farmerByCode) {
-        //      $transactionBysearch = $transactions->filter(function ($transaction) use ($farmerByCode) {
-        //         $farmerMetas = $transaction->meta->filter(function ($meta)  use ($farmerByCode) {
-        //             $faremrId = explode('-', $meta->value)[3];
-        //             $farmer = Farmer::find($faremrId);
-        //             return $farmerByCode->farmer_code ==  $farmer->farmer_code;
-        //         });
-        //         return  $farmerMetas == !null;
-        //     });
-
-        // }
-        //  return $transactionBysearch;
         //     //returning results
         return response()->json([
             'view' => view('admin.shipping.shipping_view', [
