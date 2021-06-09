@@ -7,6 +7,10 @@
             margin-left: 0.5em;
             width: 240px;
         }
+        #search:hover{
+            cursor: pointer;
+        }
+        
 
     </style>
     <script>
