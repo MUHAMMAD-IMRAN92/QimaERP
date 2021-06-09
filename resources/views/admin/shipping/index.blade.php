@@ -82,9 +82,9 @@
                             <div class="row">
                                 <div class="col-md-6"></div>
                                 <div class="col-md-6"> <label for="search">Search: </label>
-                                    <input class="mt-3 ml-1" type="" value="" id="farmerName"
+                                    <input class="mt-3 ml-1" type="text" value="" id="farmerName"
                                         placeholder="Enter Farmer Name"> <strong>or</strong>
-                                    <input class="mt-3 ml-1" type="" value="" id="farmerCode"
+                                    <input class="mt-3 ml-1" type="text" value="" id="farmerCode"
                                         placeholder="Enter Farmer Code">
                                     &nbsp;<i class="fa fa-search" id="search" aria-hidden="true"></i>
                                 </div>
