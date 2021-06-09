@@ -280,7 +280,7 @@ class ShipingController extends Controller
 
                     $sentTo = $transactionData['sent_to'];
 
-                    if ($sentTo == 42) {
+                    if ($sentTo == 41) {
 
                         $status = 'sent';
                         $type = 'sent_yemen_warehouse';
