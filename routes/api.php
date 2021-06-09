@@ -140,6 +140,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         Route::get('/packaging_op', 'API\PackagingOpController@get');
         Route::post('/packaging_op', 'API\PackagingOpController@post');
+
         //shipping
         Route::get('/shipping', 'API\ShipingController@get');
         Route::post('/shipping', 'API\ShipingController@post');
@@ -150,5 +151,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/uk_warehouse', 'API\UkWareHouse@get');
         Route::post('/uk_warehouse', 'API\UkWareHouse@post');
 
+        //UK Quality
+        Route::get('/uk_quality', 'API\UkQuality@get');
+        Route::post('/uk_quality', 'API\UkQuality@post');
     });
 });
