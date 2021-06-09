@@ -24,7 +24,7 @@ class UkWareHouse extends Controller
     public function get()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [42])
+            ->whereIn('sent_to', [41])
             ->whereHas(
                 'details',
                 function ($q) {
