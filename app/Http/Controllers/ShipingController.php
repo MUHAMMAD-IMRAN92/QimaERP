@@ -120,9 +120,7 @@ class ShipingController extends Controller
                     }
                 }
             }
-        } else {
-            return 'Nothing found';
-        }
+        } 
 
         //     //returning results
         return response()->json([
