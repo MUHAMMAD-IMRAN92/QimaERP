@@ -104,8 +104,6 @@ class ShipingController extends Controller
                     if ($farmer) {
                         if ($farmer->farmer_name == $farmerByName->farmer_name) {
                             $transactionBysearch->push($transaction);
-                        } else {
-                            return 'no batch number';
                         }
                     }
                 }
@@ -118,8 +116,6 @@ class ShipingController extends Controller
                     if ($farmer) {
                         if ($farmer->farmer_code == $farmerByCode->farmer_code) {
                             $transactionBysearch->push($transaction);
-                        } else {
-                            return 'no batch number';
                         }
                     }
                 }
