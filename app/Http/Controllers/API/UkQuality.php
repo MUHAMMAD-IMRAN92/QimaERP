@@ -17,7 +17,7 @@ class UkQuality extends Controller
     public function get()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [42])
+            ->whereIn('sent_to', [43])
             ->whereHas(
                 'details',
                 function ($q) {

@@ -106,7 +106,7 @@ class UkWareHouse extends Controller
 
                     $sentTo = $transactionData['sent_to'];
 
-                    if ($sentTo == 42) {
+                    if ($sentTo == 43) {
 
                         $status = 'sent';
                         $type = 'sent_to_UK_Quality';
