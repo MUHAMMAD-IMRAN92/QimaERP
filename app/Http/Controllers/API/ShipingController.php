@@ -198,7 +198,7 @@ class ShipingController extends Controller
             //             ]
             //         );
             // })
-            ->where('sent_to', 40)
+            ->where('sent_to', 40 , 41)
             ->whereHas(
                 'details',
                 function ($q) {
