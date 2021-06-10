@@ -314,22 +314,22 @@ class YOLocalMarketController extends Controller
 
 
 
-                            foreach ($detailsData as $detail) {
-                                $weight = $transaction->details->sum('weight');
 
-                                $weight -= $detail['container_weight'];
+                            $weight = $transaction->details->sum('weight');
 
-                                $detail->container_number = $detail['container_number'];
-                                $detail->transaction_id = $transaction->transaction_id;
-                                $detail->created_by = $request->user()->user_id;
-                                $detail->is_local = FALSE;
-                                $detail->container_weight = $detail['container_weight'];
-                                $detail->weight_unit = $detail['weight_unit'];
-                                $detail->center_id = $detail['center_id'];
-                                $detail->reference_id = $transaction->reference_id;
+                            $weight -= $detailsData['container_weight'];
+                            $detail = new TransactionDetail();
+                            $detail->container_number = $detailsData['container_number'];
+                            $detail->transaction_id = $transaction->transaction_id;
+                            $detail->created_by = $request->user()->user_id;
+                            $detail->is_local = FALSE;
+                            $detail->container_weight = $detailsData['container_weight'];
+                            $detail->weight_unit = $detailsData['weight_unit'];
+                            $detail->center_id = $detailsData['center_id'];
+                            $detail->reference_id = $transaction->reference_id;
 
-                                $detail->save();
-                            }
+                            $detail->save();
+
                             $transaction->load('details');
 
                             $savedTransactions->push($transaction);
