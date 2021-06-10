@@ -317,8 +317,8 @@ class YOLocalMarketController extends Controller
                             foreach ($detailsData as $detail) {
                                 $weight = $transaction->details->sum('weight');
 
-                                $weight -= $detailsData['container_weight'];
-                                
+                                $weight -= $detail['container_weight'];
+
                                 $detail->container_number = $detail['container_number'];
                                 $detail->transaction_id = $transaction->transaction_id;
                                 $detail->created_by = $request->user()->user_id;
