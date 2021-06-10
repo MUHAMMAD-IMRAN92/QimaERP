@@ -300,7 +300,6 @@ class YOLocalMarketController extends Controller
                         ->orderBy('transaction_id', 'desc')
                         ->get();
 
-
                     foreach ($transactions as $transaction) {
                         if ($transaction->batch_number == $transactionData['batch_number']) {
                             $transaction = Transaction::createAndLog(
@@ -313,11 +312,13 @@ class YOLocalMarketController extends Controller
                                 $sentTo
                             );
 
-                            $weight = $transaction->details->sum('weight');
 
-                            $weight -= $detailsData['container_weight'];
 
                             foreach ($detailsData as $detail) {
+                                $weight = $transaction->details->sum('weight');
+
+                                $weight -= $detailsData['container_weight'];
+                                
                                 $detail->container_number = $detail['container_number'];
                                 $detail->transaction_id = $transaction->transaction_id;
                                 $detail->created_by = $request->user()->user_id;
