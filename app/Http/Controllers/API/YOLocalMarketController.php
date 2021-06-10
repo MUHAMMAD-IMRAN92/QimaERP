@@ -229,7 +229,8 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
 
-                        $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
+                        $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
+                            ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
 
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
@@ -275,6 +276,63 @@ class YOLocalMarketController extends Controller
                         $accumulatedTransaction->load('details');
 
                         $savedTransactions->push($accumulatedTransaction);
+                    }
+                }
+                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
+                    $status = 'received';
+                    $type = 'received_by_yo_local_market';
+                    $transactionType = 1;
+                    $sentTo = 193;
+
+                    $transactions = Transaction::where('is_parent', 0)
+                        ->whereIn('sent_to', [193])
+                        ->whereIn('transaction_type', [3, 5])
+                        ->whereHas(
+                            'details',
+                            function ($q) {
+                                $q->where(['container_status' => 0, 'container_number' => 0]);
+                            },
+                            '>',
+                            0
+                        )->with(['details' => function ($query) {
+                            $query->where('container_status', 0)->with('metas');
+                        }])->with(['meta', 'child'])
+                        ->orderBy('transaction_id', 'desc')
+                        ->get();
+
+
+                    foreach ($transactions as $transaction) {
+                        if ($transaction->batch_number == $transactionData['batch_number']) {
+                            $transaction = Transaction::createAndLog(
+                                $transactionData,
+                                $request->user()->user_id,
+                                $status,
+                                $sessionNo,
+                                $type,
+                                $transactionType,
+                                $sentTo
+                            );
+
+                            $weight = $transaction->details->sum('weight');
+
+                            $weight -= $detailsData['container_weight'];
+
+                            foreach ($detailsData as $detail) {
+                                $detail->container_number = $detail['container_number'];
+                                $detail->transaction_id = $transaction->transaction_id;
+                                $detail->created_by = $request->user()->user_id;
+                                $detail->is_local = FALSE;
+                                $detail->container_weight = $detail['container_weight'];
+                                $detail->weight_unit = $detail['weight_unit'];
+                                $detail->center_id = $detail['center_id'];
+                                $detail->reference_id = $transaction->reference_id;
+
+                                $detail->save();
+                            }
+                            $transaction->load('details');
+
+                            $savedTransactions->push($transaction);
+                        }
                     }
                 }
             }
