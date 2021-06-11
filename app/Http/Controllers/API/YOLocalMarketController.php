@@ -58,7 +58,7 @@ class YOLocalMarketController extends Controller
     public function getCoffee()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [20, 193])
+            ->whereIn('sent_to', [20, 191])
             ->whereIn('transaction_type', [3, 5])
             ->whereHas(
                 'details',
