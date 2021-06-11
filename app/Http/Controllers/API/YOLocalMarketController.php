@@ -312,8 +312,9 @@ class YOLocalMarketController extends Controller
                                 $oldWeight = $details->container_weight;
                                 foreach ($detailsData as $detailObj) {
                                     $detailData = $detailObj['detail'];
-                                    $newWeight  = $newWeight + $oldWeight;
+                                    $newWeight  = $detailData['container_weight'] + $oldWeight;
                                 }
+
                                 $detail = new TransactionDetail();
                                 $detail->container_number = '000';
                                 $detail->transaction_id = $transaction->transaction_id;
@@ -328,10 +329,7 @@ class YOLocalMarketController extends Controller
                                     'container_status' => 1
                                 ]);
                             }
-
-                            $transaction->load('details');
-
-                            $savedTransactions->push($transaction);
+                            return $detail;
                         }
                     }
                 }
