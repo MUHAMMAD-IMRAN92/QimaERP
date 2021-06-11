@@ -233,9 +233,9 @@ class YOLocalMarketController extends Controller
                             'container_weigh' => $accumulatedWeight,
                         ]);
 
-                        $accumulatedTransaction->details->update([
-                            'container_status' => 1
-                        ]);
+                        // $accumulatedTransaction->details->update([
+                        //     'container_status' => 1
+                        // ]);
 
                         // $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
                         //     ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
