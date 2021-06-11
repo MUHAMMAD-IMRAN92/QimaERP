@@ -69,7 +69,8 @@ class LMInventoryController extends Controller
             $productData['weight'] = TransactionDetail::whereHas('transaction', function ($query) use ($batchNumber) {
                 $query->where('batch_number', $batchNumber)
                     ->where('is_parent', 0)
-                    ->where('transaction_type', 5);
+                    // ->where('transaction_type', 5)
+                    ;
             })->sum('container_weight');
 
             return $productData;
