@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\API;
 
-use App\BatchNumber;
+use App\Order;
+use Exception;
 use Throwable;
+use App\Container;
+use App\BatchNumber;
 use App\Transaction;
 use App\CoffeeSession;
-use App\Container;
 use App\TransactionDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Order;
-use Exception;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -342,6 +343,7 @@ class YOLocalMarketController extends Controller
             DB::commit();
         } catch (Throwable $th) {
             DB::rollback();
+            Log::info("error ".$th);
             return Response::json(array('status' => 'error', 'message' => $th->getMessage(), 'data' => [
                 'line' => $th->getLine()
             ]), 499);
