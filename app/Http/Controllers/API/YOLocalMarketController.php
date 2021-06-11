@@ -330,6 +330,7 @@ class YOLocalMarketController extends Controller
                                 $details->update([
                                     'container_status' => 1
                                 ]);
+                                $savedTransactions->push('detail');
                             }
                         }
                     }
