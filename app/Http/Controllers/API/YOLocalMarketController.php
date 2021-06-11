@@ -228,13 +228,12 @@ class YOLocalMarketController extends Controller
                         $accumulatedWeight = $transaction->details->sum('container_weight');
 
                         $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
-                        return $accumulatedWeight;
+                      
                         $detail =  $accumulatedTransaction->details->replicate()->fill([
-                            'container_weigh' => $accumulatedWeight,
+                            'container_weight' => $accumulatedWeight,
                         ]);
-                        $detail->save();
 
-                        return $detail;
+                        $detail->save();
 
                         $accumulatedTransaction->details->update([
                             'container_status' => 1
