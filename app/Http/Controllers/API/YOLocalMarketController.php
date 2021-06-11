@@ -298,9 +298,8 @@ class YOLocalMarketController extends Controller
                             $query->where('container_status', 0)->with('metas');
                         }])->with(['meta', 'child'])
                         ->orderBy('transaction_id', 'desc')
-                        ->where('batch_number', $transactionData['batch_number'])
+                        // ->where('batch_number', $transactionData['batch_number'])
                         ->get();
-                     return $transactions;
                     foreach ($transactions as $transaction) {
                         if ($transaction->batch_number == $transactionData['batch_number']) {
                             $detailsData = $transactionObj['details'];
@@ -330,7 +329,7 @@ class YOLocalMarketController extends Controller
                                 $details->update([
                                     'container_status' => 1
                                 ]);
-                                return $detail;
+                                // return $detail;
                                 $savedTransactions->push('detail');
                             }
                         }
