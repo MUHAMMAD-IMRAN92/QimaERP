@@ -300,7 +300,7 @@ class YOLocalMarketController extends Controller
                         ->orderBy('transaction_id', 'desc')
                         ->where('batch_number', $transactionData['batch_number'])
                         ->get();
-                    // return $transactions;
+                     return $transactions;
                     foreach ($transactions as $transaction) {
                         if ($transaction->batch_number == $transactionData['batch_number']) {
                             $detailsData = $transactionObj['details'];
