@@ -50,6 +50,6 @@ class Product extends Model
 
     public static function allDefectiveIds()
     {
-        return self::where('for', 5)->get(['id']);
+        return self::whereIn('for', [5, 6])->get(['id']);
     }
 }
