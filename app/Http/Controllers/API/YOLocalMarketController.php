@@ -300,7 +300,7 @@ class YOLocalMarketController extends Controller
                         ->orderBy('transaction_id', 'desc')
                         ->where('batch_number', $transactionData['batch_number'])
                         ->get();
-                     return $transactions;
+                
                     foreach ($transactions as $transaction) {
                         if ($transaction->batch_number == $transactionData['batch_number']) {
                             $detailsData = $transactionObj['details'];
@@ -312,7 +312,7 @@ class YOLocalMarketController extends Controller
                                 $oldWeight = $details->container_weight;
                                 foreach ($detailsData as $detailObj) {
                                     $detailData = $detailObj['detail'];
-                                    $newWeight  = $oldWeight  + $detailData['container_weight'];
+                                    $newWeight  = $oldWeight  - $detailData['container_weight'];
                                 }
 
                                 $detail = new TransactionDetail();
@@ -330,7 +330,7 @@ class YOLocalMarketController extends Controller
                                 $details->update([
                                     'container_status' => 1
                                 ]);
-    
+
                                 $savedTransactions->push('detail');
                             }
                         }
