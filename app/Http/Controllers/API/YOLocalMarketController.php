@@ -182,7 +182,7 @@ class YOLocalMarketController extends Controller
                     $transaction->load('details');
 
                     $savedTransactions->push($transaction);
-
+                    // orphan transaction saved
                     $transactionBatchNumberPrefix = Str::beforeLast($transaction->batch_number, '-');
 
                     if (!in_array($transactionBatchNumberPrefix, $this->fixedBatchNumbers)) {
@@ -208,6 +208,7 @@ class YOLocalMarketController extends Controller
                     );
 
                     if ($accumulatedTransaction) {
+                        return $accumulatedTransaction;
                         $status = 'stored';
                         $sentTo = 193;
                         $type = 'sent_to_inventory';

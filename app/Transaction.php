@@ -161,7 +161,9 @@ class Transaction extends Model
             'local_created_at' => toSqlDT($transactionData['local_created_at']),
             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
         ]);
-
+        // updating previous container status to 1
+        TransactionDetail::where('transaction_id',$parentTransaction->transaction_id)
+                    ->where('container_number','000')->update(['container_status'=>1]);
         $log = new TransactionLog();
         $log->action = $status;
         $log->created_by = $userId;
