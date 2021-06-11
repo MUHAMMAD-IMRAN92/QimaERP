@@ -176,8 +176,10 @@ class Transaction extends Model
         $log->local_updated_at = $transaction->local_updated_at;
         $log->type =  $type;
         $log->center_name = array_key_exists('center_name', $transactionData) ? $transactionData['center_name'] : null;
+        Log::info("SAVED TRANSACTION DETAIL2");
 
         $transaction->log()->save($log);
+        Log::info($transaction);
 
         return $transaction;
     }
