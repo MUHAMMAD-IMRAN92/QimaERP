@@ -325,11 +325,12 @@ class YOLocalMarketController extends Controller
                                 $detail->center_id = $detailData['center_id'];
                                 $detail->reference_id = $transaction->reference_id;
 
+                                $detail->save();
+
                                 $details->update([
                                     'container_status' => 1
                                 ]);
                             }
-                            return $detail;
                         }
                     }
                 }
