@@ -208,9 +208,9 @@ class YOLocalMarketController extends Controller
                     );
 
                     if ($accumulatedTransaction) {
-                        // $status = 'stored';
-                        // $sentTo = 193;
-                        // $type = 'sent_to_inventory';
+                        $status = 'stored';
+                        $sentTo = 193;
+                        $type = 'sent_to_inventory';
 
                         $isSpecial = $transaction->batch_number[0] == 'S';
 
@@ -225,76 +225,12 @@ class YOLocalMarketController extends Controller
                             $type
                         );
 
-                        // $accumulatedWeight = $transaction->details->sum('container_weight');
+                        $accumulatedWeight = $transaction->details->sum('container_weight');
 
-                        // $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
+                        $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
 
-                        // $detail =  $accumulatedTransaction->details->replicate()->fill([
-                        //     'container_weight' => $accumulatedWeight,
-                        // ]);
-
-                        // $detail->save();
-
-                        // $accumulatedTransaction->details->update([
-                        //     'container_status' => 1
-                        // ]);
-                        $status = 'received';
-                        $type = 'received_by_yo_local_market';
-                        $transactionType = 1;
-                        $sentTo = 193;
-
-                        $transactions = Transaction::where('is_parent', 0)
-                            ->whereIn('sent_to', [193])
-                            ->whereIn('transaction_type', [3, 5])
-                            ->whereHas(
-                                'details',
-                                function ($q) {
-                                    $q->where(['container_status' => 0, 'container_number' => 0]);
-                                },
-                                '>',
-                                0
-                            )->with(['details' => function ($query) {
-                                $query->where('container_status', 0)->with('metas');
-                            }])->with(['meta', 'child'])
-                            ->orderBy('transaction_id', 'desc')
-                            // ->where('batch_number', $transactionData['batch_number'])
-                            ->get();
-                        foreach ($transactions as $transaction) {
-                            if ($transaction->batch_number == $transactionData['batch_number']) {
-                                $detailsData = $transactionObj['details'];
-
-                                $transactiondetails = $transaction->details;
-                                foreach ($transactiondetails as $details) {
-
-                                    $newWeight = 0;
-                                    $oldWeight = $details->container_weight;
-                                    foreach ($detailsData as $detailObj) {
-                                        $detailData = $detailObj['detail'];
-                                        $newWeight  = $oldWeight  + $detailData['container_weight'];
-                                    }
-
-                                    $detail = new TransactionDetail();
-                                    $detail->container_number = '000';
-                                    $detail->transaction_id = $transaction->transaction_id;
-                                    $detail->created_by = $request->user()->user_id;
-                                    $detail->is_local = FALSE;
-                                    $detail->container_weight =   $newWeight;
-                                    $detail->weight_unit = 'KG';
-                                    $detail->center_id = $detailData['center_id'];
-                                    $detail->reference_id = $transaction->reference_id;
-
-                                    $detail->save();
-
-                                    $details->update([
-                                        'container_status' => 1
-                                    ]);
-                                    // return $detail;
-                                    $savedTransactions->push('detail');
-                                }
-                            }
-                        }
-                        // $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
-                        //     ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
+                        $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
+                            ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
 
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
@@ -362,8 +298,9 @@ class YOLocalMarketController extends Controller
                             $query->where('container_status', 0)->with('metas');
                         }])->with(['meta', 'child'])
                         ->orderBy('transaction_id', 'desc')
-                        // ->where('batch_number', $transactionData['batch_number'])
+                        ->where('batch_number', $transactionData['batch_number'])
                         ->get();
+                     return $transactions;
                     foreach ($transactions as $transaction) {
                         if ($transaction->batch_number == $transactionData['batch_number']) {
                             $detailsData = $transactionObj['details'];
@@ -375,7 +312,7 @@ class YOLocalMarketController extends Controller
                                 $oldWeight = $details->container_weight;
                                 foreach ($detailsData as $detailObj) {
                                     $detailData = $detailObj['detail'];
-                                    $newWeight  = $oldWeight  - $detailData['container_weight'];
+                                    $newWeight  = $oldWeight  + $detailData['container_weight'];
                                 }
 
                                 $detail = new TransactionDetail();
@@ -393,7 +330,7 @@ class YOLocalMarketController extends Controller
                                 $details->update([
                                     'container_status' => 1
                                 ]);
-                                // return $detail;
+    
                                 $savedTransactions->push('detail');
                             }
                         }
