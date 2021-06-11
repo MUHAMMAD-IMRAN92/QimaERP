@@ -312,7 +312,7 @@ class YOLocalMarketController extends Controller
                                 $oldWeight = $details->container_weight;
                                 foreach ($detailsData as $detailObj) {
                                     $detailData = $detailObj['detail'];
-                                    $newWeight  = $detailData['container_weight'] + $oldWeight;
+                                    $newWeight  = $oldWeight  - $detailData['container_weight'];
                                 }
 
                                 $detail = new TransactionDetail();
