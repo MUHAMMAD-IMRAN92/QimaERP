@@ -298,9 +298,9 @@ class YOLocalMarketController extends Controller
                             $query->where('container_status', 0)->with('metas');
                         }])->with(['meta', 'child'])
                         ->orderBy('transaction_id', 'desc')
-                        ->where('batch_number', $transactionData['batch_number'])
+                        // ->where('batch_number', $transactionData['batch_number'])
                         ->get();
-                
+
                     foreach ($transactions as $transaction) {
                         if ($transaction->batch_number == $transactionData['batch_number']) {
                             $detailsData = $transactionObj['details'];
