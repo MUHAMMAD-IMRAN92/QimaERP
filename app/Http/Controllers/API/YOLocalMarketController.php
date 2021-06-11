@@ -183,100 +183,100 @@ class YOLocalMarketController extends Controller
 
                     $savedTransactions->push($transaction);
 
-                    $transactionBatchNumberPrefix = Str::beforeLast($transaction->batch_number, '-');
+                    // $transactionBatchNumberPrefix = Str::beforeLast($transaction->batch_number, '-');
 
-                    if (!in_array($transactionBatchNumberPrefix, $this->fixedBatchNumbers)) {
-                        throw new Exception('Wrong batch number for this endpoint');
-                    }
+                    // if (!in_array($transactionBatchNumberPrefix, $this->fixedBatchNumbers)) {
+                    //     throw new Exception('Wrong batch number for this endpoint');
+                    // }
 
-                    $accumulatedTransaction = Transaction::with('details')->where('batch_number', $transactionBatchNumberPrefix)
-                        ->where('is_parent', 0)
-                        ->where('transaction_type', 5)
-                        ->first();
+                    // $accumulatedTransaction = Transaction::with('details')->where('batch_number', $transactionBatchNumberPrefix)
+                    //     ->where('is_parent', 0)
+                    //     ->where('transaction_type', 5)
+                    //     ->first();
 
-                    $oldBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
+                    // $oldBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
 
-                    $accumulatedBatch = BatchNumber::firstOrCreate(
-                        ['batch_number' => $transactionBatchNumberPrefix],
-                        [
-                            'created_by' => $request->user()->user_id,
-                            'local_code' => $transactionBatchNumberPrefix,
-                            'is_server_id' => 1,
-                            'season_id' => $oldBatch->season_id,
-                            'season_status' => $oldBatch->season_status,
-                        ]
-                    );
+                    // $accumulatedBatch = BatchNumber::firstOrCreate(
+                    //     ['batch_number' => $transactionBatchNumberPrefix],
+                    //     [
+                    //         'created_by' => $request->user()->user_id,
+                    //         'local_code' => $transactionBatchNumberPrefix,
+                    //         'is_server_id' => 1,
+                    //         'season_id' => $oldBatch->season_id,
+                    //         'season_status' => $oldBatch->season_status,
+                    //     ]
+                    // );
 
-                    if ($accumulatedTransaction) {
-                        $status = 'stored';
-                        $sentTo = 193;
-                        $type = 'sent_to_inventory';
+                    // if ($accumulatedTransaction) {
+                    //     $status = 'stored';
+                    //     $sentTo = 193;
+                    //     $type = 'sent_to_inventory';
 
-                        $isSpecial = $transaction->batch_number[0] == 'S';
+                    //     $isSpecial = $transaction->batch_number[0] == 'S';
 
-                        $newAccumulatedTransaction = Transaction::createGenericAccumulated(
-                            $accumulatedBatch->batch_number,
-                            $request->user()->user_id,
-                            $isSpecial,
-                            $accumulatedTransaction->transaction_id,
-                            $status,
-                            $sentTo,
-                            $sessionNo,
-                            $type
-                        );
+                    //     $newAccumulatedTransaction = Transaction::createGenericAccumulated(
+                    //         $accumulatedBatch->batch_number,
+                    //         $request->user()->user_id,
+                    //         $isSpecial,
+                    //         $accumulatedTransaction->transaction_id,
+                    //         $status,
+                    //         $sentTo,
+                    //         $sessionNo,
+                    //         $type
+                    //     );
 
-                        $accumulatedWeight = $transaction->details->sum('container_weight');
+                    //     $accumulatedWeight = $transaction->details->sum('container_weight');
 
-                        $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
+                    //     $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
 
-                        $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
-                            ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
+                    //     $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
+                    //         ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
 
-                        $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
+                    //     $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
-                        $accumulatedTransaction->save();
+                    //     $-->save();
 
-                        $transaction->is_parent = $newAccumulatedTransaction->transaction_id;
+                    //     $transaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
-                        $transaction->save();
+                    //     $transaction->save();
 
-                        $newAccumulatedTransaction->load('details');
+                    //     $newAccumulatedTransaction->load('details');
 
-                        $savedTransactions->push($newAccumulatedTransaction);
-                    } else {
-                        $status = 'stored';
-                        $sentTo = 193;
-                        $type = 'sent_to_inventory';
+                    //     $savedTransactions->push($newAccumulatedTransaction);
+                    // } else {
+                    //     $status = 'stored';
+                    //     $sentTo = 193;
+                    //     $type = 'sent_to_inventory';
 
-                        $isSpecial = $transaction->batch_number[0] == 'S';
+                    //     $isSpecial = $transaction->batch_number[0] == 'S';
 
-                        $accumulatedTransaction = Transaction::createGenericAccumulated(
-                            $accumulatedBatch->batch_number,
-                            $request->user()->user_id,
-                            $isSpecial,
-                            $transaction->transaction_id,
-                            $status,
-                            $sentTo,
-                            $sessionNo,
-                            $type
-                        );
+                    //     $accumulatedTransaction = Transaction::createGenericAccumulated(
+                    //         $accumulatedBatch->batch_number,
+                    //         $request->user()->user_id,
+                    //         $isSpecial,
+                    //         $transaction->transaction_id,
+                    //         $status,
+                    //         $sentTo,
+                    //         $sessionNo,
+                    //         $type
+                    //     );
 
-                        $accumulatedWeight = $transaction->details->sum('container_weight');
+                    //     $accumulatedWeight = $transaction->details->sum('container_weight');
 
-                        $accumulatedDetail = TransactionDetail::createAccumulated(
-                            $request->user()->user_id,
-                            $accumulatedTransaction->transaction_id,
-                            $accumulatedWeight,
-                            $accumulatedTransaction->reference_id
-                        );
+                    //     $accumulatedDetail = TransactionDetail::createAccumulated(
+                    //         $request->user()->user_id,
+                    //         $accumulatedTransaction->transaction_id,
+                    //         $accumulatedWeight,
+                    //         $accumulatedTransaction->reference_id
+                    //     );
 
-                        $transaction->is_parent = $accumulatedTransaction->transaction_id;
-                        $transaction->save();
+                    //     $transaction->is_parent = $accumulatedTransaction->transaction_id;
+                    //     $transaction->save();
 
-                        $accumulatedTransaction->load('details');
+                    //     $accumulatedTransaction->load('details');
 
-                        $savedTransactions->push($accumulatedTransaction);
-                    }
+                    //     $savedTransactions->push($accumulatedTransaction);
+                    // }
                 }
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
                     $status = 'received';
@@ -297,38 +297,42 @@ class YOLocalMarketController extends Controller
                         )->with(['details' => function ($query) {
                             $query->where('container_status', 0)->with('metas');
                         }])->with(['meta', 'child'])
+                        // ->where('batch_number', $transactionData['batch_number'])
                         ->orderBy('transaction_id', 'desc')
                         ->get();
-
+                    return $transactions;
                     foreach ($transactions as $transaction) {
                         if ($transaction->batch_number == $transactionData['batch_number']) {
-                            $transaction = Transaction::createAndLog(
-                                $transactionData,
-                                $request->user()->user_id,
-                                $status,
-                                $sessionNo,
-                                $type,
-                                $transactionType,
-                                $sentTo
-                            );
+                            $detailsData = $transactionObj['details'];
+
+                            $transactiondetails = $transaction->details;
+                            foreach ($transactiondetails as $details) {
+
+                                $newWeight = 0;
+                                $oldWeight = $details->container_weight;
+                                foreach ($detailsData as $detailObj) {
+                                    $detailData = $detailObj['detail'];
+                                    $newWeight  = $newWeight + $oldWeight;
+                                }
+
+                                $detail = new TransactionDetail();
+                                $detail->container_number = '000';
+                                $detail->transaction_id = $transaction->transaction_id;
+                                $detail->created_by = $request->user()->user_id;
+                                $detail->is_local = FALSE;
+                                $detail->container_weight =   $newWeight;
+                                $detail->weight_unit = 'kg';
+                                $detail->center_id = $detailData['center_id'];
+                                $detail->reference_id = $transaction->reference_id;
+
+                                $details->update([
+                                    'container_status' => 1
+                                ]);
+                            }
+
+                            return  $detail;
 
 
-
-
-                            $weight = $transaction->details->sum('weight');
-
-                            $weight -= $detailsData['container_weight'];
-                            $detail = new TransactionDetail();
-                            $detail->container_number = $detailsData['container_number'];
-                            $detail->transaction_id = $transaction->transaction_id;
-                            $detail->created_by = $request->user()->user_id;
-                            $detail->is_local = FALSE;
-                            $detail->container_weight = $detailsData['container_weight'];
-                            $detail->weight_unit = $detailsData['weight_unit'];
-                            $detail->center_id = $detailsData['center_id'];
-                            $detail->reference_id = $transaction->reference_id;
-
-                            $detail->save();
 
                             $transaction->load('details');
 
