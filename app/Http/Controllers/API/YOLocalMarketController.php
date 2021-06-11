@@ -290,7 +290,7 @@ class YOLocalMarketController extends Controller
                         ->whereHas(
                             'details',
                             function ($q) {
-                                $q->where(['container_status' => 0, 'container_number' => 0]);
+                                $q->where(['container_status' => 0, 'container_number' => '000']);
                             },
                             '>',
                             0
