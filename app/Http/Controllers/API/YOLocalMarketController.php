@@ -234,7 +234,7 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
-                        $-->save();
+                        $accumulatedTransaction->save();
 
                         $transaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
@@ -290,7 +290,7 @@ class YOLocalMarketController extends Controller
                         ->whereHas(
                             'details',
                             function ($q) {
-                                $q->where(['container_status' => 0, 'container_number' => '000']);
+                                $q->where(['container_status' => 0, 'container_number' => 0]);
                             },
                             '>',
                             0
@@ -298,6 +298,7 @@ class YOLocalMarketController extends Controller
                             $query->where('container_status', 0)->with('metas');
                         }])->with(['meta', 'child'])
                         ->orderBy('transaction_id', 'desc')
+                        ->where('batch_number', $transactionData['batch_number'])
                         ->get();
                     return $transactions;
                     foreach ($transactions as $transaction) {
