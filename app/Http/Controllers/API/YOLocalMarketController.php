@@ -321,7 +321,7 @@ class YOLocalMarketController extends Controller
                                 $detail->created_by = $request->user()->user_id;
                                 $detail->is_local = FALSE;
                                 $detail->container_weight =   $newWeight;
-                                $detail->weight_unit = 'kg';
+                                $detail->weight_unit = 'KG';
                                 $detail->center_id = $detailData['center_id'];
                                 $detail->reference_id = $transaction->reference_id;
 
