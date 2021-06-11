@@ -316,7 +316,7 @@ class YOLocalMarketController extends Controller
                                 }
 
                                 $detail = new TransactionDetail();
-                                $detail->container_number = $detailData['batch_number'];
+                                $detail->container_number = '000';
                                 $detail->transaction_id = $transaction->transaction_id;
                                 $detail->created_by = $request->user()->user_id;
                                 $detail->is_local = FALSE;
