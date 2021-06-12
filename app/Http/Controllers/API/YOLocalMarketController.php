@@ -232,11 +232,11 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
                             ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
-                            $accumulatedTransaction->details->update([
-                                'container_status' => 1
-                            ]);
+                        $accumulatedTransaction->details->update([
+                            'container_status' => 1
+                        ]);
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
-                        
+
                         $accumulatedTransaction->save();
 
                         $transaction->is_parent = $newAccumulatedTransaction->transaction_id;
@@ -282,61 +282,68 @@ class YOLocalMarketController extends Controller
                     }
                 }
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
-                    $status = 'received';
-                    $type = 'received_by_yo_local_market';
-                    $transactionType = 1;
-                    $sentTo = 193;
+                    $transactionBatchNumberPrefix = Str::beforeLast($transaction->batch_number, '-');
 
-                    $transactions = Transaction::where('is_parent', 0)
-                        ->whereIn('sent_to', [193])
-                        ->whereIn('transaction_type', [3, 5])
-                        ->whereHas(
-                            'details',
-                            function ($q) {
-                                $q->where(['container_status' => 0, 'container_number' => 0]);
-                            },
-                            '>',
-                            0
-                        )->with(['details' => function ($query) {
-                            $query->where('container_status', 0)->with('metas');
-                        }])->with(['meta', 'child'])
-                        ->orderBy('transaction_id', 'desc')
-                        // ->where('batch_number', $transactionData['batch_number'])
-                        ->get();
+                    if (!in_array($transactionBatchNumberPrefix, $this->fixedBatchNumbers)) {
+                        throw new Exception('Wrong batch number for this endpoint');
+                    }
 
-                    foreach ($transactions as $transaction) {
-                        if ($transaction->batch_number == $transactionData['batch_number']) {
-                            $detailsData = $transactionObj['details'];
+                    $accumulatedTransaction = Transaction::with('details')->where('batch_number', $transactionBatchNumberPrefix)
+                        ->where('is_parent', 0)
+                        ->where('transaction_type', 5)
+                        ->first();
 
-                            $transactiondetails = $transaction->details;
-                            foreach ($transactiondetails as $details) {
+                    $oldBatch = BatchNumber::where('batch_number', $transaction->batch_number)->first();
 
-                                $newWeight = 0;
-                                $oldWeight = $details->container_weight;
-                                foreach ($detailsData as $detailObj) {
-                                    $detailData = $detailObj['detail'];
-                                    $newWeight  = $oldWeight  - $detailData['container_weight'];
-                                }
+                    $accumulatedBatch = BatchNumber::firstOrCreate(
+                        ['batch_number' => $transactionBatchNumberPrefix],
+                        [
+                            'created_by' => $request->user()->user_id,
+                            'local_code' => $transactionBatchNumberPrefix,
+                            'is_server_id' => 1,
+                            'season_id' => $oldBatch->season_id,
+                            'season_status' => $oldBatch->season_status,
+                        ]
+                    );
 
-                                $detail = new TransactionDetail();
-                                $detail->container_number = '000';
-                                $detail->transaction_id = $transaction->transaction_id;
-                                $detail->created_by = $request->user()->user_id;
-                                $detail->is_local = FALSE;
-                                $detail->container_weight =   $newWeight;
-                                $detail->weight_unit = 'KG';
-                                $detail->center_id = $detailData['center_id'];
-                                $detail->reference_id = $transaction->reference_id;
+                    if ($accumulatedTransaction) {
+                        $status = 'stored';
+                        $sentTo = 193;
+                        $type = 'sent_to_inventory';
 
-                                $detail->save();
+                        $isSpecial = $transaction->batch_number[0] == 'S';
 
-                                $details->update([
-                                    'container_status' => 1
-                                ]);
+                        $newAccumulatedTransaction = Transaction::createGenericAccumulated(
+                            $accumulatedBatch->batch_number,
+                            $request->user()->user_id,
+                            $isSpecial,
+                            $accumulatedTransaction->transaction_id,
+                            $status,
+                            $sentTo,
+                            $sessionNo,
+                            $type
+                        );
 
-                                $savedTransactions->push('detail');
-                            }
-                        }
+                        $accumulatedWeight = $transaction->details->sum('container_weight');
+
+                        $accumulatedWeight -= $accumulatedTransaction->details->sum('container_weight');
+
+                        $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
+                            ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
+                        $accumulatedTransaction->details->update([
+                            'container_status' => 1
+                        ]);
+                        $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
+
+                        $accumulatedTransaction->save();
+
+                        $transaction->is_parent = $newAccumulatedTransaction->transaction_id;
+
+                        $transaction->save();
+
+                        $newAccumulatedTransaction->load('details');
+
+                        $savedTransactions->push($newAccumulatedTransaction);
                     }
                 }
             }
