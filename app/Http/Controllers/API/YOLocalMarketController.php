@@ -229,7 +229,7 @@ class YOLocalMarketController extends Controller
                         $accumulatedWeight = $transaction->details->sum('container_weight');
 
                         $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
-                        
+
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
                             ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
                             $accumulatedTransaction->details->update([
@@ -344,7 +344,6 @@ class YOLocalMarketController extends Controller
             DB::commit();
         } catch (Throwable $th) {
             DB::rollback();
-            Log::info("error " . $th);
             return Response::json(array('status' => 'error', 'message' => $th->getMessage(), 'data' => [
                 'line' => $th->getLine()
             ]), 499);
