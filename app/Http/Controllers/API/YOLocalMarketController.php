@@ -189,7 +189,6 @@ class YOLocalMarketController extends Controller
                     if (!in_array($transactionBatchNumberPrefix, $this->fixedBatchNumbers)) {
                         throw new Exception('Wrong batch number for this endpoint');
                     }
-                    Log::info("SAVED TRANSACTION 1");
 
                     $accumulatedTransaction = Transaction::with('details')->where('batch_number', $transactionBatchNumberPrefix)
                         ->where('is_parent', 0)
@@ -208,10 +207,8 @@ class YOLocalMarketController extends Controller
                             'season_status' => $oldBatch->season_status,
                         ]
                     );
-                    Log::info("SAVED TRANSACTION 2");
 
                     if ($accumulatedTransaction) {
-                        return $accumulatedTransaction;
                         $status = 'stored';
                         $sentTo = 193;
                         $type = 'sent_to_inventory';
@@ -232,12 +229,14 @@ class YOLocalMarketController extends Controller
                         $accumulatedWeight = $transaction->details->sum('container_weight');
 
                         $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
-
+                        
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
                             ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
-
+                            $accumulatedTransaction->details->update([
+                                'container_status' => 1
+                            ]);
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
-
+                        
                         $accumulatedTransaction->save();
 
                         $transaction->is_parent = $newAccumulatedTransaction->transaction_id;
@@ -245,7 +244,6 @@ class YOLocalMarketController extends Controller
                         $transaction->save();
 
                         $newAccumulatedTransaction->load('details');
-                        Log::info("SAVED TRANSACTION 3");
 
                         $savedTransactions->push($newAccumulatedTransaction);
                     } else {
@@ -265,7 +263,6 @@ class YOLocalMarketController extends Controller
                             $sessionNo,
                             $type
                         );
-                        Log::info("SAVED TRANSACTION 4");
 
                         $accumulatedWeight = $transaction->details->sum('container_weight');
 
@@ -283,8 +280,6 @@ class YOLocalMarketController extends Controller
 
                         $savedTransactions->push($accumulatedTransaction);
                     }
-                    Log::info("SAVED TRANSACTION 5");
-
                 }
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
                     $status = 'received';
@@ -308,7 +303,6 @@ class YOLocalMarketController extends Controller
                         ->orderBy('transaction_id', 'desc')
                         // ->where('batch_number', $transactionData['batch_number'])
                         ->get();
-                        Log::info("SAVED TRANSACTION 6");
 
                     foreach ($transactions as $transaction) {
                         if ($transaction->batch_number == $transactionData['batch_number']) {
@@ -339,7 +333,6 @@ class YOLocalMarketController extends Controller
                                 $details->update([
                                     'container_status' => 1
                                 ]);
-                                Log::info("SAVED TRANSACTION 7");
 
                                 $savedTransactions->push('detail');
                             }
@@ -347,12 +340,11 @@ class YOLocalMarketController extends Controller
                     }
                 }
             }
-            Log::info("SAVED TRANSACTION 8");
 
             DB::commit();
         } catch (Throwable $th) {
             DB::rollback();
-            Log::info("error ".$th);
+            Log::info("error " . $th);
             return Response::json(array('status' => 'error', 'message' => $th->getMessage(), 'data' => [
                 'line' => $th->getLine()
             ]), 499);
