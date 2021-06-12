@@ -162,12 +162,8 @@ class Transaction extends Model
             'local_created_at' => toSqlDT($transactionData['local_created_at']),
             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
         ]);
-        Log::info("SAVED TRANSACTION");
-        // updating previous container status to 1
-        TransactionDetail::where('transaction_id',$parentTransaction->transaction_id)
-                    ->where('container_number','000')->update(['container_status'=>1]);
-        Log::info("SAVED TRANSACTION DETAIL");
-        
+
+
         $log = new TransactionLog();
         $log->action = $status;
         $log->created_by = $userId;
@@ -176,10 +172,8 @@ class Transaction extends Model
         $log->local_updated_at = $transaction->local_updated_at;
         $log->type =  $type;
         $log->center_name = array_key_exists('center_name', $transactionData) ? $transactionData['center_name'] : null;
-        Log::info("SAVED TRANSACTION DETAIL2");
 
         $transaction->log()->save($log);
-        Log::info($transaction);
 
         return $transaction;
     }
