@@ -58,30 +58,35 @@ class InventoryController extends Controller
         ]);
 
         $products = $productsBatches->map(function ($productData) {
-            $transaction = Transaction::with('details')->where('batch_number', $productData['batch_number'])
+            $transactions = Transaction::with(['details' => function ($query) {
+                $query->where('container_status', 0)->where('container_number', '000');
+            }])->where('batch_number', $productData['batch_number'])
                 ->where('is_parent', 0)
-                ->where('transaction_type', 5)
-                ->where('sent_to', 193)
-                ->first();
-
-            $weightDetail = $transaction ? $transaction->details->first() : null;
-
-            $productData['weight'] = $weightDetail ? $weightDetail->container_weight : 0;
-
+                ->where('transaction_type', 5)->get();
+            $oldWeight = 0;
+            foreach ($transactions as $transaction) {
+                foreach ($transaction->details as $detail) {
+                    $oldWeight += $detail->container_weight;
+                }
+            }
+            $productData['weight'] =  $oldWeight;
             return $productData;
+           
         });
 
         $specialProducts = $specialProductsBatches->map(function ($productData) {
-            $transaction = Transaction::with('details')->where('batch_number', $productData['batch_number'])
+            $transactions = Transaction::with(['details' => function ($query) {
+                $query->where('container_status', 0)->where('container_number', '000');
+            }])->where('batch_number', $productData['batch_number'])
                 ->where('is_parent', 0)
-                ->where('transaction_type', 5)
-                ->where('sent_to', 193)
-                ->first();
-
-            $weightDetail = $transaction ? $transaction->details->first() : null;
-
-            $productData['weight'] = $weightDetail ? $weightDetail->container_weight : 0;
-
+                ->where('transaction_type', 5)->get();
+            $oldWeight = 0;
+            foreach ($transactions as $transaction) {
+                foreach ($transaction->details as $detail) {
+                    $oldWeight += $detail->container_weight;
+                }
+            }
+            $productData['weight'] =  $oldWeight;
             return $productData;
         });
 
