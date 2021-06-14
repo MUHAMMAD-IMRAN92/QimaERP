@@ -183,7 +183,7 @@ class YOLocalMarketController extends Controller
                     $transaction->load('details');
 
                     $savedTransactions->push($transaction);
-                    // orphan transaction saved
+
                     $transactionBatchNumberPrefix = Str::beforeLast($transaction->batch_number, '-');
 
                     if (!in_array($transactionBatchNumberPrefix, $this->fixedBatchNumbers)) {
@@ -228,18 +228,10 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedWeight = $transaction->details->sum('container_weight');
 
-                        $accumulatedWeight += $accumulatedTransaction->details->sum('container_weight');
+                        $accumulatedWeight += $accumulatedTransaction->details->first()->container_weight;
 
-                        $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
-                            ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
-                        foreach ($accumulatedTransaction->details as $detail) {
-                            $detail->update([
-                                'container_status' => 1
-                            ]);
-                        }
-                        // $accumulatedTransaction->details->each()->update([
-                        //     'container_status' => 1
-                        // ]);
+                        $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
+
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
                         $accumulatedTransaction->save();
@@ -271,12 +263,7 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedWeight = $transaction->details->sum('container_weight');
 
-                        $accumulatedDetail = TransactionDetail::createAccumulated(
-                            $request->user()->user_id,
-                            $accumulatedTransaction->transaction_id,
-                            $accumulatedWeight,
-                            $accumulatedTransaction->reference_id
-                        );
+                        $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $accumulatedWeight);
 
                         $transaction->is_parent = $accumulatedTransaction->transaction_id;
                         $transaction->save();
@@ -285,9 +272,6 @@ class YOLocalMarketController extends Controller
 
                         $savedTransactions->push($accumulatedTransaction);
                     }
-                }
-                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
-                    // return '193';
                 }
             }
 
