@@ -277,6 +277,46 @@ class YOLocalMarketController extends Controller
                         $savedTransactions->push($accumulatedTransaction);
                     }
                 }
+
+                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
+                    $savedTransactions = collect();
+                    $batchNumber = $transactionData['batch_number'];
+                    $isSpecial = $transactionData['batch_number'] == 'S';
+                    $status = 'stored';
+                    $sentTo = 193;
+                    $type = 'sent_to_inventory';
+                    $details = TransactionDetail::where('container_number', '000')->where('container_status', 0)->whereHas('transaction', function ($query) use ($batchNumber) {
+                        $query->where('batch_number', $batchNumber)
+                            ->where('is_parent', 0)
+                            ->where('transaction_type', 5);
+                    });
+
+                    $oldWeight =  $details->sum('container_weight');
+                    foreach ($detailsData as $detailObj) {
+                        $detailData = $detailObj['detail'];
+                        $newWeight  =   $oldWeight - $detailData['container_weight'];
+                    }
+                    $accumulatedTransaction = Transaction::createGenericAccumulated(
+                        $batchNumber,
+                        $request->user()->user_id,
+                        $isSpecial,
+                        $transactionData['transaction_id'],
+                        $status,
+                        $sentTo,
+                        $sessionNo,
+                        $type
+                    );
+                    $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
+
+                    foreach ($details as $detail) {
+                        $detail->update([
+                            'container_status' => 1
+                        ]);
+                    }
+                    $accumulatedTransaction->load('details');
+
+                    $savedTransactions->push($accumulatedTransaction);
+                }
             }
 
             DB::commit();
