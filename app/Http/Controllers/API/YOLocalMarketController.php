@@ -232,9 +232,6 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
                             ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
-                        return response()->json([
-                            'done' =>   $accumulatedWeight
-                        ]);
                         foreach ($accumulatedTransaction->details as $detail) {
                             $detail->update([
                                 'container_status' => 1
@@ -290,7 +287,7 @@ class YOLocalMarketController extends Controller
                     }
                 }
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
-                    return '193';
+                    // return '193';
                 }
             }
 
