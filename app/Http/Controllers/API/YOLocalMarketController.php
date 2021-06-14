@@ -232,7 +232,9 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
                             ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
-
+                        return response()->json([
+                            'done' =>   $accumulatedWeight
+                        ]);
                         foreach ($accumulatedTransaction->details as $detail) {
                             $detail->update([
                                 'container_status' => 1
