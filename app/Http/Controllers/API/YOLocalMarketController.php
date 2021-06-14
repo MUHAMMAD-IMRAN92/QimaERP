@@ -229,7 +229,11 @@ class YOLocalMarketController extends Controller
                         $accumulatedWeight = $transaction->details->sum('container_weight');
 
                         $accumulatedWeight += $accumulatedTransaction->details->first()->container_weight;
-
+                        foreach ($accumulatedTransaction->details as $detail) {
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
+                        }
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
 
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
