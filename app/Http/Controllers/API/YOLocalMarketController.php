@@ -301,7 +301,7 @@ class YOLocalMarketController extends Controller
                         $detailData = $detailObj['detail'];
                         $newWeight  =   $oldWeight - $detailData['container_weight'];
                     }
-               
+
                     $accumulatedTransaction = Transaction::createGenericAccumulated(
                         $batchNumber,
                         $request->user()->user_id,
