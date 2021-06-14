@@ -285,13 +285,12 @@ class YOLocalMarketController extends Controller
                     $status = 'stored';
                     $sentTo = 193;
                     $type = 'sent_to_inventory';
-                    $details = TransactionDetail::where('container_number', '000')->where('container_status', 0)->whereHas('transaction', function ($query) use ($batchNumber) {
-                        $query->where('batch_number', $batchNumber)
-                            ->where('is_parent', 0)
-                            ->where('transaction_type', 5);
-                    });
-
-                    $oldWeight =  $details->sum('container_weight');
+                    $transaction = Transaction::with(['details' => function ($query) {
+                        $query->where('container_status', 0)->where('container_number', '000');
+                    }])->where('batch_number', $batchNumber)
+                        ->where('is_parent', 0)
+                        ->where('transaction_type', 5)->get();
+                    $oldWeight = $transaction->details->sum('container_weight');
                     foreach ($detailsData as $detailObj) {
                         $detailData = $detailObj['detail'];
                         $newWeight  =   $oldWeight - $detailData['container_weight'];
@@ -308,7 +307,7 @@ class YOLocalMarketController extends Controller
                     );
                     $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
 
-                    foreach ($details as $detail) {
+                    foreach ($transaction->details as $detail) {
                         $detail->update([
                             'container_status' => 1
                         ]);
