@@ -232,9 +232,15 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
                             ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
-                        $accumulatedTransaction->details->update([
-                            'container_status' => 1
-                        ]);
+
+                        foreach ($accumulatedTransaction->details as $detail) {
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
+                        }
+                        // $accumulatedTransaction->details->each()->update([
+                        //     'container_status' => 1
+                        // ]);
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
                         $accumulatedTransaction->save();
@@ -330,9 +336,14 @@ class YOLocalMarketController extends Controller
 
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()
                             ->user_id, $newAccumulatedTransaction->transaction_id, $accumulatedWeight);
-                        $accumulatedTransaction->details->update([
-                            'container_status' => 1
-                        ]);
+                        foreach ($accumulatedTransaction->details as $detail) {
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
+                        }
+                        // $accumulatedTransaction->details->update([
+                        //     'container_status' => 1
+                        // ]);
                         $accumulatedTransaction->is_parent = $newAccumulatedTransaction->transaction_id;
 
                         $accumulatedTransaction->save();
