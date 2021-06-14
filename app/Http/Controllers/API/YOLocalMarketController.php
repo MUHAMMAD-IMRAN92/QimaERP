@@ -285,16 +285,23 @@ class YOLocalMarketController extends Controller
                     $status = 'stored';
                     $sentTo = 193;
                     $type = 'sent_to_inventory';
-                    $transaction = Transaction::with(['details' => function ($query) {
+                    $transactions = Transaction::with(['details' => function ($query) {
                         $query->where('container_status', 0)->where('container_number', '000');
                     }])->where('batch_number', $batchNumber)
                         ->where('is_parent', 0)
                         ->where('transaction_type', 5)->get();
-                    $oldWeight = $transaction->details->sum('container_weight');
+                    $oldWeight = 0;
+                    foreach ($transactions as $transaction) {
+                        foreach ($transaction->details as $detail) {
+                            $oldWeight += $detail->container_weight;
+                        }
+                    }
+
                     foreach ($detailsData as $detailObj) {
                         $detailData = $detailObj['detail'];
                         $newWeight  =   $oldWeight - $detailData['container_weight'];
                     }
+               
                     $accumulatedTransaction = Transaction::createGenericAccumulated(
                         $batchNumber,
                         $request->user()->user_id,
@@ -307,10 +314,12 @@ class YOLocalMarketController extends Controller
                     );
                     $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
 
-                    foreach ($transaction->details as $detail) {
-                        $detail->update([
-                            'container_status' => 1
-                        ]);
+                    foreach ($transactions as $transaction) {
+                        foreach ($transaction->details as $detail) {
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
+                        }
                     }
                     $accumulatedTransaction->load('details');
 
