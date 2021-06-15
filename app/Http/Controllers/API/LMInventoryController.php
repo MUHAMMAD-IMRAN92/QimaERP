@@ -72,18 +72,33 @@ class LMInventoryController extends Controller
             //         ->where('is_parent', 0)
             //         ->where('transaction_type', 5);
             // })->sum('container_weight');
-         $transactions = Transaction::with(['details' => function ($query) {
+            $transactions = Transaction::with(['details' => function ($query) {
                 $query->where('container_status', 0)->where('container_number', '000');
-            }])->where('batch_number', $batchNumber)
+            }])->where('batch_number', $productData['batch_number'])
                 ->where('is_parent', 0)
                 ->where('transaction_type', 5)->get();
-            $oldWeight = 0;
+            $weight = 0;
             foreach ($transactions as $transaction) {
                 foreach ($transaction->details as $detail) {
-                    $oldWeight += $detail->container_weight;
+                    $weight += $detail->container_weight;
                 }
             }
-            $productData['weight'] =  $oldWeight;
+            $productData['rawWeight'] =  $weight;
+
+            $transactions = Transaction::with(['details' => function ($query) {
+                $query->where('container_status', 0)->where('container_number', '!=', '000');
+            }])->where('batch_number', $productData['batch_number'])
+                ->where('is_parent', 0)
+                ->where('transaction_type', 5)->get();
+            $bagweight = 0;
+            foreach ($transactions as $transaction) {
+                foreach ($transaction->details as $detail) {
+                    $bagweight += $detail->container_weight;
+                }
+            }
+            $productData['bagWight'] =  $bagweight;
+
+            $productData['weight'] = $weight + $bagweight;
             return $productData;
         });
 
