@@ -266,7 +266,12 @@ class YOLocalMarketController extends Controller
                         );
 
                         $accumulatedWeight = $transaction->details->sum('container_weight');
-
+                        $bag = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
                         $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $accumulatedWeight);
 
                         $transaction->is_parent = $accumulatedTransaction->transaction_id;
@@ -312,14 +317,14 @@ class YOLocalMarketController extends Controller
                         $sessionNo,
                         $type
                     );
-                    $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
-
                     $bag = TransactionDetail::createFromArray(
                         $detailsData,
                         $request->user()->user_id,
                         $transaction->transaction_id,
                         $transaction->reference_id
                     );
+                    $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
+
 
                     foreach ($transactions as $transaction) {
                         foreach ($transaction->details as $detail) {
@@ -331,7 +336,7 @@ class YOLocalMarketController extends Controller
 
                     $accumulatedTransaction->load('details');
 
-                    $savedTransactions->push($bag);
+                    $savedTransactions->push($accumulatedTransaction);
                 }
             }
 
