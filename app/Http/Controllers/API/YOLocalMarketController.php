@@ -314,6 +314,13 @@ class YOLocalMarketController extends Controller
                     );
                     $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
 
+                    $bag = TransactionDetail::createFromArray(
+                        $detailsData,
+                        $request->user()->user_id,
+                        $transaction->transaction_id,
+                        $transaction->reference_id
+                    );
+
                     foreach ($transactions as $transaction) {
                         foreach ($transaction->details as $detail) {
                             $detail->update([
@@ -321,9 +328,10 @@ class YOLocalMarketController extends Controller
                             ]);
                         }
                     }
+
                     $accumulatedTransaction->load('details');
 
-                    $savedTransactions->push($accumulatedTransaction);
+                    $savedTransactions->push($bag);
                 }
             }
 
