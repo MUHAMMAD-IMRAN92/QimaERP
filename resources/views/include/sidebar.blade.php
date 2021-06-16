@@ -258,6 +258,14 @@
                             </p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/system_defination"
+                            class="nav-link {{ Request::is('admin/system_defination') ? 'active' : '' }}">
+                            <i class=" nav-icon fab fa-linode"></i>
+                            <p>
+                                System Defination
+                            </p>
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/environments"
@@ -282,13 +290,13 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/milling_coffee"
                             class="nav-link {{ Request::is('admin/milling_coffee') ? 'active' : '' }}">
-                            <i class="fal fa-trees"></i>
-                            <i class="nav-icon fas fa-tree"></i>
+                            <i class="nav-icon fas fa-tree"> </i>
                             <p>
                                 Milling
                             </p>
                         </a>
                     </li>
+
                     <li class="nav-item {{ Request::is('admin/packaging/*') ? 'menu-open' : '' }}">
                         <a href="" class="nav-link ">
                             <i class="nav-icon fas fa-box"></i>
@@ -318,7 +326,7 @@
                             </li>
                         </ul>
                     </li>
-                 
+
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/governorweight"
                             class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">

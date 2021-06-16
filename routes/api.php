@@ -154,5 +154,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //UK Quality
         Route::get('/uk_quality', 'API\UkQuality@get');
         Route::post('/uk_quality', 'API\UkQuality@post');
+
+        //system defination
+        Route::get('/system_defination', 'API\SystemDefinationController@get');
     });
 });
