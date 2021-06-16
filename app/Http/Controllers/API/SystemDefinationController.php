@@ -22,7 +22,7 @@ class SystemDefinationController extends Controller
 
         $genetics =   $system_defination->filter(function ($query) {
             return $query->key == 'genetice';
-        });
+        })->values();
         $flavours =   $system_defination->filter(function ($query) {
             return $query->key == 'flavour';
         })->values();
