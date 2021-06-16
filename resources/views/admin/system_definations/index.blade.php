@@ -73,9 +73,10 @@
                                                             {{ $genetic->value }}
                                                         </td>
                                                         <td align="center">
+                                                            <a href="{{ route('systemdefination.edit', $genetic) }}"
+                                                                class="btn btn-success">Edit</a>
                                                             <a href="{{ route('systemdefination.del', $genetic) }}"
                                                                 class="btn btn-danger">Delete</a>
-
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -108,9 +109,10 @@
                                                             {{ $flavour->value }}
                                                         </td>
                                                         <td align="center">
+                                                            <a href="{{ route('systemdefination.edit', $flavour) }}"
+                                                                class="btn btn-success">Edit</a>
                                                             <a href="{{ route('systemdefination.del', $flavour) }}"
                                                                 class="btn btn-danger">Delete</a>
-
                                                         </td>
                                                     </tr>
                                                 @endforeach
