@@ -47,4 +47,20 @@ class SystemDefinationController extends Controller
         $genetic->delete();
         return redirect()->route('systemdefination.index')->with('msg', 'Defination Deleted');
     }
+    public function edit(SystemDefination $genetic)
+    {
+        $defination =  $genetic;
+
+        return view('admin.system_definations.edit', [
+            'defination' => $defination
+        ])->render();
+    }
+    public function update(Request $request, SystemDefination $genetic)
+    {
+        $genetic->update([
+            'key' => $request->key,
+            'value' => $request->value
+        ]);
+        return redirect()->route('systemdefination.index')->with('msg', 'Updatede');
+    }
 }
