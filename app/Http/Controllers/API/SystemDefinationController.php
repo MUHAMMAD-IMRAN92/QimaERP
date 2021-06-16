@@ -25,13 +25,13 @@ class SystemDefinationController extends Controller
         });
         $flavours =   $system_defination->filter(function ($query) {
             return $query->key == 'flavour';
-        });
+        })->values();
 
         $systemDefinations = [
             'genetics' =>   $genetics,
             'flavours' => $flavours
         ];
 
-        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"),    $systemDefinations);
+        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.SYSTEM_DEFINATION_REC"),    $systemDefinations);
     }
 }
