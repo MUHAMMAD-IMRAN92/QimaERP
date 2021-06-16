@@ -58,6 +58,7 @@
                                                 <tr>
                                                     <th>S#</th>
                                                     <th>Genetic Name</th>
+                                                    <th>Action</th>
 
 
                                                 </tr>
@@ -70,6 +71,11 @@
                                                         </td>
                                                         <td>
                                                             {{ $genetic->value }}
+                                                        </td>
+                                                        <td align="center">
+                                                            <a href="{{ route('systemdefination.del', $genetic) }}"
+                                                                class="btn btn-danger">Delete</a>
+
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -86,6 +92,8 @@
                                                 <tr>
                                                     <th>S#</th>
                                                     <th>Flavour Name</th>
+                                                    <th>Action</th>
+
 
 
                                                 </tr>
@@ -98,6 +106,11 @@
                                                         </td>
                                                         <td>
                                                             {{ $flavour->value }}
+                                                        </td>
+                                                        <td align="center">
+                                                            <a href="{{ route('systemdefination.del', $flavour) }}"
+                                                                class="btn btn-danger">Delete</a>
+
                                                         </td>
                                                     </tr>
                                                 @endforeach
