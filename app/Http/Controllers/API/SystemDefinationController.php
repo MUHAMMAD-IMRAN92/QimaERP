@@ -21,9 +21,11 @@ class SystemDefinationController extends Controller
             return $query->key == 'flavour';
         });
 
-        return response()->json([
+        $systemDefinations = [
             'genetics' =>   $genetics,
             'flavours' => $flavours
-        ]);
+        ];
+
+        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"),    $systemDefinations);
     }
 }
