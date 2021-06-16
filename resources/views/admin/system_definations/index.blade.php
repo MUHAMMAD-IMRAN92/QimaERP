@@ -56,7 +56,7 @@
 
                                             <thead>
                                                 <tr>
-                                                    <th>S#</th>
+                                                    <th>Sr#</th>
                                                     <th>Genetic Name</th>
                                                     <th>Action</th>
 
@@ -91,7 +91,7 @@
 
                                             <thead>
                                                 <tr>
-                                                    <th>S#</th>
+                                                    <th>Sr#</th>
                                                     <th>Flavour Name</th>
                                                     <th>Action</th>
 
