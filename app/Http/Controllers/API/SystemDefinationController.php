@@ -8,6 +8,12 @@ use App\Http\Controllers\Controller;
 
 class SystemDefinationController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        set_time_limit(0);
+
+        $this->app_lang = $request->header('x-app-lang') ?? 'en';
+    }
     public function get()
     {
         $system_defination = SystemDefination::all();
