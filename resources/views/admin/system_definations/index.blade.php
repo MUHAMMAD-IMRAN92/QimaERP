@@ -14,14 +14,15 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
+                @if (session()->has('msg'))
+                    <div class="alert alert-success" id="alert">
+                        {{ session()->get('msg') }}
+                    </div>
+                @endif
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>System Definations
-                            @if (session()->has('msg'))
-                                <div class="alert alert-success" id="alert">
-                                    {{ session()->get('msg') }}
-                                </div>
-                            @endif
+
                             <a href="{{ route('systemdefination.create') }}" class="btn btn-add rounded-circle">
                                 <i class="fas fa-plus add-client-icon "></i>
                             </a>
