@@ -41,4 +41,10 @@ class SystemDefinationController extends Controller
         ]);
         return redirect()->route('systemdefination.index')->with('msg', ' System Defination Added');
     }
+
+    public function delete(SystemDefination $genetic)
+    {
+        $genetic->delete();
+        return redirect()->route('systemdefination.index')->with('msg', 'Defination Deleted');
+    }
 }

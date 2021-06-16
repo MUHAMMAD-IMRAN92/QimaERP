@@ -213,5 +213,6 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/system_defination', 'SystemDefinationController@index')->name('systemdefination.index');
         Route::get('/system_defination/create', 'SystemDefinationController@create')->name('systemdefination.create');
         Route::post('/system_defination', 'SystemDefinationController@post')->name('systemdefination.post');
+        Route::get('/system_defination/{genetic}', 'SystemDefinationController@delete')->name('systemdefination.del');
     });
 });
