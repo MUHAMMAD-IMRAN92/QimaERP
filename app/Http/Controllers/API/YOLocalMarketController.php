@@ -356,22 +356,33 @@ class YOLocalMarketController extends Controller
                         $detailData = $detailObj['detail'];
                         $transactionWeight +=  $detailData['container_weight'];
                     }
-
+                    // return $transactionWeight;
                     if ($orderWeight == $transactionWeight) {
-                        return 'matched';
+                        // return 'matched';
                         foreach ($orders as $order) {
                             $order->update([
                                 'status' =>  2
                             ]);
                         }
-
+                        $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'order_prepaired';
                         $type = 'sent_to_yemen_sales';
                         $transactionType = 1;
                         $sentTo = 195;
 
+                        $batch = BatchNumber::firstOrCreate(
+                            ['batch_number' => $transactionData['batch_number']],
+                            [
+                                'created_by' => $request->user()->user_id,
+                                'is_mixed' => true,
+                                'is_server_id' => true,
+                                'season_id' => BatchNumber::max('season_id')
+
+                            ]
+                        );
+
                         $transaction =  Transaction::create([
-                            'batch_number' => $transactionData['batch_number'],
+                            'batch_number' => $batch->batch_number,
                             'is_parent' => 0,
                             'created_by' =>  $request->user()->user_id,
                             'is_local' => FALSE,
@@ -405,14 +416,23 @@ class YOLocalMarketController extends Controller
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
                     } else if ($orderWeight <> $transactionWeight) {
-                        return 'not matched';
+
                         // $status = 'order_partially prepaid';
                         // $type = 'sent_to_yemen_sales';
                         // $transactionType = 1;
                         // $sentTo = 194;
 
                         // $sessionNo = CoffeeSession::max('server_session_id') + 1;
+                        // $batch = BatchNumber::firstOrNew(
+                        //     ['batch_number' => $transactionData['batch_number']],
+                        //     [
+                        //         'created_by' => $request->user()->user_id,
+                        //         'is_mixed' => true,
+                        //         'is_server_id' => true,
+                        //         'season_id' => BatchNumber::max('season_id')
 
+                        //     ]
+                        // );
                         // $transaction = Transaction::createGeneric(
                         //     $transactionData['batch_number'],
                         //     $request->user()->user_id,
