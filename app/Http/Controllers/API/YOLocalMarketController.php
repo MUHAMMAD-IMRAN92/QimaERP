@@ -12,6 +12,7 @@ use App\CoffeeSession;
 use App\TransactionDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -337,6 +338,103 @@ class YOLocalMarketController extends Controller
                     $accumulatedTransaction->load('details');
 
                     $savedTransactions->push($accumulatedTransaction);
+                }
+                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 194) {
+
+                    $orders = Order::with('details')->where('status', 1)->where('order_number',  $transactionData['batch_number'])->get();
+                    $orderWeight = 0;
+
+                    foreach ($orders as $order) {
+                        foreach ($order->details as $detail) {
+                            $orderWeight += $detail->weight;
+                        }
+                    }
+
+                    $transactionWeight = 0;
+
+                    foreach ($detailsData as $detailObj) {
+                        $detailData = $detailObj['detail'];
+                        $transactionWeight +=  $detailData['container_weight'];
+                    }
+
+                    if ($orderWeight == $transactionWeight) {
+                        return 'matched';
+                        foreach ($orders as $order) {
+                            $order->update([
+                                'status' =>  2
+                            ]);
+                        }
+
+                        $status = 'order_prepaired';
+                        $type = 'sent_to_yemen_sales';
+                        $transactionType = 1;
+                        $sentTo = 195;
+
+                        $transaction =  Transaction::create([
+                            'batch_number' => $transactionData['batch_number'],
+                            'is_parent' => 0,
+                            'created_by' =>  $request->user()->user_id,
+                            'is_local' => FALSE,
+                            'local_code' => $transactionData['local_code'],
+                            'is_special' => false,
+                            'is_mixed' => $transactionData['is_mixed'],
+                            'transaction_type' => $transactionType,
+                            'reference_id' => 0,
+                            'transaction_status' => $status,
+                            'is_new' => 0,
+                            'sent_to' => $sentTo ?? $transactionData['sent_to'],
+                            'is_server_id' => true,
+                            'is_sent' => $transactionData['is_sent'],
+                            'session_no' => $sessionNo,
+                            'ready_to_milled' => $transactionData['ready_to_milled'],
+                            'is_in_process' => $transactionData['is_in_process'],
+                            'is_update_center' => array_key_exists('is_update_center', $transactionData) ? $transactionData['is_update_center'] : false,
+                            'local_session_no' => array_key_exists('local_session_no', $transactionData) ? $transactionData['local_session_no'] : false,
+                            'local_created_at' => toSqlDT($transactionData['local_created_at']),
+                            'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
+                        ]);
+
+
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+                        $transaction->load(['details.metas']);
+                        $savedTransactions->push($transaction);
+                    } else if ($orderWeight <> $transactionWeight) {
+                        return 'not matched';
+                        // $status = 'order_partially prepaid';
+                        // $type = 'sent_to_yemen_sales';
+                        // $transactionType = 1;
+                        // $sentTo = 194;
+
+                        // $sessionNo = CoffeeSession::max('server_session_id') + 1;
+
+                        // $transaction = Transaction::createGeneric(
+                        //     $transactionData['batch_number'],
+                        //     $request->user()->user_id,
+                        //     0,
+                        //     $status,
+                        //     $sentTo,
+                        //     $sessionNo,
+                        //     $type
+                        // );
+
+                        // return  $transaction;
+
+                        // $transactionDetails = TransactionDetail::createFromArray(
+                        //     $detailsData,
+                        //     $request->user()->user_id,
+                        //     $transaction->transaction_id,
+                        //     $transaction->reference_id
+                        // );
+
+                        // $transaction->load(['details.metas']);
+                        // $savedTransactions->push($transaction);
+                    }
                 }
             }
 
