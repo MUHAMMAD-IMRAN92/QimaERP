@@ -192,5 +192,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/customers', 'CustomerController@index');
         Route::get('product_weights', 'LocalMarketProductsController@weights');
         Route::get('local_products', 'LocalMarketProductsController@index');
+
+        //uk warehouse
+        Route::get('/uk_warehouse/set_price', 'UkWareHouseController@prices');
     });
 });
