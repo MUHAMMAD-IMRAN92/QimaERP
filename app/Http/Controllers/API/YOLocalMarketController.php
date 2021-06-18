@@ -122,7 +122,7 @@ class YOLocalMarketController extends Controller
             ->map(function ($order) {
                 $details = $order->details;
                 $order->makeHidden('details');
-
+                //some commit
                 return [
                     'order' => $order,
                     'details' => $details
