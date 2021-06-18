@@ -128,20 +128,20 @@ class YOLocalMarketController extends Controller
 
                 if ($transactions->count() > 0) {
                     foreach ($transactions as $transaction) {
-                        $transactionWeight = $transaction->details->sum('container_weight');
+                       $transactionWeight += $transaction->details->sum('container_weight');
                     }
                 }
-
+                return  $transactionWeight;
                 $orderWeight = $details->sum('weight');
                 $newWeight =  $orderWeight - $transactionWeight;
-                // foreach ($details as $detail) {
-                //     $detail->weight = $newWeight;
-                // }
+
+                foreach ($details as $detail) {
+                    $detail->weight = $newWeight;
+                }
 
                 return [
                     'order' => $order,
                     'details' => $details,
-                    'rem_weight' => $newWeight
                 ];
             });
 
