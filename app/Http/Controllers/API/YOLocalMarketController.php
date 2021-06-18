@@ -122,10 +122,17 @@ class YOLocalMarketController extends Controller
             ->map(function ($order) {
                 $details = $order->details;
                 $order->makeHidden('details');
-                //some commit
+                //transaction with
+                $transaction = Transaction::with('details')->where('batch_number', $order->order_number)->latest()
+                    ->details->sum('container_weight');
+                $orderWeight = $details->sum('weight');
+                $newWeight =  $orderWeight - $transaction;
+                foreach ($details as $detail) {
+                    $detail->weight = $newWeight;
+                }
                 return [
                     'order' => $order,
-                    'details' => $details
+                    'details' => $transaction
                 ];
             });
 
