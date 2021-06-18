@@ -371,11 +371,8 @@ class YOLocalMarketController extends Controller
                         $currentTransactionWeight +=  $detailData['container_weight'];
                     }
                     $condition = '';
-                    if ($currentTransactionWeight > $orderWeight ||  $oldTranactionWeight + $currentTransactionWeight > $orderWeight) {
-                        return Response::json(array(
-                            'status' => 'error', 'message' => 'weight is greater than Order weight'
-                        ), 499);
-                    } else if ($orderWeight == $currentTransactionWeight) {
+
+                    if ($orderWeight == $currentTransactionWeight) {
                         $condition = 'prepaired';
                     } elseif ($oldTranactionWeight + $currentTransactionWeight == $orderWeight) {
                         $condition = 'prepaired';
@@ -383,10 +380,6 @@ class YOLocalMarketController extends Controller
                         $condition = 'old_partial';
                     } elseif ($oldTranactionWeight == 0 && $currentTransactionWeight < $orderWeight) {
                         $condition = 'new_partial';
-                    } elseif ($currentTransactionWeight > $orderWeight ||  $oldTranactionWeight + $currentTransactionWeight > $orderWeight) {
-                        return Response::json(array(
-                            'status' => 'error', 'message' => 'weight is greater than Order weight'
-                        ), 499);
                     }
 
                     if ($condition = 'prepaired') {
