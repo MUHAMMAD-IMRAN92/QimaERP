@@ -123,10 +123,13 @@ class YOLocalMarketController extends Controller
                 $details = $order->details;
                 $order->makeHidden('details');
                 //transaction with
-                $transaction = Transaction::with('details')->where('batch_number', $order->order_number)->latest()
-                    ->details->sum('container_weight');
+                $transaction = Transaction::with('details')->where('batch_number', $order->order_number)->wherer('sent_to', 194)->latest();
+                $transactionWeight = 0;
+                if ($transaction) {
+                    $transactionWeight = $transaction->details->sum('container_weight');
+                }
                 $orderWeight = $details->sum('weight');
-                $newWeight =  $orderWeight - $transaction;
+                $newWeight =  $orderWeight - $transactionWeight;
                 foreach ($details as $detail) {
                     $detail->weight = $newWeight;
                 }
