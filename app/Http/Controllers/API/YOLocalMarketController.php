@@ -116,7 +116,7 @@ class YOLocalMarketController extends Controller
         }
 
         $orders = Order::with('details')
-            ->where('status', 1)
+            ->where('status', 1, 2)
             ->where('is_sent', false)
             ->get()
             ->map(function ($order) {
