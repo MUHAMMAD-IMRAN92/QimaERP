@@ -372,8 +372,10 @@ class YOLocalMarketController extends Controller
                         $currentTransactionWeight +=  $detailData['container_weight'];
                     }
                     $condition = '';
-                    if ($currentTransactionWeight > $orderWeight  && $oldTranaction + $currentTransactionWeight > $orderWeight) {
-                        $condition = 'zayada ha';
+                    if ($currentTransactionWeight > $orderWeight  && $oldTranactionWeight + $currentTransactionWeight > $orderWeight) {
+                        return Response::json(array(
+                            'status' => 'error', 'message' => 'weight is grater than order weight'
+                        ), 499);
                     } elseif ($orderWeight == $currentTransactionWeight) {
                         $condition = 'prepaired';
                     } elseif ($oldTranactionWeight + $currentTransactionWeight == $orderWeight) {
@@ -383,7 +385,7 @@ class YOLocalMarketController extends Controller
                     } elseif ($oldTranactionWeight == 0 && $currentTransactionWeight < $orderWeight) {
                         $condition = 'new_partial';
                     }
-                    return  $condition;
+
                     if ($condition == 'prepaired') {
                         foreach ($orders as $order) {
                             $order->update([
