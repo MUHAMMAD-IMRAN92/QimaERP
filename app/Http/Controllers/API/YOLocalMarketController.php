@@ -9,6 +9,7 @@ use App\Container;
 use App\BatchNumber;
 use App\Transaction;
 use App\CoffeeSession;
+use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -60,8 +61,8 @@ class YOLocalMarketController extends Controller
     public function getCoffee()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [20, 193])
-            ->whereIn('transaction_type', [3, 5])
+            ->whereIn('sent_to', [20, 193, 194, 195])
+            ->whereIn('transaction_type', [1, 3, 5])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -77,12 +78,11 @@ class YOLocalMarketController extends Controller
 
         $allTransactions = array();
 
-
         foreach ($transactions as $transaction) {
 
             $transactionDetails = $transaction->details;
-            $transaction->center_id = $transaction->log->entity_id;
-            $transaction->center_name = $transaction->log->center_name;
+            // $transaction->center_id = $transaction->log->entity_id;
+            // $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
 
             $detailMetas = [];
@@ -342,23 +342,50 @@ class YOLocalMarketController extends Controller
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 194) {
 
                     $orders = Order::with('details')->where('status', 1)->where('order_number',  $transactionData['batch_number'])->get();
-                    $orderWeight = 0;
+                    $batch = BatchNumber::firstOrCreate(
+                        ['batch_number' => $transactionData['batch_number']],
+                        [
+                            'created_by' => $request->user()->user_id,
+                            'is_mixed' => true,
+                            'is_server_id' => true,
+                            'season_id' => BatchNumber::max('season_id')
 
+                        ]
+                    );
+                    $oldTranactionWeight = 0;
+                    $oldTranaction = Transaction::with(['details' => function ($query) {
+                        $query->where('container_status', 0);
+                    }])->where('batch_number',  $batch->batch_number)->first();
+                    if ($oldTranaction) {
+                        $oldTranactionWeight =   $oldTranaction->details->sum('container_weight');
+                    }
+                    $orderWeight = 0;
                     foreach ($orders as $order) {
                         foreach ($order->details as $detail) {
                             $orderWeight += $detail->weight;
                         }
                     }
-
-                    $transactionWeight = 0;
-
+                    $currentTransactionWeight = 0;
                     foreach ($detailsData as $detailObj) {
                         $detailData = $detailObj['detail'];
-                        $transactionWeight +=  $detailData['container_weight'];
+                        $currentTransactionWeight +=  $detailData['container_weight'];
                     }
-                    // return $transactionWeight;
-                    if ($orderWeight == $transactionWeight) {
-                        // return 'matched';
+                    $condition = '';
+                    if ($orderWeight == $currentTransactionWeight) {
+                        $condition = 'prepaired';
+                    } elseif ($oldTranactionWeight + $currentTransactionWeight == $orderWeight) {
+                        $condition = 'prepaired';
+                    } elseif ($oldTranactionWeight > 0 && $oldTranactionWeight + $currentTransactionWeight < $orderWeight) {
+                        $condition = 'old_partial';
+                    } elseif ($oldTranactionWeight == 0 && $currentTransactionWeight < $orderWeight) {
+                        $condition = 'new_partial';
+                    } elseif ($currentTransactionWeight > $orderWeight ||  $oldTranactionWeight + $currentTransactionWeight > $orderWeight) {
+                        return Response::json(array(
+                            'status' => 'error', 'message' => 'weight is greater than Order weight'
+                        ), 499);
+                    }
+
+                    if ($condition = 'prepaired') {
                         foreach ($orders as $order) {
                             $order->update([
                                 'status' =>  2
@@ -404,6 +431,16 @@ class YOLocalMarketController extends Controller
                             'local_created_at' => toSqlDT($transactionData['local_created_at']),
                             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
                         ]);
+                        $log = new TransactionLog();
+                        $log->action = $status;
+                        $log->created_by = $request->user()->user_id;
+                        $log->entity_id = 0;
+                        $log->local_created_at = $transaction->local_created_at;
+                        $log->local_updated_at = $transaction->local_updated_at;
+                        $log->type =  $type;
+                        $log->center_name = null;
+
+                        $transaction->log()->save($log);
 
 
                         $transactionDetails = TransactionDetail::createFromArray(
@@ -415,45 +452,88 @@ class YOLocalMarketController extends Controller
 
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
-                    } else if ($orderWeight <> $transactionWeight) {
+                    } elseif ($condition = 'new_partial') {
+                        $sessionNo = CoffeeSession::max('server_session_id') + 1;
+                        $status = 'partial_prepaired';
+                        $type = 'sent_to_yemen_sales';
+                        $transactionType = 1;
+                        $sentTo = 194;
 
-                        // $status = 'order_partially prepaid';
-                        // $type = 'sent_to_yemen_sales';
-                        // $transactionType = 1;
-                        // $sentTo = 194;
+                        $batch = BatchNumber::firstOrCreate(
+                            ['batch_number' => $transactionData['batch_number']],
+                            [
+                                'created_by' => $request->user()->user_id,
+                                'is_mixed' => true,
+                                'is_server_id' => true,
+                                'season_id' => BatchNumber::max('season_id')
 
-                        // $sessionNo = CoffeeSession::max('server_session_id') + 1;
-                        // $batch = BatchNumber::firstOrNew(
-                        //     ['batch_number' => $transactionData['batch_number']],
-                        //     [
-                        //         'created_by' => $request->user()->user_id,
-                        //         'is_mixed' => true,
-                        //         'is_server_id' => true,
-                        //         'season_id' => BatchNumber::max('season_id')
+                            ]
+                        );
 
-                        //     ]
-                        // );
-                        // $transaction = Transaction::createGeneric(
-                        //     $transactionData['batch_number'],
-                        //     $request->user()->user_id,
-                        //     0,
-                        //     $status,
-                        //     $sentTo,
-                        //     $sessionNo,
-                        //     $type
-                        // );
+                        $transaction =  Transaction::create([
+                            'batch_number' => $batch->batch_number,
+                            'is_parent' => 0,
+                            'created_by' =>  $request->user()->user_id,
+                            'is_local' => FALSE,
+                            'local_code' => $transactionData['local_code'],
+                            'is_special' => false,
+                            'is_mixed' => $transactionData['is_mixed'],
+                            'transaction_type' => $transactionType,
+                            'reference_id' => 0,
+                            'transaction_status' => $status,
+                            'is_new' => 0,
+                            'sent_to' => $sentTo ?? $transactionData['sent_to'],
+                            'is_server_id' => true,
+                            'is_sent' => $transactionData['is_sent'],
+                            'session_no' => $sessionNo,
+                            'ready_to_milled' => $transactionData['ready_to_milled'],
+                            'is_in_process' => $transactionData['is_in_process'],
+                            'is_update_center' => array_key_exists('is_update_center', $transactionData) ? $transactionData['is_update_center'] : false,
+                            'local_session_no' => array_key_exists('local_session_no', $transactionData) ? $transactionData['local_session_no'] : false,
+                            'local_created_at' => toSqlDT($transactionData['local_created_at']),
+                            'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
+                        ]);
+                        $log = new TransactionLog();
+                        $log->action = $status;
+                        $log->created_by = $request->user()->user_id;
+                        $log->entity_id = 0;
+                        $log->local_created_at = $transaction->local_created_at;
+                        $log->local_updated_at = $transaction->local_updated_at;
+                        $log->type =  $type;
+                        $log->center_name = null;
 
-                        // return  $transaction;
+                        $transaction->log()->save($log);
 
-                        // $transactionDetails = TransactionDetail::createFromArray(
-                        //     $detailsData,
-                        //     $request->user()->user_id,
-                        //     $transaction->transaction_id,
-                        //     $transaction->reference_id
-                        // );
 
-                        // $transaction->load(['details.metas']);
-                        // $savedTransactions->push($transaction);
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+                        $transaction->load(['details.metas']);
+                        $savedTransactions->push($transaction);
+                    } elseif ($condition = 'old_partial') {
+                        $sessionNo = CoffeeSession::max('server_session_id') + 1;
+                        $status = 'partial_prepaired';
+                        $type = 'sent_to_yemen_sales';
+                        $transactionType = 1;
+                        $sentTo = 194;
+
+                        $details = $oldTranaction->details;
+
+                        foreach ($details as $detail) {
+                            $newDetail =  $detail->replicate()->fill([]);
+
+                            $newDetail->save();
+
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
+                        }
+                        $oldTranaction->load(['details.metas']);
+                        $savedTransactions->push($oldTranaction);
                     }
                 }
             }
