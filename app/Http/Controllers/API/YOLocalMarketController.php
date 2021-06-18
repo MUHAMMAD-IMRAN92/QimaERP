@@ -357,8 +357,9 @@ class YOLocalMarketController extends Controller
                         $query->where('container_status', 0);
                     }])->where('batch_number',  $batch->batch_number)->first();
                     if ($oldTranaction) {
-                        $oldTranactionWeight =   $oldTranaction->details->sum('container_weight');
+                        $oldTranactionWeight +=   $oldTranaction->details->sum('container_weight');
                     }
+
                     $orderWeight = 0;
                     foreach ($orders as $order) {
                         foreach ($order->details as $detail) {
@@ -371,8 +372,9 @@ class YOLocalMarketController extends Controller
                         $currentTransactionWeight +=  $detailData['container_weight'];
                     }
                     $condition = '';
-
-                    if ($orderWeight == $currentTransactionWeight) {
+                    if ($currentTransactionWeight > $orderWeight  && $oldTranaction + $currentTransactionWeight > $orderWeight) {
+                        $condition = 'zayada ha';
+                    } elseif ($orderWeight == $currentTransactionWeight) {
                         $condition = 'prepaired';
                     } elseif ($oldTranactionWeight + $currentTransactionWeight == $orderWeight) {
                         $condition = 'prepaired';
@@ -381,8 +383,8 @@ class YOLocalMarketController extends Controller
                     } elseif ($oldTranactionWeight == 0 && $currentTransactionWeight < $orderWeight) {
                         $condition = 'new_partial';
                     }
-
-                    if ($condition = 'prepaired') {
+                    return  $condition;
+                    if ($condition == 'prepaired') {
                         foreach ($orders as $order) {
                             $order->update([
                                 'status' =>  2
@@ -449,7 +451,7 @@ class YOLocalMarketController extends Controller
 
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
-                    } elseif ($condition = 'new_partial') {
+                    } elseif ($condition == 'new_partial') {
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'partial_prepaired';
                         $type = 'sent_to_yemen_sales';
@@ -511,7 +513,7 @@ class YOLocalMarketController extends Controller
 
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
-                    } elseif ($condition = 'old_partial') {
+                    } elseif ($condition == 'old_partial') {
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'partial_prepaired';
                         $type = 'sent_to_yemen_sales';
