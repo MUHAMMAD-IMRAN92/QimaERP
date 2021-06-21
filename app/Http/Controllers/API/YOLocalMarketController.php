@@ -143,9 +143,9 @@ class YOLocalMarketController extends Controller
                         $orderProduct = Product::find($product)->name;
 
                         $orderWeight = $detail->weight;
-                        $remWeight = 0;
+                       
                         if ($orderProduct ==  $transactionProduct) {
-                            $remWeight += $orderWeight - $transactionProWeight;
+                            $remWeight = $orderWeight - $transactionProWeight;
                         }
                         $detail->weight =  $remWeight;
                         $detail->status = $order->status;
