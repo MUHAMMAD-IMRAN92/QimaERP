@@ -378,15 +378,17 @@ class YOLocalMarketController extends Controller
                     }
 
                     $orderWeight = 0;
+                    $condition = '';
                     foreach ($orders as $order) {
                         $orderWeight += $order->details->sum('weight');
+
+                        $currentTransactionWeight = 0;
+                        foreach ($detailsData as $detailObj) {
+                            $detailData = $detailObj['detail'];
+                            $currentTransactionWeight +=  $detailData['container_weight'];
+                        }
                     }
-                    $currentTransactionWeight = 0;
-                    foreach ($detailsData as $detailObj) {
-                        $detailData = $detailObj['detail'];
-                        $currentTransactionWeight +=  $detailData['container_weight'];
-                    }
-                    $condition = '';
+
                     if ($currentTransactionWeight > $orderWeight  && $oldTranactionWeight + $currentTransactionWeight > $orderWeight) {
                         return Response::json(array(
                             'status' => 'error', 'message' => 'weight is grater than order weight'
