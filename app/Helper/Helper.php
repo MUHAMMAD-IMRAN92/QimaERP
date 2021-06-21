@@ -208,6 +208,12 @@ function containerType()
             'type' => 'Accumulation Container',
             'user_role' => 0,
         ),
+        29 => array(
+            'id' => 15,
+            'code' => 'SMP',
+            'type' => 'sample Bag',
+            'user_role' => 0,
+        ),
     );
 
     return $arr;
