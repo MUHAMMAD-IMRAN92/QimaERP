@@ -124,7 +124,7 @@ class YOLocalMarketController extends Controller
                 $order->makeHidden('details');
                 //transaction with
 
-                $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->where('sent_to', 194)->get();
+                $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
                 $transactionWeight = 0;
 
                 if ($transactions->count() > 0) {
