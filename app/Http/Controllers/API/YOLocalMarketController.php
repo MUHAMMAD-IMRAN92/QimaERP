@@ -132,7 +132,8 @@ class YOLocalMarketController extends Controller
                     foreach ($transactions as $transaction) {
                         foreach ($transaction->details as $detail) {
                             foreach ($detail->metas as $meta) {
-                                $transactionProduct = $meta->value;
+                                $transactionProductBatch = $meta->value;
+                                $transactionProduct =  Product::where('batch_number', $transactionProductBatch)->first('name');
                                 $transactionProWeight += $detail->container_weight;
                             }
                         }
@@ -144,11 +145,22 @@ class YOLocalMarketController extends Controller
 
                         $orderWeight = $detail->weight;
                         $remWeight = 0;
-                        if ($orderProduct ==  $transactionProduct) {
-                            $detail->weight += $orderWeight - $transactionProWeight;
+                        $isSpecial = $transactionProductBatch[0] == 'S';
+                        if ($isSpecial) {
+                            $orderProduct = "S" . $orderProduct;
+                            if ($orderProduct ==  $transactionProduct) {
+                                $detail->weight += $orderWeight - $transactionProWeight;
+                            } else {
+                                $detail->weight =  $detail->weight;
+                            }
                         } else {
-                            $detail->weight =  $detail->weight;
+                            if ($orderProduct ==  $transactionProduct) {
+                                $detail->weight += $orderWeight - $transactionProWeight;
+                            } else {
+                                $detail->weight =  $detail->weight;
+                            }
                         }
+
 
                         $detail->status = $order->status;
                     }
