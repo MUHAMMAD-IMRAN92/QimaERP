@@ -134,22 +134,21 @@ class YOLocalMarketController extends Controller
                             foreach ($detail->metas as $meta) {
                                 $transactionProduct = $meta->value;
                                 $transactionProWeight += $detail->container_weight;
-
-                                foreach ($order->details as $detail) {
-                                    $detail->actual_weight =  $detail->weight;
-                                    $product =  $detail->product_id;
-                                    $orderProduct = Product::find($product)->name;
-
-                                    $orderWeight = $detail->weight;
-                                    $remWeight = 0;
-                                    if ($orderProduct ==  $transactionProduct) {
-                                        $remWeight += $orderWeight - $transactionProWeight;
-                                    }
-                                    $detail->weight =  $remWeight;
-                                    $detail->status = $order->status;
-                                }
                             }
                         }
+                    }
+                    foreach ($order->details as $detail) {
+                        $detail->actual_weight = $detail->weight;
+                        $product =  $detail->product_id;
+                        $orderProduct = Product::find($product)->name;
+
+                        $orderWeight = $detail->weight;
+                        $remWeight = 0;
+                        if ($orderProduct ==  $transactionProduct) {
+                            $remWeight += $orderWeight - $transactionProWeight;
+                        }
+                        $detail->weight =  $remWeight;
+                        $detail->status = $order->status;
                     }
                 }
 
@@ -519,7 +518,7 @@ class YOLocalMarketController extends Controller
                             'local_code' => $transactionData['local_code'],
                             'is_special' => false,
                             'is_mixed' => $transactionData['is_mixed'],
-                            'transaction_type' =>5,
+                            'transaction_type' => 5,
                             'reference_id' => 0,
                             'transaction_status' => $status,
                             'is_new' => 0,
