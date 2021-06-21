@@ -106,7 +106,7 @@ class UkQuality extends Controller
 
                     $sentTo = $transactionData['sent_to'];
 
-                    if ($sentTo == 45) {
+                    if ($sentTo == 44) {
 
                         $status = 'sent';
                         $type = 'sent_to_Admin';
@@ -120,6 +120,11 @@ class UkQuality extends Controller
                             $type,
                             $transactionType
                         );
+                        Transaction::where('transaction_id',  $transactionData['reference_id'])->first()
+                            ->update([
+                                'is_parent' =>  $transaction->transaction_id,
+                            ]);
+
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
