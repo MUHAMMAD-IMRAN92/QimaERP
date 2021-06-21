@@ -146,6 +146,7 @@ class YOLocalMarketController extends Controller
                                         $remWeight += $orderWeight - $transactionProWeight;
                                     }
                                     $detail->weight =  $remWeight;
+                                    $detail->status = $order->status;
                                 }
                             }
                         }
