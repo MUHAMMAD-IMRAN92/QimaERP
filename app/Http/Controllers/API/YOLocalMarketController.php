@@ -63,7 +63,7 @@ class YOLocalMarketController extends Controller
     {
         $transactions = Transaction::where('is_parent', 0)
             ->whereIn('sent_to', [20, 193, 194, 195])
-            ->whereIn('transaction_type', [1, 3, 5])
+            ->whereIn('transaction_type', [3, 5])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -447,7 +447,7 @@ class YOLocalMarketController extends Controller
                             'local_code' => $transactionData['local_code'],
                             'is_special' => false,
                             'is_mixed' => $transactionData['is_mixed'],
-                            'transaction_type' => $transactionType,
+                            'transaction_type' => 5,
                             'reference_id' => 0,
                             'transaction_status' => $status,
                             'is_new' => 0,
@@ -519,7 +519,7 @@ class YOLocalMarketController extends Controller
                             'local_code' => $transactionData['local_code'],
                             'is_special' => false,
                             'is_mixed' => $transactionData['is_mixed'],
-                            'transaction_type' => $transactionType,
+                            'transaction_type' =>5,
                             'reference_id' => 0,
                             'transaction_status' => $status,
                             'is_new' => 0,
