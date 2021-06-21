@@ -461,7 +461,17 @@ class YOLocalMarketController extends Controller
                         $log->center_name = null;
 
                         $transaction->log()->save($log);
+                        $details = $oldTranaction->details;
 
+                        foreach ($details as $detail) {
+                            $newDetail =  $detail->replicate()->fill([]);
+
+                            $newDetail->save();
+
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
+                        }
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
