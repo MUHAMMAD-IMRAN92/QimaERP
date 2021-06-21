@@ -379,9 +379,7 @@ class YOLocalMarketController extends Controller
 
                     $orderWeight = 0;
                     foreach ($orders as $order) {
-                        foreach ($order->details as $detail) {
-                            $orderWeight += $detail->weight;
-                        }
+                        $orderWeight += $order->details->sum('weight');
                     }
                     $currentTransactionWeight = 0;
                     foreach ($detailsData as $detailObj) {
