@@ -132,7 +132,7 @@ class YOLocalMarketController extends Controller
                     foreach ($transactions as $transaction) {
                         foreach ($transaction->details as $detail) {
                             foreach ($detail->metas as $meta) {
-                              return $transactionProduct = $meta->value;
+                                $transactionProduct = $meta->value;
                                 $transactionProWeight += $detail->container_weight;
                             }
                         }
@@ -141,7 +141,7 @@ class YOLocalMarketController extends Controller
                         $detail->actual_weight = $detail->weight;
                         $product =  $detail->product_id;
                         $orderProduct = Product::find($product)->name;
-                        
+
                         $orderWeight = $detail->weight;
                         $remWeight = 0;
                         if ($orderProduct ==  $transactionProduct) {
