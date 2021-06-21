@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Order;
 use Exception;
 use Throwable;
+use App\Product;
 use App\Container;
 use App\BatchNumber;
 use App\Transaction;
@@ -125,21 +126,30 @@ class YOLocalMarketController extends Controller
                 //transaction with
 
                 $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
-                $transactionWeight = 0;
+                $transactionProWeight = 0;
 
                 if ($transactions->count() > 0) {
                     foreach ($transactions as $transaction) {
-                        $transactionWeight += $transaction->details->sum('container_weight');
-                    }
-                }
-                // return  $transactionWeight;
-                $orderWeight = $details->sum('weight');
-                $newWeight =  $orderWeight - $transactionWeight;
+                        foreach ($transaction->details as $detail) {
+                            foreach ($detail->metas as $meta) {
+                                $transactionProduct = $meta->value;
+                                $transactionProWeight += $detail->container_weight;
 
-                foreach ($details as $detail) {
-                    $detail->actual_weight = $detail->weight;
-                    $detail->weight = $newWeight;
-                    $detail->status = $order->status;
+                                foreach ($order->details as $detail) {
+                                    $detail->actual_weight =  $detail->weight;
+                                    $product =  $detail->product_id;
+                                    $orderProduct = Product::find($product)->name;
+
+                                    $orderWeight = $detail->weight;
+                                    $remWeight = 0;
+                                    if ($orderProduct ==  $transactionProduct) {
+                                        $remWeight += $orderWeight - $transactionProWeight;
+                                    }
+                                    $detail->weight =  $remWeight;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 return [
