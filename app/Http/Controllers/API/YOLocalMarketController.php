@@ -554,7 +554,7 @@ class YOLocalMarketController extends Controller
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,
-                            $transaction->transaction_id,
+                            $oldTranaction->transaction_id,
                             $transaction->reference_id
                         );
 
