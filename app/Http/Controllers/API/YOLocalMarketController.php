@@ -378,16 +378,16 @@ class YOLocalMarketController extends Controller
                     }
 
                     $orderWeight = 0;
-                    $condition = '';
+
                     foreach ($orders as $order) {
                         $orderWeight += $order->details->sum('weight');
-
-                        $currentTransactionWeight = 0;
-                        foreach ($detailsData as $detailObj) {
-                            $detailData = $detailObj['detail'];
-                            $currentTransactionWeight +=  $detailData['container_weight'];
-                        }
                     }
+                    $currentTransactionWeight = 0;
+                    foreach ($detailsData as $detailObj) {
+                        $detailData = $detailObj['detail'];
+                        $currentTransactionWeight +=  $detailData['container_weight'];
+                    }
+                    $condition = '';
 
                     if ($currentTransactionWeight > $orderWeight  && $oldTranactionWeight + $currentTransactionWeight > $orderWeight) {
                         return Response::json(array(
@@ -550,6 +550,15 @@ class YOLocalMarketController extends Controller
                                 'container_status' => 1
                             ]);
                         }
+
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+
                         $oldTranaction->load(['details.metas']);
                         $savedTransactions->push($oldTranaction);
                     }
