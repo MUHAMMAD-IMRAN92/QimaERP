@@ -139,6 +139,7 @@ class YOLocalMarketController extends Controller
                 foreach ($details as $detail) {
                     $detail->weight = $newWeight;
                     $detail->actual_weight = $orderWeight;
+                    $detail->status = $order->status;
                 }
 
                 return [
