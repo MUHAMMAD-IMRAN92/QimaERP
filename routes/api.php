@@ -128,7 +128,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::post('so_coffee_sorting', 'API\SOCoffeeSortingController@sendCoffee');
         //For Local Market Coffee
         Route::get('yo_local_market', 'API\YOLocalMarketController@getCoffee');
+        Route::get('yo_local_market/prepaired', 'API\YOLocalMarketController@prepaired');
         Route::post('yo_local_market', 'API\YOLocalMarketController@sendCoffee');
+
 
         // Yemene Operative Export Coffee
         Route::get('yo_export_coffee', 'API\YOExportController@get');
