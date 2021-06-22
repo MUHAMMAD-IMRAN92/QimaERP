@@ -23,6 +23,7 @@
     <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('public/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- JQVMap -->
+    <link rel="stylesheet" href="{{ asset('public/plugins/jqvmap/jqvmap.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('public/dist/css/adminlte.min.css') }}">
     <!-- overlayScrollbars -->
@@ -326,7 +327,28 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item {{ Request::is('admin/uk_warehouse/*') ? 'menu-open' : '' }}">
+                        <a href="" class="nav-link ">
+                            <i class="nav-icon fas fa-box"></i>
+                            <p>
+                                UK WareHOuse
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview pl-2 nav-dropdown">
+                            <li class="nav-item">
+                                <a href="{{ url('admin/uk_warehouse/set_price') }}"
+                                    class="nav-link {{ Request::is('admin/uk_warehouse/set_price') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-dollar-sign"></i>
+                                    <p>
+                                        Set Prices
+                                    </p>
+                                </a>
+                            </li>
 
+
+                        </ul>
+                    </li>
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/governorweight"
                             class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
@@ -349,7 +371,6 @@
                             </p>
                         </a>
                     </li>
-
 
                 </ul>
             </nav>

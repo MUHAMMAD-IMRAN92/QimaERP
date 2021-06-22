@@ -216,5 +216,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/system_defination/{genetic}', 'SystemDefinationController@delete')->name('systemdefination.del');
         Route::get('/system_defination/edit/{genetic}', 'SystemDefinationController@edit')->name('systemdefination.edit');
         Route::post('/system_defination/{genetic}', 'SystemDefinationController@update')->name('systemdefination.update');
+        Route::get('product_weights', 'LocalMarketProductsController@weights');
+        Route::get('local_products', 'LocalMarketProductsController@index');
+
+        //uk warehouse
+        Route::get('/uk_warehouse/set_price', 'UkWareHouseController@prices');
     });
 });
