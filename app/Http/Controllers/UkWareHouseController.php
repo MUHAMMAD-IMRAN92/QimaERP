@@ -54,7 +54,7 @@ class UkWareHouseController extends Controller
         // return   $transactionsWS; 
         $selectedMeta = $transactionsWS->meta->where('key', 'Price Per KG');
         return $selectedMeta;
-        if (count($transactionsWS->meta) > 0 && $selectedMeta) {
+        if (count($transactionsWS->meta) > 0 && count($selectedMeta) > 0) {
 
             foreach ($selectedMeta as $metas) {
                 if ($metas->key == 'Price Per KG') {
