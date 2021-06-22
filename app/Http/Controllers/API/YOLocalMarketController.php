@@ -333,16 +333,17 @@ class YOLocalMarketController extends Controller
                         $transaction->transaction_id,
                         $transaction->reference_id
                     );
+
                     $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
 
 
-                    // foreach ($transactions as $transaction) {
-                    //     foreach ($transaction->details as $detail) {
-                    //         $detail->update([
-                    //             'container_status' => 1
-                    //         ]);
-                    //     }
-                    // }
+                    foreach ($transactions as $transaction) {
+                        foreach ($transaction->details as $detail) {
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
+                        }
+                    }
 
                     $accumulatedTransaction->load('details');
 
