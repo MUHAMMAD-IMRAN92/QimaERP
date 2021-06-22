@@ -307,14 +307,12 @@ class YOLocalMarketController extends Controller
                         ->where('transaction_type', 5)->get();
                     $oldWeight = 0;
                     foreach ($transactions as $transaction) {
-                        foreach ($transaction->details as $detail) {
-                            $oldWeight += $detail->container_weight;
-                        }
+                        $oldWeight += $transaction->details->sum('container_weight');
                     }
-
+                    $newWeight = 0;
                     foreach ($detailsData as $detailObj) {
                         $detailData = $detailObj['detail'];
-                        $newWeight  =   $oldWeight - $detailData['container_weight'];
+                        $newWeight  +=   $oldWeight - $detailData['container_weight'];
                     }
 
                     $accumulatedTransaction = Transaction::createGenericAccumulated(
