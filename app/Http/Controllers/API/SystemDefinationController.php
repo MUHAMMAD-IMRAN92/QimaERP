@@ -17,7 +17,7 @@ class SystemDefinationController extends Controller
     public function get()
     {
         $system_defination = SystemDefination::all();
-        $genetices = collect();
+        $genetics = collect();
         $flavours = collect();
 
         $genetics =   $system_defination->filter(function ($query) {
