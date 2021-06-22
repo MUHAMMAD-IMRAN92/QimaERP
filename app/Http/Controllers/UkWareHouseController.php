@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Transaction;
+use App\CoffeeSession;
 use App\MetaTransation;
+use App\TransactionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -53,7 +55,7 @@ class UkWareHouseController extends Controller
         $transactionsWS = Transaction::with('details', 'meta')->find($id);
         // return   $transactionsWS; 
         $selectedMeta = $transactionsWS->meta->where('key', 'Price Per KG');
-        
+
         if (count($transactionsWS->meta) > 0 && count($selectedMeta) > 0) {
 
             foreach ($selectedMeta as $metas) {
@@ -78,5 +80,68 @@ class UkWareHouseController extends Controller
 
 
         return redirect()->route('uk_warehouse.index')->with('msg', 'price added successfully');
+    }
+    public function assignToChaina(Request $request)
+    {
+
+        $request->validate([
+            'transaction' => 'required',
+        ]);
+        $sessionNo = CoffeeSession::max('server_session_id') + 1;
+
+        $transactions = Transaction::with('details', 'meta')->whereIn('transaction_id', $request->transaction)->get();
+
+        foreach ($transactions as $transaction) {
+            $replicatedTransaction = $transaction->replicate()->fill([
+                'transaction_status' => 'allocated_chaina',
+                'created_by' =>   $request->user()->user_id,
+                'sent_to' => 472
+            ]);
+            $replicatedTransaction->save();
+
+            $transaction->is_parent = $replicatedTransaction->transaction_id;
+            $transaction->save();
+
+            $log = new TransactionLog();
+            $log->action = 'sent';
+            $log->created_by =  $request->user()->user_id;
+            $log->entity_id = $transaction->log->entity_id;
+            $log->local_created_at = $replicatedTransaction->local_created_at;
+            $log->local_updated_at = $replicatedTransaction->local_updated_at;
+            $log->type =  'sent_to_yemen_wh_op';
+            $log->center_name = $transaction->log->center_name;
+
+            $replicatedTransaction->log()->save($log);
+
+            foreach ($transaction->details as $detail) {
+                $replicatedDetail = $detail->replicate()->fill([
+                    'transaction_id' => $replicatedTransaction->transaction_id,
+                    'created_by' => $request->user()->user_id,
+                    'is_local' => false,
+                    'local_code' => null,
+                    'container_status' => 0,
+                    'reference_id' => $transaction->transaction_id
+                ]);
+
+                $detail->container_status = 1;
+                $detail->save();
+
+
+                $replicatedDetail->save();
+
+                foreach ($detail->metas as $meta) {
+                    $replicatedMeta = $meta->replicate()->fill([
+                        'transaction_detail_id' => $replicatedDetail->transaction_detail_id
+                    ]);
+
+                    $replicatedMeta->save();
+                }
+            }
+            foreach ($transaction->meta as $metas) {
+                $replicatedDetail = $metas->replicate()->fill([]);
+            }
+        }
+        
+        return back()->with('msg', 'Allocated To Chaina');
     }
 }

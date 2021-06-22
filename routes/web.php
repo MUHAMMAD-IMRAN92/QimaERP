@@ -223,5 +223,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/uk_warehouse/index', 'UkWareHouseController@index')->name('uk_warehouse.index');
         Route::get('/uk_warehouse/set_price/{id}', 'UkWareHouseController@prices')->name('uk.setPrice');
         Route::post('/uk_warehouse/post_price/{id}', 'UkWareHouseController@post');
+        Route::post('/uk_warehouse/assignToChaina', 'UkWareHouseController@assignToChaina')->name('uk.assigntochaina');
+
     });
 });

@@ -68,7 +68,7 @@
         }
 
         .searchfloat {
-            float: right;
+            margin-left: 45%;
         }
 
     </style>
@@ -76,8 +76,14 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
+            @if (session()->has('msg'))
+                <div class="alert alert-success alert-dismissible" id="alert">
+                    {{ session()->get('msg') }}
+                </div>
+            @endif
             <div class="container-fluid">
                 <div class="row mb-2">
+
                     <div class="col-sm-6">
                         <h1><b> Coffee Prices</b></h1>
                     </div>
@@ -98,94 +104,102 @@
                     <div class="card col-lg-12">
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <form action="{{ url('admin/uk_warehouse/assignToChaina') }}" method="POST">
+                                @csrf
+                                <div class="card card-info">
+                                    <div class="row">
+                                        @foreach ($transactionWOS as $transaction)
+                                            <div class="col-md-6">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <span><strong> {{ $transaction->batch_number }}</strong></span>
+
+                                                        @if (count($transaction->meta) > 0)
 
 
-                            <div class="card card-info">
-                                <div class="row">
-                                    @foreach ($transactionWOS as $transaction)
-                                        <div class="col-md-6">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <span><strong> {{ $transaction->batch_number }}</strong></span>
+                                                            @foreach ($transaction->meta as $meta)
+                                                                @if (isset($meta))
+                                                                    <span class="searchfloat"><strong>
+                                                                            Price : {{ $meta->value }}</strong></span>
+                                                                    {{-- @else --}}
+                                                                @endif
 
-                                                    @if (count($transaction->meta) > 0)
+                                                            @endforeach
+                                                        @else
+                                                            <span class="searchfloat"><strong>Price Not
+                                                                    Assigned</strong></span>
 
-
-                                                        @foreach ($transaction->meta as $meta)
-                                                            @if (isset($meta))
-                                                                <span class="searchfloat"><strong>
-                                                                        Price : {{ $meta->value }}</strong></span>
-                                                                {{-- @else --}}
-                                                            @endif
-
+                                                        @endif
+                                                        <span> <input type="checkbox"
+                                                                value="{{ $transaction->transaction_id }}"
+                                                                name="transaction[]" id=""> </span>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        @foreach ($transaction->details as $detail)
+                                                            <table width="100%" style="border: 1px solid black">
+                                                                <tr>
+                                                                    <td> {{ $detail->container_number }}</td>
+                                                                    <td align="center">
+                                                                        {{ $detail->container_weight }}
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         @endforeach
-                                                    @else
-                                                        <span class="searchfloat"><strong>Price Not Assigned</strong></span>
-
-                                                    @endif
-                                                </div>
-                                                <div class="card-body">
-                                                    @foreach ($transaction->details as $detail)
-                                                        <table width="100%" style="border: 1px solid black">
-                                                            <tr>
-                                                                <td> {{ $detail->container_number }}</td>
-                                                                <td align="center">
-                                                                    {{ $detail->container_weight }}
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    @endforeach
-                                                    <br>
-                                                    <a href="{{ url('admin/uk_warehouse/set_price/' . $transaction->transaction_id) }}"
-                                                        class="btn btn-primary">Set Price</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    <div class="col-md-6">
-                                        @foreach ($transactionsWS as $transaction)
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <span><strong> {{ $transaction->batch_number }}</strong></span>
-
-                                                    @if (count($transaction->meta) > 0)
-
-
-                                                        @foreach ($transaction->meta as $meta)
-                                                            @if (isset($meta))
-                                                                <span class="searchfloat"><strong>
-                                                                        Price : {{ $meta->value }}</strong></span>
-                                                                {{-- @else --}}
-                                                            @endif
-
-                                                        @endforeach
-                                                    @else
-                                                        <span class="searchfloat"><strong>Price Not Assigned</strong></span>
-
-                                                    @endif
-
-                                                </div>
-                                                <div class="card-body">
-                                                    @foreach ($transaction->details as $detail)
-                                                        <table width="100%" style="border: 1px solid black">
-                                                            <tr>
-                                                                <td> {{ $detail->container_number }}</td>
-                                                                <td align="center">
-                                                                    {{ $detail->container_weight }}
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    @endforeach
-                                                    <br>
-                                                    <a href="{{ url('admin/uk_warehouse/set_price/' . $transaction->transaction_id) }}"
-                                                        class="btn btn-primary">Set Price</a>
+                                                        <br>
+                                                        <a href="{{ url('admin/uk_warehouse/set_price/' . $transaction->transaction_id) }}"
+                                                            class="btn btn-primary">Set Price</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         @endforeach
+                                        <div class="col-md-6">
+                                            @foreach ($transactionsWS as $transaction)
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <span><strong> {{ $transaction->batch_number }}</strong></span>
+
+                                                        @if (count($transaction->meta) > 0)
+
+
+                                                            @foreach ($transaction->meta as $meta)
+                                                                @if (isset($meta))
+                                                                    <span class="searchfloat"><strong>
+                                                                            Price : {{ $meta->value }}</strong></span>
+                                                                    {{-- @else --}}
+                                                                @endif
+
+                                                            @endforeach
+                                                        @else
+                                                            <span class="searchfloat"><strong>Price Not
+                                                                    Assigned</strong></span>
+
+                                                        @endif
+                                                        <span> <input type="checkbox"
+                                                                value="{{ $transaction->transaction_id }}"
+                                                                name="transaction[]" id=""> </span>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        @foreach ($transaction->details as $detail)
+                                                            <table width="100%" style="border: 1px solid black">
+                                                                <tr>
+                                                                    <td> {{ $detail->container_number }}</td>
+                                                                    <td align="center">
+                                                                        {{ $detail->container_weight }}
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        @endforeach
+                                                        <br>
+                                                        <a href="{{ url('admin/uk_warehouse/set_price/' . $transaction->transaction_id) }}"
+                                                            class="btn btn-primary">Set Price</a>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
+                                <input type="submit" class="btn btn-success" value="Allocate To Chaina ">
+                            </form>
                         </div>
                         <!-- /.col -->
                     </div>
@@ -197,6 +211,5 @@
     </div>
     <script>
         $('#myModal').modal('show');
-
     </script>
 @endsection
