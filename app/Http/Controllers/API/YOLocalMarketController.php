@@ -128,51 +128,9 @@ class YOLocalMarketController extends Controller
                 $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
                 $transactionProWeight = 0;
 
-                if ($transactions->count() > 0) {
-                    foreach ($transactions as $transaction) {
-                        foreach ($transaction->details as $detail) {
-                            foreach ($detail->metas as $meta) {
-                                $transactionProductBatch = $meta->value;
-                                $isSpecial = $transactionProductBatch[0] == 'S';
-                                if ($isSpecial) {
-                                    $str = $transactionProductBatch;
-                                    $transactionProductBatch = substr($str, 1);
-                                    $specialtransactionProduct =  Product::where('batch_number', $transactionProductBatch)->first('name');
-                                    $transactionProduct = 'S' . $specialtransactionProduct;
-                                } else {
-                                    $transactionProduct =  Product::where('batch_number', $transactionProductBatch)->first('name');
-                                }
+                
 
-                                $transactionProWeight += $detail->container_weight;
-                            }
-                        }
-                    }
-                    foreach ($order->details as $detail) {
-                        $detail->actual_weight = $detail->weight;
-                        $product =  $detail->product_id;
-                        if ($detail->is_special) {
-                            $specialPro = Product::find($product)->name;
-                            $orderProduct = 'S' . $specialPro;
-                        } else {
-                            $orderProduct = Product::find($product)->name;
-                        }
-                        $orderWeight = $detail->weight;
-                        // $remWeight = 0;
-                        if ($orderProduct ==  $transactionProduct) {
-                            $detail->weight += $orderWeight - $transactionProWeight;
-                        } else {
-                            $detail->weight =  $detail->weight;
-                        }
 
-                        $detail->status = $order->status;
-                    }
-                } else {
-                    foreach ($order->details as $detail) {
-                        $detail->actual_weight = $detail->weight;
-                        $detail->weight =  $detail->weight;
-                        $detail->status = $order->status;
-                    }
-                }
 
                 return [
                     'order' => $order,
