@@ -53,7 +53,6 @@ class UkWareHouseController extends Controller
         $transactionsWS = Transaction::with('details', 'meta')->find($id);
         if (count($transactionsWS->meta) > 0) {
             $selectedMeta = $transactionsWS->meta->where('key', 'Price Per KG');
-
             foreach ($selectedMeta as $metas) {
                 if ($metas->key == 'Price Per KG') {
                     $metas->update([
