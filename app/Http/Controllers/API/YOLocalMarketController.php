@@ -309,12 +309,12 @@ class YOLocalMarketController extends Controller
                     foreach ($transactions as $transaction) {
                         $oldWeight += $transaction->details->sum('container_weight');
                     }
-                    $newWeight = 0;
+                    $detailWeight = 0;
                     foreach ($detailsData as $detailObj) {
                         $detailData = $detailObj['detail'];
-                        $newWeight  +=    $detailData['container_weight'] - $oldWeight;
+                        $detailWeight +=  $detailData['container_weight'];
                     }
-
+                    $newWeight = $oldWeight - $detailWeight;
                     $accumulatedTransaction = Transaction::createGenericAccumulated(
                         $batchNumber,
                         $request->user()->user_id,
