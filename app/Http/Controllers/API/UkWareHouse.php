@@ -121,20 +121,6 @@ class UkWareHouse extends Controller
                             $transactionType
                         );
 
-                        $transactions = Transaction::with(['meta' => function ($query) {
-                            $query->where('key', 'batch_number');
-                        }])->where('batch_number',  $transaction->batch_number)
-                            ->where('sent_to', 26)
-                            ->get();
-                        foreach ($transactions as $metatransaction) {
-                            foreach ($metatransaction->meta as $metas) {
-                                $meta = new MetaTransation();
-                                $meta->key = $metas->key;
-                                $meta->value = $metas->value;
-                                $transaction->meta()->save($meta);
-                            }
-                        }
-
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,

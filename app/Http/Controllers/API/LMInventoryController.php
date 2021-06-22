@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Transaction;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -66,12 +67,38 @@ class LMInventoryController extends Controller
         $inventory = $productsBatches->map(function ($productData) {
             $batchNumber = $productData['batch_number'];
 
-            $productData['weight'] = TransactionDetail::whereHas('transaction', function ($query) use ($batchNumber) {
-                $query->where('batch_number', $batchNumber)
-                    ->where('is_parent', 0)
-                    ->where('transaction_type', 5);
-            })->sum('container_weight');
+            // $productData['weight'] = TransactionDetail::whereHas('transaction', function ($query) use ($batchNumber) {
+            //     $query->where('batch_number', $batchNumber)
+            //         ->where('is_parent', 0)
+            //         ->where('transaction_type', 5);
+            // })->sum('container_weight');
+            $transactions = Transaction::with(['details' => function ($query) {
+                $query->where('container_status', 0)->where('container_number', '000');
+            }])->where('batch_number', $productData['batch_number'])
+                ->where('is_parent', 0)
+                ->where('transaction_type', 5)->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                foreach ($transaction->details as $detail) {
+                    $weight += $detail->container_weight;
+                }
+            }
+            $productData['rawWeight'] =  $weight;
 
+            $transactions = Transaction::with(['details' => function ($query) {
+                $query->where('container_status', 0)->where('container_number', '!=', '000');
+            }])->where('batch_number', $productData['batch_number'])
+                ->where('is_parent', 0)
+                ->where('transaction_type', 5)->get();
+            $bagweight = 0;
+            foreach ($transactions as $transaction) {
+                foreach ($transaction->details as $detail) {
+                    $bagweight += $detail->container_weight;
+                }
+            }
+            $productData['bagWight'] =  $bagweight;
+
+            $productData['weight'] = $weight + $bagweight;
             return $productData;
         });
 

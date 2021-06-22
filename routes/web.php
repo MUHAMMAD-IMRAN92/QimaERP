@@ -127,7 +127,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('storecontainer', 'ContainerController@store')->middleware('auth');
         Route::get('allcontainer', 'ContainerController@index')->middleware('auth');
         Route::get('container/detail/{id}', 'ContainerController@detail')->middleware('auth');
-        
+
 
         //Season Controller
         Route::get('allseason', 'SeasonController@index')->middleware('auth');
@@ -209,5 +209,17 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/shipping', 'ShipingController@post')->name('shipping.post');
         Route::get('/search', 'ShipingController@search')->name('shipping.search');
 
+        //system Definations
+        Route::get('/system_defination', 'SystemDefinationController@index')->name('systemdefination.index');
+        Route::get('/system_defination/create', 'SystemDefinationController@create')->name('systemdefination.create');
+        Route::post('/system_defination', 'SystemDefinationController@post')->name('systemdefination.post');
+        Route::get('/system_defination/{genetic}', 'SystemDefinationController@delete')->name('systemdefination.del');
+        Route::get('/system_defination/edit/{genetic}', 'SystemDefinationController@edit')->name('systemdefination.edit');
+        Route::post('/system_defination/{genetic}', 'SystemDefinationController@update')->name('systemdefination.update');
+        Route::get('product_weights', 'LocalMarketProductsController@weights');
+        Route::get('local_products', 'LocalMarketProductsController@index');
+
+        //uk warehouse
+        Route::get('/uk_warehouse/set_price', 'UkWareHouseController@prices');
     });
 });
