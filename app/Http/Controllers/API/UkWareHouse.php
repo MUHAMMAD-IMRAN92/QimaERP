@@ -24,7 +24,7 @@ class UkWareHouse extends Controller
     public function get()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [41 , 43])
+            ->whereIn('sent_to', [41, 43])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -47,6 +47,7 @@ class UkWareHouse extends Controller
 
             $detailMetas = [];
             $transactionChilds = [];
+            $transactionMeta = [];
 
             foreach ($transaction->details as $detail) {
                 foreach ($detail->metas as $meta) {
@@ -59,6 +60,9 @@ class UkWareHouse extends Controller
             foreach ($transaction->child as $child) {
                 array_push($transactionChilds, $child);
             }
+            foreach ($transaction->meta as $metas) {
+                array_push($transactionMeta, $metas);
+            }
 
             $transaction->makeHidden('details');
             $transaction->makeHidden('log');
@@ -66,6 +70,7 @@ class UkWareHouse extends Controller
 
             $data = [
                 'transaction' => $transaction,
+                'transactionMeta' =>  $transactionMeta,
                 'transactionDetails' => $transaction->details,
                 'transactionMeta' => $transaction->meta,
                 'detail_metas' => $detailMetas,
