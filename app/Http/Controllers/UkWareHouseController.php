@@ -11,9 +11,19 @@ class UkWareHouseController extends Controller
 {
     public function index()
     {
-        $transactionsWOS = Transaction::with('details', 'meta')->where('is_parent', 0)->where('sent_to', 43)->get();
-        // return $transactionsWOS;
-        $transactionsWS = Transaction::with('details', 'meta')->where('is_parent', 0)->where('sent_to', 44)->get();
+        $transactionsWOS = Transaction::with( [
+                'meta' => function ($query) {
+                    $query->where('key', 'Price Per KG');
+                }
+            ]
+
+        )->with('details')->where('is_parent', 0)->where('sent_to', 43)->get();
+
+        $transactionsWS = Transaction::with( [
+                'meta' => function ($query) {
+                    $query->where('key', 'Price Per KG');
+                }
+            ])->with('details')->where('is_parent', 0)->where('sent_to', 44)->get();
 
         return view('admin.uk_warehouse.set_prices', [
             'transactionWOS' => $transactionsWOS,
