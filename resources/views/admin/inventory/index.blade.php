@@ -122,7 +122,9 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <h5 class="card-title">{{ $product['name'] }}</h5>
-                                                <p class="card-text">Total Weight: <b>{{ $product['weight'] }}</b></p>
+                                                <p class="card-text">Raw Weight: <b>{{ $product['rawWeight'] }}</b></p>
+                                                <p class="card-text">Bags Weight: <b>{{ $product['bagWight'] }}</b></p>
+                                                <p class="card-text"> Weight: <b>{{ $product['weight'] }}</b></p>
                                                 {{-- <a href="#" class="btn btn-primary">Go somewhere</a> --}}
                                             </div>
                                         </div>
@@ -138,7 +140,9 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <h5 class="card-title">{{ $product['name'] }}</h5>
-                                                <p class="card-text">Total Weight: <b>{{ $product['weight'] }}</b></p>
+                                                <p class="card-text">Raw Weight: <b>{{ $product['rawWeight'] }}</b></p>
+                                                <p class="card-text">Bags Weight: <b>{{ $product['bagWight'] }}</b></p>
+                                                <p class="card-text">    Weight: <b>{{ $product['weight'] }}</b></p>
                                                 {{-- <a href="#" class="btn btn-primary">Go somewhere</a> --}}
                                             </div>
                                         </div>
