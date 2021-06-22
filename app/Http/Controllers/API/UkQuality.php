@@ -125,9 +125,10 @@ class UkQuality extends Controller
                             $transactionMeta = new MetaTransation();
                             $transactionMeta->key = $meta->key;
                             $transactionMeta->value = $meta->value;
+                            $transactionMeta->local_created_at = $transaction->local_created_at;
                             $transaction->meta()->save($transactionMeta);
                         }
-                        
+
                         Transaction::where('transaction_id',  $transactionData['reference_id'])->first()
                             ->update([
                                 'is_parent' =>  $transaction->transaction_id,
