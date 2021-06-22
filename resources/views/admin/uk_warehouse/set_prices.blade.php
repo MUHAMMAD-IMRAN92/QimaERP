@@ -148,15 +148,21 @@
                                                 <div class="card-header">
                                                     <span><strong> {{ $transaction->batch_number }}</strong></span>
 
-                                                    @foreach ($transaction->meta as $meta)
-                                                        @if ($meta)
-                                                            <span class="searchfloat"><strong>
-                                                                    Price : {{ $meta->value }}</strong></span>
-                                                        @else
-                                                            <span><strong>Not Assigned</strong></span>
-                                                        @endif
+                                                    @if (count($transaction->meta) > 0)
 
-                                                    @endforeach
+
+                                                        @foreach ($transaction->meta as $meta)
+                                                            @if (isset($meta))
+                                                                <span class="searchfloat"><strong>
+                                                                        Price : {{ $meta->value }}</strong></span>
+                                                                {{-- @else --}}
+                                                            @endif
+
+                                                        @endforeach
+                                                    @else
+                                                        <span class="searchfloat"><strong>Price Not Assigned</strong></span>
+
+                                                    @endif
 
                                                 </div>
                                                 <div class="card-body">

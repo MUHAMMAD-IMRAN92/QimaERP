@@ -40,21 +40,26 @@ class UkWareHouseController extends Controller
             return sendError($errors, 400);
         }
         $transactionsWS = Transaction::with('details', 'meta')->find($id);
-
-        foreach ($transactionsWS as $transaction) {
-            if (isset($transaction->meta)) {
-                foreach ($transaction->meta as $metas) {
-                    if ($metas->key == 'Price Per KG') {
-                        $metas->value = $request->price;
-                        $metas->save();
-                    }
+        if (count($transactionsWS->meta) > 0) {
+            foreach ($transactionsWS->meta as $metas) {
+                if ($metas->key == 'Price Per KG') {
+                    $metas->update([
+                        'value' => $request->price,
+                    ]);
+                } else {
+                    $transactionMeta = new MetaTransation();
+                    $transactionMeta->key = 'Price Per KG';
+                    $transactionMeta->value = $request->price;
+                    $transactionsWS->meta()->save($transactionMeta);
                 }
             }
+        } else {
+            $transactionMeta = new MetaTransation();
+            $transactionMeta->key = 'Price Per KG';
+            $transactionMeta->value = $request->price;
+            $transactionsWS->meta()->save($transactionMeta);
         }
-        $transactionMeta = new MetaTransation();
-        $transactionMeta->key = 'Price Per KG';
-        $transactionMeta->value = $request->price;
-        $transactionsWS->meta()->save($transactionMeta);
+
 
 
         return redirect()->route('uk_warehouse.index')->with('msg', 'price added successfully');
