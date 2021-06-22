@@ -314,7 +314,9 @@ class YOLocalMarketController extends Controller
                         $detailData = $detailObj['detail'];
                         $detailWeight +=  $detailData['container_weight'];
                     }
+
                     $newWeight = $oldWeight - $detailWeight;
+
                     $accumulatedTransaction = Transaction::createGenericAccumulated(
                         $batchNumber,
                         $request->user()->user_id,
@@ -328,9 +330,21 @@ class YOLocalMarketController extends Controller
                     $bag = TransactionDetail::createFromArray(
                         $detailsData,
                         $request->user()->user_id,
-                        $transaction->transaction_id,
-                        $transaction->reference_id
+                        $accumulatedTransaction->transaction_id,
+                        $accumulatedTransaction->reference_id
                     );
+                    // $detail = new TransactionDetail();
+
+                    // $detail->container_number = $detailData['container_weight'];
+                    // $detail->transaction_id =  $accumulatedTransaction->transaction_id;
+                    // $detail->created_by = $request->user()->id;
+                    // $detail->is_local = FALSE;
+                    // $detail->container_weight = $detailData['container_weight'];
+                    // $detail->weight_unit = $detailData['weight_unit'];
+                    // $detail->center_id = $detailData['center_id'];
+                    // $detail->reference_id =  $accumulatedTransaction->reference_id;
+
+                    // $detail->save();
 
                     $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
 
