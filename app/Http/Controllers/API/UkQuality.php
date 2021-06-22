@@ -125,7 +125,6 @@ class UkQuality extends Controller
                                 'is_parent' =>  $transaction->transaction_id,
                             ]);
 
-
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,
