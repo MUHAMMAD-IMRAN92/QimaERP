@@ -101,6 +101,7 @@ class UkQuality extends Controller
 
                 $transactionData = $transactionObj['transaction'];
                 $detailsData = $transactionObj['details'];
+                $transactionMeta =  $transactionObj['transactionMeta'];
 
                 if (isset($transactionData) && $transactionData['is_local']) {
 
@@ -120,6 +121,14 @@ class UkQuality extends Controller
                             $type,
                             $transactionType
                         );
+                        foreach ($transactionMeta  as $meta) {
+                            $transactionMeta = new MetaTransation();
+                            $transactionMeta->key = $meta['key'];
+                            $transactionMeta->value = $meta['value'];
+                            $transactionMeta->local_created_at = $transaction->local_created_at;
+                            $transaction->meta()->save($transactionMeta);
+                        }
+
                         Transaction::where('transaction_id',  $transactionData['reference_id'])->first()
                             ->update([
                                 'is_parent' =>  $transaction->transaction_id,
@@ -132,7 +141,7 @@ class UkQuality extends Controller
                             $transaction->reference_id
                         );
 
-                        $transaction->load(['details.metas']);
+                        $transaction->load(['details.metas' , 'meta']);
                         $savedTransactions->push($transaction);
                     }
                 }
