@@ -24,7 +24,7 @@ class UkQuality extends Controller
     public function get()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [43])
+            ->whereIn('sent_to', [43, 44])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -141,7 +141,7 @@ class UkQuality extends Controller
                             $transaction->reference_id
                         );
 
-                        $transaction->load(['details.metas' , 'meta']);
+                        $transaction->load(['details.metas', 'meta']);
                         $savedTransactions->push($transaction);
                     }
                 }
