@@ -330,7 +330,7 @@ class YOLocalMarketController extends Controller
                     $bag = TransactionDetail::createFromArray(
                         $detailsData,
                         $request->user()->user_id,
-                        $accumulatedTransaction->transaction_id,
+                        $transaction->transaction_id,
                         $accumulatedTransaction->reference_id
                     );
                     // $detail = new TransactionDetail();
