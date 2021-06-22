@@ -166,6 +166,12 @@ class YOLocalMarketController extends Controller
 
                         $detail->status = $order->status;
                     }
+                } else {
+                    foreach ($order->details as $detail) {
+                        $detail->actual_weight = $detail->weight;
+                        $detail->weight =  $detail->weight;
+                        $detail->status = $order->status;
+                    }
                 }
 
                 return [
