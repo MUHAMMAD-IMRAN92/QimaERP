@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\UkWareHouse;
+namespace App\Http\Controllers\API;
 
 use Throwable;
 use App\Transaction;
