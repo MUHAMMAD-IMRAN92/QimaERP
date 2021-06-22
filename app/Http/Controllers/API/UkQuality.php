@@ -141,7 +141,7 @@ class UkQuality extends Controller
                             $transaction->reference_id
                         );
 
-                        $transaction->load(['details.metas']);
+                        $transaction->load(['details.metas' , 'meta']);
                         $savedTransactions->push($transaction);
                     }
                 }
