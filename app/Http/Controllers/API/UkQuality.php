@@ -129,6 +129,8 @@ class UkQuality extends Controller
                             $transaction->meta()->save($transactionMeta);
                         }
 
+                        
+
                         Transaction::where('transaction_id',  $transactionData['reference_id'])->first()
                             ->update([
                                 'is_parent' =>  $transaction->transaction_id,
