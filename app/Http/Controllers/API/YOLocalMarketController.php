@@ -311,8 +311,8 @@ class YOLocalMarketController extends Controller
                     }
                     $newWeight = 0;
                     foreach ($detailsData as $detailObj) {
-                        $detailDatasum = $detailObj['detail']->sum('container_weight');
-                        $newWeight  =   $oldWeight - $detailDatasum;
+                        $detailData = $detailObj['detail'];
+                        $newWeight  +=    $detailData['container_weight'] - $oldWeight;
                     }
 
                     $accumulatedTransaction = Transaction::createGenericAccumulated(
