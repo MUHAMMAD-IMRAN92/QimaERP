@@ -11,7 +11,8 @@ class UkWareHouseController extends Controller
 {
     public function index()
     {
-        $transactionsWOS = Transaction::with( [
+        $transactionsWOS = Transaction::with(
+            [
                 'meta' => function ($query) {
                     $query->where('key', 'Price Per KG');
                 }
@@ -19,11 +20,11 @@ class UkWareHouseController extends Controller
 
         )->with('details')->where('is_parent', 0)->where('sent_to', 43)->get();
 
-        $transactionsWS = Transaction::with( [
-                'meta' => function ($query) {
-                    $query->where('key', 'Price Per KG');
-                }
-            ])->with('details')->where('is_parent', 0)->where('sent_to', 44)->get();
+        $transactionsWS = Transaction::with([
+            'meta' => function ($query) {
+                $query->where('key', 'Price Per KG');
+            }
+        ])->with('details')->where('is_parent', 0)->where('sent_to', 44)->get();
 
         return view('admin.uk_warehouse.set_prices', [
             'transactionWOS' => $transactionsWOS,
@@ -51,7 +52,9 @@ class UkWareHouseController extends Controller
         }
         $transactionsWS = Transaction::with('details', 'meta')->find($id);
         if (count($transactionsWS->meta) > 0) {
-            foreach ($transactionsWS->meta as $metas) {
+            $selectedMeta = $transactionsWS->meta->where('key', 'Price Per KG');
+
+            foreach ($selectedMeta as $metas) {
                 if ($metas->key == 'Price Per KG') {
                     $metas->update([
                         'value' => $request->price,
