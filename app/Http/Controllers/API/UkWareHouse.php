@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\UkWareHouse;
 
 use Throwable;
 use App\Transaction;
@@ -24,7 +24,7 @@ class UkWareHouse extends Controller
     public function get()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [41])
+            ->whereIn('sent_to', [41 , 43])
             ->whereHas(
                 'details',
                 function ($q) {
