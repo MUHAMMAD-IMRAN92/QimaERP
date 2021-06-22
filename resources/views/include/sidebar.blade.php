@@ -337,8 +337,8 @@
                         </a>
                         <ul class="nav nav-treeview pl-2 nav-dropdown">
                             <li class="nav-item">
-                                <a href="{{ url('admin/uk_warehouse/set_price') }}"
-                                    class="nav-link {{ Request::is('admin/uk_warehouse/set_price') ? 'active' : '' }}">
+                                <a href="{{ url('admin/uk_warehouse/index') }}"
+                                    class="nav-link {{ Request::is('admin/uk_warehouse/index') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-dollar-sign"></i>
                                     <p>
                                         Set Prices
