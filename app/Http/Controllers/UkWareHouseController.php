@@ -138,10 +138,11 @@ class UkWareHouseController extends Controller
                 }
             }
             foreach ($transaction->meta as $metas) {
-                $replicatedDetail = $metas->replicate()->fill([]);
+                $replicatedMetas = $metas->replicate()->fill([]);
+                $replicatedMetas->save();
             }
         }
-        
+
         return back()->with('msg', 'Allocated To Chaina');
     }
 }
