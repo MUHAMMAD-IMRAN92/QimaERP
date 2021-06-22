@@ -20,6 +20,7 @@ use App\CoffeeSession;
 use Storage;
 use App\Jobs\TransactionInvoices;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class CoffeeBuyer extends Controller
@@ -265,6 +266,15 @@ class CoffeeBuyer extends Controller
                 } else {
                     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
                 }
+
+                if (!$farmer) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Farmer Not found.',
+                        'data' => []
+                    ]);
+                }
+
                 $newBatch = BatchNumber::create([
                     'batch_number' => $farmer->farmer_code . '-' . $newLastBID,
                     'is_parent' => 0,
@@ -378,6 +388,14 @@ class CoffeeBuyer extends Controller
                 // }
 
                 $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+
+                if (!$farmer) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Farmer Not found.',
+                        'data' => []
+                    ]);
+                }
 
                 $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
             }
@@ -548,7 +566,7 @@ class CoffeeBuyer extends Controller
         }
 
 
-        if($batch_numbers->batch->transactions[0]){
+        if ($batch_numbers->batch->transactions[0]) {
             $session = CoffeeSession::create([
                 'user_id' => $request->user()->user_id,
                 'local_session_id' => $batch_numbers->batch->transactions[0]->transactions->local_session_no,
@@ -983,6 +1001,15 @@ class CoffeeBuyer extends Controller
                 } else {
                     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
                 }
+
+                if (!$farmer) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Farmer Not found.',
+                        'data' => []
+                    ]);
+                }
+                
                 $parentBatchCode = $farmer->farmer_code . '-' . ($lastBatch);
             }
             $parentBatch = BatchNumber::create([

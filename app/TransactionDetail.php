@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class TransactionDetail extends Model
 {
@@ -23,7 +24,13 @@ class TransactionDetail extends Model
         return $this->hasMany(Meta::class, 'transaction_detail_id', 'transaction_detail_id');
     }
 
-    public static function createFromArray($details, $userId, $transactionId, $referenceId)
+    public function weight_meta()
+    {
+        return $this->hasOne(Meta::class, 'transaction_detail_id', 'transaction_detail_id')
+            ->where('key', 'rem_weight');
+    }
+
+    public static function createFromArray($details, $userId, $transactionId, $referenceId, $is_server_id = false)
     {
         $savedDetails = collect();
 
@@ -48,8 +55,6 @@ class TransactionDetail extends Model
             $detail->reference_id = $referenceId;
 
             $detail->save();
-
-            $savedDetails->push($detail);
             // End of saving one Detail
 
             TransactionDetail::where('transaction_id', $referenceId)
@@ -63,14 +68,46 @@ class TransactionDetail extends Model
                     $meta->key = $metaData['key'];
                     $meta->value = $metaData['value'];
                     $detail->metas()->save($meta);
+
+                    if ($meta->key == 'rem_weight' && $meta->value <= 0) {
+                        $detail->container_status = 1;
+                        $detail->save();
+                    }
+
+                    if ($is_server_id) {
+                        $exploded = explode('_',  $meta->key);
+
+                        if ($exploded[0] == 'last') {
+                            $containerNumber  = $exploded[1];
+                            $weight = $meta->value;
+
+                            $weightDetail = TransactionDetail::with('weight_meta')
+                                ->where('transaction_id', $referenceId)
+                                ->where('container_number', $containerNumber)
+                                ->get()
+                                ->first();
+
+                            if ($weightDetail->weight_meta) {
+                                $weightDetail->weight_meta->value -= $weight;
+                                $weightDetail->weight_meta->save();
+
+                                if ($weightDetail->weight_meta->value <= 0) {
+                                    $weightDetail->container_status = 1;
+                                    $weightDetail->save();
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+            $savedDetails->push($detail);
         }
 
         return $savedDetails;
     }
 
-    public static function createAccumulated($userId, $transactionId, $containerWeight)
+    public static function createAccumulated($userId, $transactionId, $containerWeight, $referenceId = 0)
     {
         $accumulationContainer = Container::findOrCreateAccumulated($userId);
 
@@ -80,6 +117,7 @@ class TransactionDetail extends Model
             'created_by' => $userId,
             'container_weight' => $containerWeight,
             'weight_unit' => 'KG',
+            'reference_id' => $referenceId
         ]);
 
         return $accumultedDetail;

@@ -3,6 +3,7 @@
 @section('content')
 
 <?php
+
 $activeTab = 1;
 if (count($batch->sent_transaction) > 0) {
     $activeTab = 2;

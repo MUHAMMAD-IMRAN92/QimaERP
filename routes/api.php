@@ -7,7 +7,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
     Route::post('/login', 'API\AuthController@login');
 
     // Logged In users
-    Route::middleware(['auth:sanctum', 'logger'])->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
 
         //::Common Routes
 
@@ -128,12 +128,36 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::post('so_coffee_sorting', 'API\SOCoffeeSortingController@sendCoffee');
         //For Local Market Coffee
         Route::get('yo_local_market', 'API\YOLocalMarketController@getCoffee');
+        Route::get('yo_local_sales', 'API\YOLocalMarketController@prepaired');
         Route::post('yo_local_market', 'API\YOLocalMarketController@sendCoffee');
+
 
         // Yemene Operative Export Coffee
         Route::get('yo_export_coffee', 'API\YOExportController@get');
         Route::post('yo_export_coffee', 'API\YOExportController@post');
 
         Route::get('yo_local_inventory', 'API\InventoryController@get');
+
+        Route::get('lm_inventory', 'API\LMInventoryController@index');
+
+        Route::get('/packaging_op', 'API\PackagingOpController@get');
+        Route::post('/packaging_op', 'API\PackagingOpController@post');
+
+        //shipping
+        Route::get('/shipping', 'API\ShipingController@get');
+        Route::post('/shipping', 'API\ShipingController@post');
+        Route::get('/shipping/transport', 'API\ShipingController@transport');
+        Route::post('/shipping/transport', 'API\ShipingController@transportPost');
+
+        //Uk WareHouse
+        Route::get('/uk_warehouse', 'API\UkWareHouse@get');
+        Route::post('/uk_warehouse', 'API\UkWareHouse@post');
+
+        //UK Quality
+        Route::get('/uk_quality', 'API\UkQuality@get');
+        Route::post('/uk_quality', 'API\UkQuality@post');
+
+        //system defination
+        Route::get('/system_defination', 'API\SystemDefinationController@get');
     });
 });

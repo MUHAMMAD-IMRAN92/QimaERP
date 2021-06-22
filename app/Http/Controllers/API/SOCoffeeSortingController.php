@@ -170,7 +170,7 @@ class SOCoffeeSortingController extends Controller
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
 
-                        // Seperate transactions for Peaberry and Export Green Coffee
+                        // Seperate transactions for Peaberry and Export Green Coffee and defective
                         $peaberryIds = Product::peaberryWithoutDefectsIds();
                         $greenIds = Product::greenWithoutDefectsIds();
                         $defectiveIds = Product::allDefectiveIds();
@@ -284,9 +284,9 @@ class SOCoffeeSortingController extends Controller
 
                         if ($defectiveDetails->isNotEmpty()) {
                             $status = 'sent';
-                            $type = 'sent_to_sales';
+                            $type = 'sent_to_market';
                             $transactionType = 3;
-                            $sentTo = 192;
+                            $sentTo = 20;
 
                             $parentTransaction = Transaction::findParent(
                                 $transactionData['is_server_id'],
@@ -302,7 +302,7 @@ class SOCoffeeSortingController extends Controller
 
                             $hardcodeBatchNumber = BatchNumber::newBatchNumber($gradeThreeCoffeeBatchNumber);
 
-                            $oldBatch = BatchNumber::where('batch_number', $transactionData->batch_number)->first();
+                            $oldBatch = BatchNumber::where('batch_number', $transactionData['batch_number'])->first();
 
                             $batch = BatchNumber::firstOrCreate(
                                 ['batch_number' => $hardcodeBatchNumber],

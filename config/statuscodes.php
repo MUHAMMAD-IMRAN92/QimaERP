@@ -32,6 +32,7 @@ return [
             'ROLE' => 'Role',
             'PROCESS_LIST' => 'Successfully retrieved processes list',
             'YEAST_LIST' => 'Successfully retrieved processes list',
+            'SYSTEM_DEFINATION_REC' => 'Successfully received system defination'
         ],
         // ---------------------- :::::::::::::::::::: ------------------//
         // ---------------------- END - SUCCESS CODES & MESSAGES --------//
@@ -72,6 +73,7 @@ return [
             'ROLE' => 'دور',
             'PROCESS_LIST' => 'تم استرجاع بيانات المعالجة',
             'YEAST_LIST' => 'Successfully retrieved yeast list',
+            'SYSTEM_DEFINATION_REC' => 'تلقى تعريف النظام بنجاح'
         ],
         // ---------------------- :::::::::::::::::::: ------------------//
         // ---------------------- END - SUCCESS CODES & MESSAGES --------//
@@ -86,4 +88,3 @@ return [
         ],
     ]
 ];
-

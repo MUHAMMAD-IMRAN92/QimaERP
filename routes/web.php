@@ -123,9 +123,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('gettransection', 'TransectionController@getTransectionAjax');
 
         //Container Controller
-        Route::get('allcontainer', 'ContainerController@index')->middleware('auth');
         Route::get('addcontainer', 'ContainerController@addcontainer')->middleware('auth');
         Route::post('storecontainer', 'ContainerController@store')->middleware('auth');
+        Route::get('allcontainer', 'ContainerController@index')->middleware('auth');
+        Route::get('container/detail/{id}', 'ContainerController@detail')->middleware('auth');
+
 
         //Season Controller
         Route::get('allseason', 'SeasonController@index')->middleware('auth');
@@ -153,6 +155,13 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('edituser/{id}', 'UserController@edit');
         Route::post('updateuser', 'UserController@update');
         Route::get('deleteuser/{id}', 'UserController@delete');
+
+        //roles
+        Route::get('roles', 'RoleController@index')->name('roles.index');
+        Route::get('roles/create', 'RoleController@create')->name('roles.create');
+        Route::post('roles', 'RoleController@store')->name('roles.store');
+
+
         //adminpasswordreset
         Route::get('resetpassword/{id}', 'UserController@resetpassword');
         Route::post('updatepassword', 'UserController@updatepassword');
@@ -188,8 +197,25 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/inventory', 'InventoryController@index')->name('inventory.index');
 
         Route::get('/orders', 'OrderController@index')->name('orders.index');
+        Route::get('/orders/create', 'OrderController@create')->name('orders.create');
+        Route::get('/orders/{order}', 'OrderController@show')->name('orders.show');
+        Route::post('/orders', 'OrderController@store')->name('orders.store');
 
         Route::get('/customers', 'CustomerController@index');
+        Route::get('/local_inventory', 'LocalMarketProductsController@weights');
+        Route::get('/local_products', 'LocalMarketProductsController@index');
+        //shipping
+        Route::get('/shipping', 'ShipingController@index')->name('shipping.index');
+        Route::post('/shipping', 'ShipingController@post')->name('shipping.post');
+        Route::get('/search', 'ShipingController@search')->name('shipping.search');
+
+        //system Definations
+        Route::get('/system_defination', 'SystemDefinationController@index')->name('systemdefination.index');
+        Route::get('/system_defination/create', 'SystemDefinationController@create')->name('systemdefination.create');
+        Route::post('/system_defination', 'SystemDefinationController@post')->name('systemdefination.post');
+        Route::get('/system_defination/{genetic}', 'SystemDefinationController@delete')->name('systemdefination.del');
+        Route::get('/system_defination/edit/{genetic}', 'SystemDefinationController@edit')->name('systemdefination.edit');
+        Route::post('/system_defination/{genetic}', 'SystemDefinationController@update')->name('systemdefination.update');
         Route::get('product_weights', 'LocalMarketProductsController@weights');
         Route::get('local_products', 'LocalMarketProductsController@index');
 

@@ -208,6 +208,18 @@ function containerType()
             'type' => 'Accumulation Container',
             'user_role' => 0,
         ),
+        29 => array(
+            'id' => 28,
+            'code' => 'SMP-VB',
+            'type' => 'Sample Container Number',
+            'user_role' => 0,
+        ),
+        30 => array(
+            'id' => 29,
+            'code' => 'SMP-PB',
+            'type' => 'Sample Container Number',
+            'user_role' => 0,
+        ),
     );
 
     return $arr;
@@ -267,12 +279,12 @@ function lotNumberGen()
     $year = $currentYear;
     $serial = 1;
 
-    if($maxLotNumber) {
+    if ($maxLotNumber) {
         $maxLotNumber = explode('-', $maxLotNumber);
         $year = $maxLotNumber[1];
         $serial = $maxLotNumber[2] + 1;
 
-        if($currentYear > $year){
+        if ($currentYear > $year) {
             $year = $currentYear;
             $serial = 1;
         }

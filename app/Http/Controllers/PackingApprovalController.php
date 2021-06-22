@@ -46,7 +46,7 @@ class PackingApprovalController extends Controller
             foreach ($transactions as $transaction) {
                 $replicatedTransaction = $transaction->replicate()->fill([
                     'created_by' => $request->user()->user_id,
-                    'local_code' => null,
+                    'local_code' => $transaction->batch_number,
                     'reference_id' => $transaction->transaction_id,
                     'sent_to' => $sentTo,
                     'session_no' => $sessionNo,
@@ -56,9 +56,8 @@ class PackingApprovalController extends Controller
 
                 $replicatedTransaction->save();
 
-                // commented for app team request
-                // $transaction->is_parent = $replicatedTransaction->transaction_id;
-                // $transaction->save();
+                $transaction->is_parent = $replicatedTransaction->transaction_id;
+                $transaction->save();
 
                 $log = new TransactionLog();
                 $log->action = $status;
@@ -71,7 +70,7 @@ class PackingApprovalController extends Controller
 
                 $replicatedTransaction->log()->save($log);
 
-                foreach($transaction->details as $detail){
+                foreach ($transaction->details as $detail) {
                     $replicatedDetail = $detail->replicate()->fill([
                         'transaction_id' => $replicatedTransaction->transaction_id,
                         'created_by' => $userId,
@@ -83,11 +82,10 @@ class PackingApprovalController extends Controller
 
                     $replicatedDetail->save();
 
-                    // commented on just for now on app team request
-                    // $detail->container_status = 1;
-                    // $detail->save();
+                    $detail->container_status = 1;
+                    $detail->save();
 
-                    foreach($detail->metas as $meta){
+                    foreach ($detail->metas as $meta) {
                         $replicatedMeta = $meta->replicate()->fill([
                             'transaction_detail_id' => $replicatedDetail->transaction_detail_id
                         ]);

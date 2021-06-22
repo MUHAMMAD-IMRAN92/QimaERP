@@ -3,6 +3,7 @@
 namespace App;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
@@ -161,6 +162,7 @@ class Transaction extends Model
             'local_created_at' => toSqlDT($transactionData['local_created_at']),
             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
         ]);
+
 
         $log = new TransactionLog();
         $log->action = $status;
