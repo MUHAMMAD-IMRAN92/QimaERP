@@ -123,8 +123,8 @@ class UkQuality extends Controller
                         );
                         foreach ($transactionMeta  as $meta) {
                             $transactionMeta = new MetaTransation();
-                            $transactionMeta->key = $meta->key;
-                            $transactionMeta->value = $meta->value;
+                            $transactionMeta->key = $meta['key'];
+                            $transactionMeta->value = $meta['value'];
                             $transactionMeta->local_created_at = $transaction->local_created_at;
                             $transaction->meta()->save($transactionMeta);
                         }
