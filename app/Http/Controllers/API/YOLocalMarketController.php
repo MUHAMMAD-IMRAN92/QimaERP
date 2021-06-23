@@ -128,67 +128,68 @@ class YOLocalMarketController extends Controller
                 $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
 
                 // return   $transactions;
-                if ($transactions) {
-                    foreach ($transactions as $transaction) {
-                        foreach ($transaction->details as $trandetail) {
-                            foreach ($trandetail->metas as $meta) {
-                                $proBatch_number = $meta->value;
-                                $proIsSpecial =  $proBatch_number[0] == 'S';
-
-
-                                foreach ($order->details as $orddetail) {
-                                    $productId = $orddetail->product_id;
-                                    $orderProduct = Product::where('id',  $productId)->first();
-                                    $ordProName = $orderProduct->name;
-                                    $isSpecialOrder = $orddetail->is_special == 1;
-
-                                    if ($isSpecialOrder &&  $proIsSpecial) {
-                                        $str = $proBatch_number;
-                                        $proBatch_number = substr($str, 1);
-
-                                        $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
-                                        foreach ($tranProNames as $tranProName) {
-                                            if ($tranProName  ==  $ordProName) {
-                                                $orddetail->status = $order->status;
-                                                $orddetail->actual_weight =  $orddetail->weight;
-
-                                                $remWeight = $orddetail->weight -  $trandetail->container_weight;
-                                                $orddetail->weight =  $remWeight;
-                                            } else {
-                                                $orddetail->status = $order->status;
-                                                $orddetail->actual_weight =  $orddetail->weight;
-                                                $orddetail->weight =  $orddetail->weight;
-                                            }
-                                        }
-                                    } elseif ($isSpecialOrder == false &&  $proIsSpecial == false) {
-
-                                        $proBatch_number = $meta->value;
-
-                                        $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
-                                        foreach ($tranProNames as $tranProName) {
-                                            if ($tranProName  ==  $ordProName) {
-                                                $orddetail->status = $order->status;
-                                                $orddetail->actual_weight =  $orddetail->weight;
-
-                                                $remWeight = $orddetail->weight -  $trandetail->container_weight;
-                                                $orddetail->weight =  $remWeight;
-                                            } else {
-                                                $orddetail->status = $order->status;
-                                                $orddetail->actual_weight =  $orddetail->weight;
-                                                $orddetail->weight =  $orddetail->weight;
-                                            }
-                                        }
-                                    } else {
-
-                                        $orddetail->status = $order->status;
-                                        $orddetail->actual_weight =  $orddetail->weight;
-                                        $orddetail->weight =  $orddetail->weight;
-                                    }
-                                }
-                            }
+                $trandetailWeight = 0;
+                $proIsSpecial = false;
+                foreach ($transactions as $transaction) {
+                    $trandetailWeight += $transaction->details->sum('container_weight');
+                    foreach ($transaction->details as $trandetail) {
+                        foreach ($trandetail->metas as $meta) {
+                            $proBatch_number = $meta->value;
+                            $proIsSpecial +=  $proBatch_number[0] == 'S';
                         }
                     }
                 }
+                foreach ($order->details as $orddetail) {
+                    $productId = $orddetail->product_id;
+                    $orderProduct = Product::where('id',  $productId)->first();
+                    $ordProName = $orderProduct->name;
+                    $isSpecialOrder = $orddetail->is_special == 1;
+
+                    if ($isSpecialOrder &&  $proIsSpecial) {
+                        $str = $proBatch_number;
+                        $proBatch_number = substr($str, 1);
+
+                        $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
+                        foreach ($tranProNames as $tranProName) {
+                            if ($tranProName  ==  $ordProName) {
+                                $orddetail->status = $order->status;
+                                $orddetail->actual_weight =  $orddetail->weight;
+
+                                $remWeight = $orddetail->weight -  $trandetailWeight;
+                                $orddetail->weight =  $remWeight;
+                            } else {
+                                $orddetail->status = $order->status;
+                                $orddetail->actual_weight =  $orddetail->weight;
+                                $orddetail->weight =  $orddetail->weight;
+                            }
+                        }
+                    } elseif ($isSpecialOrder == false &&  $proIsSpecial == false) {
+
+                        $proBatch_number = $meta->value;
+
+                        $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
+                        foreach ($tranProNames as $tranProName) {
+                            if ($tranProName  ==  $ordProName) {
+                                $orddetail->status = $order->status;
+                                $orddetail->actual_weight =  $orddetail->weight;
+
+                                $remWeight = $orddetail->weight -  $trandetailWeight;
+                                $orddetail->weight =  $remWeight;
+                            } else {
+                                $orddetail->status = $order->status;
+                                $orddetail->actual_weight =  $orddetail->weight;
+                                $orddetail->weight =  $orddetail->weight;
+                            }
+                        }
+                    } else {
+
+                        $orddetail->status = $order->status;
+                        $orddetail->actual_weight =  $orddetail->weight;
+                        $orddetail->weight =  $orddetail->weight;
+                    }
+                }
+
+
                 return [
                     'order' => $order,
                     'details' => $details,
