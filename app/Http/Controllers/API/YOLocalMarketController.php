@@ -157,7 +157,7 @@ class YOLocalMarketController extends Controller
                                                 return  $orddetail;
                                             }
                                         }
-                                    } elseif ($isSpecialOrder == 0 &&  $proIsSpecial == 0) {
+                                    } elseif ($isSpecialOrder == false &&  $proIsSpecial == false) {
 
                                         $proBatch_number = $meta->value;
 
