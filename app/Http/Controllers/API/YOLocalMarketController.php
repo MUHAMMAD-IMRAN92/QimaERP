@@ -126,7 +126,10 @@ class YOLocalMarketController extends Controller
                 $order->makeHidden('details');
                 //transaction with
 
-                $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
+                $transactions = Transaction::with(['details' =>
+                function ($q) {
+                    $q->where('container_status', 0);
+                }])->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
                 if (count($transactions) == 0) {
                     foreach ($order->details as $detail) {
                         $detail->status = $order->status;
