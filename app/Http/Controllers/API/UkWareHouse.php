@@ -136,6 +136,36 @@ class UkWareHouse extends Controller
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
                     }
+                    if ($sentTo == 473) {
+
+                        $status = 'sent';
+                        $type = 'sent_to_UK_Quality';
+                        $transactionType = 1;
+
+                        $transaction = Transaction::createAndLog(
+                            $transactionData,
+                            $request->user()->user_id,
+                            $status,
+                            $sessionNo,
+                            $type,
+                            $transactionType
+                        );
+
+                        $transactionMeta = new MetaTransation();
+                        $transactionMeta->key = $request->key;
+                        $transactionMeta->value = $request->price;
+                        $transaction->meta()->save($transactionMeta);
+
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+                        $transaction->load(['details.metas']);
+                        $savedTransactions->push($transaction);
+                    }
                 }
             }
             // End of Transaction saving loop
