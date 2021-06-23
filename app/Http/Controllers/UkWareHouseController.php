@@ -143,7 +143,7 @@ class UkWareHouseController extends Controller
             }
             foreach ($transaction->meta as $metas) {
                 $replicatedMetas = $metas->replicate()->fill([
-                    'tranaction_id' =>  $replicatedTransaction
+                    'transaction_id' =>  $replicatedTransaction
                 ]);
                 $replicatedMetas->save();
             }
