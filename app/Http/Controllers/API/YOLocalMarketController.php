@@ -154,7 +154,10 @@ class YOLocalMarketController extends Controller
 
                                                 $remWeight = $orddetail->weight -  $trandetail->container_weight;
                                                 $orddetail->weight =  $remWeight;
-                                                return  $orddetail;
+                                            } else {
+                                                $orddetail->status = $order->status;
+                                                $orddetail->actual_weight =  $orddetail->weight;
+                                                $orddetail->weight =  $orddetail->weight;
                                             }
                                         }
                                     } elseif ($isSpecialOrder == false &&  $proIsSpecial == false) {
@@ -169,7 +172,10 @@ class YOLocalMarketController extends Controller
 
                                                 $remWeight = $orddetail->weight -  $trandetail->container_weight;
                                                 $orddetail->weight =  $remWeight;
-                                                return  $orddetail;
+                                            } else {
+                                                $orddetail->status = $order->status;
+                                                $orddetail->actual_weight =  $orddetail->weight;
+                                                $orddetail->weight =  $orddetail->weight;
                                             }
                                         }
                                     } else {
@@ -177,8 +183,6 @@ class YOLocalMarketController extends Controller
                                         $orddetail->status = $order->status;
                                         $orddetail->actual_weight =  $orddetail->weight;
                                         $orddetail->weight =  $orddetail->weight;
-
-                                        return  $orddetail;
                                     }
                                 }
                             }
