@@ -157,7 +157,7 @@ class YOLocalMarketController extends Controller
                                         return  $orddetail;
                                     }
                                 } elseif (!$isSpecialOrder &&  !$proIsSpecial) {
-                                    $proBatch_number = $proMeta->value;
+                                    $proBatch_number = $meta->value;
                                     $tranProName =   Product::where('batch_number', $proBatch_number)->first('name');
                                     if ($tranProName  ==  $ordProName) {
                                         $orddetail->status = $order->status;
