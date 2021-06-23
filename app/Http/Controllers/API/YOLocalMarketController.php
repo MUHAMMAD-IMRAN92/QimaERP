@@ -132,7 +132,7 @@ class YOLocalMarketController extends Controller
                         $detail->status = $order->status;
                         $detail->remWeigth = $detail->weight;
                     }
-                } else {
+                } elseif (count($transactions) > 0) {
                     foreach ($transactions as $transaction) {
                         $accumulatedWeight =  $transaction->details->sum('container_weight');
                         foreach ($transaction->details as $trandetail) {
