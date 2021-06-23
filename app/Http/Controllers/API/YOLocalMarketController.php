@@ -156,7 +156,8 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight -  $accumulatedWeight;
+                                                $detail->remWeigth =   $order->details->sum('weight')
+                                                    - $accumulatedWeight;
                                             } else {
                                                 $detail->status = $order->status;
                                                 $detail->remWeigth = $detail->weight;
@@ -170,7 +171,8 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight - $accumulatedWeight;
+                                                $detail->remWeigth = $order->details->sum('weight')
+                                                    - $accumulatedWeight;
                                             } else {
                                                 $detail->status = $order->status;
                                                 $detail->remWeigth = $detail->weight;
@@ -178,7 +180,8 @@ class YOLocalMarketController extends Controller
                                         }
                                     } else {
                                         $detail->status = $order->status;
-                                        $detail->remWeigth = $detail->weight - $accumulatedWeight;
+                                        $detail->remWeigth = $order->details->sum('weight')
+                                            - $accumulatedWeight;
                                     }
                                 }
                             }
