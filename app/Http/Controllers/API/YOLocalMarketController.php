@@ -126,17 +126,15 @@ class YOLocalMarketController extends Controller
                 //transaction with
 
                 $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
+
                 // return   $transactions;
-                $transactionProWeight = 0;
                 if ($transactions) {
                     foreach ($transactions as $transaction) {
                         foreach ($transaction->details as $trandetail) {
                             foreach ($trandetail->metas as $meta) {
-                                $proMeta = $meta->where('key', 'product_id');
-                                if ($proMeta) {
-                                    $proBatch_number = $proMeta->value;
-                                    $proIsSpecial =  $proBatch_number[0] == 'S';
-                                }
+                                $proBatch_number = $meta->value;
+                                $proIsSpecial =  $proBatch_number[0] == 'S';
+
 
                                 foreach ($order->details as $orddetail) {
                                     $productId = $orddetail->product_id;
