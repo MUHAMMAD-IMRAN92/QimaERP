@@ -626,7 +626,7 @@ class YOLocalMarketController extends Controller
                             $detailsData,
                             $request->user()->user_id,
                             $oldTranaction->transaction_id,
-                            $transaction->reference_id
+                            $oldTranaction->reference_id
                         );
 
 
