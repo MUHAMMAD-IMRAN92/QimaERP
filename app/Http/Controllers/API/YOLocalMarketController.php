@@ -10,6 +10,7 @@ use App\Container;
 use App\BatchNumber;
 use App\Transaction;
 use App\CoffeeSession;
+use App\MetaTransation;
 use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Support\Str;
@@ -625,6 +626,38 @@ class YOLocalMarketController extends Controller
                         $oldTranaction->load(['details.metas']);
                         $savedTransactions->push($oldTranaction);
                     }
+                }
+                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 198) {
+                    $status = 'sent';
+                    $type = 'order_deliverd';
+                    $transactionType = 1;
+                    $sentTo = 198;
+
+                    $transaction = Transaction::createAndLog(
+                        $transactionData,
+                        $request->user()->user_id,
+                        $status,
+                        $sessionNo,
+                        $type,
+                        $transactionType,
+                        $sentTo
+                    );
+
+                    // $transactionMeta = new MetaTransation();
+                    // $transactionMeta->key = $request->key;
+                    // $transactionMeta->value = $request->price;
+                    // $transaction->meta()->save($transactionMeta);
+
+                    $transactionDetails = TransactionDetail::createFromArray(
+                        $detailsData,
+                        $request->user()->user_id,
+                        $transaction->transaction_id,
+                        $transaction->reference_id
+                    );
+
+                    $transaction->load('details');
+
+                    $savedTransactions->push($transaction);
                 }
             }
 
