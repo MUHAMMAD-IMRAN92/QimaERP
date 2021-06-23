@@ -334,6 +334,7 @@
                                 UK WareHOuse
                                 <i class="fas fa-angle-left right"></i>
                             </p>
+                            
                         </a>
                         <ul class="nav nav-treeview pl-2 nav-dropdown">
                             <li class="nav-item">
