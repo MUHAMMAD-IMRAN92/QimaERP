@@ -112,9 +112,12 @@ class UkWareHouseController extends Controller
             $log->center_name = $transaction->log->center_name;
 
             $replicatedTransaction->log()->save($log);
-            // $detailNSMP =       $transaction->details->where('container_number',  'not like', 'SMP%');
-            // // return $detailNSMP;
-            foreach ($transaction->details as $detail) {
+            $containers = $transaction->details;
+            $detailNSMP = $containers->filter(function ($container) {;
+                return  $container->container_number[0] . $container->container_number[1] . $container->container_number[2] != 'SMP';
+            });
+
+            foreach ($detailNSMP as $detail) {
                 $replicatedDetail = $detail->replicate()->fill([
                     'transaction_id' => $replicatedTransaction->transaction_id,
                     'created_by' => $request->user()->user_id,
@@ -139,7 +142,9 @@ class UkWareHouseController extends Controller
                 }
             }
             foreach ($transaction->meta as $metas) {
-                $replicatedMetas = $metas->replicate()->fill([]);
+                $replicatedMetas = $metas->replicate()->fill([
+                    'tranaction_id' =>  $replicatedTransaction
+                ]);
                 $replicatedMetas->save();
             }
         }

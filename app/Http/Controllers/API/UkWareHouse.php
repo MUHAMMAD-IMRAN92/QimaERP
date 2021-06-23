@@ -40,7 +40,7 @@ class UkWareHouse extends Controller
 
         $allTransactions = array();
 
-
+        return $transactions;
         foreach ($transactions as $transaction) {
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
