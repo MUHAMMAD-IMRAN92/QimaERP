@@ -529,10 +529,16 @@ class YOLocalMarketController extends Controller
                             $details = $oldTranaction->details;
 
                             foreach ($details as $detail) {
+
                                 $newDetail =  $detail->replicate()->fill([]);
 
                                 $newDetail->save();
-
+                                foreach ($detail->metas as $meta) {
+                                    $newMeta =  $meta->replicate()->fill([
+                                        'transaction_detail_id' => $newDetail->transaction_detail_id
+                                    ]);
+                                    $newMeta->save();
+                                }
                                 $detail->update([
                                     'container_status' => 1
                                 ]);
@@ -629,6 +635,7 @@ class YOLocalMarketController extends Controller
                                 $newMeta =  $meta->replicate()->fill([
                                     'transaction_detail_id' => $newDetail->transaction_detail_id
                                 ]);
+                                $newMeta->save();
                             }
                             $detail->update([
                                 'container_status' => 1
