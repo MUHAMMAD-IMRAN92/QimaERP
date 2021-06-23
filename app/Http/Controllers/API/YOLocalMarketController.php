@@ -127,11 +127,20 @@ class YOLocalMarketController extends Controller
 
                 $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
                 $transactionProWeight = 0;
+                foreach ($transactions as $transaction) {
+                    foreach ($transaction->details as $trandetail)
+                        $container_number = $trandetail->container_number;
+                    $isSpecial =  $container_number[0] == 'S';
+                    foreach ($order->details as $orderDetail)
+                        $orderProductId = $orderDetail->product_id;
+                    return   $orderProduct = Product::where('produc_id',  $orderProductId)->first()->name;
+                    if ($orderDetail->is_special == 1 &&  $isSpecial) {
+                        $orderProductId = $orderDetail->product_id;
+                        $orderProduct = Product::where('produc_id',  $orderProductId)->first()->name;
 
-
-
-
-
+                        $tranProduct = Product::where('container_number',  $container_number)->first()->name;
+                    }
+                }
                 return [
                     'order' => $order,
                     'details' => $details,
@@ -374,10 +383,12 @@ class YOLocalMarketController extends Controller
 
                         ]
                     );
+
                     $oldTranactionWeight = 0;
                     $oldTranaction = Transaction::with(['details' => function ($query) {
                         $query->where('container_status', 0);
                     }])->where('batch_number',  $batch->batch_number)->first();
+
                     if ($oldTranaction) {
                         $oldTranactionWeight +=   $oldTranaction->details->sum('container_weight');
                     }
@@ -394,11 +405,7 @@ class YOLocalMarketController extends Controller
                     }
                     $condition = '';
 
-                    if ($currentTransactionWeight > $orderWeight  && $oldTranactionWeight + $currentTransactionWeight > $orderWeight) {
-                        return Response::json(array(
-                            'status' => 'error', 'message' => 'weight is grater than order weight'
-                        ), 499);
-                    } elseif ($orderWeight == $currentTransactionWeight) {
+                    if ($orderWeight == $currentTransactionWeight) {
                         $condition = 'prepaired';
                     } elseif ($oldTranactionWeight + $currentTransactionWeight == $orderWeight) {
                         $condition = 'prepaired';
@@ -454,6 +461,7 @@ class YOLocalMarketController extends Controller
                             'local_created_at' => toSqlDT($transactionData['local_created_at']),
                             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
                         ]);
+
                         $log = new TransactionLog();
                         $log->action = $status;
                         $log->created_by = $request->user()->user_id;
@@ -464,17 +472,20 @@ class YOLocalMarketController extends Controller
                         $log->center_name = null;
 
                         $transaction->log()->save($log);
-                        $details = $oldTranaction->details;
+                        if ($oldTranaction) {
+                            $details = $oldTranaction->details;
 
-                        foreach ($details as $detail) {
-                            $newDetail =  $detail->replicate()->fill([]);
+                            foreach ($details as $detail) {
+                                $newDetail =  $detail->replicate()->fill([]);
 
-                            $newDetail->save();
+                                $newDetail->save();
 
-                            $detail->update([
-                                'container_status' => 1
-                            ]);
+                                $detail->update([
+                                    'container_status' => 1
+                                ]);
+                            }
                         }
+
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
