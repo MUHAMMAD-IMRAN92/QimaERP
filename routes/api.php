@@ -159,5 +159,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         //system defination
         Route::get('/system_defination', 'API\SystemDefinationController@get');
+
+        //Chaina Warehouse
+        Route::get('/chaina', 'API\chainaWareHouseController@get');
+        Route::post('/chaina', 'API\chainaWareHouseController@post');
+
     });
 });
