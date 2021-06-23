@@ -130,7 +130,7 @@ class YOLocalMarketController extends Controller
                 // return   $transactions;
 
                 foreach ($transactions as $transaction) {
-
+                    $accumulatedWeight =  $transaction->details->sum('container_weight');
                     foreach ($transaction->details as $trandetail) {
                         foreach ($trandetail->metas as $meta) {
                             $proBatch_number = $meta->value;
@@ -151,7 +151,7 @@ class YOLocalMarketController extends Controller
                                 foreach ($tranProNames as $tranProName) {
                                     if ($tranProName  ==  $ordProName) {
                                         $detail->status = $order->status;
-                                        $detail->remWeigth = $detail->weight - $trandetail->container_weight;
+                                        $detail->remWeigth = $detail->weight -  $accumulatedWeight;
                                     } else {
                                         $detail->status = $order->status;
                                         $detail->remWeigth = $detail->weight;
@@ -165,7 +165,7 @@ class YOLocalMarketController extends Controller
                                 foreach ($tranProNames as $tranProName) {
                                     if ($tranProName  ==  $ordProName) {
                                         $detail->status = $order->status;
-                                        $detail->remWeigth = $detail->weight - $trandetail->container_weight;
+                                        $detail->remWeigth = $detail->weight -   $accumulatedWeight;
                                     } else {
                                         $detail->status = $order->status;
                                         $detail->remWeigth = $detail->weight;
@@ -174,7 +174,7 @@ class YOLocalMarketController extends Controller
                             } else {
 
                                 $detail->status = $order->status;
-                                $detail->remWeigth = $detail->weight - $trandetail->container_weight;
+                                $detail->remWeigth = $detail->weight -   $accumulatedWeight;
                             }
                         }
                     }
