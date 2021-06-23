@@ -126,21 +126,29 @@ class YOLocalMarketController extends Controller
                 //transaction with
 
                 $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
+                // return   $transactions;
                 $transactionProWeight = 0;
                 foreach ($transactions as $transaction) {
-                    foreach ($transaction->details as $trandetail)
-                        $container_number = $trandetail->container_number;
-                    $isSpecial =  $container_number[0] == 'S';
-                    foreach ($order->details as $orderDetail)
-                        $orderProductId = $orderDetail->product_id;
-                    return   $orderProduct = Product::where('produc_id',  $orderProductId)->first()->name;
-                    if ($orderDetail->is_special == 1 &&  $isSpecial) {
-                        $orderProductId = $orderDetail->product_id;
-                        $orderProduct = Product::where('produc_id',  $orderProductId)->first()->name;
+                    foreach ($transaction->details as $trandetail) {
+                        foreach ($trandetail->metas as $meta) {
+                            $proMeta = $meta->where('key', 'product_id');
+                            if ($proMeta) {
+                                $proBatch_number = $proMeta->value;
+                                $proIsSpecial =  $proBatch_number[0] == 'S';
+                            }
 
-                        $tranProduct = Product::where('container_number',  $container_number)->first()->name;
+                            foreach ($order->details as $orddetail) {
+                                $productId = $orddetail->product_id;
+                                $orderProduct = Product::where('id',  $productId)->get();
+                                $isSpecialOrder = $orddetail->is_special == 1;
+                            }
+                            if ($isSpecialOrder &&  $proIsSpecial) {
+                                
+                            }
+                        }
                     }
                 }
+
                 return [
                     'order' => $order,
                     'details' => $details,
@@ -152,7 +160,6 @@ class YOLocalMarketController extends Controller
             'orders' => $orders
         ]);
     }
-
 
     public function sendCoffee(Request $request)
     {
@@ -635,17 +642,15 @@ class YOLocalMarketController extends Controller
 
         $allTransactions = array();
 
-        foreach ($transactions as $transaction) {
 
-            $transactionDetails = $transaction->details;
-            // $transaction->center_id = $transaction->log->entity_id;
-            // $transaction->center_name = $transaction->log->center_name;
-            $transactionMata = $transaction->meta;
+        foreach ($transactions as $transaction) {
+            $transaction->center_id = $transaction->log->entity_id;
+            $transaction->center_name = $transaction->log->center_name;
 
             $detailMetas = [];
             $transactionChilds = [];
 
-            foreach ($transactionDetails as $detail) {
+            foreach ($transaction->details as $detail) {
                 foreach ($detail->metas as $meta) {
                     array_push($detailMetas, $meta);
                 }
@@ -663,8 +668,8 @@ class YOLocalMarketController extends Controller
 
             $data = [
                 'transaction' => $transaction,
-                'transactionDetails' => $transactionDetails,
-                'transactionMeta' => $transactionMata,
+                'transactionDetails' => $transaction->details,
+                'transactionMeta' => $transaction->meta,
                 'detail_metas' => $detailMetas,
                 'child_transactions' => $transactionChilds,
             ];
@@ -672,8 +677,6 @@ class YOLocalMarketController extends Controller
             array_push($allTransactions, $data);
         }
 
-        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
-            'transactions' => $allTransactions,
-        ]);
+        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
     }
 }
