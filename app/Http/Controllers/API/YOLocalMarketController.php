@@ -136,6 +136,7 @@ class YOLocalMarketController extends Controller
                         foreach ($trandetail->metas as $meta) {
                             $proBatch_number = $meta->value;
                             $proIsSpecial +=  $proBatch_number[0] == 'S';
+                            
                         }
                     }
                 }
