@@ -620,7 +620,6 @@ class YOLocalMarketController extends Controller
     {
         $transactions = Transaction::where('is_parent', 0)
             ->whereIn('sent_to', [195])
-            ->whereIn('transaction_type', [1])
             ->whereHas(
                 'details',
                 function ($q) {
