@@ -135,6 +135,7 @@ class YOLocalMarketController extends Controller
                             if ($proMeta) {
                                 $proBatch_number = $proMeta->value;
                                 $proIsSpecial =  $proBatch_number[0] == 'S';
+                               
                             }
 
                             foreach ($order->details as $orddetail) {
@@ -143,7 +144,7 @@ class YOLocalMarketController extends Controller
                                 $isSpecialOrder = $orddetail->is_special == 1;
                             }
                             if ($isSpecialOrder &&  $proIsSpecial) {
-                                
+
                             }
                         }
                     }

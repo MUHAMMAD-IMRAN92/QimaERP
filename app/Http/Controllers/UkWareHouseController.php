@@ -112,9 +112,9 @@ class UkWareHouseController extends Controller
             $log->center_name = $transaction->log->center_name;
 
             $replicatedTransaction->log()->save($log);
-            $detailNSMP =       $transaction->details->where('container_number',  'not like', 'SMP%');
-            // return $detailNSMP;
-            foreach ($detailNSMP as $detail) {
+            // $detailNSMP =       $transaction->details->where('container_number',  'not like', 'SMP%');
+            // // return $detailNSMP;
+            foreach ($transaction->details as $detail) {
                 $replicatedDetail = $detail->replicate()->fill([
                     'transaction_id' => $replicatedTransaction->transaction_id,
                     'created_by' => $request->user()->user_id,
