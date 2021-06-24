@@ -161,8 +161,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         Route::get('/system_defination', 'API\SystemDefinationController@get');
 
         //Chaina Warehouse
-        Route::get('/chaina', 'API\chainaWareHouseController@get');
-        Route::post('/chaina', 'API\chainaWareHouseController@post');
+        Route::get('/china', 'API\chainaWareHouseController@get');
+        Route::post('/china', 'API\chainaWareHouseController@post');
 
     });
 });
