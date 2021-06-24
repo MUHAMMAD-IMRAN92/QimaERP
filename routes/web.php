@@ -200,6 +200,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/orders/create', 'OrderController@create')->name('orders.create');
         Route::get('/orders/{order}', 'OrderController@show')->name('orders.show');
         Route::post('/orders', 'OrderController@store')->name('orders.store');
+        Route::post('/paidOrder', 'OrderController@paidOrder');
+        
 
         Route::get('/customers', 'CustomerController@index');
         Route::get('/local_inventory', 'LocalMarketProductsController@weights');

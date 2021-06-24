@@ -15,7 +15,7 @@ class OrderController extends Controller
     {
         $orders = Order::with('details')->get();
 
-        $orders = $orders->map(function($order){
+        $orders = $orders->map(function ($order) {
             $order->total = number_format($order->details->sum('total'), 2);
 
             return $order;
@@ -112,5 +112,16 @@ class OrderController extends Controller
         return view('admin.orders.show', [
             'order' => $order
         ]);
+    }
+    public function paidOrder(Request $request)
+    {
+
+        $orders = Order::whereIn('id', $request->order)->get();
+        foreach ($orders as $order) {
+        }
+        $order->update([
+            'status' => 5
+        ]);
+        return back()->with('msg', 'Selected Orders Mark As Piad');
     }
 }
