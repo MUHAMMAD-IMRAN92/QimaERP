@@ -828,9 +828,12 @@ class YOLocalMarketController extends Controller
                             $transactionType,
                             $sentTo
                         );
-                        $oldTransactions->update([
-                            'is_parent' =>  $transaction->transaction_id
-                        ]);
+                        if ($oldTransactions) {
+                            $oldTransactions->update([
+                                'is_parent' =>  $transaction->transaction_id
+                            ]);
+                        }
+
 
                         $details = $oldTransactions->details;
 
@@ -882,9 +885,9 @@ class YOLocalMarketController extends Controller
                         $transactionType,
                         $sentTo
                     );
-                   
+
                     $oldTransaction =  Transaction::where('batch_number', $transactionData['batch_number'])->where('sent_to', 197)->first();
-                
+
                     $oldTransaction->update([
                         'is_parent' => $transaction->transaction_id
                     ]);
