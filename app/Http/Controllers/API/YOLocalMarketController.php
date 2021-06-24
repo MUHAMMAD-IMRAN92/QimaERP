@@ -160,12 +160,13 @@ class YOLocalMarketController extends Controller
                                         $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
-
-
                                                 $detail->status = $order->status;
                                                 $detail->remWeigth = $detail->weight - $trandetail->container_weight;
                                             }
                                         }
+                                    } else {
+                                        $detail->status = $order->status;
+                                        $detail->remWeigth = $detail->weight;
                                     }
 
                                     if ($isSpecialOrder == false &&  $proIsSpecial == false) {
@@ -181,6 +182,9 @@ class YOLocalMarketController extends Controller
                                                 $detail->remWeigth = $detail->weight - $trandetail->container_weight;
                                             }
                                         }
+                                    } else {
+                                        $detail->status = $order->status;
+                                        $detail->remWeigth = $detail->weight;
                                     }
                                 }
                             }
