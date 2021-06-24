@@ -687,7 +687,7 @@ class YOLocalMarketController extends Controller
     public function prepaired(Request $request)
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [195 , 197 , 198])
+            ->whereIn('sent_to', [195, 197, 198])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -883,7 +883,7 @@ class YOLocalMarketController extends Controller
                         $sentTo
                     );
 
-                    $oldTransaction =  Transaction::where('transaction_id', $transactionData['transaction_id'])->first();
+                    $oldTransaction =  Transaction::where('transaction_id', $transactionData['batch_number'])->where('sent_to', 197)->first();
                     $oldTransaction->update([
                         'is_parent' => $transaction->transaction_id
                     ]);
