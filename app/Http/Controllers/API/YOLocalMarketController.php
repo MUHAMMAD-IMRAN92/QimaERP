@@ -166,7 +166,11 @@ class YOLocalMarketController extends Controller
                                                 $detail->remWeigth = $detail->weight;
                                             }
                                         }
-                                    } elseif ($isSpecialOrder == false &&  $proIsSpecial == false) {
+                                    } else {
+                                        $detail->status = $order->status;
+                                        $detail->remWeigth = $detail->weight;
+                                    }
+                                    if ($isSpecialOrder == false &&  $proIsSpecial == false) {
 
                                         $proBatch_number = $meta->value;
 
