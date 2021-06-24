@@ -885,7 +885,7 @@ class YOLocalMarketController extends Controller
 
                     $oldTransaction =  Transaction::where('transaction_id', $transactionData['transaction_id'])->first();
                     $oldTransaction->update([
-                        'is-parent' => $transaction->transaction_id
+                        'is_parent' => $transaction->transaction_id
                     ]);
 
 
