@@ -770,7 +770,7 @@ class YOLocalMarketController extends Controller
 
                     $detailsData = $transactionObj['details'];
                     $transactionPrepaired =  Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
-                        ->where('sent_to', 195)->where('is_parent', 0)->first();
+                        ->where('sent_to', 195)->first();
 
                     $currentTransactionDetail =  count($detailsData);
 
