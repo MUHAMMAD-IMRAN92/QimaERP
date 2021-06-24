@@ -159,13 +159,8 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
 
-                                                $transactions = Transaction::with(['details' =>
-                                                function ($q) {
-                                                    $q->where('container_status', 0);
-                                                }])->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->first()->details->sum('container_weight');
-
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight - $transactions  + $trandetail->container_weight;
+                                                $detail->remWeigth = $detail->weight - $trandetail->container_weight;
                                             }
                                         }
                                     }
@@ -177,13 +172,9 @@ class YOLocalMarketController extends Controller
                                         $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
-                                                $transactions = Transaction::with(['details' =>
-                                                function ($q) {
-                                                    $q->where('container_status', 0);
-                                                }])->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->first()->details->sum('container_weight');
-
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight - $transactions  + $trandetail->container_weight;
+                                                $detail->remWeigth =  $detail->weight
+                                                    - $trandetail->container_weight;
                                             }
                                         }
                                     }
