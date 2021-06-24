@@ -182,6 +182,8 @@ class YOLocalMarketController extends Controller
                                         $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
+                                                $product = Product::where('name', $ordProName)->first()->batch_number;
+                                                $batch =  $product;
                                                 $transaction = Transaction::with(['details' => function ($query) use ($batch) {
                                                     $query->whereHas('metas', function ($query) use ($batch) {
                                                         $query->where('value', $batch);
