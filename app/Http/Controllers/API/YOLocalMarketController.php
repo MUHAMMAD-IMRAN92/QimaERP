@@ -228,7 +228,7 @@ class YOLocalMarketController extends Controller
             foreach ($request->transactions as $transactionObj) {
                 $transactionData = $transactionObj['transaction'];
                 $detailsData = $transactionObj['details'];
-                $transactionMeta =  $transactionObj['transactionMeta'];
+                // $transactionMeta =  $transactionObj['transactionMeta'];
 
 
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 191) {
