@@ -667,7 +667,9 @@ class YOLocalMarketController extends Controller
                         ->where('sent_to', 195)->where('is_parent', 0)->first();
 
                     $currentTransactionDetail =  count($detailsData);
-                    $prepaidTransactionCount = count($transactionPrepaired);
+
+                    $prepaidTransactionCount = count($transactionPrepaired->details);
+
                     if ($currentTransactionDetail ==  $prepaidTransactionCount) {
 
                         $status = 'sent';
@@ -690,9 +692,8 @@ class YOLocalMarketController extends Controller
                             $sentTo
                         );
 
-
                         $transactionPrepaired->update([
-                            'is-parent' => $transaction->transaction_id
+                            'is_parent' => $transaction->transaction_id
                         ]);
 
                         $transactionDetails = TransactionDetail::createFromArray(
@@ -710,7 +711,7 @@ class YOLocalMarketController extends Controller
                         $status = 'sent';
                         $type = 'order_collected_partial';
                         $transactionType = 1;
-                        $sentTo = 196;
+                        $sentTo = 197;
 
                         $transaction = Transaction::createAndLog(
                             $transactionData,
