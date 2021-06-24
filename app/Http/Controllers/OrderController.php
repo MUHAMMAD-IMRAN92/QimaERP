@@ -53,14 +53,15 @@ class OrderController extends Controller
         }
 
         $customer = null;
+        // dd($request->customer);
         $customerData = $request->customer;
-
+        // dd($customerData);
         if ($request->customerId == 0) {
             $customer = Customer::create([
-                'name' => $customerData->name,
-                'phone' => $customerData->phone,
-                'email' => $customerData->email,
-                'address' => $customerData->address
+                'name' => $customerData['name'],
+                'phone' => $customerData['phone'],
+                'email' => $customerData['email'],
+                'address' => $customerData['address']
             ]);
         } else {
             $customer = Customer::find($request->customerId);
