@@ -162,7 +162,7 @@ class YOLocalMarketController extends Controller
                                                 $transactions = Transaction::with(['details' =>
                                                 function ($q) {
                                                     $q->where('container_status', 0);
-                                                }])->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get()->details->sum('container_weight');
+                                                }])->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->first()->details->sum('container_weight');
 
                                                 $detail->status = $order->status;
                                                 $detail->remWeigth = $detail->weight - $transactions  + $trandetail->container_weight;
@@ -180,7 +180,7 @@ class YOLocalMarketController extends Controller
                                                 $transactions = Transaction::with(['details' =>
                                                 function ($q) {
                                                     $q->where('container_status', 0);
-                                                }])->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get()->details->sum('container_weight');
+                                                }])->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->first()->details->sum('container_weight');
 
                                                 $detail->status = $order->status;
                                                 $detail->remWeigth = $detail->weight - $transactions  + $trandetail->container_weight;
