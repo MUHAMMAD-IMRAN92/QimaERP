@@ -660,7 +660,7 @@ class YOLocalMarketController extends Controller
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 197) {
 
                     $oldTransactions = Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
-                        ->where('sent_to', 196)->first();
+                        ->where('sent_to', 197)->first();
 
                     $detailsData = $transactionObj['details'];
                     $transactionPrepaired =  Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
