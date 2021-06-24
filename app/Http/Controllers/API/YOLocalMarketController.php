@@ -657,7 +657,7 @@ class YOLocalMarketController extends Controller
                         $savedTransactions->push($oldTranaction);
                     }
                 }
-                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 196) {
+                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 197) {
                     $oldTransactions = Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
                         ->where('sent_to', 196)->first();
                     $detailsData = $transactionObj['details'];
