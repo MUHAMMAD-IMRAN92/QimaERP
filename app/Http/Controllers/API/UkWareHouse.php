@@ -140,7 +140,7 @@ class UkWareHouse extends Controller
                     if ($sentTo == 473) {
 
                         $status = 'sent';
-                        $type = 'sent_to_UK_Quality';
+                        $type = 'sent_chaina';
                         $transactionType = 1;
 
                         $transaction = Transaction::createAndLog(
