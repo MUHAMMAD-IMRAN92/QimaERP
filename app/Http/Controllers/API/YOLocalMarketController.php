@@ -531,7 +531,9 @@ class YOLocalMarketController extends Controller
 
                             foreach ($details as $detail) {
 
-                                $newDetail =  $detail->replicate()->fill([]);
+                                $newDetail =  $detail->replicate()->fill([
+                                    'transaction_id' =>  $transaction->transaction_id,
+                                ]);
 
                                 $newDetail->save();
                                 foreach ($detail->metas as $meta) {
