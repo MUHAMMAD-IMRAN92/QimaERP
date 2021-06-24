@@ -691,14 +691,6 @@ class YOLocalMarketController extends Controller
                             'is-parent' => $transaction->transaction_id
                         ]);
 
-                        foreach ($transactionMeta  as $meta) {
-                            $transactionMeta = new MetaTransation();
-                            $transactionMeta->key = $meta['key'];
-                            $transactionMeta->value = $meta['value'];
-                            $transactionMeta->local_created_at = $transaction->local_created_at;
-                            $transaction->meta()->save($transactionMeta);
-                        }
-
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,
@@ -728,13 +720,7 @@ class YOLocalMarketController extends Controller
                         $oldTransactions->update([
                             'is_parent' =>  $transaction->transaction_id
                         ]);
-                        foreach ($transactionMeta  as $meta) {
-                            $transactionMeta = new MetaTransation();
-                            $transactionMeta->key = $meta['key'];
-                            $transactionMeta->value = $meta['value'];
-                            $transactionMeta->local_created_at = $transaction->local_created_at;
-                            $transaction->meta()->save($transactionMeta);
-                        }
+
                         $details = $oldTransactions->details;
 
                         foreach ($details as $detail) {
@@ -791,13 +777,7 @@ class YOLocalMarketController extends Controller
                         'is-parent' => $transaction->transaction_id
                     ]);
 
-                    foreach ($transactionMeta  as $meta) {
-                        $transactionMeta = new MetaTransation();
-                        $transactionMeta->key = $meta['key'];
-                        $transactionMeta->value = $meta['value'];
-                        $transactionMeta->local_created_at = $transaction->local_created_at;
-                        $transaction->meta()->save($transactionMeta);
-                    }
+
 
                     $transactionDetails = TransactionDetail::createFromArray(
                         $detailsData,
