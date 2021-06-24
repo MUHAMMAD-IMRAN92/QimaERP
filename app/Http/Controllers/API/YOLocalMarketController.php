@@ -177,7 +177,6 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
 
-
                                                 $detail->status = $order->status;
                                                 $detail->remWeigth = $detail->weight - $trandetail->container_weight;
                                             }
