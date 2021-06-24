@@ -802,6 +802,11 @@ class YOLocalMarketController extends Controller
                             'is_parent' => $transaction->transaction_id
                         ]);
 
+                        if ($oldTransactions) {
+                            $oldTransactions->update([
+                                'is_parent' =>  $transaction->transaction_id
+                            ]);
+                        }
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,
