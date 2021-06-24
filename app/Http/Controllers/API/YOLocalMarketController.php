@@ -159,7 +159,7 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth =   $detail->sum('weight')
+                                                $detail->remWeigth = $detail->weight
                                                     - $trandetail->container_weight;
                                             } else {
                                                 $detail->status = $order->status;
@@ -174,7 +174,7 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth =  $detail->remWeigth =   $detail->sum('weight')
+                                                $detail->remWeigth =  $detail->remWeigth =   $detail->weight
                                                     - $trandetail->container_weight;
                                             } else {
                                                 $detail->status = $order->status;
