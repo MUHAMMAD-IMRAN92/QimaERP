@@ -228,6 +228,8 @@ class YOLocalMarketController extends Controller
             foreach ($request->transactions as $transactionObj) {
                 $transactionData = $transactionObj['transaction'];
                 $detailsData = $transactionObj['details'];
+                $transactionMeta =  $transactionObj['transactionMeta'];
+
 
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 191) {
                     $status = 'received';
@@ -354,7 +356,6 @@ class YOLocalMarketController extends Controller
                         $savedTransactions->push($accumulatedTransaction);
                     }
                 }
-
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
                     $savedTransactions = collect();
                     $batchNumber = $transactionData['batch_number'];
@@ -660,12 +661,103 @@ class YOLocalMarketController extends Controller
                     $detailsData = $transactionObj['details'];
                     $transactionPrepaired =  Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
                         ->where('sent_to', 195)->first();
+
+                    $currentTransactionDetail =  count($detailsData);
+                    $prepaidTransactionCount = count($transactionPrepaired);
+                    if ($currentTransactionDetail ==  $prepaidTransactionCount) {
+
+                        $status = 'sent';
+                        $type = 'order_collected';
+                        $transactionType = 1;
+                        $sentTo = 196;
+                        $order = Order::where('order_number', $transactionData['batch_number'])->first();
+
+                        $order->update([
+                            'status' => 3
+                        ]);
+
+                        $transaction = Transaction::createAndLog(
+                            $transactionData,
+                            $request->user()->user_id,
+                            $status,
+                            $sessionNo,
+                            $type,
+                            $transactionType,
+                            $sentTo
+                        );
+
+
+                        $transactionPrepaired->update([
+                            'is-parent' => $transaction->transaction_id
+                        ]);
+
+                        foreach ($transactionMeta  as $meta) {
+                            $transactionMeta = new MetaTransation();
+                            $transactionMeta->key = $meta['key'];
+                            $transactionMeta->value = $meta['value'];
+                            $transactionMeta->local_created_at = $transaction->local_created_at;
+                            $transaction->meta()->save($transactionMeta);
+                        }
+
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+                        $transaction->load('details');
+
+                        $savedTransactions->push($transaction);
+                    }
+                    if ($currentTransactionDetail <  $prepaidTransactionCount) {
+                        $status = 'sent';
+                        $type = 'order_collected';
+                        $transactionType = 1;
+                        $sentTo = 196;
+
+                        $transaction = Transaction::createAndLog(
+                            $transactionData,
+                            $request->user()->user_id,
+                            $status,
+                            $sessionNo,
+                            $type,
+                            $transactionType,
+                            $sentTo
+                        );
+                        $oldTransactions->update([
+                            'is_parent' =>  $transaction->transaction_id
+                        ]);
+                        foreach ($transactionMeta  as $meta) {
+                            $transactionMeta = new MetaTransation();
+                            $transactionMeta->key = $meta['key'];
+                            $transactionMeta->value = $meta['value'];
+                            $transactionMeta->local_created_at = $transaction->local_created_at;
+                            $transaction->meta()->save($transactionMeta);
+                        }
+
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+                        $transaction->load('details');
+
+                        $savedTransactions->push($transaction);
+                    }
                 }
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 198) {
                     $status = 'sent';
                     $type = 'order_deliverd';
                     $transactionType = 1;
                     $sentTo = 198;
+                    $order = Order::where('order_number', $transactionData['batch_number'])->first();
+
+                    $order->update([
+                        'status' => 4
+                    ]);
 
                     $transaction = Transaction::createAndLog(
                         $transactionData,
@@ -677,10 +769,18 @@ class YOLocalMarketController extends Controller
                         $sentTo
                     );
 
-                    // $transactionMeta = new MetaTransation();
-                    // $transactionMeta->key = $request->key;
-                    // $transactionMeta->value = $request->price;
-                    // $transaction->meta()->save($transactionMeta);
+                    $oldTransaction =  Transaction::where('transaction_id', $transactionData['transaction_id'])->first();
+                    $oldTransaction->update([
+                        'is-parent' => $transaction->transaction_id
+                    ]);
+
+                    foreach ($transactionMeta  as $meta) {
+                        $transactionMeta = new MetaTransation();
+                        $transactionMeta->key = $meta['key'];
+                        $transactionMeta->value = $meta['value'];
+                        $transactionMeta->local_created_at = $transaction->local_created_at;
+                        $transaction->meta()->save($transactionMeta);
+                    }
 
                     $transactionDetails = TransactionDetail::createFromArray(
                         $detailsData,
