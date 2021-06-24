@@ -159,17 +159,11 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight
-                                                    - $trandetail->container_weight;
-                                            } else {
-                                                $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight;
+                                                $detail->remWeigth = $detail->weight - $trandetail->container_weight;
                                             }
                                         }
-                                    } else {
-                                        $detail->status = $order->status;
-                                        $detail->remWeigth = $detail->weight;
                                     }
+
                                     if ($isSpecialOrder == false &&  $proIsSpecial == false) {
 
                                         $proBatch_number = $meta->value;
@@ -178,16 +172,10 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth =  $detail->remWeigth =   $detail->weight
+                                                $detail->remWeigth =  $detail->weight
                                                     - $trandetail->container_weight;
-                                            } else {
-                                                $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight;
                                             }
                                         }
-                                    } else {
-                                        $detail->status = $order->status;
-                                        $detail->remWeigth = $detail->weight;
                                     }
                                 }
                             }
