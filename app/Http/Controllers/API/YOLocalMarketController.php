@@ -658,8 +658,10 @@ class YOLocalMarketController extends Controller
                     }
                 }
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 197) {
+
                     $oldTransactions = Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
                         ->where('sent_to', 196)->first();
+
                     $detailsData = $transactionObj['details'];
                     $transactionPrepaired =  Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
                         ->where('sent_to', 195)->first();
@@ -671,7 +673,7 @@ class YOLocalMarketController extends Controller
                         $status = 'sent';
                         $type = 'order_collected';
                         $transactionType = 1;
-                        $sentTo = 196;
+                        $sentTo = 197;
                         $order = Order::where('order_number', $transactionData['batch_number'])->first();
 
                         $order->update([
