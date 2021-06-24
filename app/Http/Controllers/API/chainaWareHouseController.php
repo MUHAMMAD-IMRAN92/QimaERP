@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
+use Throwable;
 use App\Transaction;
+use App\CoffeeSession;
+use App\MetaTransation;
+use App\TransactionDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class chainaWareHouseController extends Controller
 {
@@ -18,7 +25,7 @@ class chainaWareHouseController extends Controller
     public function get()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [473])
+            ->whereIn('sent_to', [473, 474])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -78,6 +85,97 @@ class chainaWareHouseController extends Controller
     }
     public function post(Request $request)
     {
-        return $request->all();
+        $validator = Validator::make($request->all(), [
+            'transactions' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = implode(',', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+
+        $savedTransactions = collect();
+
+        $sessionNo = CoffeeSession::max('server_session_id') + 1;
+
+        DB::beginTransaction();
+
+        try {
+
+            // Start of Transaction saving loop
+            foreach ($request->transactions as $transactionObj) {
+
+                $transactionData = $transactionObj['transaction'];
+                $detailsData = $transactionObj['details'];
+                $transactionMeta =  $transactionObj['transactionMeta'];
+
+                if (isset($transactionData) && $transactionData['is_local']) {
+
+                    $sentTo = $transactionData['sent_to'];
+
+                    if ($sentTo == 474) {
+
+                        $status = 'sent';
+                        $type = 'post_from_chaina';
+                        $transactionType = 1;
+
+                        $transaction = Transaction::createAndLog(
+                            $transactionData,
+                            $request->user()->user_id,
+                            $status,
+                            $sessionNo,
+                            $type,
+                            $transactionType
+                        );
+                        foreach ($transactionMeta  as $meta) {
+                            $transactionMeta = new MetaTransation();
+                            $transactionMeta->key = $meta['key'];
+                            $transactionMeta->value = $meta['value'];
+                            $transactionMeta->local_created_at = $transaction->local_created_at;
+                            $transaction->meta()->save($transactionMeta);
+                        }
+
+                        Transaction::where('transaction_id',  $transactionData['reference_id'])->first()
+                            ->update([
+                                'is_parent' =>  $transaction->transaction_id,
+                            ]);
+
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+                        $transaction->load(['details.metas', 'meta']);
+                        $savedTransactions->push($transaction);
+                    }
+                }
+            }
+            // End of Transaction saving loop
+            DB::commit();
+        } catch (Throwable $th) {
+            DB::rollback();
+            return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
+                'line' => $th->getLine()
+            ]), 499);
+        }
+
+        // Start of setting session
+        if ($savedTransactions->isNotEmpty()) {
+            CoffeeSession::create([
+                'user_id' => $request->user()->user_id,
+                'local_session_id' => $savedTransactions->first()->local_session_no,
+                'server_session_id' => $sessionNo
+            ]);
+        } else {
+            $sessionNo--;
+        }
+        // End of setting session
+
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
+            'session_no' => $sessionNo,
+            'transactions' => $savedTransactions,
+        ]);
     }
 }
