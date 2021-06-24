@@ -158,9 +158,19 @@ class YOLocalMarketController extends Controller
                                         $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
-
+                                                $product = Product::where('name', $ordProName)->first()->batch_number;
+                                                $batch = 'S' . $product;
+                                                $transaction = Transaction::with(['details' => function ($query) use ($batch) {
+                                                    $query->whereHas('metas', function ($query) use ($batch) {
+                                                        $query->where('value', $batch);
+                                                    });
+                                                }])->whereIn('sent_to', [194, 195])->get();;
+                                                $oldweightofget = 0;
+                                                if ($transaction) {
+                                                    $oldweightofget += $transaction->details->sum('container_weight');
+                                                }
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight - $trandetail->container_weight;
+                                                $detail->remWeigth = $detail->weight -  $oldweightofget + $trandetail->container_weight;
                                             }
                                         }
                                     }
@@ -172,9 +182,17 @@ class YOLocalMarketController extends Controller
                                         $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
+                                                $transaction = Transaction::with(['details' => function ($query) use ($batch) {
+                                                    $query->whereHas('metas', function ($query) use ($batch) {
+                                                        $query->where('value', $batch);
+                                                    });
+                                                }])->whereIn('sent_to', [194, 195])->get();
+                                                $oldweightofget = 0;
+                                                if ($transaction) {
+                                                    $oldweightofget += $transaction->details->sum('container_weight');
+                                                }
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth =  $detail->weight
-                                                    - $trandetail->container_weight;
+                                                $detail->remWeigth = $detail->weight -  $oldweightofget + $trandetail->container_weight;
                                             }
                                         }
                                     }
