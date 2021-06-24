@@ -153,8 +153,8 @@ class UkWareHouse extends Controller
                         );
                         foreach ($transactionMeta as $meta) {
                             $transactionMeta = new MetaTransation();
-                            $transactionMeta->key = $meta->key;
-                            $transactionMeta->value = $meta->price;
+                            $transactionMeta->key = $meta['key'];
+                            $transactionMeta->value = $meta['value'];
                             $transaction->meta()->save($transactionMeta);
                         }
 
