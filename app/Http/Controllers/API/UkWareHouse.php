@@ -40,7 +40,7 @@ class UkWareHouse extends Controller
 
         $allTransactions = array();
 
-  
+
         foreach ($transactions as $transaction) {
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
@@ -106,6 +106,7 @@ class UkWareHouse extends Controller
 
                 $transactionData = $transactionObj['transaction'];
                 $detailsData = $transactionObj['details'];
+                $transactionMeta =  $transactionObj['transactionMeta'];
 
                 if (isset($transactionData) && $transactionData['is_local']) {
 
@@ -150,11 +151,12 @@ class UkWareHouse extends Controller
                             $type,
                             $transactionType
                         );
-
-                        $transactionMeta = new MetaTransation();
-                        $transactionMeta->key = $request->key;
-                        $transactionMeta->value = $request->price;
-                        $transaction->meta()->save($transactionMeta);
+                        foreach ($transactionMeta as $meta) {
+                            $transactionMeta = new MetaTransation();
+                            $transactionMeta->key = $meta->key;
+                            $transactionMeta->value = $meta->price;
+                            $transaction->meta()->save($transactionMeta);
+                        }
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
