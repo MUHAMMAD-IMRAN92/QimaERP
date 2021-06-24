@@ -138,7 +138,7 @@ class YOLocalMarketController extends Controller
                 } elseif (count($transactions) > 0) {
 
                     foreach ($transactions as $transaction) {
-                        $accumulatedWeight =  $transaction->details->sum('container_weight');
+                        // $accumulatedWeight =  $transaction->details->sum('container_weight');
                         foreach ($transaction->details as $trandetail) {
                             foreach ($trandetail->metas as $meta) {
                                 $proBatch_number = $meta->value;
@@ -159,8 +159,8 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth =   $order->details->sum('weight')
-                                                    - $accumulatedWeight;
+                                                $detail->remWeigth =   $detail->sum('weight')
+                                                    - $trandetail->container_weight;
                                             } else {
                                                 $detail->status = $order->status;
                                                 $detail->remWeigth = $detail->weight;
@@ -174,8 +174,8 @@ class YOLocalMarketController extends Controller
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $order->details->sum('weight')
-                                                    - $accumulatedWeight;
+                                                $detail->remWeigth =  $detail->remWeigth =   $detail->sum('weight')
+                                                    - $trandetail->container_weight;
                                             } else {
                                                 $detail->status = $order->status;
                                                 $detail->remWeigth = $detail->weight;
@@ -183,8 +183,7 @@ class YOLocalMarketController extends Controller
                                         }
                                     } else {
                                         $detail->status = $order->status;
-                                        $detail->remWeigth = $order->details->sum('weight')
-                                            - $accumulatedWeight;
+                                        $detail->remWeigth = $detail->weight;
                                     }
                                 }
                             }
