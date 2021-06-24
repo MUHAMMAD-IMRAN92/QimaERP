@@ -712,7 +712,7 @@ class YOLocalMarketController extends Controller
                     }
                     if ($currentTransactionDetail <  $prepaidTransactionCount) {
                         $status = 'sent';
-                        $type = 'order_collected';
+                        $type = 'order_collected_partial';
                         $transactionType = 1;
                         $sentTo = 196;
 
@@ -734,6 +734,23 @@ class YOLocalMarketController extends Controller
                             $transactionMeta->value = $meta['value'];
                             $transactionMeta->local_created_at = $transaction->local_created_at;
                             $transaction->meta()->save($transactionMeta);
+                        }
+                        $details = $oldTransactions->details;
+
+                        foreach ($details as $detail) {
+
+                            $newDetail =  $detail->replicate()->fill([]);
+
+                            $newDetail->save();
+                            foreach ($detail->metas as $meta) {
+                                $newMeta =  $meta->replicate()->fill([
+                                    'transaction_detail_id' => $newDetail->transaction_detail_id
+                                ]);
+                                $newMeta->save();
+                            }
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
                         }
 
                         $transactionDetails = TransactionDetail::createFromArray(
