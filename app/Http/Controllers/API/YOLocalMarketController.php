@@ -145,12 +145,14 @@ class YOLocalMarketController extends Controller
                                 $proIsSpecial =  $proBatch_number[0] == 'S';
 
 
+
                                 foreach ($order->details as $detail) {
+
+
                                     $productId = $detail->product_id;
                                     $orderProduct = Product::where('id',  $productId)->first();
                                     $ordProName = $orderProduct->name;
                                     $isSpecialOrder = $detail->is_special == true;
-
                                     if ($isSpecialOrder &&  $proIsSpecial) {
                                         $str = $proBatch_number;
                                         $proBatch_number = substr($str, 1);
@@ -158,19 +160,10 @@ class YOLocalMarketController extends Controller
                                         $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
-                                                $product = Product::where('name', $ordProName)->first()->batch_number;
-                                                $batch = 'S' . $product;
-                                                $transaction = Transaction::with(['details' => function ($query) use ($batch) {
-                                                    $query->whereHas('metas', function ($query) use ($batch) {
-                                                        $query->where('value', $batch);
-                                                    });
-                                                }])->whereIn('sent_to', [194, 195])->get();;
-                                                $oldweightofget = 0;
-                                                if ($transaction) {
-                                                    $oldweightofget += $transaction->details->sum('container_weight');
-                                                }
+
+
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight -  $oldweightofget + $trandetail->container_weight;
+                                                $detail->remWeigth = $detail->weight - $trandetail->container_weight;
                                             }
                                         }
                                     }
@@ -182,19 +175,10 @@ class YOLocalMarketController extends Controller
                                         $tranProNames =   Product::where('batch_number', $proBatch_number)->first('name');
                                         foreach ($tranProNames as $tranProName) {
                                             if ($tranProName  ==  $ordProName) {
-                                                $product = Product::where('name', $ordProName)->first()->batch_number;
-                                                $batch =  $product;
-                                                $transaction = Transaction::with(['details' => function ($query) use ($batch) {
-                                                    $query->whereHas('metas', function ($query) use ($batch) {
-                                                        $query->where('value', $batch);
-                                                    });
-                                                }])->whereIn('sent_to', [194, 195])->get();
-                                                $oldweightofget = 0;
-                                                if ($transaction) {
-                                                    $oldweightofget += $transaction->details->sum('container_weight');
-                                                }
+
+
                                                 $detail->status = $order->status;
-                                                $detail->remWeigth = $detail->weight -  $oldweightofget + $trandetail->container_weight;
+                                                $detail->remWeigth = $detail->weight - $trandetail->container_weight;
                                             }
                                         }
                                     }
