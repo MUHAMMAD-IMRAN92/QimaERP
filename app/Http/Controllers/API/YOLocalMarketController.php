@@ -828,30 +828,31 @@ class YOLocalMarketController extends Controller
                             $transactionType,
                             $sentTo
                         );
+
                         if ($oldTransactions) {
                             $oldTransactions->update([
                                 'is_parent' =>  $transaction->transaction_id
                             ]);
-                        }
+                            $details = $oldTransactions->details;
+                            foreach ($details as $detail) {
 
+                                $newDetail =  $detail->replicate()->fill([]);
 
-                        $details = $oldTransactions->details;
-
-                        foreach ($details as $detail) {
-
-                            $newDetail =  $detail->replicate()->fill([]);
-
-                            $newDetail->save();
-                            foreach ($detail->metas as $meta) {
-                                $newMeta =  $meta->replicate()->fill([
-                                    'transaction_detail_id' => $newDetail->transaction_detail_id
+                                $newDetail->save();
+                                foreach ($detail->metas as $meta) {
+                                    $newMeta =  $meta->replicate()->fill([
+                                        'transaction_detail_id' => $newDetail->transaction_detail_id
+                                    ]);
+                                    $newMeta->save();
+                                }
+                                $detail->update([
+                                    'container_status' => 1
                                 ]);
-                                $newMeta->save();
                             }
-                            $detail->update([
-                                'container_status' => 1
-                            ]);
                         }
+
+
+
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
