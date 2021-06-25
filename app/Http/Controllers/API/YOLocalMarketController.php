@@ -734,8 +734,8 @@ class YOLocalMarketController extends Controller
 
                     if ($currentTransactionDetail ==  $prepaidTransactionCount) {
 
-                        $status = 'sent';
-                        $type = 'order_collected';
+                        $status = 'order_collected';
+                        $type = 'sent';
                         $transactionType = 5;
                         $sentTo = 197;
                         $order = Order::where('order_number', $transactionData['batch_number'])->first();
@@ -775,8 +775,8 @@ class YOLocalMarketController extends Controller
                         $savedTransactions->push($transaction);
                     }
                     if ($currentTransactionDetail <  $prepaidTransactionCount) {
-                        $status = 'sent';
-                        $type = 'order_collected_partial';
+                        $status = 'order_collected_partial';
+                        $type = 'sent';
                         $transactionType = 5;
                         $sentTo = 197;
 
