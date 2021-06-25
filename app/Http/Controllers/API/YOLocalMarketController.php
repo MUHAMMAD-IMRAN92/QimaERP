@@ -448,6 +448,17 @@ class YOLocalMarketController extends Controller
                             ]
                         );
 
+                        $parentTransaction = Transaction::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $request->user()->user_id,);
+
+                        if (!$parentTransaction) {
+                            throw new Exception('Parent transaction not found. reference_id = ' . $transactionData['reference_id']);
+                        }
+
+                        $batchCheck = BatchNumber::where('batch_number', $transactionData['batch_number'])->exists();
+
+                        if (!$batchCheck) {
+                            throw new Exception("Batch Number [{$transactionData['batch_number']}] does not exists.");
+                        }
                         $transaction =  Transaction::create([
                             'batch_number' => $batch->batch_number,
                             'is_parent' => 0,
@@ -457,7 +468,7 @@ class YOLocalMarketController extends Controller
                             'is_special' => false,
                             'is_mixed' => $transactionData['is_mixed'],
                             'transaction_type' => 5,
-                            'reference_id' => $transactionData['reference_id'],
+                            'reference_id' =>  $parentTransaction->transaction_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sentTo ?? $transactionData['sent_to'],
@@ -532,6 +543,17 @@ class YOLocalMarketController extends Controller
                             ]
                         );
 
+                        $parentTransaction = Transaction::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $request->user()->user_id,);
+
+                        if (!$parentTransaction) {
+                            throw new Exception('Parent transaction not found. reference_id = ' . $transactionData['reference_id']);
+                        }
+
+                        $batchCheck = BatchNumber::where('batch_number', $transactionData['batch_number'])->exists();
+
+                        if (!$batchCheck) {
+                            throw new Exception("Batch Number [{$transactionData['batch_number']}] does not exists.");
+                        }
                         $transaction =  Transaction::create([
                             'batch_number' => $batch->batch_number,
                             'is_parent' => 0,
@@ -541,7 +563,7 @@ class YOLocalMarketController extends Controller
                             'is_special' => false,
                             'is_mixed' => $transactionData['is_mixed'],
                             'transaction_type' => 5,
-                            'reference_id' =>$transactionData['reference_id'],
+                            'reference_id' => $parentTransaction->transaction_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sentTo ?? $transactionData['sent_to'],
