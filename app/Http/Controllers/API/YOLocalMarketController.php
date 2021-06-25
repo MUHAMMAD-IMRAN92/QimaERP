@@ -138,13 +138,13 @@ class YOLocalMarketController extends Controller
                         }
                         if ($batch  == $orderPrepared->p_batch_number) {
                             if ($orderPrepared->prepared_weight == 0) {
-                                $detail->rem_weight = $detail->weight;
+                                $detail->remWeigth = $detail->weight;
                             }
                             $weight = $orderPrepared->weight - $orderPrepared->prepared_weight;
                             if ($weight == 0) {
-                                $detail->rem_weight = $detail->weight;
+                                $detail->remWeigth = $detail->weight;
                             } else {
-                                $detail->rem_weight =  $weight;
+                                $detail->remWeigth =  $weight;
                             }
                         }
                     }
