@@ -331,7 +331,7 @@
                         <a href="" class="nav-link ">
                             <i class="nav-icon fas fa-box"></i>
                             <p>
-                                UK WareHOuse
+                                UK WareHouse
                                 <i class="fas fa-angle-left right"></i>
                             </p>
                             
