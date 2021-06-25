@@ -125,7 +125,7 @@ class Transaction extends Model
         return $parentTransaction;
     }
 
-    public static function createAndLog($batch = null, $transactionData, $userId, $status, $sessionNo, $type, $transactionType = 1, $sentTo = null)
+    public static function createAndLog($transactionData, $userId, $status, $sessionNo, $type, $transactionType = 1, $sentTo = null)
     {
         $parentTransaction = self::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $userId);
 
@@ -140,7 +140,7 @@ class Transaction extends Model
         }
 
         $transaction =  static::create([
-            'batch_number' => $batch  ?? $transactionData['batch_number'],
+            'batch_number' => $transactionData['batch_number'],
             'is_parent' => 0,
             'created_by' => $userId,
             'is_local' => FALSE,
