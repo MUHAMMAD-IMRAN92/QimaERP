@@ -56,14 +56,7 @@ class MillOperativeController extends Controller
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent', 'received'])
                     ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
-            })->whereHas(
-                'details',
-                function ($q) {
-                    $q->where('container_status', 0);
-                },
-                '>',
-                0
-            )->with(['details' => function ($query) {
+            })->with(['details' => function ($query) {
                 $query->where('container_status', 0)->with('metas');
             }])->with(['meta', 'child'])
             ->orderBy('transaction_id', 'desc')

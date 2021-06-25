@@ -36,14 +36,7 @@ class SOCoffeeSortingController extends Controller
                 $query->whereIn('sent_to', [22, 23])
                     ->where('transaction_type', 1);
             })
-            ->whereHas(
-                'details',
-                function ($q) {
-                    $q->where('container_status', 0);
-                },
-                '>',
-                0
-            )->with(['details' => function ($query) {
+            ->with(['details' => function ($query) {
                 $query->where('container_status', 0)->with('metas');
             }])->with(['meta', 'child'])
             ->orderBy('transaction_id', 'desc')
