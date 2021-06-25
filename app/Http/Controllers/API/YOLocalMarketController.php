@@ -349,7 +349,7 @@ class YOLocalMarketController extends Controller
                     $bag = TransactionDetail::createFromArray(
                         $detailsData,
                         $request->user()->user_id,
-                        $transaction->transaction_id,
+                        $accumulatedTransaction->transaction_id,
                         $accumulatedTransaction->reference_id
                     );
                     // $detail = new TransactionDetail();
@@ -448,51 +448,18 @@ class YOLocalMarketController extends Controller
                             ]
                         );
 
-                        $parentTransaction = Transaction::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $request->user()->user_id,);
 
-                        if (!$parentTransaction) {
-                            throw new Exception('Parent transaction not found. reference_id = ' . $transactionData['reference_id']);
-                        }
+                        $transaction = Transaction::createAndLog(
+                            $batch->batch_number,
+                            $transactionData,
+                            $request->user()->user_id,
+                            $status,
+                            $sessionNo,
+                            $type,
+                            $transactionType,
+                            $sentTo
+                        );
 
-                        $batchCheck = BatchNumber::where('batch_number', $transactionData['batch_number'])->exists();
-
-                        if (!$batchCheck) {
-                            throw new Exception("Batch Number [{$transactionData['batch_number']}] does not exists.");
-                        }
-                        $transaction =  Transaction::create([
-                            'batch_number' => $batch->batch_number,
-                            'is_parent' => 0,
-                            'created_by' =>  $request->user()->user_id,
-                            'is_local' => FALSE,
-                            'local_code' => $transactionData['local_code'],
-                            'is_special' => false,
-                            'is_mixed' => $transactionData['is_mixed'],
-                            'transaction_type' => 5,
-                            'reference_id' =>  $parentTransaction->transaction_id,
-                            'transaction_status' => $status,
-                            'is_new' => 0,
-                            'sent_to' => $sentTo ?? $transactionData['sent_to'],
-                            'is_server_id' => true,
-                            'is_sent' => $transactionData['is_sent'],
-                            'session_no' => $sessionNo,
-                            'ready_to_milled' => $transactionData['ready_to_milled'],
-                            'is_in_process' => $transactionData['is_in_process'],
-                            'is_update_center' => array_key_exists('is_update_center', $transactionData) ? $transactionData['is_update_center'] : false,
-                            'local_session_no' => array_key_exists('local_session_no', $transactionData) ? $transactionData['local_session_no'] : false,
-                            'local_created_at' => toSqlDT($transactionData['local_created_at']),
-                            'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
-                        ]);
-
-                        $log = new TransactionLog();
-                        $log->action = $status;
-                        $log->created_by = $request->user()->user_id;
-                        $log->entity_id = 0;
-                        $log->local_created_at = $transaction->local_created_at;
-                        $log->local_updated_at = $transaction->local_updated_at;
-                        $log->type =  $type;
-                        $log->center_name = null;
-
-                        $transaction->log()->save($log);
                         if ($oldTranaction) {
                             $details = $oldTranaction->details;
 
@@ -543,51 +510,17 @@ class YOLocalMarketController extends Controller
                             ]
                         );
 
-                        $parentTransaction = Transaction::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $request->user()->user_id,);
 
-                        if (!$parentTransaction) {
-                            throw new Exception('Parent transaction not found. reference_id = ' . $transactionData['reference_id']);
-                        }
-
-                        $batchCheck = BatchNumber::where('batch_number', $transactionData['batch_number'])->exists();
-
-                        if (!$batchCheck) {
-                            throw new Exception("Batch Number [{$transactionData['batch_number']}] does not exists.");
-                        }
-                        $transaction =  Transaction::create([
-                            'batch_number' => $batch->batch_number,
-                            'is_parent' => 0,
-                            'created_by' =>  $request->user()->user_id,
-                            'is_local' => FALSE,
-                            'local_code' => $transactionData['local_code'],
-                            'is_special' => false,
-                            'is_mixed' => $transactionData['is_mixed'],
-                            'transaction_type' => 5,
-                            'reference_id' => $parentTransaction->transaction_id,
-                            'transaction_status' => $status,
-                            'is_new' => 0,
-                            'sent_to' => $sentTo ?? $transactionData['sent_to'],
-                            'is_server_id' => true,
-                            'is_sent' => $transactionData['is_sent'],
-                            'session_no' => $sessionNo,
-                            'ready_to_milled' => $transactionData['ready_to_milled'],
-                            'is_in_process' => $transactionData['is_in_process'],
-                            'is_update_center' => array_key_exists('is_update_center', $transactionData) ? $transactionData['is_update_center'] : false,
-                            'local_session_no' => array_key_exists('local_session_no', $transactionData) ? $transactionData['local_session_no'] : false,
-                            'local_created_at' => toSqlDT($transactionData['local_created_at']),
-                            'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
-                        ]);
-                        $log = new TransactionLog();
-                        $log->action = $status;
-                        $log->created_by = $request->user()->user_id;
-                        $log->entity_id = 0;
-                        $log->local_created_at = $transaction->local_created_at;
-                        $log->local_updated_at = $transaction->local_updated_at;
-                        $log->type =  $type;
-                        $log->center_name = null;
-
-                        $transaction->log()->save($log);
-
+                        $transaction = Transaction::createAndLog(
+                            $batch->batch_number,
+                            $transactionData,
+                            $request->user()->user_id,
+                            $status,
+                            $sessionNo,
+                            $type,
+                            $transactionType,
+                            $sentTo
+                        );
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
