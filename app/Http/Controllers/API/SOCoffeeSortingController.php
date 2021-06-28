@@ -59,7 +59,7 @@ class SOCoffeeSortingController extends Controller
             $transactionChilds = [];
             $loop = 0;
             foreach ($transaction->details as $detail) {
-                if ($transaction->sent_to == 15 && $detail->container_status == 1) {
+                if ($transaction->sent_to == 21 && $detail->container_status == 1) {
                     $transaction->details->forget(($loop));
                     $loop++;
                     continue;
