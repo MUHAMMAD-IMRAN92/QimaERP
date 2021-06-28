@@ -73,39 +73,48 @@ class MillOperativeController extends Controller
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent', 'received'])
                     ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
-            })->whereHas(
-                'details',
-                function ($q) {
-                    $q->where('container_status', 0);
-                },
-                '>',
-                0
-            )->with(['details' => function ($query) {
-                $query->where('container_status', 0)->with('metas');
+            })->with(['details' => function ($query) {
+                $query->with('metas');
             }])->with(['meta', 'child'])
+            ->join('milling_remaining_weight',function($join){
+                $join->on('milling_remaining_weight.batch_number','transactions.batch_number');
+                $join->on(DB::raw('sent_17-sent_20-sent_21'),'!=',DB::raw(0));
+            })
             ->orderBy('transaction_id', 'desc')
             ->get();
 
         $allTransactions = array();
 
         // Transaction creation begins from here.
+        $loopint = 0;
         foreach ($transactions as $transaction) {
 
-            $transactionDetails = $transaction->details;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
 
             $detailMetas = [];
             $transactionChilds = [];
-
-            foreach ($transactionDetails as $detail) {
+            $loop =0;
+            foreach ($transaction->details as $detail) {
+                if($transaction->sent_to==15 && $detail->container_status == 1)
+                {
+                    $transaction->details->forget(($loop));
+                    $loop++;
+                    continue;
+                }
                 foreach ($detail->metas as $meta) {
                     array_push($detailMetas, $meta);
                 }
 
                 $detail->makeHidden('metas');
             }
+            if(count($transaction->details) == 0){
+                $transactions->forget($loopint);
+                $loopint++;
+                continue;
+            }
+            $transactionDetails = $transaction->details;
 
             foreach ($transaction->child as $child) {
                 array_push($transactionChilds, $child);
