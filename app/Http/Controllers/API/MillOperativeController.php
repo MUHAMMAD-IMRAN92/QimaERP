@@ -76,13 +76,13 @@ class MillOperativeController extends Controller
             })->with(['details' => function ($query) {
                 $query->with('metas');
             }])->with(['meta', 'child'])
-            ->join('milling_remaining_weight',function($join){
+            ->leftjoin('milling_remaining_weight',function($join){
                 $join->on('milling_remaining_weight.batch_number','transactions.batch_number');
                 $join->on(DB::raw('sent_17-sent_20-sent_21'),'!=',DB::raw(0));
             })
             ->orderBy('transaction_id', 'desc')
             ->get();
-
+            return $transactions;
         $allTransactions = array();
 
         // Transaction creation begins from here.
