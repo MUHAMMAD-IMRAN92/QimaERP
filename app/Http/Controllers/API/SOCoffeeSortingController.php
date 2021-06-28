@@ -38,7 +38,8 @@ class SOCoffeeSortingController extends Controller
             })
             ->with(['details' => function ($query) {
                 $query->where('container_status', 0)->with('metas');
-            }])->with(['meta', 'child'])->leftjoin('milling_remaining_weight', function ($join) {
+            }])->with(['meta', 'child'])
+            ->leftjoin('sorting_remaining_weight', function ($join) {
                 $join->on('sorting_remaining_weight.batch_number', 'transactions.batch_number');
                 $join->on(DB::raw('sent_22-sent_201-sent_23'), '!=', DB::raw(0));
             })
