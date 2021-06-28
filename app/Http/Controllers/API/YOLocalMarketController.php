@@ -447,10 +447,21 @@ class YOLocalMarketController extends Controller
 
                             ]
                         );
-                        $parentTransaction = Transaction::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $request->user()->user_id);
+                        if ($transactionData->is_server_id == true) {
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
 
-                        if (!$parentTransaction) {
-                            throw new Exception('Parent transaction not found. reference_id = ' . $transactionData['reference_id']);
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        } else {
+                            $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
+                            $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                                ->latest('transaction_id')
+                                ->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
                         }
 
                         $batchCheck = BatchNumber::where('batch_number', $batch->batch_number)->exists();
@@ -545,11 +556,23 @@ class YOLocalMarketController extends Controller
                             ]
                         );
 
-                        $parentTransaction = Transaction::findParent($transactionData['is_server_id'], $transactionData['reference_id'], $request->user()->user_id);
+                        if ($transactionData->is_server_id == true) {
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
 
-                        if (!$parentTransaction) {
-                            throw new Exception('Parent transaction not found. reference_id = ' . $transactionData['reference_id']);
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        } else {
+                            $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
+                            $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                                ->latest('transaction_id')
+                                ->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
                         }
+
 
                         $batchCheck = BatchNumber::where('batch_number', $batch->batch_number)->exists();
 
