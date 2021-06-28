@@ -75,8 +75,8 @@ class SOCoffeeSortingController extends Controller
                 $loopint++;
                 continue;
             }
-            $transactionDetails = $transaction->details;
-
+            $details = $transaction->details;
+            $transactionDetails = $details->values();
             foreach ($transaction->child as $child) {
                 array_push($transactionChilds, $child);
             }
