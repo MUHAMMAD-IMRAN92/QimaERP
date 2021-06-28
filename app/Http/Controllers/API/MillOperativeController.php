@@ -69,7 +69,7 @@ class MillOperativeController extends Controller
         //     ->orderBy('transaction_id', 'desc')
         //     ->get();
         
-            $transactions = Transaction::where('is_parent', 0)->where('transaction_type', 1)
+            $transactions = Transaction::selectRaw('transactions.*')->where('is_parent', 0)->where('transaction_type', 1)
             ->whereHas('log', function ($q) {
                 $q->whereIn('action', ['sent', 'received'])
                     ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
