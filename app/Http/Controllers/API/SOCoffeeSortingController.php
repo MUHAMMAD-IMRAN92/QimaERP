@@ -38,30 +38,43 @@ class SOCoffeeSortingController extends Controller
             })
             ->with(['details' => function ($query) {
                 $query->where('container_status', 0)->with('metas');
-            }])->with(['meta', 'child'])
+            }])->with(['meta', 'child'])->join('milling_remaining_weight', function ($join) {
+                $join->on('sorting_remaining_weight.batch_number', 'transactions.batch_number');
+                $join->on(DB::raw('sent_22-sent_201-sent_23'), '!=', DB::raw(0));
+            })
             ->orderBy('transaction_id', 'desc')
             ->get();
 
         $allTransactions = array();
 
-
+        $loopint = 0;
         foreach ($transactions as $transaction) {
 
-            $transactionDetails = $transaction->details;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
 
             $detailMetas = [];
             $transactionChilds = [];
-
-            foreach ($transactionDetails as $detail) {
+            $loop = 0;
+            foreach ($transaction->details as $detail) {
+                if ($transaction->sent_to == 15 && $detail->container_status == 1) {
+                    $transaction->details->forget(($loop));
+                    $loop++;
+                    continue;
+                }
                 foreach ($detail->metas as $meta) {
                     array_push($detailMetas, $meta);
                 }
 
                 $detail->makeHidden('metas');
             }
+            if (count($transaction->details) == 0) {
+                $transactions->forget($loopint);
+                $loopint++;
+                continue;
+            }
+            $transactionDetails = $transaction->details;
 
             foreach ($transaction->child as $child) {
                 array_push($transactionChilds, $child);
@@ -279,7 +292,7 @@ class SOCoffeeSortingController extends Controller
                             $status = 'sent';
                             $type = 'sent_to_market';
                             $transactionType = 3;
-                            $sentTo = 20;
+                            $sentTo = 201;
 
                             $parentTransaction = Transaction::findParent(
                                 $transactionData['is_server_id'],
