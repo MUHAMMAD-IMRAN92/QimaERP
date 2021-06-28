@@ -82,7 +82,7 @@ class MillOperativeController extends Controller
             })
             ->orderBy('transaction_id', 'desc')
             ->get();
-            return $transactions;
+           
         $allTransactions = array();
 
         // Transaction creation begins from here.
