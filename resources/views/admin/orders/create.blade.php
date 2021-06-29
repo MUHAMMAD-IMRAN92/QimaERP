@@ -30,7 +30,7 @@
                                 <h5 class="card-title">@{{ product.name }}</h5>
                                 <div class="card-text">Regular Weight: <br> <b>@{{ product.rawWeight }}</b> KG
                                 </div>
-                                <p class="card-text mt--1">Special Weight: <br> <b>@{{ product.rawWeight }}</b> KG
+                                <p class="card-text mt--1">Special Weight: <br> <b>@{{ specialProduct.rawWeight }}</b> KG
                                 </p>
                             </div>
                         </div>
