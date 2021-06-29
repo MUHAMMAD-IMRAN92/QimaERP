@@ -448,13 +448,13 @@ class YOLocalMarketController extends Controller
                             ]
                         );
                         if ($transactionData['is_server_id'] == true) {
-                            $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
 
                             if (!$parentTransaction) {
                                 throw new Exception('Parent Transaction does not exists');
                             }
                         } else {
-                            $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
+                            $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
                             $parentTransaction = Transaction::where('local_code', 'like', "$code%")
                                 ->latest('transaction_id')
                                 ->first();
@@ -557,13 +557,13 @@ class YOLocalMarketController extends Controller
                         );
 
                         if ($transactionData['is_server_id'] == true) {
-                            $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
 
                             if (!$parentTransaction) {
                                 throw new Exception('Parent Transaction does not exists');
                             }
                         } else {
-                            $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
+                            $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
                             $parentTransaction = Transaction::where('local_code', 'like', "$code%")
                                 ->latest('transaction_id')
                                 ->first();
