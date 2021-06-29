@@ -434,7 +434,7 @@ class YOLocalMarketController extends Controller
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'order_prepaired';
                         $type = 'sent_to_yemen_sales';
-                        $transactionType = 5;
+                        $transactionType = 6;
                         $sentTo = 195;
 
                         $batch = BatchNumber::firstOrCreate(
@@ -542,7 +542,7 @@ class YOLocalMarketController extends Controller
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'partial_prepaired';
                         $type = 'sent_to_yemen_sales';
-                        $transactionType = 5;
+                        $transactionType =6;
                         $sentTo = 194;
 
                         $batch = BatchNumber::firstOrCreate(
@@ -629,7 +629,7 @@ class YOLocalMarketController extends Controller
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'partial_prepaired';
                         $type = 'sent_to_yemen_sales';
-                        $transactionType = 5;
+                        $transactionType = 6;
                         $sentTo = 194;
 
                         $details = $oldTranaction->details;
@@ -785,7 +785,7 @@ class YOLocalMarketController extends Controller
 
                         $status = 'order_collected';
                         $type = 'sent';
-                        $transactionType = 5;
+                        $transactionType = 6;
                         $sentTo = 197;
                         $order = Order::where('order_number', $transactionData['batch_number'])->first();
 
@@ -826,7 +826,7 @@ class YOLocalMarketController extends Controller
                     if ($currentTransactionDetail <  $prepaidTransactionCount) {
                         $status = 'order_collected_partial';
                         $type = 'sent';
-                        $transactionType = 5;
+                        $transactionType = 6;
                         $sentTo = 197;
 
                         $transaction = Transaction::createAndLog(
@@ -879,7 +879,7 @@ class YOLocalMarketController extends Controller
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 198) {
                     $status = 'sent';
                     $type = 'order_deliverd';
-                    $transactionType = 5;
+                    $transactionType = 6;
                     $sentTo = 198;
                     $order = Order::where('order_number', $transactionData['batch_number'])->first();
 
