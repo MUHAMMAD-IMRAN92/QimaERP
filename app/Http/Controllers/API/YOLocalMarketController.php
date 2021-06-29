@@ -447,7 +447,7 @@ class YOLocalMarketController extends Controller
 
                             ]
                         );
-                        if ($transactionData->is_server_id == true) {
+                        if ($transactionData['is_server_id'] == true) {
                             $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
 
                             if (!$parentTransaction) {
@@ -556,7 +556,7 @@ class YOLocalMarketController extends Controller
                             ]
                         );
 
-                        if ($transactionData->is_server_id == true) {
+                        if ($transactionData['is_server_id'] == true) {
                             $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
 
                             if (!$parentTransaction) {
