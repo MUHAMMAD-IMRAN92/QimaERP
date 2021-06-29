@@ -57,19 +57,49 @@ class LocalMarketProductsController extends Controller
             $regularBatchNumber = $productData['regular_batch_number'];
             $specialBatchNumber = $productData['special_batch_number'];
 
+
+            // $productData['regular_weight'] = $regularBatchNumber->map(function ($productData) {
+            //     $transactions = Transaction::with(['details' => function ($query) {
+            //         $query->where('container_status', 0)->where('container_number', '000');
+            //     }])->where('batch_number', $regularBatchNumber)
+            //         ->where('is_parent', 0)
+            //         ->where('transaction_type', 5)->get();
+            //     $weight = 0;
+            //     foreach ($transactions as $transaction) {
+            //         foreach ($transaction->details as $detail) {
+            //         }
+            //     }
+            //   return $weight;
+            // }
+
             $productData['regular_weight'] = TransactionDetail::whereHas('transaction', function ($query) use ($regularBatchNumber) {
                 $query->where('batch_number', $regularBatchNumber)
                     ->where('is_parent', 0)
                     ->where('transaction_type', 5)
                     ->where('sent_to', 193);
-            })->sum('container_weight');
+            })->where('container_status', 0)->where('container_number', '000')->sum('container_weight');
 
+            // $productData['special_weight'] = $regularBatchNumber->map(function ($productData) {
+            //     $transactions = Transaction::with(['details' => function ($query) {
+            //         $query->where('container_status', 0)->where('container_number', '000');
+            //     }])->where('batch_number', $regularBatchNumber)
+            //         ->where('is_parent', 0)
+            //         ->where('transaction_type', 5)->get();
+            //     $weight = 0;
+            //     foreach ($transactions as $transaction) {
+            //         foreach ($transaction->details as $detail) {
+            //         }
+            //     }
+            //   return  $weight;
+
+
+            // }
             $productData['special_weight'] = TransactionDetail::whereHas('transaction', function ($query) use ($specialBatchNumber) {
                 $query->where('batch_number', $specialBatchNumber)
                     ->where('is_parent', 0)
                     ->where('transaction_type', 5)
                     ->where('sent_to', 193);
-            })->sum('container_weight');
+            })->where('container_status', 0)->where('container_number', '000')->sum('container_weight');
 
             return $productData;
         });
