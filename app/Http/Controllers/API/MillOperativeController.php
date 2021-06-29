@@ -98,7 +98,8 @@ class MillOperativeController extends Controller
             $loop = 0;
             foreach ($transaction->details as $detail) {
                 if ($transaction->sent_to == 15 && $detail->container_status == 1) {
-                    $transaction->details->forget(($loop));
+                    // $transaction->details->forget(());
+                    $detail->delete();
                     $loop++;
                     continue;
                 }
