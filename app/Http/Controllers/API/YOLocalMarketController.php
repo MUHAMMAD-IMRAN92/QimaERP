@@ -350,7 +350,7 @@ class YOLocalMarketController extends Controller
                         $detailsData,
                         $request->user()->user_id,
                         $accumulatedTransaction->transaction_id,
-                        $accumulatedTransaction->reference_id
+                        $transactions->reference_id
                     );
                     // $detail = new TransactionDetail();
 
@@ -542,7 +542,7 @@ class YOLocalMarketController extends Controller
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'partial_prepaired';
                         $type = 'sent_to_yemen_sales';
-                        $transactionType =6;
+                        $transactionType = 6;
                         $sentTo = 194;
 
                         $batch = BatchNumber::firstOrCreate(
