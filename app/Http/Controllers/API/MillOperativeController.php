@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use App\TransactionDetailProduct;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\MetaTransation;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -57,7 +58,7 @@ class MillOperativeController extends Controller
             //     $q->whereIn('action', ['sent', 'received'])
             //         ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
             // })
-            ->whereIn('sent_to', [15 , 17])
+            ->whereIn('sent_to', [15, 17])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -171,7 +172,8 @@ class MillOperativeController extends Controller
 
                 // We are trying to find parent transaction here.
                 if ($transactionData->is_server_id == true) {
-                    $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
+                    $referenceId =  explode(',', $transactionData->reference_id);
+                    $parentTransaction = Transaction::whereIn('transaction_id', $transactionData->$referenceId)->get();
 
                     if (!$parentTransaction) {
                         throw new Exception('Parent Transaction does not exists');
@@ -335,6 +337,13 @@ class MillOperativeController extends Controller
                         $type = 'sent_to_sorting';
                         $sent_to = 21;
 
+                        $isSpecial = false;
+                        foreach ($parentTransaction as $metaTransaction) {
+                            if ($metaTransaction->is_special == true) {
+                                $isSpecial += true;
+                            }
+                        }
+
                         // Start of batch number Transaction
                         $transaction =  Transaction::create([
                             'batch_number' => $transactionData->batch_number,
@@ -342,7 +351,7 @@ class MillOperativeController extends Controller
                             'created_by' => $request->user()->user_id,
                             'is_local' => FALSE,
                             'local_code' => $transactionData->local_code,
-                            'is_special' => $parentTransaction->is_special,
+                            'is_special' => $isSpecial,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => 1,
                             'reference_id' => $parentTransaction->transaction_id,
@@ -359,6 +368,27 @@ class MillOperativeController extends Controller
                             'local_created_at' => toSqlDT($transactionData->local_created_at),
                             'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                         ]);
+
+                        foreach ($parentTransaction as $metaTransaction) {
+                            if ($metaTransaction->is_special == true) {
+                                MetaTransation::create([
+                                    'transaction_id' =>   $transaction->transaction_id,
+                                    'key' => 'Special',
+                                    'transaction_id' => $metaTransaction->transaction_id
+                                ]);
+                            }
+                            if ($metaTransaction->is_special == false) {
+                                MetaTransation::create([
+                                    'transaction_id' =>   $transaction->transaction_id,
+                                    'key' => 'Non-Special',
+                                    'transaction_id' => $metaTransaction->transaction_id
+                                ]);
+                            }
+                        }
+
+                        $referenceId =  explode(',', $transaction->reference_id);
+                        TransactionDetail::whereIn('transaction_id', $referenceId)
+                            ->update(['container_status' => $transaction->transaction_id]);
 
                         $log = new TransactionLog();
                         $log->action = $status;
@@ -433,6 +463,12 @@ class MillOperativeController extends Controller
                         $status = 'sent';
                         $type = 'sent_to_sorting';
                         $sent_to = 21;
+                        $isSpecial = false;
+                        foreach ($parentTransaction as $metaTransaction) {
+                            if ($metaTransaction->is_special == true) {
+                                $isSpecial += true;
+                            }
+                        }
 
                         // Start of batch number Transaction
                         $transaction =  Transaction::create([
@@ -441,7 +477,7 @@ class MillOperativeController extends Controller
                             'created_by' => $request->user()->user_id,
                             'is_local' => FALSE,
                             'local_code' => $transactionData->local_code,
-                            'is_special' => $parentTransaction->is_special,
+                            'is_special' =>  $isSpecial,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => 1,
                             'reference_id' => $parentTransaction->transaction_id,
@@ -458,7 +494,25 @@ class MillOperativeController extends Controller
                             'local_created_at' => toSqlDT($transactionData->local_created_at),
                             'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                         ]);
-
+                        foreach ($parentTransaction as $metaTransaction) {
+                            if ($metaTransaction->is_special == true) {
+                                MetaTransation::create([
+                                    'transaction_id' =>   $transaction->transaction_id,
+                                    'key' => 'Special',
+                                    'transaction_id' => $metaTransaction->transaction_id
+                                ]);
+                            }
+                            if ($metaTransaction->is_special == false) {
+                                MetaTransation::create([
+                                    'transaction_id' =>   $transaction->transaction_id,
+                                    'key' => 'Non-Special',
+                                    'transaction_id' => $metaTransaction->transaction_id
+                                ]);
+                            }
+                        }
+                        $referenceId =   explode(',', $transaction->reference_id);;
+                        TransactionDetail::whereIn('transaction_id', $referenceId)
+                            ->update(['container_status' => $transaction->transaction_id]);
                         $log = new TransactionLog();
                         $log->action = $status;
                         $log->created_by = $request->user()->user_id;
