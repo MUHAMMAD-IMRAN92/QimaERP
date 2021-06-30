@@ -171,15 +171,14 @@ class MillOperativeController extends Controller
                 $transactionData = (object) $transactionArray['transaction'];
 
                 // We are trying to find parent transaction here.
-                if ($transactionData->is_server_id == true) {
-                    $referenceId =  explode(',', $transactionData->reference_id);
-                    $parentTransaction = Transaction::whereIn('transaction_id', $transactionData->$referenceId)->get();
+                if ($transactionData['is_server_id'] == true) {
+                    $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
 
                     if (!$parentTransaction) {
                         throw new Exception('Parent Transaction does not exists');
                     }
                 } else {
-                    $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
+                    $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
                     $parentTransaction = Transaction::where('local_code', 'like', "$code%")
                         ->latest('transaction_id')
                         ->first();
@@ -188,6 +187,7 @@ class MillOperativeController extends Controller
                         throw new Exception('Parent Transaction does not exists');
                     }
                 }
+
 
                 // This is the recieved cofee
                 if ($transactionData->is_local == true && $transactionData->sent_to == 17) {
@@ -295,7 +295,23 @@ class MillOperativeController extends Controller
 
                 // This coffe is sent further to next managers [sorting manager for sorting, yemen operative for local market]
                 if ($transactionData->is_local == true && ($transactionData->sent_to == 21)) {
+                    if ($transactionData->is_server_id == true) {
+                        $referenceId =  explode(',', $transactionData->reference_id);
+                        $parentTransaction = Transaction::whereIn('transaction_id', $transactionData->$referenceId)->get();
 
+                        if (!$parentTransaction) {
+                            throw new Exception('Parent Transaction does not exists');
+                        }
+                    } else {
+                        $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
+                        $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                            ->latest('transaction_id')
+                            ->first();
+
+                        if (!$parentTransaction) {
+                            throw new Exception('Parent Transaction does not exists');
+                        }
+                    }
                     $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
 
                     if (!$batchCheck) {
