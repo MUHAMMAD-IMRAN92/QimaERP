@@ -172,16 +172,19 @@ class MillOperativeController extends Controller
 
                 // We are trying to find parent transaction here
 
+
                 // This is the recieved cofee
                 if ($transactionData->is_local == true && $transactionData->sent_to == 17) {
-                    if ($transactionData['is_server_id'] == true) {
-                        $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
+
+                    if ($transactionData->is_server_id == true) {
+
+                        $parentTransaction = Transaction::where('transaction_id', $transactionData->reference_id)->first();
 
                         if (!$parentTransaction) {
                             throw new Exception('Parent Transaction does not exists');
                         }
                     } else {
-                        $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
+                        $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
                         $parentTransaction = Transaction::where('local_code', 'like', "$code%")
                             ->latest('transaction_id')
                             ->first();
@@ -190,6 +193,7 @@ class MillOperativeController extends Controller
                             throw new Exception('Parent Transaction does not exists');
                         }
                     }
+
 
                     $status = 'received';
                     $type = 'received_by_mill';
@@ -294,9 +298,11 @@ class MillOperativeController extends Controller
 
                 // This coffe is sent further to next managers [sorting manager for sorting, yemen operative for local market]
                 if ($transactionData->is_local == true && ($transactionData->sent_to == 21)) {
+
                     if ($transactionData->is_server_id == true) {
                         $referenceId =  explode(',', $transactionData->reference_id);
-                        $parentTransaction = Transaction::whereIn('transaction_id', $transactionData->$referenceId)->get();
+
+                        $parentTransaction = Transaction::whereIn('transaction_id', $referenceId)->get();
 
                         if (!$parentTransaction) {
                             throw new Exception('Parent Transaction does not exists');
@@ -311,6 +317,7 @@ class MillOperativeController extends Controller
                             throw new Exception('Parent Transaction does not exists');
                         }
                     }
+
                     $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
 
                     if (!$batchCheck) {
@@ -369,7 +376,7 @@ class MillOperativeController extends Controller
                             'is_special' => $isSpecial,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => 1,
-                            'reference_id' => $parentTransaction->transaction_id,
+                            'reference_id' => $transactionData->reference_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sent_to,
@@ -405,8 +412,12 @@ class MillOperativeController extends Controller
                         }
 
                         $referenceId =  explode(',', $transaction->reference_id);
-                        TransactionDetail::whereIn('transaction_id', $referenceId)
-                            ->update(['container_status' => $transaction->transaction_id]);
+
+                        foreach ($referenceId as $id) {
+                            TransactionDetail::where('transaction_id', $id)
+                                ->update(['container_status' => 1]);
+                        }
+
 
                         $log = new TransactionLog();
                         $log->action = $status;
@@ -498,7 +509,7 @@ class MillOperativeController extends Controller
                             'is_special' =>  $isSpecial,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => 1,
-                            'reference_id' => $parentTransaction->transaction_id,
+                            'reference_id' => $transactionData->reference_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sent_to,
@@ -512,6 +523,7 @@ class MillOperativeController extends Controller
                             'local_created_at' => toSqlDT($transactionData->local_created_at),
                             'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                         ]);
+
                         foreach ($parentTransaction as $metaTransaction) {
                             if ($metaTransaction->is_special == true) {
                                 MetaTransation::create([
@@ -531,9 +543,13 @@ class MillOperativeController extends Controller
                                 'is_parent' =>  $transaction->transaction_id,
                             ]);
                         }
-                        $referenceId =   explode(',', $transaction->reference_id);;
-                        TransactionDetail::whereIn('transaction_id', $referenceId)
-                            ->update(['container_status' => $transaction->transaction_id]);
+
+                        $referenceId =  explode(',', $transaction->reference_id);
+
+                        foreach ($referenceId as $id) {
+                            TransactionDetail::where('transaction_id', $id)
+                                ->update(['container_status' => 1]);
+                        }
                         $log = new TransactionLog();
                         $log->action = $status;
                         $log->created_by = $request->user()->user_id;
@@ -609,7 +625,12 @@ class MillOperativeController extends Controller
                         $status = 'sent';
                         $type = 'sent_to_market';
                         $sent_to = 20;
-
+                        $isSpecial = false;
+                        foreach ($parentTransaction as $metaTransaction) {
+                            if ($metaTransaction->is_special == true) {
+                                $isSpecial += true;
+                            }
+                        }
                         // Start of batch number Transaction
                         $transaction =  Transaction::create([
                             'batch_number' => $transactionData->batch_number,
@@ -617,10 +638,10 @@ class MillOperativeController extends Controller
                             'created_by' => $request->user()->user_id,
                             'is_local' => FALSE,
                             'local_code' => $transactionData->local_code,
-                            'is_special' => $parentTransaction->is_special,
+                            'is_special' => $isSpecial,
                             'is_mixed' => $transactionData->is_mixed,
                             'transaction_type' => 1,
-                            'reference_id' => $parentTransaction->transaction_id,
+                            'reference_id' =>  $transactionData->reference_id,
                             'transaction_status' => 'received',
                             'is_new' => 0,
                             'sent_to' => $sent_to,
@@ -684,9 +705,12 @@ class MillOperativeController extends Controller
 
                             $transaction->details()->save($detail);
 
-                            TransactionDetail::where('transaction_id', $transaction->reference_id)
-                                ->where('container_number', $detail->container_number)
-                                ->update(['container_status' => 1]);
+                            $referenceId =  explode(',', $transaction->reference_id);
+
+                            foreach ($referenceId as $id) {
+                                TransactionDetail::where('transaction_id', $id)
+                                    ->update(['container_status' => 1]);
+                            }
 
                             foreach ($detailArray['metas'] as $metaArray) {
                                 $metaData = (object) $metaArray;
@@ -703,9 +727,17 @@ class MillOperativeController extends Controller
 
                         $marketDetailsGrouped = $marketDetails->groupBy('product_id');
 
+
                         foreach ($marketDetailsGrouped as $product_id => $detailArrays) {
 
-                            $batchNumbers = $parentTransaction->is_special ? $this->specialProductBatchNumbers : $this->normalProductBatchNumbers;
+                            $isSpecial = false;
+                            foreach ($parentTransaction as $metaTransaction) {
+                                if ($metaTransaction->is_special == true) {
+                                    $isSpecial += true;
+                                }
+                            }
+
+                            $batchNumbers =  $isSpecial ? $this->specialProductBatchNumbers : $this->normalProductBatchNumbers;
 
                             $hardcodeBatchNumberPrefix = $batchNumbers[$product_id];
 
@@ -747,7 +779,6 @@ class MillOperativeController extends Controller
                                 'local_created_at' => toSqlDT($transactionData->local_created_at),
                                 'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                             ]);
-
                             $log = new TransactionLog();
                             $log->action = $status;
                             $log->created_by = $request->user()->user_id;
@@ -773,7 +804,6 @@ class MillOperativeController extends Controller
                             $log->is_special = $lotTransaction->is_special;
 
                             $lot->save();
-
                             foreach ($detailArrays as $detailArray) {
 
                                 $detailData = (object) $detailArray['detail'];
