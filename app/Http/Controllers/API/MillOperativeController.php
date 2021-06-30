@@ -779,6 +779,7 @@ class MillOperativeController extends Controller
                                 'local_created_at' => toSqlDT($transactionData->local_created_at),
                                 'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                             ]);
+                            
                             $log = new TransactionLog();
                             $log->action = $status;
                             $log->created_by = $request->user()->user_id;
