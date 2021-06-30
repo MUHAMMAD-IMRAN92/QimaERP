@@ -52,36 +52,38 @@ class MillOperativeController extends Controller
 
     public function sendCoffee()
     {
-        // $transactions = Transaction::where('is_parent', 0)->where('transaction_type', 1)
+        $transactions = Transaction::where('is_parent', 0)->where('transaction_type', 1)
+            // ->whereHas('log', function ($q) {
+            //     $q->whereIn('action', ['sent', 'received'])
+            //         ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
+            // })
+            ->whereIn('sent_to', [20, 21])
+            ->whereHas(
+                'details',
+                function ($q) {
+                    $q->where('container_status', 0);
+                },
+                '>',
+                0
+            )->with(['details' => function ($query) {
+                $query->where('container_status', 0)->with('metas');
+            }])->with(['meta', 'child'])
+            ->orderBy('transaction_id', 'desc')
+            ->get();
+
+        // $transactions = Transaction::selectRaw('transactions.*')->where('is_parent', 0)->where('transaction_type', 1)
         //     ->whereHas('log', function ($q) {
         //         $q->whereIn('action', ['sent', 'received'])
         //             ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
-        //     })->whereHas(
-        //         'details',
-        //         function ($q) {
-        //             $q->where('container_status', 0);
-        //         },
-        //         '>',
-        //         0
-        //     )->with(['details' => function ($query) {
-        //         $query->where('container_status', 0)->with('metas');
+        //     })->with(['details' => function ($query) {
+        //         $query->with('metas');
         //     }])->with(['meta', 'child'])
+        //     ->leftjoin('milling_remaining_weight', function ($join) {
+        //         $join->on('milling_remaining_weight.batch_number', 'transactions.batch_number');
+        //         $join->on(DB::raw('sent_17-sent_20-sent_21'), '!=', DB::raw(0));
+        //     })
         //     ->orderBy('transaction_id', 'desc')
         //     ->get();
-
-        $transactions = Transaction::selectRaw('transactions.*')->where('is_parent', 0)->where('transaction_type', 1)
-            ->whereHas('log', function ($q) {
-                $q->whereIn('action', ['sent', 'received'])
-                    ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
-            })->with(['details' => function ($query) {
-                $query->with('metas');
-            }])->with(['meta', 'child'])
-            ->leftjoin('milling_remaining_weight', function ($join) {
-                $join->on('milling_remaining_weight.batch_number', 'transactions.batch_number');
-                $join->on(DB::raw('sent_17-sent_20-sent_21'), '!=', DB::raw(0));
-            })
-            ->orderBy('transaction_id', 'desc')
-            ->get();
 
         $allTransactions = array();
 
