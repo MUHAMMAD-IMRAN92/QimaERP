@@ -170,27 +170,26 @@ class MillOperativeController extends Controller
 
                 $transactionData = (object) $transactionArray['transaction'];
 
-                // We are trying to find parent transaction here.
-                if ($transactionData['is_server_id'] == true) {
-                    $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
-
-                    if (!$parentTransaction) {
-                        throw new Exception('Parent Transaction does not exists');
-                    }
-                } else {
-                    $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
-                    $parentTransaction = Transaction::where('local_code', 'like', "$code%")
-                        ->latest('transaction_id')
-                        ->first();
-
-                    if (!$parentTransaction) {
-                        throw new Exception('Parent Transaction does not exists');
-                    }
-                }
-
-
+                // We are trying to find parent transaction here
+                
                 // This is the recieved cofee
                 if ($transactionData->is_local == true && $transactionData->sent_to == 17) {
+                    if ($transactionData['is_server_id'] == true) {
+                        $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
+    
+                        if (!$parentTransaction) {
+                            throw new Exception('Parent Transaction does not exists');
+                        }
+                    } else {
+                        $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
+                        $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                            ->latest('transaction_id')
+                            ->first();
+    
+                        if (!$parentTransaction) {
+                            throw new Exception('Parent Transaction does not exists');
+                        }
+                    }
 
                     $status = 'received';
                     $type = 'received_by_mill';
