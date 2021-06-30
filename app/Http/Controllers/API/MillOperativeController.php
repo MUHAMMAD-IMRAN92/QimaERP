@@ -57,7 +57,7 @@ class MillOperativeController extends Controller
             //     $q->whereIn('action', ['sent', 'received'])
             //         ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
             // })
-            ->whereIn('sent_to', [20, 21])
+            ->whereIn('sent_to', [15 , 17])
             ->whereHas(
                 'details',
                 function ($q) {
