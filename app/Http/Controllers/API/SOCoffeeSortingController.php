@@ -33,7 +33,7 @@ class SOCoffeeSortingController extends Controller
         $transactions = Transaction::selectRaw('transactions.*')->where('is_parent', 0)
             ->where('sent_to', 21)
             ->orWhere(function ($query) {
-                $query->whereIn('sent_to', [22, 23])
+                $query->whereIn('sent_to', [22])
                     ->where('transaction_type', 1);
             })
             ->whereHas(
