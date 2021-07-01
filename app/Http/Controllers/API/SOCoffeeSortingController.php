@@ -171,7 +171,7 @@ class SOCoffeeSortingController extends Controller
                         if ($transactionData['is_server_id'] == true) {
 
 
-                            $parentTransaction = Transaction::whereIn('transaction_id', $transactionData['reference_id'])->get();
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->get();
 
                             if (!$parentTransaction) {
                                 throw new Exception('Parent Transaction does not exists');
