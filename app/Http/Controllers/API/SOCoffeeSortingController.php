@@ -168,15 +168,55 @@ class SOCoffeeSortingController extends Controller
                         $status = 'sent';
                         $type = 'sent_by_so';
                         $transactionType = 1;
+                        if ($transactionData['is_server_id'] == true) {
 
-                        $transaction = Transaction::createAndLog(
-                            $transactionData,
-                            $request->user()->user_id,
-                            $status,
-                            $sessionNo,
-                            $type,
-                            $transactionType
-                        );
+
+                            $parentTransaction = Transaction::whereIn('transaction_id', $transactionData['reference_id'])->get();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        } else {
+                            $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
+
+                            $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                                ->latest('transaction_id')
+                                ->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        }
+
+                        $batchCheck = BatchNumber::where('batch_number', $transactionData['batch_number'])->exists();
+
+                        if (!$batchCheck) {
+                            throw new Exception("Batch Number [{$transactionData['batch_number']}] does not exists.");
+                        }
+
+                        $transaction =  Transaction::create([
+                            'batch_number' => $transactionData['batch_number'],
+                            'is_parent' => 0,
+                            'created_by' =>  $request->user()->user_id,
+                            'is_local' => FALSE,
+                            'local_code' => $transactionData['local_code'],
+                            'is_special' => $parentTransaction->is_special,
+                            'is_mixed' => $transactionData['is_mixed'],
+                            'transaction_type' => $transactionType,
+                            'reference_id' => $parentTransaction->transaction_id,
+                            'transaction_status' => $status,
+                            'is_new' => 0,
+                            'sent_to' => $sentTo ?? $transactionData['sent_to'],
+                            'is_server_id' => true,
+                            'is_sent' => $transactionData['is_sent'],
+                            'session_no' => $sessionNo,
+                            'ready_to_milled' => $transactionData['ready_to_milled'],
+                            'is_in_process' => $transactionData['is_in_process'],
+                            'is_update_center' => array_key_exists('is_update_center', $transactionData) ? $transactionData['is_update_center'] : false,
+                            'local_session_no' => array_key_exists('local_session_no', $transactionData) ? $transactionData['local_session_no'] : false,
+                            'local_created_at' => toSqlDT($transactionData['local_created_at']),
+                            'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
+                        ]);
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
@@ -184,6 +224,7 @@ class SOCoffeeSortingController extends Controller
                             $transaction->transaction_id,
                             $transaction->reference_id
                         );
+
                         foreach ($detailsData as $detailObj) {
 
                             $detailsData = $detailObj['detail'];
