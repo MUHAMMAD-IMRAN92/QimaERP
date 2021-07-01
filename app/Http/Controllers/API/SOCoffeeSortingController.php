@@ -218,6 +218,21 @@ class SOCoffeeSortingController extends Controller
                             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
                         ]);
 
+                        $log = new TransactionLog();
+                        $log->action = $status;
+                        $log->created_by = $request->user()->user_id;
+                        $log->entity_id = $transactionData['center_id'];
+                        $log->local_created_at = $transaction->local_created_at;
+                        $log->local_updated_at = $transaction->local_updated_at;
+                        $log->type =  $type;
+                        $log->center_name = array_key_exists('center_name', $transactionData) ? $transactionData['center_name'] : null;
+
+                        $transaction->log()->save($log);
+
+                        Transaction::where('transaction_id', $transactionData['reference_id'])->update([
+                            'is_parent' =>  $transaction->transaction_id
+                        ]);
+
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,
@@ -233,7 +248,7 @@ class SOCoffeeSortingController extends Controller
                                 'container_status' => 1,
                             ]);
                         }
-                        
+
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
 
