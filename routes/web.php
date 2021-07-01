@@ -200,6 +200,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/orders/create', 'OrderController@create')->name('orders.create');
         Route::get('/orders/{order}', 'OrderController@show')->name('orders.show');
         Route::post('/orders', 'OrderController@store')->name('orders.store');
+        Route::post('/paidOrder', 'OrderController@paidOrder');
+        
 
         Route::get('/customers', 'CustomerController@index');
         Route::get('/local_inventory', 'LocalMarketProductsController@weights');
@@ -220,6 +222,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('local_products', 'LocalMarketProductsController@index');
 
         //uk warehouse
-        Route::get('/uk_warehouse/set_price', 'UkWareHouseController@prices');
+        Route::get('/uk_warehouse/index', 'UkWareHouseController@index')->name('uk_warehouse.index');
+        Route::get('/uk_warehouse/set_price/{id}', 'UkWareHouseController@prices')->name('uk.setPrice');
+        Route::post('/uk_warehouse/post_price/{id}', 'UkWareHouseController@post');
+        Route::post('/uk_warehouse/assignToChaina', 'UkWareHouseController@assignToChaina')->name('uk.assigntochaina');
+
     });
 });

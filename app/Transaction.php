@@ -261,4 +261,5 @@ class Transaction extends Model
 
         return $transaction;
     }
+
 }

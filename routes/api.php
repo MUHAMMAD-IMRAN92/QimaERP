@@ -129,6 +129,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
         //For Local Market Coffee
         Route::get('yo_local_market', 'API\YOLocalMarketController@getCoffee');
         Route::get('yo_local_sales', 'API\YOLocalMarketController@prepaired');
+        Route::post('yo_local_sales', 'API\YOLocalMarketController@postLocalSales');
         Route::post('yo_local_market', 'API\YOLocalMarketController@sendCoffee');
 
 
@@ -159,5 +160,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
 
         //system defination
         Route::get('/system_defination', 'API\SystemDefinationController@get');
+
+        //Chaina Warehouse
+        Route::get('/china', 'API\chainaWareHouseController@get');
+        Route::post('/china', 'API\chainaWareHouseController@post');
     });
 });

@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
-class UkWareHouse extends Controller
+class chainaWareHouseController extends Controller
 {
     public function __construct(Request $request)
     {
@@ -21,10 +21,11 @@ class UkWareHouse extends Controller
 
         $this->app_lang = $request->header('x-app-lang') ?? 'en';
     }
+
     public function get()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [41, 43, 472, 473])
+            ->whereIn('sent_to', [473, 474])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -112,10 +113,10 @@ class UkWareHouse extends Controller
 
                     $sentTo = $transactionData['sent_to'];
 
-                    if ($sentTo == 43) {
+                    if ($sentTo == 474) {
 
                         $status = 'sent';
-                        $type = 'sent_to_UK_Quality';
+                        $type = 'post_from_chaina';
                         $transactionType = 1;
 
                         $transaction = Transaction::createAndLog(
@@ -126,37 +127,18 @@ class UkWareHouse extends Controller
                             $type,
                             $transactionType
                         );
-
-                        $transactionDetails = TransactionDetail::createFromArray(
-                            $detailsData,
-                            $request->user()->user_id,
-                            $transaction->transaction_id,
-                            $transaction->reference_id
-                        );
-
-                        $transaction->load(['details.metas']);
-                        $savedTransactions->push($transaction);
-                    }
-                    if ($sentTo == 473) {
-
-                        $status = 'sent';
-                        $type = 'sent_chaina';
-                        $transactionType = 1;
-
-                        $transaction = Transaction::createAndLog(
-                            $transactionData,
-                            $request->user()->user_id,
-                            $status,
-                            $sessionNo,
-                            $type,
-                            $transactionType
-                        );
-                        foreach ($transactionMeta as $meta) {
+                        foreach ($transactionMeta  as $meta) {
                             $transactionMeta = new MetaTransation();
                             $transactionMeta->key = $meta['key'];
                             $transactionMeta->value = $meta['value'];
+                            $transactionMeta->local_created_at = $transaction->local_created_at;
                             $transaction->meta()->save($transactionMeta);
                         }
+
+                        Transaction::where('transaction_id',  $transactionData['reference_id'])->first()
+                            ->update([
+                                'is_parent' =>  $transaction->transaction_id,
+                            ]);
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
@@ -165,7 +147,7 @@ class UkWareHouse extends Controller
                             $transaction->reference_id
                         );
 
-                        $transaction->load(['details.metas']);
+                        $transaction->load(['details.metas', 'meta']);
                         $savedTransactions->push($transaction);
                     }
                 }

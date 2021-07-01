@@ -10,6 +10,7 @@ use App\Container;
 use App\BatchNumber;
 use App\Transaction;
 use App\CoffeeSession;
+use App\MetaTransation;
 use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Support\Str;
@@ -18,6 +19,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\OrderPrepared;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -62,8 +64,8 @@ class YOLocalMarketController extends Controller
     public function getCoffee()
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [20, 193, 194, 195])
-            ->whereIn('transaction_type', [3, 5])
+            ->whereIn('sent_to', [20, 193, 194, 195, 201])
+            ->whereIn('transaction_type', [ 3, 5 , 6])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -124,55 +126,30 @@ class YOLocalMarketController extends Controller
                 $details = $order->details;
                 $order->makeHidden('details');
                 //transaction with
+                $orderPrepareds = OrderPrepared::where('order_number', $order->order_number)->get();
+                foreach ($order->details as $detail) {
+                    foreach ($orderPrepareds  as  $orderPrepared) {
+                        $detail->status = $order->status;
 
-                $transactions = Transaction::with('details')->where('batch_number', $order->order_number)->whereIn('sent_to', [194, 195])->get();
-                $transactionProWeight = 0;
-
-                if ($transactions->count() > 0) {
-                    foreach ($transactions as $transaction) {
-                        foreach ($transaction->details as $detail) {
-                            foreach ($detail->metas as $meta) {
-                                $transactionProductBatch = $meta->value;
-                                $isSpecial = $transactionProductBatch[0] == 'S';
-                                if ($isSpecial) {
-                                    $str = $transactionProductBatch;
-                                    $transactionProductBatch = substr($str, 1);
-                                    $specialtransactionProduct =  Product::where('batch_number', $transactionProductBatch)->first('name');
-                                    $transactionProduct = 'S' . $specialtransactionProduct;
-                                } else {
-                                    $transactionProduct =  Product::where('batch_number', $transactionProductBatch)->first('name');
-                                }
-
-                                $transactionProWeight += $detail->container_weight;
-                            }
-                        }
-                    }
-                    foreach ($order->details as $detail) {
-                        $detail->actual_weight = $detail->weight;
-                        $product =  $detail->product_id;
+                        $product = Product::where('id', $detail->product_id)->first();
+                        $batch = $product->batch_number;
                         if ($detail->is_special) {
-                            $specialPro = Product::find($product)->name;
-                            $orderProduct = 'S' . $specialPro;
-                        } else {
-                            $orderProduct = Product::find($product)->name;
+                            $batch  =  'S' . $batch;
                         }
-                        $orderWeight = $detail->weight;
-                        // $remWeight = 0;
-                        if ($orderProduct ==  $transactionProduct) {
-                            $detail->weight += $orderWeight - $transactionProWeight;
-                        } else {
-                            $detail->weight =  $detail->weight;
-                        }
+                        if ($batch  == $orderPrepared->p_batch_number) {
+                            if ($order->details->sum('weight') == $orderPrepareds->sum('weight')) {
+                                $detail->remWeight = $detail->weight;
+                            }
+                            if ($orderPrepared->prepared_weight == 0) {
+                                $detail->remWeigth = $detail->weight;
+                            }
+                            $weight = $orderPrepared->weight - $orderPrepared->prepared_weight;
 
-                        $detail->status = $order->status;
-                    }
-                } else {
-                    foreach ($order->details as $detail) {
-                        $detail->actual_weight = $detail->weight;
-                        $detail->weight =  $detail->weight;
-                        $detail->status = $order->status;
+                            $detail->remWeigth =  $weight;
+                        }
                     }
                 }
+
 
                 return [
                     'order' => $order,
@@ -185,7 +162,6 @@ class YOLocalMarketController extends Controller
             'orders' => $orders
         ]);
     }
-
 
     public function sendCoffee(Request $request)
     {
@@ -208,6 +184,8 @@ class YOLocalMarketController extends Controller
             foreach ($request->transactions as $transactionObj) {
                 $transactionData = $transactionObj['transaction'];
                 $detailsData = $transactionObj['details'];
+                // $transactionMeta =  $transactionObj['transactionMeta'];
+
 
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 191) {
                     $status = 'received';
@@ -349,15 +327,15 @@ class YOLocalMarketController extends Controller
                         ->where('transaction_type', 5)->get();
                     $oldWeight = 0;
                     foreach ($transactions as $transaction) {
-                        foreach ($transaction->details as $detail) {
-                            $oldWeight += $detail->container_weight;
-                        }
+                        $oldWeight += $transaction->details->sum('container_weight');
                     }
-
+                    $detailWeight = 0;
                     foreach ($detailsData as $detailObj) {
                         $detailData = $detailObj['detail'];
-                        $newWeight  =   $oldWeight - $detailData['container_weight'];
+                        $detailWeight +=  $detailData['container_weight'];
                     }
+
+                    $newWeight = $oldWeight - $detailWeight;
 
                     $accumulatedTransaction = Transaction::createGenericAccumulated(
                         $batchNumber,
@@ -372,9 +350,22 @@ class YOLocalMarketController extends Controller
                     $bag = TransactionDetail::createFromArray(
                         $detailsData,
                         $request->user()->user_id,
-                        $transaction->transaction_id,
+                        $accumulatedTransaction->transaction_id,
                         $transaction->reference_id
                     );
+                    // $detail = new TransactionDetail();
+
+                    // $detail->container_number = $detailData['container_weight'];
+                    // $detail->transaction_id =  $accumulatedTransaction->transaction_id;
+                    // $detail->created_by = $request->user()->id;
+                    // $detail->is_local = FALSE;
+                    // $detail->container_weight = $detailData['container_weight'];
+                    // $detail->weight_unit = $detailData['weight_unit'];
+                    // $detail->center_id = $detailData['center_id'];
+                    // $detail->reference_id =  $accumulatedTransaction->reference_id;
+
+                    // $detail->save();
+
                     $accumulatedDetail = TransactionDetail::createAccumulated($request->user()->user_id, $accumulatedTransaction->transaction_id, $newWeight);
 
 
@@ -403,10 +394,12 @@ class YOLocalMarketController extends Controller
 
                         ]
                     );
+
                     $oldTranactionWeight = 0;
                     $oldTranaction = Transaction::with(['details' => function ($query) {
                         $query->where('container_status', 0);
                     }])->where('batch_number',  $batch->batch_number)->first();
+
                     if ($oldTranaction) {
                         $oldTranactionWeight +=   $oldTranaction->details->sum('container_weight');
                     }
@@ -423,11 +416,7 @@ class YOLocalMarketController extends Controller
                     }
                     $condition = '';
 
-                    if ($currentTransactionWeight > $orderWeight  && $oldTranactionWeight + $currentTransactionWeight > $orderWeight) {
-                        return Response::json(array(
-                            'status' => 'error', 'message' => 'weight is grater than order weight'
-                        ), 499);
-                    } elseif ($orderWeight == $currentTransactionWeight) {
+                    if ($orderWeight == $currentTransactionWeight) {
                         $condition = 'prepaired';
                     } elseif ($oldTranactionWeight + $currentTransactionWeight == $orderWeight) {
                         $condition = 'prepaired';
@@ -446,7 +435,7 @@ class YOLocalMarketController extends Controller
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'order_prepaired';
                         $type = 'sent_to_yemen_sales';
-                        $transactionType = 1;
+                        $transactionType = 6;
                         $sentTo = 195;
 
                         $batch = BatchNumber::firstOrCreate(
@@ -459,6 +448,28 @@ class YOLocalMarketController extends Controller
 
                             ]
                         );
+                        if ($transactionData['is_server_id'] == true) {
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        } else {
+                            $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
+                            $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                                ->latest('transaction_id')
+                                ->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        }
+
+                        $batchCheck = BatchNumber::where('batch_number', $batch->batch_number)->exists();
+
+                        if (!$batchCheck) {
+                            throw new Exception("Batch Number [{$batch->batch_number}] does not exists.");
+                        }
 
                         $transaction =  Transaction::create([
                             'batch_number' => $batch->batch_number,
@@ -466,10 +477,10 @@ class YOLocalMarketController extends Controller
                             'created_by' =>  $request->user()->user_id,
                             'is_local' => FALSE,
                             'local_code' => $transactionData['local_code'],
-                            'is_special' => false,
+                            'is_special' => $parentTransaction->is_special,
                             'is_mixed' => $transactionData['is_mixed'],
-                            'transaction_type' => 5,
-                            'reference_id' => 0,
+                            'transaction_type' => $transactionType,
+                            'reference_id' => $parentTransaction->transaction_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sentTo ?? $transactionData['sent_to'],
@@ -483,27 +494,41 @@ class YOLocalMarketController extends Controller
                             'local_created_at' => toSqlDT($transactionData['local_created_at']),
                             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
                         ]);
+
+
                         $log = new TransactionLog();
                         $log->action = $status;
                         $log->created_by = $request->user()->user_id;
-                        $log->entity_id = 0;
+                        $log->entity_id = $transactionData['center_id'];
                         $log->local_created_at = $transaction->local_created_at;
                         $log->local_updated_at = $transaction->local_updated_at;
                         $log->type =  $type;
-                        $log->center_name = null;
+                        $log->center_name = array_key_exists('center_name', $transactionData) ? $transactionData['center_name'] : null;
 
                         $transaction->log()->save($log);
-                        $details = $oldTranaction->details;
 
-                        foreach ($details as $detail) {
-                            $newDetail =  $detail->replicate()->fill([]);
+                        if ($oldTranaction) {
+                            $details = $oldTranaction->details;
 
-                            $newDetail->save();
+                            foreach ($details as $detail) {
 
-                            $detail->update([
-                                'container_status' => 1
-                            ]);
+                                $newDetail =  $detail->replicate()->fill([
+                                    'transaction_id' =>  $transaction->transaction_id,
+                                ]);
+
+                                $newDetail->save();
+                                foreach ($detail->metas as $meta) {
+                                    $newMeta =  $meta->replicate()->fill([
+                                        'transaction_detail_id' => $newDetail->transaction_detail_id
+                                    ]);
+                                    $newMeta->save();
+                                }
+                                $detail->update([
+                                    'container_status' => 1
+                                ]);
+                            }
                         }
+
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
@@ -518,7 +543,7 @@ class YOLocalMarketController extends Controller
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'partial_prepaired';
                         $type = 'sent_to_yemen_sales';
-                        $transactionType = 1;
+                        $transactionType = 6;
                         $sentTo = 194;
 
                         $batch = BatchNumber::firstOrCreate(
@@ -532,16 +557,40 @@ class YOLocalMarketController extends Controller
                             ]
                         );
 
+                        if ($transactionData['is_server_id'] == true) {
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        } else {
+                            $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
+                            $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                                ->latest('transaction_id')
+                                ->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        }
+
+
+                        $batchCheck = BatchNumber::where('batch_number', $batch->batch_number)->exists();
+
+                        if (!$batchCheck) {
+                            throw new Exception("Batch Number [{$batch->batch_number}] does not exists.");
+                        }
+
                         $transaction =  Transaction::create([
                             'batch_number' => $batch->batch_number,
                             'is_parent' => 0,
                             'created_by' =>  $request->user()->user_id,
                             'is_local' => FALSE,
                             'local_code' => $transactionData['local_code'],
-                            'is_special' => false,
+                            'is_special' => $parentTransaction->is_special,
                             'is_mixed' => $transactionData['is_mixed'],
-                            'transaction_type' => 5,
-                            'reference_id' => 0,
+                            'transaction_type' => $transactionType,
+                            'reference_id' => $parentTransaction->transaction_id,
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => $sentTo ?? $transactionData['sent_to'],
@@ -555,17 +604,18 @@ class YOLocalMarketController extends Controller
                             'local_created_at' => toSqlDT($transactionData['local_created_at']),
                             'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
                         ]);
+
+
                         $log = new TransactionLog();
                         $log->action = $status;
                         $log->created_by = $request->user()->user_id;
-                        $log->entity_id = 0;
+                        $log->entity_id = $transactionData['center_id'];
                         $log->local_created_at = $transaction->local_created_at;
                         $log->local_updated_at = $transaction->local_updated_at;
                         $log->type =  $type;
-                        $log->center_name = null;
+                        $log->center_name = array_key_exists('center_name', $transactionData) ? $transactionData['center_name'] : null;
 
                         $transaction->log()->save($log);
-
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
@@ -580,16 +630,22 @@ class YOLocalMarketController extends Controller
                         $sessionNo = CoffeeSession::max('server_session_id') + 1;
                         $status = 'partial_prepaired';
                         $type = 'sent_to_yemen_sales';
-                        $transactionType = 1;
+                        $transactionType = 6;
                         $sentTo = 194;
 
                         $details = $oldTranaction->details;
 
                         foreach ($details as $detail) {
+
                             $newDetail =  $detail->replicate()->fill([]);
 
                             $newDetail->save();
-
+                            foreach ($detail->metas as $meta) {
+                                $newMeta =  $meta->replicate()->fill([
+                                    'transaction_detail_id' => $newDetail->transaction_detail_id
+                                ]);
+                                $newMeta->save();
+                            }
                             $detail->update([
                                 'container_status' => 1
                             ]);
@@ -599,7 +655,7 @@ class YOLocalMarketController extends Controller
                             $detailsData,
                             $request->user()->user_id,
                             $oldTranaction->transaction_id,
-                            $transaction->reference_id
+                            $oldTranaction->reference_id
                         );
 
 
@@ -637,8 +693,7 @@ class YOLocalMarketController extends Controller
     public function prepaired(Request $request)
     {
         $transactions = Transaction::where('is_parent', 0)
-            ->whereIn('sent_to', [195])
-            ->whereIn('transaction_type', [1])
+            ->whereIn('sent_to', [195, 197, 198])
             ->whereHas(
                 'details',
                 function ($q) {
@@ -654,17 +709,15 @@ class YOLocalMarketController extends Controller
 
         $allTransactions = array();
 
-        foreach ($transactions as $transaction) {
 
-            $transactionDetails = $transaction->details;
-            // $transaction->center_id = $transaction->log->entity_id;
-            // $transaction->center_name = $transaction->log->center_name;
-            $transactionMata = $transaction->meta;
+        foreach ($transactions as $transaction) {
+            $transaction->center_id = $transaction->log->entity_id;
+            $transaction->center_name = $transaction->log->center_name;
 
             $detailMetas = [];
             $transactionChilds = [];
 
-            foreach ($transactionDetails as $detail) {
+            foreach ($transaction->details as $detail) {
                 foreach ($detail->metas as $meta) {
                     array_push($detailMetas, $meta);
                 }
@@ -682,8 +735,8 @@ class YOLocalMarketController extends Controller
 
             $data = [
                 'transaction' => $transaction,
-                'transactionDetails' => $transactionDetails,
-                'transactionMeta' => $transactionMata,
+                'transactionDetails' => $transaction->details,
+                'transactionMeta' => $transaction->meta,
                 'detail_metas' => $detailMetas,
                 'child_transactions' => $transactionChilds,
             ];
@@ -691,8 +744,204 @@ class YOLocalMarketController extends Controller
             array_push($allTransactions, $data);
         }
 
-        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
-            'transactions' => $allTransactions,
+        return sendSuccess(config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+    }
+    public function postLocalSales(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transactions' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = implode(',', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+
+        $savedTransactions = collect();
+
+        $sessionNo = CoffeeSession::max('server_session_id') + 1;
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($request->transactions as $transactionObj) {
+                $transactionData = $transactionObj['transaction'];
+                $detailsData = $transactionObj['details'];
+
+                // Start of Transaction saving loop
+                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 197) {
+
+                    $oldTransactions = Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
+                        ->where('sent_to', 197)->first();
+
+                    $detailsData = $transactionObj['details'];
+                    $transactionPrepaired =  Transaction::with('details')->where('batch_number', $transactionData['batch_number'])
+                        ->where('sent_to', 195)->first();
+
+                    $currentTransactionDetail =  count($detailsData);
+
+                    $prepaidTransactionCount = count($transactionPrepaired->details);
+
+                    if ($currentTransactionDetail ==  $prepaidTransactionCount) {
+
+                        $status = 'order_collected';
+                        $type = 'sent';
+                        $transactionType = 6;
+                        $sentTo = 197;
+                        $order = Order::where('order_number', $transactionData['batch_number'])->first();
+
+                        $order->update([
+                            'status' => 3
+                        ]);
+
+                        $transaction = Transaction::createAndLog(
+                            $transactionData,
+                            $request->user()->user_id,
+                            $status,
+                            $sessionNo,
+                            $type,
+                            $transactionType,
+                            $sentTo
+                        );
+
+                        $transactionPrepaired->update([
+                            'is_parent' => $transaction->transaction_id
+                        ]);
+
+                        if ($oldTransactions) {
+                            $oldTransactions->update([
+                                'is_parent' =>  $transaction->transaction_id
+                            ]);
+                        }
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+                        $transaction->load('details');
+
+                        $savedTransactions->push($transaction);
+                    }
+                    if ($currentTransactionDetail <  $prepaidTransactionCount) {
+                        $status = 'order_collected_partial';
+                        $type = 'sent';
+                        $transactionType = 6;
+                        $sentTo = 197;
+
+                        $transaction = Transaction::createAndLog(
+                            $transactionData,
+                            $request->user()->user_id,
+                            $status,
+                            $sessionNo,
+                            $type,
+                            $transactionType,
+                            $sentTo
+                        );
+
+                        if ($oldTransactions) {
+                            $oldTransactions->update([
+                                'is_parent' =>  $transaction->transaction_id
+                            ]);
+                            $details = $oldTransactions->details;
+                            foreach ($details as $detail) {
+
+                                $newDetail =  $detail->replicate()->fill([]);
+
+                                $newDetail->save();
+                                foreach ($detail->metas as $meta) {
+                                    $newMeta =  $meta->replicate()->fill([
+                                        'transaction_detail_id' => $newDetail->transaction_detail_id
+                                    ]);
+                                    $newMeta->save();
+                                }
+                                $detail->update([
+                                    'container_status' => 1
+                                ]);
+                            }
+                        }
+
+
+
+
+                        $transactionDetails = TransactionDetail::createFromArray(
+                            $detailsData,
+                            $request->user()->user_id,
+                            $transaction->transaction_id,
+                            $transaction->reference_id
+                        );
+
+                        $transaction->load('details');
+
+                        $savedTransactions->push($transaction);
+                    }
+                }
+                if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 198) {
+                    $status = 'sent';
+                    $type = 'order_deliverd';
+                    $transactionType = 6;
+                    $sentTo = 198;
+                    $order = Order::where('order_number', $transactionData['batch_number'])->first();
+
+                    $order->update([
+                        'status' => 4
+                    ]);
+
+                    $transaction = Transaction::createAndLog(
+                        $transactionData,
+                        $request->user()->user_id,
+                        $status,
+                        $sessionNo,
+                        $type,
+                        $transactionType,
+                        $sentTo
+                    );
+
+                    $oldTransaction =  Transaction::where('batch_number', $transactionData['batch_number'])->where('sent_to', 197)->first();
+
+                    $oldTransaction->update([
+                        'is_parent' => $transaction->transaction_id
+                    ]);
+
+
+
+                    $transactionDetails = TransactionDetail::createFromArray(
+                        $detailsData,
+                        $request->user()->user_id,
+                        $transaction->transaction_id,
+                        $transaction->reference_id
+                    );
+
+                    $transaction->load('details');
+
+                    $savedTransactions->push($transaction);
+                }
+            }
+            // End of Transaction saving loop
+            DB::commit();
+        } catch (Throwable $th) {
+            DB::rollback();
+            return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
+                'line' => $th->getLine()
+            ]), 499);
+        }
+
+        // Start of setting session
+        if ($savedTransactions->isNotEmpty()) {
+            CoffeeSession::create([
+                'user_id' => $request->user()->user_id,
+                'local_session_id' => $savedTransactions->first()->local_session_no,
+                'server_session_id' => $sessionNo
+            ]);
+        } else {
+            $sessionNo--;
+        }
+        // End of setting session
+
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
+            'session_no' => $sessionNo,
+            'transactions' => $savedTransactions,
         ]);
     }
 }

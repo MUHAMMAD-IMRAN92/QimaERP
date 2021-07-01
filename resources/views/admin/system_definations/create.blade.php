@@ -70,8 +70,8 @@
                                         <label for="exampleInputEmail1">Select Defination</label>
                                         <select name="key" id="defination" class="form-control " @error('defination')
                                             is-invalid @enderror>
-                                            <option value="genetice" selected>Select Defination</option>
-                                            <option value="genetice">Genetice</option>
+                                            <option value="" selected>Select Defination</option>
+                                            <option value="genetic">Genetic</option>
                                             <option value="flavour">Flavour</option>
                                         </select>
                                         @error('defination')

@@ -334,6 +334,7 @@
                             orders: this.orders
                         });
                     console.log(body);
+                    console.log(this.csrfToken);
                     fetch('/admin/orders', {
                         method: 'POST',
                         headers: {
