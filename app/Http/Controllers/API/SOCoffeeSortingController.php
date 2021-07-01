@@ -171,7 +171,7 @@ class SOCoffeeSortingController extends Controller
                         if ($transactionData['is_server_id'] == true) {
 
 
-                            $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->get();
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
 
                             if (!$parentTransaction) {
                                 throw new Exception('Parent Transaction does not exists');
@@ -248,7 +248,7 @@ class SOCoffeeSortingController extends Controller
                                 'container_status' => 1,
                             ]);
                         }
-                  
+
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
 
