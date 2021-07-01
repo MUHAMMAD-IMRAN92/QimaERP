@@ -25,5 +25,7 @@ class DevTestController extends Controller
             'msg' => 'Hello Dev, how is your day?',
             'live_test' => true
         ]);
+        // return 'ok';
+
     }
 }

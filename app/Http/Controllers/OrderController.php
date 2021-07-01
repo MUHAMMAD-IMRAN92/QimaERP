@@ -15,7 +15,7 @@ class OrderController extends Controller
     {
         $orders = Order::with('details')->get();
 
-        $orders = $orders->map(function($order){
+        $orders = $orders->map(function ($order) {
             $order->total = number_format($order->details->sum('total'), 2);
 
             return $order;
@@ -53,14 +53,15 @@ class OrderController extends Controller
         }
 
         $customer = null;
+        // dd($request->customer);
         $customerData = $request->customer;
-
+        // dd($customerData);
         if ($request->customerId == 0) {
             $customer = Customer::create([
-                'name' => $customerData->name,
-                'phone' => $customerData->phone,
-                'email' => $customerData->email,
-                'address' => $customerData->address
+                'name' => $customerData['name'],
+                'phone' => $customerData['phone'],
+                'email' => $customerData['email'],
+                'address' => $customerData['address']
             ]);
         } else {
             $customer = Customer::find($request->customerId);
@@ -112,5 +113,16 @@ class OrderController extends Controller
         return view('admin.orders.show', [
             'order' => $order
         ]);
+    }
+    public function paidOrder(Request $request)
+    {
+
+        $orders = Order::whereIn('id', $request->order)->get();
+        foreach ($orders as $order) {
+        }
+        $order->update([
+            'status' => 5
+        ]);
+        return back()->with('msg', 'Selected Orders Mark As Piad');
     }
 }

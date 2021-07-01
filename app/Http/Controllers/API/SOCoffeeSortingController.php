@@ -30,10 +30,10 @@ class SOCoffeeSortingController extends Controller
 
     public function getCoffee()
     {
-        $transactions = Transaction::where('is_parent', 0)
+        $transactions = Transaction::selectRaw('transactions.*')->where('is_parent', 0)
             ->where('sent_to', 21)
             ->orWhere(function ($query) {
-                $query->whereIn('sent_to', [22, 23])
+                $query->whereIn('sent_to', [22])
                     ->where('transaction_type', 1);
             })
             ->whereHas(
@@ -48,28 +48,46 @@ class SOCoffeeSortingController extends Controller
             }])->with(['meta', 'child'])
             ->orderBy('transaction_id', 'desc')
             ->get();
+        // ->leftjoin('sorting_remaining_weight', function ($join) {
+        //     $join->on('sorting_remaining_weight.batch_number', 'transactions.batch_number');
+        //     $join->on(DB::raw('sent_22-sent_201-sent_23'), '!=', DB::raw(0));
+        // })
+        // ->orderBy('transaction_id', 'desc')
+        // ->get();
+
+
 
         $allTransactions = array();
 
-
+        $loopint = 0;
         foreach ($transactions as $transaction) {
 
-            $transactionDetails = $transaction->details;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
             $transactionMata = $transaction->meta;
 
             $detailMetas = [];
             $transactionChilds = [];
-
-            foreach ($transactionDetails as $detail) {
+            $loop = 0;
+            foreach ($transaction->details as $detail) {
+                if ($transaction->sent_to == 21 && $detail->container_status == 1) {
+                    $transaction->details->forget(($loop));
+                    $loop++;
+                    continue;
+                }
                 foreach ($detail->metas as $meta) {
                     array_push($detailMetas, $meta);
                 }
 
                 $detail->makeHidden('metas');
             }
-
+            if (count($transaction->details) == 0) {
+                $transactions->forget($loopint);
+                $loopint++;
+                continue;
+            }
+            $details = $transaction->details;
+            $transactionDetails = $details->values();
             foreach ($transaction->child as $child) {
                 array_push($transactionChilds, $child);
             }
@@ -150,15 +168,70 @@ class SOCoffeeSortingController extends Controller
                         $status = 'sent';
                         $type = 'sent_by_so';
                         $transactionType = 1;
+                        if ($transactionData['is_server_id'] == true) {
 
-                        $transaction = Transaction::createAndLog(
-                            $transactionData,
-                            $request->user()->user_id,
-                            $status,
-                            $sessionNo,
-                            $type,
-                            $transactionType
-                        );
+
+                            $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        } else {
+                            $code = $transactionData['reference_id'] . '_' . $request->user()->user_id . '-T';
+
+                            $parentTransaction = Transaction::where('local_code', 'like', "$code%")
+                                ->latest('transaction_id')
+                                ->first();
+
+                            if (!$parentTransaction) {
+                                throw new Exception('Parent Transaction does not exists');
+                            }
+                        }
+
+                        $batchCheck = BatchNumber::where('batch_number', $transactionData['batch_number'])->exists();
+
+                        if (!$batchCheck) {
+                            throw new Exception("Batch Number [{$transactionData['batch_number']}] does not exists.");
+                        }
+
+                        $transaction =  Transaction::create([
+                            'batch_number' => $transactionData['batch_number'],
+                            'is_parent' => 0,
+                            'created_by' =>  $request->user()->user_id,
+                            'is_local' => FALSE,
+                            'local_code' => $transactionData['local_code'],
+                            'is_special' => $parentTransaction->is_special,
+                            'is_mixed' => $transactionData['is_mixed'],
+                            'transaction_type' => $transactionType,
+                            'reference_id' => $parentTransaction->transaction_id,
+                            'transaction_status' => $status,
+                            'is_new' => 0,
+                            'sent_to' => $sentTo ?? $transactionData['sent_to'],
+                            'is_server_id' => true,
+                            'is_sent' => $transactionData['is_sent'],
+                            'session_no' => $sessionNo,
+                            'ready_to_milled' => $transactionData['ready_to_milled'],
+                            'is_in_process' => $transactionData['is_in_process'],
+                            'is_update_center' => array_key_exists('is_update_center', $transactionData) ? $transactionData['is_update_center'] : false,
+                            'local_session_no' => array_key_exists('local_session_no', $transactionData) ? $transactionData['local_session_no'] : false,
+                            'local_created_at' => toSqlDT($transactionData['local_created_at']),
+                            'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
+                        ]);
+
+                        $log = new TransactionLog();
+                        $log->action = $status;
+                        $log->created_by = $request->user()->user_id;
+                        $log->entity_id = $transactionData['center_id'];
+                        $log->local_created_at = $transaction->local_created_at;
+                        $log->local_updated_at = $transaction->local_updated_at;
+                        $log->type =  $type;
+                        $log->center_name = array_key_exists('center_name', $transactionData) ? $transactionData['center_name'] : null;
+
+                        $transaction->log()->save($log);
+
+                        Transaction::where('transaction_id', $transactionData['reference_id'])->update([
+                            'is_parent' =>  $transaction->transaction_id
+                        ]);
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
@@ -166,6 +239,15 @@ class SOCoffeeSortingController extends Controller
                             $transaction->transaction_id,
                             $transaction->reference_id
                         );
+
+                        foreach ($detailsData as $detailObj) {
+
+                            $detailsData = $detailObj['detail'];
+                            // return  $detailsData['reference_id'];
+                            TransactionDetail::where('transaction_id',   $transactionData['reference_id'])->where('container_status', $detailsData['reference_id'])->update([
+                                'container_status' => 1,
+                            ]);
+                        }
 
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
@@ -286,7 +368,7 @@ class SOCoffeeSortingController extends Controller
                             $status = 'sent';
                             $type = 'sent_to_market';
                             $transactionType = 3;
-                            $sentTo = 20;
+                            $sentTo = 201;
 
                             $parentTransaction = Transaction::findParent(
                                 $transactionData['is_server_id'],
