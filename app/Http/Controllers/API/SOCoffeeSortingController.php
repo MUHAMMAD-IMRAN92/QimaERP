@@ -184,7 +184,15 @@ class SOCoffeeSortingController extends Controller
                             $transaction->transaction_id,
                             $transaction->reference_id
                         );
+                        foreach ($detailsData as $detailObj) {
 
+                            $detailsData = $detailObj['detail'];
+
+                            TransactionDetail::where('transaction_detail_id',   $detailsData['reference_id'])->update([
+                                'container_status' => 1,
+                            ]);
+                        }
+                        
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
 
