@@ -311,7 +311,7 @@ class MillOperativeController extends Controller
                         $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
                         $parentTransaction = Transaction::where('local_code', 'like', "$code%")
                             ->latest('transaction_id')
-                            ->first();
+                            ->get();
 
                         if (!$parentTransaction) {
                             throw new Exception('Parent Transaction does not exists');
@@ -361,7 +361,7 @@ class MillOperativeController extends Controller
                         //if one of the transaction is specail
                         $isSpecial = false;
                         foreach ($parentTransaction as $metaTransaction) {
-                            if ($metaTransaction->is_special == true) {
+                            if ($metaTransaction['is_special'] == true) {
                                 $isSpecial += true;
                             }
                         }
@@ -392,24 +392,28 @@ class MillOperativeController extends Controller
                         ]);
 
                         foreach ($parentTransaction as $metaTransaction) {
-                            if ($metaTransaction->is_special == true) {
+                            if ($metaTransaction['is_special']  == true) {
                                 MetaTransation::create([
                                     'transaction_id' =>   $transaction->transaction_id,
                                     'key' => 'Special',
-                                    'transaction_id' => $metaTransaction->transaction_id
+                                    'transaction_id' => $metaTransaction['transaction_id']
                                 ]);
                             }
-                            if ($metaTransaction->is_special == false) {
+                            if ($metaTransaction['is_special']  == false) {
                                 MetaTransation::create([
                                     'transaction_id' =>   $transaction->transaction_id,
                                     'key' => 'Non-Special',
-                                    'transaction_id' => $metaTransaction->transaction_id
+                                    'transaction_id' => $metaTransaction['transaction_id']
                                 ]);
                             }
-                            $metaTransaction->update([
-                                'is_parent' =>  $transaction->transaction_id,
+                        }
+
+                        foreach ($parentTransaction as $parent) {
+                            $parent->update([
+                                'is_parent' => $transaction->transaction_id
                             ]);
                         }
+
 
                         $referenceId =  explode(',', $transaction->reference_id);
 
@@ -494,7 +498,7 @@ class MillOperativeController extends Controller
                         $sent_to = 21;
                         $isSpecial = false;
                         foreach ($parentTransaction as $metaTransaction) {
-                            if ($metaTransaction->is_special == true) {
+                            if ($metaTransaction['is_special']  == true) {
                                 $isSpecial += true;
                             }
                         }
@@ -525,25 +529,26 @@ class MillOperativeController extends Controller
                         ]);
 
                         foreach ($parentTransaction as $metaTransaction) {
-                            if ($metaTransaction->is_special == true) {
+                            if ($metaTransaction['is_special']  == true) {
                                 MetaTransation::create([
                                     'transaction_id' =>   $transaction->transaction_id,
                                     'key' => 'Special',
-                                    'transaction_id' => $metaTransaction->transaction_id
+                                    'transaction_id' => $metaTransaction['transaction_id']
                                 ]);
                             }
-                            if ($metaTransaction->is_special == false) {
+                            if ($metaTransaction['is_special']  == false) {
                                 MetaTransation::create([
                                     'transaction_id' =>   $transaction->transaction_id,
                                     'key' => 'Non-Special',
-                                    'transaction_id' => $metaTransaction->transaction_id
+                                    'transaction_id' => $metaTransaction['transaction_id']
                                 ]);
                             }
-                            $metaTransaction->update([
-                                'is_parent' =>  $transaction->transaction_id,
+                        }
+                        foreach ($parentTransaction as $parent) {
+                            $parent->update([
+                                'is_parent' => $transaction->transaction_id
                             ]);
                         }
-
                         $referenceId =  explode(',', $transaction->reference_id);
 
                         foreach ($referenceId as $id) {
@@ -627,7 +632,7 @@ class MillOperativeController extends Controller
                         $sent_to = 20;
                         $isSpecial = false;
                         foreach ($parentTransaction as $metaTransaction) {
-                            if ($metaTransaction->is_special == true) {
+                            if ($metaTransaction['is_special']  == true) {
                                 $isSpecial += true;
                             }
                         }
@@ -732,7 +737,7 @@ class MillOperativeController extends Controller
 
                             $isSpecial = false;
                             foreach ($parentTransaction as $metaTransaction) {
-                                if ($metaTransaction->is_special == true) {
+                                if ($metaTransaction['is_special']  == true) {
                                     $isSpecial += true;
                                 }
                             }
@@ -779,7 +784,7 @@ class MillOperativeController extends Controller
                                 'local_created_at' => toSqlDT($transactionData->local_created_at),
                                 'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                             ]);
-                            
+
                             $log = new TransactionLog();
                             $log->action = $status;
                             $log->created_by = $request->user()->user_id;
