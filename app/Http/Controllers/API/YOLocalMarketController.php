@@ -312,6 +312,7 @@ class YOLocalMarketController extends Controller
                         $savedTransactions->push($accumulatedTransaction);
                     }
                 }
+
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
                     $savedTransactions = collect();
                     $batchNumber = $transactionData['batch_number'];
