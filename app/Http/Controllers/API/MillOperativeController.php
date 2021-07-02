@@ -310,7 +310,6 @@ class MillOperativeController extends Controller
                     } else {
                         $code = $transactionData->reference_id . '_' . $request->user()->user_id . '-T';
                         $parentTransaction = Transaction::where('local_code', 'like', "$code%")
-                            ->latest('transaction_id')
                             ->get();
 
                         if (!$parentTransaction) {
