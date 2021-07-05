@@ -229,7 +229,7 @@ class SOCoffeeSortingController extends Controller
 
                         $transaction->log()->save($log);
 
-                        $parentTransaction->update([
+                        Transaction::where('transaction_id',   $transactionData['reference_id'])->update([
                             'is_parent' => $transaction->transaction_id
                         ]);
 
@@ -244,7 +244,7 @@ class SOCoffeeSortingController extends Controller
 
                             $detailsData = $detailObj['detail'];
                             // return  $detailsData['reference_id'];
-                            TransactionDetail::where('transaction_id',   $transactionData['reference_id'])->where('sent_to', 22)->where('container_number', $detailsData['reference_id'])->update([
+                            TransactionDetail::where('transaction_id',   $transactionData['reference_id'])->where('container_number', $detailsData['reference_id'])->update([
                                 'container_status' => 1,
                             ]);
                         }
