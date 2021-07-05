@@ -244,7 +244,7 @@ class SOCoffeeSortingController extends Controller
 
                             $detailsData = $detailObj['detail'];
                             // return  $detailsData['reference_id'];
-                            TransactionDetail::where('transaction_id',   $transactionData['reference_id'])->where('container_status', $detailsData['reference_id'])->update([
+                            TransactionDetail::where('transaction_id',   $transactionData['reference_id'])->where('container_number', $detailsData['reference_id'])->update([
                                 'container_status' => 1,
                             ]);
                         }
