@@ -229,8 +229,8 @@ class SOCoffeeSortingController extends Controller
 
                         $transaction->log()->save($log);
 
-                        Transaction::where('transaction_id', $transactionData['reference_id'])->update([
-                            'is_parent' =>  $transaction->transaction_id
+                        $parentTransaction->update([
+                            'is_parent' => $transaction->transaction_id
                         ]);
 
                         $transactionDetails = TransactionDetail::createFromArray(
