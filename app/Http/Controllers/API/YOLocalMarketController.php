@@ -123,12 +123,13 @@ class YOLocalMarketController extends Controller
             ->where('is_sent', false)
             ->get()
             ->map(function ($order) {
-                
+
                 //transaction with
                 $orderPrepareds = OrderPrepared::where('order_number', $order->order_number)->get();
                 foreach ($order->details as $detail) {
+                    $detail->status = $order->status;
+                    $detail->remWeight = $detail->weight;
                     foreach ($orderPrepareds  as  $orderPrepared) {
-                        $detail->status = $order->status;
 
                         $product = Product::where('id', $detail->product_id)->first();
                         $batch = $product->batch_number;
