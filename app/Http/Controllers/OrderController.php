@@ -119,10 +119,11 @@ class OrderController extends Controller
 
         $orders = Order::whereIn('id', $request->order)->get();
         foreach ($orders as $order) {
+            $order->update([
+                'status' => 5
+            ]);
         }
-        $order->update([
-            'status' => 5
-        ]);
+
         return back()->with('msg', 'Selected Orders Mark As Piad');
     }
 }
