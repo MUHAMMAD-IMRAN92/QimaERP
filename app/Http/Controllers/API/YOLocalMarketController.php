@@ -123,8 +123,7 @@ class YOLocalMarketController extends Controller
             ->where('is_sent', false)
             ->get()
             ->map(function ($order) {
-                $details = $order->details;
-                $order->makeHidden('details');
+                
                 //transaction with
                 $orderPrepareds = OrderPrepared::where('order_number', $order->order_number)->get();
                 foreach ($order->details as $detail) {
@@ -150,7 +149,8 @@ class YOLocalMarketController extends Controller
                         }
                     }
                 }
-
+                $details = $order->details;
+                $order->makeHidden('details');
 
                 return [
                     'order' => $order,
