@@ -143,9 +143,10 @@ class YOLocalMarketController extends Controller
                             // if ($orderPrepared->prepared_weight == 0) {
                             //     $detail->remWeigth = $detail->weight;
                             // }
-                            $weight = $orderPrepared->weight - $orderPrepared->prepared_weight;
-
-                            $detail->remWeigth =  $weight;
+                            else {
+                                $weight = $orderPrepared->weight - $orderPrepared->prepared_weight;
+                                $detail->remWeigth =  $weight;
+                            }
                         }
                     }
                 }
