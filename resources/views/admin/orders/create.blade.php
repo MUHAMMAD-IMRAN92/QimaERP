@@ -95,7 +95,7 @@
                                 <label for="order_is_special">Variant</label>
                                 <select class="form-control" name="order_is_product" id="order_is_special"
                                     v-model="orderIsSpecial">
-                                    <option value="0" selected>Reguler</option>
+                                    <option value="0" selected>Regular</option>
                                     <option value="1">Special</option>
                                 </select>
                             </div>
