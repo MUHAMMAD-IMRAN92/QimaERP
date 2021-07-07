@@ -98,25 +98,33 @@ class CoffeeBuyerManager extends Controller
         $alreadySentCoffee = array();
         $sentCoffeeArray = array();
         foreach ($sentTransactions as $key => $sentTransaction) {
-
             if (isset($sentTransaction->transactions) && $sentTransaction->transactions) {
                 if ($sentTransaction->transactions->is_update_center == TRUE) {
+
                     $updateCenter = Transaction::where('transaction_id', $sentTransaction->transactions->transaction_id)->with('log')->first();
                     if ($updateCenter) {
                         $updateCenter->log->entity_id = $sentTransaction->transactions->center_id;
                         $updateCenter->log->center_name = $sentTransaction->transactions->center_name;
                         $updateCenter->sent_to = $sentTransaction->transactions->sent_to;
                         $updateCenter->transaction_type = 2;
-                        $updateCenter->local_updated_at = Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString();
+                        $updateCenter->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
+                        $updateCenter->local_updated_at = toSqlDT($sentTransaction->transactions->local_updated_at);
                         $updateCenter->save();
                         $updateCenter->log->save();
                         array_push($sentCoffeeArray, $sentTransaction->transactions->transaction_id);
                     }
                 } else {
+
                     $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                     if ($alreadyExistTransaction) {
                         $sentTransaction->transactions->already_sent = true;
-                        $sentTransaction->transactions->local_updated_at = Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString();
+                        $sentTransaction->transactions->created_at =  toSqlDT($sentTransaction->transactions->created_at);
+                        $sentTransaction->transactions->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
+                        $sentTransaction->transactions->local_updated_at = toSqlDT($sentTransaction->transactions->local_updated_at);
+
+                        foreach ($sentTransaction->transactions_detail as $detail) {
+                            $detail->created_at = toSqlDT($detail->created_at);
+                        }
                         array_push($alreadySentCoffee, $sentTransaction);
                     } else {
                         $transaction = Transaction::create([
@@ -134,8 +142,9 @@ class CoffeeBuyerManager extends Controller
                             'sent_to' => 3,
                             'is_sent' => 0,
                             'session_no' => $sentTransaction->transactions->session_no,
-                            'local_updated_at' => Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString(),
-                            'local_created_at' => Carbon::parse($sentTransaction->transactions->local_created_at)->toDateTimeString()
+                            'local_created_at' => toSqlDT($sentTransaction->transactions->local_created_at),
+                            'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at)
+
                         ]);
 
                         $transactionLog = TransactionLog::create([
@@ -144,8 +153,8 @@ class CoffeeBuyerManager extends Controller
                             'created_by' => $sentTransaction->transactions->created_by,
                             'entity_id' => $sentTransaction->transactions->center_id,
                             'center_name' => $sentTransaction->transactions->center_name,
-                            'local_updated_at' => Carbon::parse($sentTransaction->transactions->local_updated_at)->toDateTimeString(),
-                            'local_created_at' => Carbon::parse($sentTransaction->transactions->local_created_at)->toDateTimeString(),
+                            'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at),
+                            'local_created_at' =>  toSqlDT($sentTransaction->transactions->local_created_at),
                             'type' => 'center',
                         ]);
 
@@ -167,6 +176,7 @@ class CoffeeBuyerManager extends Controller
                 }
             }
         }
+
         $currentlySentCoffees = Transaction::whereIn('transaction_id', $sentCoffeeArray)->with('transactionDetail', 'log')->get();
         $dataArray = array();
         foreach ($currentlySentCoffees as $key => $currentlySentCoffee) {
@@ -177,6 +187,7 @@ class CoffeeBuyerManager extends Controller
             }
 
             $transactionsDetail = $currentlySentCoffee->transactionDetail;
+
             $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
             $currentlySentCoffee->center_name = $currentlySentCoffee->log->center_name;
             $currentlySentCoffee->makeHidden('transactionDetail');
