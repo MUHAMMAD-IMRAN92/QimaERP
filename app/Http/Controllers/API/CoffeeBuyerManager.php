@@ -171,7 +171,13 @@ class CoffeeBuyerManager extends Controller
                 }
             }
         }
-        $currentlySentCoffees = Transaction::whereIn('transaction_id', $sentCoffeeArray)->with('transactionDetail', 'log')->get();
+        $currentlySentCoffees = Transaction::whereIn('transaction_id', $sentCoffeeArray)->with('log', [
+            'transactionDetail'
+            => function ($query) {
+                return $query->toSqlDT('created_at');
+            }
+
+        ])->get();
         $dataArray = array();
         foreach ($currentlySentCoffees as $key => $currentlySentCoffee) {
             $currentlySentCoffee->buyer_name = '';
