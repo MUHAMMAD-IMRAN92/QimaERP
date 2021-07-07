@@ -117,6 +117,7 @@ class CoffeeBuyerManager extends Controller
                     $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                     if ($alreadyExistTransaction) {
                         $sentTransaction->transactions->already_sent = true;
+                        $sentTransaction->transactions->created_at =  toSqlDT($sentTransaction->transactions->created_at);
                         $sentTransaction->transactions->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
                         $sentTransaction->transactions->local_updated_at = toSqlDT($sentTransaction->transactions->local_updated_at);
                         array_push($alreadySentCoffee, $sentTransaction);
