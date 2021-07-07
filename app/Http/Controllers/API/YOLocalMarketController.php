@@ -181,7 +181,7 @@ class YOLocalMarketController extends Controller
         $sessionNo = CoffeeSession::max('server_session_id') + 1;
         $arrContainer = [];
 
-        DB::beginTransaction();
+        // DB::beginTransaction();
 
         try {
             foreach ($request->transactions as $transactionObj) {
@@ -701,7 +701,7 @@ class YOLocalMarketController extends Controller
             foreach ($details as $d) {
                 $d->update(['container_status' => 1]);
             }
-            return 'ok';
+            // return 'ok';
         } catch (Throwable $th) {
             DB::rollback();
             return Response::json(array('status' => 'error', 'message' => $th->getMessage(), 'data' => [
