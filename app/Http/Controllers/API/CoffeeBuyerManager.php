@@ -98,9 +98,9 @@ class CoffeeBuyerManager extends Controller
         $alreadySentCoffee = array();
         $sentCoffeeArray = array();
         foreach ($sentTransactions as $key => $sentTransaction) {
-
             if (isset($sentTransaction->transactions) && $sentTransaction->transactions) {
                 if ($sentTransaction->transactions->is_update_center == TRUE) {
+
                     $updateCenter = Transaction::where('transaction_id', $sentTransaction->transactions->transaction_id)->with('log')->first();
                     if ($updateCenter) {
                         $updateCenter->log->entity_id = $sentTransaction->transactions->center_id;
@@ -114,12 +114,17 @@ class CoffeeBuyerManager extends Controller
                         array_push($sentCoffeeArray, $sentTransaction->transactions->transaction_id);
                     }
                 } else {
+
                     $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                     if ($alreadyExistTransaction) {
                         $sentTransaction->transactions->already_sent = true;
                         $sentTransaction->transactions->created_at =  toSqlDT($sentTransaction->transactions->created_at);
                         $sentTransaction->transactions->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
                         $sentTransaction->transactions->local_updated_at = toSqlDT($sentTransaction->transactions->local_updated_at);
+
+                        foreach ($sentTransaction->transactions_detail as $detail) {
+                            $detail->created_at = toSqlDT($detail->created_at);
+                        }
                         array_push($alreadySentCoffee, $sentTransaction);
                     } else {
                         $transaction = Transaction::create([
@@ -171,9 +176,8 @@ class CoffeeBuyerManager extends Controller
                 }
             }
         }
-        $currentlySentCoffees = Transaction::whereIn('transaction_id', $sentCoffeeArray)->with(['transactionDetail' => function ($q) {
-            $q->toSqlDT('created_at');
-        }])->with('log')->get();
+
+        $currentlySentCoffees = Transaction::whereIn('transaction_id', $sentCoffeeArray)->with('transactionDetail', 'log')->get();
         $dataArray = array();
         foreach ($currentlySentCoffees as $key => $currentlySentCoffee) {
             $currentlySentCoffee->buyer_name = '';
@@ -183,6 +187,7 @@ class CoffeeBuyerManager extends Controller
             }
 
             $transactionsDetail = $currentlySentCoffee->transactionDetail;
+
             $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
             $currentlySentCoffee->center_name = $currentlySentCoffee->log->center_name;
             $currentlySentCoffee->makeHidden('transactionDetail');
