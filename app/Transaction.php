@@ -222,14 +222,14 @@ class Transaction extends Model
         return $transaction;
     }
 
-    public static function createGenericAccumulated($batchNumber, $userId, $isSpecial, $referenceIds, $status, $sentTo, $sessionNo, $type)
+    public static function createGenericAccumulated($batchNumber, $userId, $isSpecial, $referenceIds, $localCode, $status, $sentTo, $sessionNo, $type)
     {
         $transaction =  static::create([
             'batch_number' => $batchNumber,
             'is_parent' => 0,
             'created_by' => $userId,
             'is_local' => FALSE,
-            'local_code' => $batchNumber,
+            'local_code' => $localCode,
             'is_special' => $isSpecial,
             'is_mixed' => true,
             'transaction_type' => 5,
@@ -261,5 +261,4 @@ class Transaction extends Model
 
         return $transaction;
     }
-
 }

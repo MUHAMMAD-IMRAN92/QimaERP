@@ -79,7 +79,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1><b>Milling Coffee</b></h1>
+                        <h1><b>Set Prices</b></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -137,6 +137,5 @@
     </div>
     <script>
         $('#myModal').modal('show');
-
     </script>
 @endsection
