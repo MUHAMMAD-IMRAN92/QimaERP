@@ -179,6 +179,7 @@ class YOLocalMarketController extends Controller
         $savedTransactions = collect();
 
         $sessionNo = CoffeeSession::max('server_session_id') + 1;
+        $arrContainer = [];
 
         DB::beginTransaction();
 
@@ -318,6 +319,7 @@ class YOLocalMarketController extends Controller
                 }
 
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 193) {
+
                     $savedTransactions = collect();
                     $batchNumber = $transactionData['batch_number'];
                     $isSpecial = $transactionData['batch_number'] == 'S';
@@ -386,6 +388,7 @@ class YOLocalMarketController extends Controller
 
                     $savedTransactions->push($accumulatedTransaction);
                 }
+
                 if (isset($transactionData) && $transactionData['is_local'] && $transactionData['sent_to'] == 194) {
 
                     $orders = Order::with('details')->where('status', 1)->where('order_number',  $transactionData['batch_number'])->get();
@@ -523,15 +526,10 @@ class YOLocalMarketController extends Controller
                                 ]);
 
                                 $newDetail->save();
-                                foreach ($newDetail as $detail) {
-                                    $container = $detail['container_number'];
-                                    $oldDetail =  TransactionDetail::whereHas('transaction', function ($q) {
-                                        $q->where('sent_to', 193);
-                                    })->where('container_number', $container)->get();
-                                    foreach ($oldDetail as $odetail) {
-                                        $odetail->update(['container_status' => 1]);
-                                    }
-                                }
+
+                                $container = $detail['container_number'];
+                                array_push($arrContainer, $container);
+
 
                                 foreach ($detail->metas as $meta) {
                                     $newMeta =  $meta->replicate()->fill([
@@ -555,6 +553,10 @@ class YOLocalMarketController extends Controller
                             $transaction->reference_id
                         );
 
+                        foreach ($transactionDetails as $details) {
+                            $container = $details['container_number'];
+                            array_push($arrContainer, $container);
+                        }
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
                     } elseif ($condition == 'new_partial') {
@@ -641,7 +643,10 @@ class YOLocalMarketController extends Controller
                             $transaction->transaction_id,
                             $transaction->reference_id
                         );
-
+                        foreach ($transactionDetails as $details) {
+                            $container = $details['container_number'];
+                            array_push($arrContainer, $container);
+                        }
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
                     } elseif ($condition == 'old_partial') {
@@ -658,15 +663,9 @@ class YOLocalMarketController extends Controller
                             $newDetail =  $detail->replicate()->fill([]);
 
                             $newDetail->save();
-                            foreach ($newDetail as $detail) {
-                                $container = $detail['container_number'];
-                                $oldDetail =  TransactionDetail::whereHas('transaction', function ($q) {
-                                    $q->where('sent_to', 193);
-                                })->where('container_number', $container)->get();
-                                foreach ($oldDetail as $odetail) {
-                                    $odetail->update(['container_status' => 1]);
-                                }
-                            }
+                            $container = $detail['container_number'];
+                            array_push($arrContainer, $container);
+
                             foreach ($detail->metas as $meta) {
                                 $newMeta =  $meta->replicate()->fill([
                                     'transaction_detail_id' => $newDetail->transaction_detail_id
@@ -684,7 +683,10 @@ class YOLocalMarketController extends Controller
                             $oldTranaction->transaction_id,
                             $oldTranaction->reference_id
                         );
-
+                        foreach ($transactionDetails as $details) {
+                            $container = $details['container_number'];
+                            array_push($arrContainer, $container);
+                        }
 
                         $oldTranaction->load(['details.metas']);
                         $savedTransactions->push($oldTranaction);
@@ -692,7 +694,14 @@ class YOLocalMarketController extends Controller
                 }
             }
 
+
             DB::commit();
+
+            $details =  TransactionDetail::whereIn('container_number', $arrContainer)->get();
+            foreach ($details as $d) {
+                $d->update(['container_status' => 1]);
+            }
+            return 'ok';
         } catch (Throwable $th) {
             DB::rollback();
             return Response::json(array('status' => 'error', 'message' => $th->getMessage(), 'data' => [
