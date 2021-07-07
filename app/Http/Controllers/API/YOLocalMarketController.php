@@ -699,7 +699,7 @@ class YOLocalMarketController extends Controller
 
             $transaction = Transaction::whereHas('details', function ($query) use ($arrContainer) {
                 $query->whereIn('container_number', $arrContainer);
-            })->with('details')->get();
+            })->with('details')->where('sent_to', 193)->get();
 
             foreach ($transaction as $t) {
                 foreach ($t->details as $d) {
