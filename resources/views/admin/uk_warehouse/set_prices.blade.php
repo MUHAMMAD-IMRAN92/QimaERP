@@ -198,7 +198,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="submit" class="btn btn-success" value="Allocate To Chaina ">
+                                <input type="submit" class="btn btn-success" value="Allocate To China ">
                             </form>
                         </div>
                         <!-- /.col -->
