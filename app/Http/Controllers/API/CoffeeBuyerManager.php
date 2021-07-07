@@ -171,7 +171,9 @@ class CoffeeBuyerManager extends Controller
                 }
             }
         }
-        $currentlySentCoffees = Transaction::whereIn('transaction_id', $sentCoffeeArray)->with('transactionDetail', 'log')->get();
+        $currentlySentCoffees = Transaction::whereIn('transaction_id', $sentCoffeeArray)->with(['transactionDetail' => function ($q) {
+            $q->detail->toSqlDT('created_at');
+        }])->with('log')->get();
         $dataArray = array();
         foreach ($currentlySentCoffees as $key => $currentlySentCoffee) {
             $currentlySentCoffee->buyer_name = '';
@@ -180,11 +182,7 @@ class CoffeeBuyerManager extends Controller
                 $currentlySentCoffee->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
 
-            $transactionsDetail = [];
-            foreach ($currentlySentCoffee->transactionDetail as $detail) {
-                toSqlDT($detail->created_at);
-            }
-            return $currentlySentCoffee->transactionDetail;
+            $transactionsDetail = $currentlySentCoffee->transactionDetail;
             $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
             $currentlySentCoffee->center_name = $currentlySentCoffee->log->center_name;
             $currentlySentCoffee->makeHidden('transactionDetail');
