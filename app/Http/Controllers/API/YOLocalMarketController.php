@@ -180,7 +180,7 @@ class YOLocalMarketController extends Controller
 
         $sessionNo = CoffeeSession::max('server_session_id') + 1;
 
-        // DB::beginTransaction();
+        DB::beginTransaction();
 
         try {
             foreach ($request->transactions as $transactionObj) {
@@ -344,6 +344,7 @@ class YOLocalMarketController extends Controller
                         $request->user()->user_id,
                         $isSpecial,
                         $transactionData['transaction_id'],
+                        $transactionData['local_code'],
                         $status,
                         $sentTo,
                         $sessionNo,
@@ -666,9 +667,9 @@ class YOLocalMarketController extends Controller
                 }
             }
 
-            // DB::commit();
+            DB::commit();
         } catch (Throwable $th) {
-            // DB::rollback();
+            DB::rollback();
             return Response::json(array('status' => 'error', 'message' => $th->getMessage(), 'data' => [
                 'line' => $th->getLine()
             ]), 499);
