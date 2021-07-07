@@ -107,6 +107,7 @@ class CoffeeBuyerManager extends Controller
                         $updateCenter->log->center_name = $sentTransaction->transactions->center_name;
                         $updateCenter->sent_to = $sentTransaction->transactions->sent_to;
                         $updateCenter->transaction_type = 2;
+                        $updateCenter->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
                         $updateCenter->local_updated_at = toSqlDT($sentTransaction->transactions->local_updated_at);
                         $updateCenter->save();
                         $updateCenter->log->save();
@@ -116,6 +117,7 @@ class CoffeeBuyerManager extends Controller
                     $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                     if ($alreadyExistTransaction) {
                         $sentTransaction->transactions->already_sent = true;
+                        $sentTransaction->transactions->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
                         $sentTransaction->transactions->local_updated_at = toSqlDT($sentTransaction->transactions->local_updated_at);
                         array_push($alreadySentCoffee, $sentTransaction);
                     } else {
