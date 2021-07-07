@@ -183,8 +183,8 @@ class CoffeeBuyerManager extends Controller
             $transactionsDetail = [];
             foreach ($currentlySentCoffee->transactionDetail as $detail) {
                 toSqlDT($detail->created_at);
-                array_push($transactionsDetail, $detail);
             }
+            return $currentlySentCoffee->transactionDetail;
             $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
             $currentlySentCoffee->center_name = $currentlySentCoffee->log->center_name;
             $currentlySentCoffee->makeHidden('transactionDetail');
