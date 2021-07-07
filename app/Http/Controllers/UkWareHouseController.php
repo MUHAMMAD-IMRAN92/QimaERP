@@ -93,7 +93,7 @@ class UkWareHouseController extends Controller
 
         foreach ($transactions as $transaction) {
             $replicatedTransaction = $transaction->replicate()->fill([
-                'transaction_status' => 'allocated_chaina',
+                'transaction_status' => 'allocated_china',
                 'created_by' =>   $request->user()->user_id,
                 'sent_to' => 472
             ]);
@@ -149,6 +149,6 @@ class UkWareHouseController extends Controller
             }
         }
 
-        return back()->with('msg', 'Allocated To Chaina');
+        return back()->with('msg', 'Allocated To China');
     }
 }

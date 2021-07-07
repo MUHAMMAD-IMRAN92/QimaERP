@@ -126,7 +126,10 @@ class UkWareHouse extends Controller
                             $type,
                             $transactionType
                         );
-
+                        Transaction::where('transaction_id',  $transactionData['reference_id'])->first()
+                            ->update([
+                                'is_parent' =>  $transaction->transaction_id,
+                            ]);
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
                             $request->user()->user_id,
@@ -157,6 +160,10 @@ class UkWareHouse extends Controller
                             $transactionMeta->value = $meta['value'];
                             $transaction->meta()->save($transactionMeta);
                         }
+                        Transaction::where('transaction_id',  $transactionData['reference_id'])->first()
+                            ->update([
+                                'is_parent' =>  $transaction->transaction_id,
+                            ]);
 
                         $transactionDetails = TransactionDetail::createFromArray(
                             $detailsData,
