@@ -697,10 +697,16 @@ class YOLocalMarketController extends Controller
 
             DB::commit();
 
-            $details =  TransactionDetail::whereIn('container_number', $arrContainer)->get();
-            foreach ($details as $d) {
-                $d->update(['container_status' => 1]);
+            $transaction = Transaction::whereHas('details', function ($query) use ($arrContainer) {
+                $query->whereIn('container_number', $arrContainer);
+            })->with('details')->get();
+
+            foreach ($transaction as $t) {
+                foreach ($t->details as $d) {
+                    $d->whereIn('container_number', $arrContainer)->update(['container_status' => 1]);
+                }
             }
+            //
             // return 'ok';
         } catch (Throwable $th) {
             DB::rollback();
