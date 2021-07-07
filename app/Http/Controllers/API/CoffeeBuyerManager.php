@@ -180,9 +180,11 @@ class CoffeeBuyerManager extends Controller
                 $currentlySentCoffee->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
 
-            $transactionsDetail = $currentlySentCoffee->transactionDetail->each(function ($detail) {
+            $transactionsDetail = [];
+            foreach ($currentlySentCoffee->transactionDetail as $detail) {
                 toSqlDT($detail->created_at);
-            });
+                array_push($transactionsDetail, $detail);
+            }
             $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
             $currentlySentCoffee->center_name = $currentlySentCoffee->log->center_name;
             $currentlySentCoffee->makeHidden('transactionDetail');
