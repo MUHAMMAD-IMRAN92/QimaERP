@@ -109,16 +109,18 @@
                                             placeholder="Enter Price Per KG">
                                     </div>
                                     <div class="card-body">
-                                        @foreach ($transactionsWS->details as $detail)
-                                            <table width="100%" style="border: 1px solid black">
-                                                <tr>
+                                        <table width="100%" style="border: 1px solid black">
+                                            @foreach ($transactionsWS->details as $detail)
+
+                                                <tr style="border-bottom: 1px solid black;">
                                                     <td> {{ $detail->container_number }}</td>
                                                     <td align="center">
                                                         {{ $detail->container_weight }}
                                                     </td>
                                                 </tr>
-                                            </table>
-                                        @endforeach
+
+                                            @endforeach
+                                        </table>
                                         <br>
                                         <input type="submit" class="btn btn-success" value="Set Price">
                                     </div>

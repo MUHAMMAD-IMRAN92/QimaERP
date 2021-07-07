@@ -68,7 +68,14 @@
         }
 
         .searchfloat {
-            margin-left: 45%;
+            /* margin-left: 45%; */
+        }
+        .card-header{
+            display: flex;
+    justify-content: space-between;  
+        }
+        .card-header::after{
+            display: none;
         }
 
     </style>
@@ -120,31 +127,45 @@
                                                             @foreach ($transaction->meta as $meta)
                                                                 @if (isset($meta))
                                                                     <span class="searchfloat"><strong>
-                                                                            Price : {{ $meta->value }}</strong></span>
+                                                                            Price : {{ $meta->value }}</strong>
+                                                                            <span class="ml-2"> <input type="checkbox"
+                                                                                value="{{ $transaction->transaction_id }}"
+                                                                                name="transaction[]" id=""> </span>
+                                                                    </span>
                                                                     {{-- @else --}}
                                                                 @endif
 
                                                             @endforeach
                                                         @else
                                                             <span class="searchfloat"><strong>Price Not
-                                                                    Assigned</strong></span>
+                                                                    Assigned</strong>
+                                                                    <span class="ml-2"> <input type="checkbox"
+                                                                        value="{{ $transaction->transaction_id }}"
+                                                                        name="transaction[]" id=""> </span>
+                                                                    </span>
 
                                                         @endif
-                                                        <span> <input type="checkbox"
-                                                                value="{{ $transaction->transaction_id }}"
-                                                                name="transaction[]" id=""> </span>
+                                                       
                                                     </div>
                                                     <div class="card-body">
-                                                        @foreach ($transaction->details as $detail)
-                                                            <table width="100%" style="border: 1px solid black">
-                                                                <tr>
-                                                                    <td> {{ $detail->container_number }}</td>
-                                                                    <td align="center">
-                                                                        {{ $detail->container_weight }}
-                                                                    </td>
+                                                        <table width="100%" style="border: 1px solid black">
+                                                            @foreach ($transaction->details as $detail)
+
+                                                                <tr style="border-bottom: 1px solid black;">
+                                                                    <div calss="row">
+                                                                        <div class="col-md-6">
+                                                                            <td> {{ $detail->container_number }}</td>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <td align="center">
+                                                                                {{ $detail->container_weight }}
+                                                                            </td>
+                                                                        </div>
+                                                                    </div>
                                                                 </tr>
-                                                            </table>
-                                                        @endforeach
+
+                                                            @endforeach
+                                                        </table>
                                                         <br>
                                                         <a href="{{ url('admin/uk_warehouse/set_price/' . $transaction->transaction_id) }}"
                                                             class="btn btn-primary">Set Price</a>
@@ -164,31 +185,45 @@
                                                             @foreach ($transaction->meta as $meta)
                                                                 @if (isset($meta))
                                                                     <span class="searchfloat"><strong>
-                                                                            Price : {{ $meta->value }}</strong></span>
+                                                                            Price : {{ $meta->value }}</strong>
+                                                                            <span class="ml-2"> <input type="checkbox"
+                                                                                value="{{ $transaction->transaction_id }}"
+                                                                                name="transaction[]" id=""> </span>
+                                                                    </span>
                                                                     {{-- @else --}}
                                                                 @endif
 
                                                             @endforeach
                                                         @else
                                                             <span class="searchfloat"><strong>Price Not
-                                                                    Assigned</strong></span>
+                                                                    Assigned</strong>
+                                                                    <span class="ml-2"> <input type="checkbox"
+                                                                        value="{{ $transaction->transaction_id }}"
+                                                                        name="transaction[]" id=""> </span>
+                                                            </span>
 
                                                         @endif
-                                                        <span> <input type="checkbox"
-                                                                value="{{ $transaction->transaction_id }}"
-                                                                name="transaction[]" id=""> </span>
+                                                        
                                                     </div>
                                                     <div class="card-body">
-                                                        @foreach ($transaction->details as $detail)
-                                                            <table width="100%" style="border: 1px solid black">
-                                                                <tr>
-                                                                    <td> {{ $detail->container_number }}</td>
-                                                                    <td align="center">
-                                                                        {{ $detail->container_weight }}
-                                                                    </td>
+                                                        <table width="100%" style="border: 1px solid black">
+                                                            @foreach ($transaction->details as $detail)
+
+                                                                <tr style="border-bottom: 1px solid black;" >
+                                                                    <div calss="row">
+                                                                        <div class="col-md-6">
+                                                                            <td> {{ $detail->container_number }}</td>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <td align="center">
+                                                                                {{ $detail->container_weight }}
+                                                                            </td>
+                                                                        </div>
+                                                                    </div>
                                                                 </tr>
-                                                            </table>
-                                                        @endforeach
+
+                                                            @endforeach
+                                                        </table>
                                                         <br>
                                                         <a href="{{ url('admin/uk_warehouse/set_price/' . $transaction->transaction_id) }}"
                                                             class="btn btn-primary">Set Price</a>
