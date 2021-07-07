@@ -264,7 +264,7 @@
                             class="nav-link {{ Request::is('admin/system_defination') ? 'active' : '' }}">
                             <i class=" nav-icon fab fa-linode"></i>
                             <p>
-                                System Defination
+                                System Definition
                             </p>
                         </a>
                     </li>
