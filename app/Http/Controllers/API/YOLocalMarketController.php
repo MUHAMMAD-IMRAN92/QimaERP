@@ -512,6 +512,7 @@ class YOLocalMarketController extends Controller
 
                         $transaction->log()->save($log);
 
+
                         if ($oldTranaction) {
                             $details = $oldTranaction->details;
 
@@ -522,6 +523,16 @@ class YOLocalMarketController extends Controller
                                 ]);
 
                                 $newDetail->save();
+                                foreach ($newDetail as $detail) {
+                                    $container = $detail['container_number'];
+                                    $oldDetail =  TransactionDetail::whereHas('transaction', function ($q) {
+                                        $q->where('sent_to', 193);
+                                    })->where('container_number', $container)->get();
+                                    foreach ($oldDetail as $odetail) {
+                                        $odetail->update(['container_status' => 1]);
+                                    }
+                                }
+
                                 foreach ($detail->metas as $meta) {
                                     $newMeta =  $meta->replicate()->fill([
                                         'transaction_detail_id' => $newDetail->transaction_detail_id
@@ -533,6 +544,8 @@ class YOLocalMarketController extends Controller
                                 ]);
                             }
                         }
+                        // return 'here';
+
 
 
                         $transactionDetails = TransactionDetail::createFromArray(
@@ -645,6 +658,15 @@ class YOLocalMarketController extends Controller
                             $newDetail =  $detail->replicate()->fill([]);
 
                             $newDetail->save();
+                            foreach ($newDetail as $detail) {
+                                $container = $detail['container_number'];
+                                $oldDetail =  TransactionDetail::whereHas('transaction', function ($q) {
+                                    $q->where('sent_to', 193);
+                                })->where('container_number', $container)->get();
+                                foreach ($oldDetail as $odetail) {
+                                    $odetail->update(['container_status' => 1]);
+                                }
+                            }
                             foreach ($detail->metas as $meta) {
                                 $newMeta =  $meta->replicate()->fill([
                                     'transaction_detail_id' => $newDetail->transaction_detail_id
