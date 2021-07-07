@@ -252,6 +252,7 @@ class YOLocalMarketController extends Controller
                             $request->user()->user_id,
                             $isSpecial,
                             $accumulatedTransaction->transaction_id,
+                            $transactionData['local_code'],
                             $status,
                             $sentTo,
                             $sessionNo,
@@ -291,6 +292,7 @@ class YOLocalMarketController extends Controller
                             $request->user()->user_id,
                             $isSpecial,
                             $transaction->transaction_id,
+                            $transactionData['local_code'],
                             $status,
                             $sentTo,
                             $sessionNo,
@@ -344,6 +346,7 @@ class YOLocalMarketController extends Controller
                         $request->user()->user_id,
                         $isSpecial,
                         $transactionData['transaction_id'],
+                        $transactionData['local_code'],
                         $status,
                         $sentTo,
                         $sessionNo,
@@ -450,6 +453,7 @@ class YOLocalMarketController extends Controller
 
                             ]
                         );
+
                         if ($transactionData['is_server_id'] == true) {
                             $parentTransaction = Transaction::where('transaction_id', $transactionData['reference_id'])->first();
 
