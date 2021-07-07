@@ -181,7 +181,7 @@ class CoffeeBuyerManager extends Controller
             }
 
             $transactionsDetail = $currentlySentCoffee->transactionDetail->each(function ($detail) {
-                toSqlDT($detail->created_at);
+               return toSqlDT($detail->created_at);
             });
             $currentlySentCoffee->center_id = $currentlySentCoffee->log->entity_id;
             $currentlySentCoffee->center_name = $currentlySentCoffee->log->center_name;
