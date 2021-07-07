@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use stdClass;
 use App\BatchNumber;
+use App\Transaction;
 use App\TransactionDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use stdClass;
 
 class DevTestController extends Controller
 {
@@ -25,6 +26,8 @@ class DevTestController extends Controller
             'msg' => 'Hello Dev, how is your day?',
             'live_test' => true
         ]);
+
+   
 
         // return 'ok';
     }
