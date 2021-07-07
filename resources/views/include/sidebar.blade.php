@@ -260,7 +260,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/system_defination"
+                        <a href="{{ URL::to('') }}/admin/system_definition"
                             class="nav-link {{ Request::is('admin/system_defination') ? 'active' : '' }}">
                             <i class=" nav-icon fab fa-linode"></i>
                             <p>
@@ -334,7 +334,7 @@
                                 UK WareHouse
                                 <i class="fas fa-angle-left right"></i>
                             </p>
-                            
+
                         </a>
                         <ul class="nav nav-treeview pl-2 nav-dropdown">
                             <li class="nav-item">
