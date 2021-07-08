@@ -39,13 +39,13 @@ class SystemDefinationController extends Controller
             'key' => $request->key,
             'value' => $request->value
         ]);
-        return redirect()->route('systemdefination.index')->with('msg', ' System Defination Added');
+        return redirect()->route('systemdefinition.index')->with('msg', ' System Definition Added');
     }
 
     public function delete(SystemDefination $genetic)
     {
         $genetic->delete();
-        return redirect()->route('systemdefination.index')->with('msg', 'Defination Deleted');
+        return redirect()->route('systemdefinition.index')->with('msg', ' System Definition Deleted');
     }
     public function edit(SystemDefination $genetic)
     {
@@ -61,6 +61,6 @@ class SystemDefinationController extends Controller
             'key' => $request->key,
             'value' => $request->value
         ]);
-        return redirect()->route('systemdefination.index')->with('msg', 'Updatede');
+        return redirect()->route('systemdefinition.index')->with('msg', 'System Defination Updated');
     }
 }
