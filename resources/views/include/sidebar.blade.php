@@ -261,7 +261,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/system_definition"
-                            class="nav-link {{ Request::is('admin/system_defination') ? 'active' : '' }}">
+                            class="nav-link {{ Request::is('admin/system_definition') ? 'active' : '' }}">
                             <i class=" nav-icon fab fa-linode"></i>
                             <p>
                                 System Definition

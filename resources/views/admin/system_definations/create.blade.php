@@ -15,12 +15,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Add System Defination</h1>
+                        <h1>Add System Definition</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Add Defination </li>
+                            <li class="breadcrumb-item active">Add Definition </li>
                         </ol>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form role="form" method="POST" action="{{ route('systemdefination.post') }}">
+                            <form role="form" method="POST" action="{{ route('systemdefinition.post') }}">
                                 {{-- @if ($errors->any())
                   <div class="alert alert-danger">
                       <ul>
@@ -67,10 +67,10 @@
                                         </div>
                                     @endif
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Select Defination</label>
+                                        <label for="exampleInputEmail1">Select Definition</label>
                                         <select name="key" id="defination" class="form-control " @error('defination')
                                             is-invalid @enderror>
-                                            <option value="" selected>Select Defination</option>
+                                            <option value="" selected>Select Definition</option>
                                             <option value="genetic">Genetic</option>
                                             <option value="flavour">Flavour</option>
                                         </select>
