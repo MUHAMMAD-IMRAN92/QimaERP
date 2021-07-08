@@ -23,7 +23,7 @@
                     <div class="col-sm-6">
                         <h1>System Definations
 
-                            <a href="{{ route('systemdefination.create') }}" class="btn btn-add rounded-circle">
+                            <a href="{{ route('systemdefinition.create') }}" class="btn btn-add rounded-circle">
                                 <i class="fas fa-plus add-client-icon "></i>
                             </a>
                         </h1>
@@ -73,9 +73,9 @@
                                                             {{ $genetic->value }}
                                                         </td>
                                                         <td align="center">
-                                                            <a href="{{ route('systemdefination.edit', $genetic) }}"
+                                                            <a href="{{ route('systemdefinition.edit', $genetic) }}"
                                                                 class="btn btn-success">Edit</a>
-                                                            <a href="{{ route('systemdefination.del', $genetic) }}"
+                                                            <a href="{{ route('systemdefinition.del', $genetic) }}"
                                                                 class="btn btn-danger">Delete</a>
                                                         </td>
                                                     </tr>
@@ -109,9 +109,9 @@
                                                             {{ $flavour->value }}
                                                         </td>
                                                         <td align="center">
-                                                            <a href="{{ route('systemdefination.edit', $flavour) }}"
+                                                            <a href="{{ route('systemdefinition.edit', $flavour) }}"
                                                                 class="btn btn-success">Edit</a>
-                                                            <a href="{{ route('systemdefination.del', $flavour) }}"
+                                                            <a href="{{ route('systemdefinition.del', $flavour) }}"
                                                                 class="btn btn-danger">Delete</a>
                                                         </td>
                                                     </tr>

@@ -212,12 +212,12 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/search', 'ShipingController@search')->name('shipping.search');
 
         //system Definations
-        Route::get('/system_defination', 'SystemDefinationController@index')->name('systemdefination.index');
-        Route::get('/system_defination/create', 'SystemDefinationController@create')->name('systemdefination.create');
-        Route::post('/system_defination', 'SystemDefinationController@post')->name('systemdefination.post');
-        Route::get('/system_defination/{genetic}', 'SystemDefinationController@delete')->name('systemdefination.del');
-        Route::get('/system_defination/edit/{genetic}', 'SystemDefinationController@edit')->name('systemdefination.edit');
-        Route::post('/system_defination/{genetic}', 'SystemDefinationController@update')->name('systemdefination.update');
+        Route::get('/system_definition', 'SystemDefinationController@index')->name('systemdefinition.index');
+        Route::get('/system_definition/create', 'SystemDefinationController@create')->name('systemdefinition.create');
+        Route::post('/system_definition', 'SystemDefinationController@post')->name('systemdefinition.post');
+        Route::get('/system_definition/{genetic}', 'SystemDefinationController@delete')->name('systemdefinition.del');
+        Route::get('/system_definition/edit/{genetic}', 'SystemDefinationController@edit')->name('systemdefinition.edit');
+        Route::post('/system_definition/{genetic}', 'SystemDefinationController@update')->name('systemdefinition.update');
         Route::get('product_weights', 'LocalMarketProductsController@weights');
         Route::get('local_products', 'LocalMarketProductsController@index');
 
