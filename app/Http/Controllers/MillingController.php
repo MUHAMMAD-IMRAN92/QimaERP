@@ -78,12 +78,13 @@ class MillingController extends Controller
             }])->orderBy('transaction_id', 'desc')->get();
 
         $sessionTransactions = $transactions->groupBy('session_no');
-
+        $details = [];
         foreach ($sessionTransactions as $key => $sessionTransaction) {
             $sessionTransation = array();
             foreach ($sessionTransaction as $key => $transaction) {
                 $childTransaction = array();
                 $transactionDetail = $transaction->transactionDetail;
+                array_push($details,  $transaction->transactionDetail);
                 $transaction->makeHidden('transactionDetail');
                 $transaction->makeHidden('log');
                 $removeLocalId = explode("-", $transaction->batch_number);
@@ -99,7 +100,9 @@ class MillingController extends Controller
             array_push($allTransactions, $sessionTransation);
         }
         $data['transactions'] = $allTransactions;
-        return view('admin.milling.index', $data);
+        return view('admin.milling.index', $data, [
+            'details' => $details
+        ]);
     }
 
     public function millingCoffee(Request $request)
