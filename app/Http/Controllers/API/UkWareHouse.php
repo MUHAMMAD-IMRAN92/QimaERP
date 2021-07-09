@@ -123,9 +123,9 @@ class UkWareHouse extends Controller
                         $type = 'sent_to_UK_Quality';
                         $transactionType = 1;
 
-                        $refenceId = explode(',',  $transactionData->reference_id);
+                        $refenceId = explode(',',  $transactionData['reference_id']);
 
-                        if ($transactionData->is_server_id == true) {
+                        if ($transactionData['is_server_id'] == true) {
 
                             $parentTransaction = Transaction::whereIn('transaction_id',   $refenceId)->get();
 
@@ -134,33 +134,40 @@ class UkWareHouse extends Controller
                             }
                         }
 
-                        $batchCheck = BatchNumber::where('batch_number', $transactionData->batch_number)->exists();
+                        // $batchCheck = BatchNumber::where('batch_number', $transactionData['batch_number'])->exists();
 
-                        if (!$batchCheck) {
-                            throw new Exception("Batch Number [{$transactionData->batch_number}] does not exists.");
+                        // if (!$batchCheck) {
+                        //     throw new Exception("Batch Number [{$transactionData['batch_number']}] does not exists.");
+                        // }
+                        $isSpecial = 0;
+                        foreach ($parentTransaction as $isSpecialTransaction) {
+                            if ($isSpecialTransaction->is_special == 1) {
+                                $isSpecial = 1;
+                            }
                         }
+
                         $transaction =  Transaction::create([
-                            'batch_number' => $transactionData->batch_number,
+                            'batch_number' => $transactionData['batch_number'],
                             'is_parent' => 0,
                             'created_by' => $request->user()->user_id,
                             'is_local' => FALSE,
-                            'local_code' => $transactionData->local_code,
-                            'is_special' => $parentTransaction->is_special,
-                            'is_mixed' => $transactionData->is_mixed,
+                            'local_code' => $transactionData['local_code'],
+                            'is_special' =>  $isSpecial,
+                            'is_mixed' => $transactionData['is_mixed'],
                             'transaction_type' => 1,
-                            'reference_id' => $transactionData->reference_id,
+                            'reference_id' => $transactionData['reference_id'],
                             'transaction_status' => $status,
                             'is_new' => 0,
                             'sent_to' => 43,
                             'is_server_id' => 1,
-                            'is_sent' => $transactionData->is_sent,
+                            'is_sent' => $transactionData['is_sent'],
                             'session_no' => $sessionNo,
-                            'ready_to_milled' => $transactionData->ready_to_milled,
-                            'is_in_process' => $transactionData->is_in_process,
-                            'is_update_center' => $transactionData->is_update_center,
-                            'local_session_no' => $transactionData->local_session_no,
-                            'local_created_at' => toSqlDT($transactionData->local_created_at),
-                            'local_updated_at' => toSqlDT($transactionData->local_updated_at)
+                            'ready_to_milled' => $transactionData['ready_to_milled'],
+                            'is_in_process' => $transactionData['is_in_process'],
+                            'is_update_center' => $transactionData['is_update_center'],
+                            'local_session_no' => $transactionData['local_session_no'],
+                            'local_created_at' => toSqlDT($transactionData['local_created_at']),
+                            'local_updated_at' => toSqlDT($transactionData['local_updated_at'])
                         ]);
                         // $transaction = Transaction::createAndLog(
                         //     $transactionData,
@@ -171,6 +178,7 @@ class UkWareHouse extends Controller
                         //     $transactionType
                         // );
                         $referenceTransaction =   Transaction::whereIn('transaction_id',   $refenceId)->get();
+
                         foreach ($referenceTransaction as $reftransaction) {
                             $reftransaction->update([
                                 'is_parent' =>  $transaction->transaction_id,
@@ -207,7 +215,7 @@ class UkWareHouse extends Controller
 
                             // Start of finding Conatiner
                             $container = Container::findOrCreate($detailData['container_number'], $request->user()->user_id);
-                           
+
                             $detail = new TransactionDetail();
 
                             $detail->container_number = $container->container_number;
