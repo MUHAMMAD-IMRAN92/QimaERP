@@ -235,10 +235,11 @@ class UkWareHouse extends Controller
                                 $meta->value = $metaData['value'];
                                 $detail->metas()->save($meta);
                             }
+                            TransactionDetail::whereIn('transaction_id', $refenceId)
+                                ->where('container_number', $detail->container_number)
+                                ->update(['container_status' => 1]);
                         }
-                        TransactionDetail::whereIn('transaction_id', $refenceId)
-                            ->where('container_number', $detail->container_number)
-                            ->update(['container_status' => 1]);
+
 
                         $transaction->load(['details.metas']);
                         $savedTransactions->push($transaction);
