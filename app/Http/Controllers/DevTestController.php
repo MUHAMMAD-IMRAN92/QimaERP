@@ -22,12 +22,11 @@ class DevTestController extends Controller
         // $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv4';
         // abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
 
-        return response()->json([
-            'msg' => 'Hello Dev, how is your day?',
-            'live_test' => true
-        ]);
+        // return response()->json([
+        //     'msg' => 'Hello Dev, how is your day?',
+        //     'live_test' => true
+        // ]);
 
-   
 
         // return 'ok';
     }
