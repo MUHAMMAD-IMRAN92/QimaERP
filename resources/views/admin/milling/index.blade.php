@@ -128,7 +128,7 @@
                                                                 <h4 class="card-title">Batch Number: {{ $batchNumber }}
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>" name="transaction_id[]"value="{{ $trans['transaction']->transaction_id }}" class="check_gov{{ $trans['transaction']->transaction_id }}" onClick="checkGov('<?= $gov ?>',{{ $trans['transaction']->transaction_id }})"></h4>
              </div>   
-                                                          <div class="row ml-2"> 
+                                                          
                                                                     @foreach ($details as $detail)  
                                                                     @foreach ($detail as $d)
                                                                                                                               
@@ -139,7 +139,7 @@
                                                                  @endforeach
                                                                     
                                                                 @endforeach
-                                                            </div>
+                                                           
                                                             <div class="col-md-12">
                                                                 <table class="batchnumber">
                                                                     <thead>
