@@ -207,6 +207,7 @@ class UkWareHouse extends Controller
 
                             // Start of finding Conatiner
                             $container = Container::findOrCreate($detailData['container_number'], $request->user()->user_id);
+                           
                             $detail = new TransactionDetail();
 
                             $detail->container_number = $container->container_number;
