@@ -141,6 +141,15 @@ class UkQuality extends Controller
                             $transaction->reference_id
                         );
 
+                        foreach ($transactionDetails as $detail) {
+                            if ($detail->container_weight == 0) {
+                                $detail->update([
+                                    'container_status' => 1,
+                                ]);
+                            }
+                        }
+
+
                         $transaction->load(['details.metas', 'meta']);
                         $savedTransactions->push($transaction);
                     }
