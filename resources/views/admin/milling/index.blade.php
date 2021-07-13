@@ -127,6 +127,69 @@
                                                             <div class="col-md-12 top-margin-set">
                                                                 <h4 class="card-title">Batch Number: {{ $batchNumber }}
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>" name="transaction_id[]"value="{{ $trans['transaction']->transaction_id }}" class="check_gov{{ $trans['transaction']->transaction_id }}" onClick="checkGov('<?= $gov ?>',{{ $trans['transaction']->transaction_id }})"></h4>
+<<<<<<< HEAD
+                                                 </div>   
+                                                                                              @foreach ($trans['transactionDetails'] as $detail)  
+                                                                                                       
+                                                                                                                                                                  
+                                                                                                        <div class="col-md-6"> {{ $detail['container_number'] }}</div>
+                                                                                                        <div class="col-md-6">{{ $detail['container_weight'] }}</div>
+                                                                                                    
+                                                                                                        
+                                                                                                   
+                                                                                              @endforeach
+                                                                                               
+                                                                                                <div class="col-md-12">
+                                                                                                    <table class="batchnumber">
+                                                                                                        <thead>
+                                                                                                            <tr>
+                                                                                                                <th>Farmer Code</th>
+                                                                                                            </tr>
+                                                                                                        </thead>
+                                                                                                        <tbody>
+                                                                                                            <?php
+                                                                                                            $removeLocalId = explode('-', $batchNumber);
+                                                                                                            if ($removeLocalId[3] != '000') {
+
+                                                                                                                array_pop($removeLocalId);
+                                                                                                                $farmerCode = implode('-', $removeLocalId);
+                                                                                                                ?>
+                                                                                                                <tr>
+                                                                                                                    <td>{{ $farmerCode }}</td>
+                                                                                                                </tr>
+                                                                                                                <?php
+                                                                                                            } else {
+                                                                                                                $childTransactions = $trans['child_transactions'];
+                                                                                                                foreach ($childTransactions as $key => $childTransaction) {
+
+                                                                                                                    $removeLastIndex = explode('-', $childTransaction->batch_number);
+                                                                                                                    array_pop($removeLastIndex);
+                                                                                                                    $farmerCode = implode('-', $removeLastIndex);
+                                                                                                                    ?>
+                                                                                                                    <tr><td>{{ $farmerCode }}</td></tr>
+                                                                                                                    <?php
+                                                                                                                }
+                                                                                                            }
+                                                                                                            ?>
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                <?php
+                                                    } ?>
+
+                                                                                <div class="card-footer">
+                                                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                                                </div>
+                                                                            </form>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            <?php } ?>
+=======
              </div>   
                                                           <div class="row ml-2"> 
                                                                     @foreach ($details as $detail)  
@@ -175,55 +238,41 @@
                                                                     </tbody>
                                                                 </table>
                                                             </div>
+>>>>>>> b07d7e512ea72425ac66d932f3a39b12e6e3133d
                                                         </div>
                                                     </div>
                                                 </div>
-                                            <?php
-                                                    } ?>
-
-                                            <div class="card-footer">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <!-- /.col -->
                                             </div>
-                                        </form>
+                                            <!-- /.row -->
+                                        </div>
+                                        <!-- /.container-fluid -->
+                                        </section>
+                                        <!-- /.content -->
+                                        </div>
+                                        <script>
+                                            var gov = null;
 
-                                    </div>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-            </div>
-            <!-- /.col -->
-        </div>
-        <!-- /.row -->
-    </div>
-    <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-    </div>
-    <script>
-        var gov = null;
+                                            function checkGov(checkgov, id) {
 
-        function checkGov(checkgov, id) {
+                                                //alert(id);
+                                                if (gov == null) {
+                                                    gov = checkgov;
+                                                } else {
+                                                    if (gov != checkgov) {
+                                                        if ($('.check_gov' + id).prop("checked") == true) {
+                                                            alert("You can not mix two different governerates")
+                                                            $('.check_gov' + id).prop('checked', false);
+                                                        }
 
-            //alert(id);
-            if (gov == null) {
-                gov = checkgov;
-            } else {
-                if (gov != checkgov) {
-                    if ($('.check_gov' + id).prop("checked") == true) {
-                        alert("You can not mix two different governerates")
-                        $('.check_gov' + id).prop('checked', false);
-                    }
-
-                }
-            }
-            checkBoxCount = $('input[type="checkbox"]:checked').length;
-            if (checkBoxCount == 0) {
-                console.log(checkBoxCount);
-                gov = null;
-            }
-        }
-    </script>
+                                                    }
+                                                }
+                                                checkBoxCount = $('input[type="checkbox"]:checked').length;
+                                                if (checkBoxCount == 0) {
+                                                    console.log(checkBoxCount);
+                                                    gov = null;
+                                                }
+                                            }
+                                        </script>
 @endsection
                                               
