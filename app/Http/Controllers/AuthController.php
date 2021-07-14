@@ -47,9 +47,15 @@ class AuthController extends Controller
             $farmerPrice = optional(Farmer::where('farmer_code', $farmer_code)->first())->price_per_kg;
             if (!$farmerPrice) {
                 $village_code = Str::beforeLast($farmer_code, '-');
-                $price = Village::where('village_code',  $village_code)->first()->price_per_kg;
+                $village = Village::where('village_code',  $village_code)->first();
+                if($village){
+                    $price = $village->price_per_kg;
+                }
             } else {
-                $price = Farmer::where('farmer_code', $farmer_code)->first()->price_per_kg;
+                $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                if($farmer){
+                    $price = $farmer->price_per_kg;
+                }
             }
 
             $totalPrice += $weight * $price;
@@ -113,7 +119,7 @@ class AuthController extends Controller
 
         if ($date == 'today') {
             $date = Carbon::today()->toDateString();
-          
+
             $farmers = Farmer::whereDate('created_at',  $date)->get();
             $villages = Village::whereDate('created_at',  $date)->get();
             $governorates = Governerate::whereDate('created_at',  $date)->get();
