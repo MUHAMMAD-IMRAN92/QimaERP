@@ -387,8 +387,8 @@ class MillOperativeController extends Controller
 
 
                         $batch = $parentTransaction->batch_number;
-                        $referTransaction =   Transaction::where('batch_number', $batch)->where('sent_to', 17)->where('is_parent', 0)->get();
-                        foreach ($referTransaction as $refertransaction) {
+                        $referTransactions =   Transaction::where('batch_number', $batch)->where('sent_to', 17)->where('is_parent', 0)->get();
+                        foreach ($referTransactions as $refertransaction) {
                             $refertransaction->update(['is_parent' => $transaction->transaction_id]);
                             foreach ($refertransaction->details as  $detail) {
                                 $detail->update([
@@ -505,8 +505,8 @@ class MillOperativeController extends Controller
 
 
                         $batch = $parentTransaction->batch_number;
-                        $referTransaction =   Transaction::where('batch_number', $batch)->where('sent_to', 17)->where('is_parent', 0)->get();
-                        foreach ($referTransaction as $refertransaction) {
+                        $referTransactions =   Transaction::where('batch_number', $batch)->where('sent_to', 17)->where('is_parent', 0)->get();
+                        foreach ($referTransactions as $refertransaction) {
                             $refertransaction->update(['is_parent' =>   $transaction->transaction_id]);
                             foreach ($refertransaction->details as  $detail) {
                                 $detail->update([
@@ -666,8 +666,8 @@ class MillOperativeController extends Controller
 
 
                             $batch = $parentTransaction->batch_number;
-                            $referTransaction =   Transaction::where('batch_number', $batch)->where('sent_to', 17)->where('is_parent', 0)->get();
-                            foreach ($referTransaction as $refertransaction) {
+                            $referTransactions =   Transaction::where('batch_number', $batch)->where('sent_to', 17)->where('is_parent', 0)->get();
+                            foreach ($referTransactions as $refertransaction) {
                                 $refertransaction->update(['is_parent',   $transaction->transaction_id]);
                                 foreach ($refertransaction->details as  $detail) {
                                     $detail->update([
@@ -733,7 +733,7 @@ class MillOperativeController extends Controller
                                 'local_created_at' => toSqlDT($transactionData->local_created_at),
                                 'local_updated_at' => toSqlDT($transactionData->local_updated_at)
                             ]);
-                            
+
                             $log = new TransactionLog();
                             $log->action = $status;
                             $log->created_by = $request->user()->user_id;
