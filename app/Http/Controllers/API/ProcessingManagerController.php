@@ -106,6 +106,12 @@ class ProcessingManagerController extends Controller
                 $alreadySent->created_at =  toSqlDT($alreadySent->created_at);
                 $alreadySent->local_created_at = toSqlDT($alreadySent->local_created_at);
                 $alreadySent->local_updated_at = toSqlDT($alreadySent->local_updated_at);
+                $sentTransaction->transaction->created_at =  toSqlDT($sentTransaction->transaction->created_at);
+                $sentTransaction->transaction->local_created_at = toSqlDT($sentTransaction->transaction->local_created_at);
+                $sentTransaction->transaction->local_updated_at = toSqlDT($sentTransaction->transaction->local_updated_at);
+                foreach ($sentTransaction->transactionDetails as $detail) {
+                    $detail->created_at = toSqlDT($detail->created_at);
+                }
                 array_push($alreadyReciviedCoffee, $sentTransaction);
             } else {
 
@@ -140,8 +146,8 @@ class ProcessingManagerController extends Controller
                         'sent_to' => $sentTransaction->transaction->sent_to,
                         'is_sent' => 1,
                         'session_no' => $sentTransaction->transaction->session_no,
-                        'local_created_at' => toSqlDT($sentTransaction->transactions->local_created_at),
-                        'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at)
+                        'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
+                        'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
                     ]);
                     $transactionLog = TransactionLog::create([
                         'transaction_id' => $transaction->transaction_id,
@@ -179,7 +185,12 @@ class ProcessingManagerController extends Controller
             if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
                 $currentlyReceivedCoffee->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
+
+
             $transactionDeatil = $currentlyReceivedCoffee->transactionDetail;
+            foreach ($currentlyReceivedCoffee->transactionDetail as $detail) {
+                $detail->created_at = toSqlDT($detail->created_at);
+            }
             $currentlyReceivedCoffee->makeHidden('transactionDetail');
             $currentlyReceivedCoffee->center_name = $currentlyReceivedCoffee->log->center_name;
             $currentlyReceivedCoffee->already_received = FALSE;
