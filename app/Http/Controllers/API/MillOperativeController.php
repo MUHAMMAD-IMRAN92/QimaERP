@@ -353,6 +353,7 @@ class MillOperativeController extends Controller
                         }
                     }
 
+
                     if (!empty($greenDetails)) {
                         $status = 'sent';
                         $type = 'sent_to_sorting';
@@ -385,7 +386,6 @@ class MillOperativeController extends Controller
                         ]);
 
 
-
                         $batch = $parentTransaction->batch_number;
                         $referTransactions =   Transaction::where('batch_number', $batch)->where('sent_to', 17)->where('is_parent', 0)->get();
                         foreach ($referTransactions as $refertransaction) {
@@ -398,9 +398,6 @@ class MillOperativeController extends Controller
                         }
                         // TransactionDetail::where('transaction_id', $parentTransaction->transaction_id)
                         //     ;
-
-
-
 
                         $log = new TransactionLog();
                         $log->action = $status;
@@ -668,13 +665,14 @@ class MillOperativeController extends Controller
                             $batch = $parentTransaction->batch_number;
                             $referTransactions =   Transaction::where('batch_number', $batch)->where('sent_to', 17)->where('is_parent', 0)->get();
                             foreach ($referTransactions as $refertransaction) {
-                                $refertransaction->update(['is_parent',   $transaction->transaction_id]);
+                                $refertransaction->update(['is_parent' =>  $transaction->transaction_id]);
                                 foreach ($refertransaction->details as  $detail) {
                                     $detail->update([
                                         'container_status' => 1
                                     ]);
                                 }
                             }
+
                             foreach ($detailArray['metas'] as $metaArray) {
                                 $metaData = (object) $metaArray;
 
