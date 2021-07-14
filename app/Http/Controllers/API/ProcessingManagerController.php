@@ -103,6 +103,9 @@ class ProcessingManagerController extends Controller
         foreach ($sentTransactions as $key => $sentTransaction) {
             $alreadySent = Transaction::where('reference_id', $sentTransaction->transaction->reference_id)->first();
             if ($alreadySent) {
+                $alreadySent->created_at =  toSqlDT($alreadySent->created_at);
+                $alreadySent->local_created_at = toSqlDT($alreadySent->local_created_at);
+                $alreadySent->local_updated_at = toSqlDT($alreadySent->local_updated_at);
                 array_push($alreadyReciviedCoffee, $sentTransaction);
             } else {
 
@@ -137,8 +140,8 @@ class ProcessingManagerController extends Controller
                         'sent_to' => $sentTransaction->transaction->sent_to,
                         'is_sent' => 1,
                         'session_no' => $sentTransaction->transaction->session_no,
-                        'local_created_at' => Carbon::parse($sentTransaction->transaction->local_created_at)->toDateTimeString(),
-                        'local_updated_at' => Carbon::parse($sentTransaction->transaction->local_updated_at)->toDateTimeString()
+                        'local_created_at' => toSqlDT($sentTransaction->transactions->local_created_at),
+                        'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at)
                     ]);
                     $transactionLog = TransactionLog::create([
                         'transaction_id' => $transaction->transaction_id,
