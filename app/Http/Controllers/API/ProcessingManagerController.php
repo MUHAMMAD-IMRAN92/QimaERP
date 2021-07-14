@@ -57,6 +57,12 @@ class ProcessingManagerController extends Controller
             if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
                 $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
+            $transactions->created_at =  toSqlDT($transactions->created_at);
+            $transactions->local_created_at = toSqlDT($transactions->local_created_at);
+            $transactions->local_updated_at = toSqlDT($transactions->local_updated_at);
+            foreach ($transaction->transactionDetail as $detail) {
+                $detail->created_at = toSqlDT($detail->created_at);
+            }
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
