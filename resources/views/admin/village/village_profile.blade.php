@@ -425,7 +425,7 @@
             <div class="row">
             @foreach ($village->farmers as $farmer)
                 
-                    <div class="col-md-3 mb-1">
+                    <div class="col-md-4 mb-1">
                         <ul class="list-group list-group-horizontal">
                             <li class="list-group-item data-content-list">
                                 @if ($farmer->file == null)
