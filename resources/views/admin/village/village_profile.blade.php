@@ -47,14 +47,22 @@
 
         #region_farmer {
             border-radius: 50%;
-            width: 3% !important;
+            width: 15% !important;
 
         }
 
         .blacklink .hover:hover {
             cursor: pointer;
         }
-
+        .data-content-list{
+            display: flex;
+            align-items: center;
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+        .data-content-list span{
+            margin-left: 5px;
+        }
     </style>
     <script>
         $(document).ready(function() {
@@ -79,7 +87,7 @@
                 });
             });
             $('#today').on('click', function() {
-               
+
                 $.ajax({
                     url: "{{ url('admin/village_profile_days_filter/' . $village->village_id) }}",
                     type: "GET",
@@ -199,7 +207,6 @@
                 });
             });
         });
-
     </script>
 
     <!-- Content Wrapper. Contains page content -->
@@ -414,16 +421,31 @@
                 <p>Farmers Bought From
                 </p>
             </b>
-            @foreach ($village->farmers as $farmer)
-                @if ($farmer->file == null)
-                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
-                @else
-                    <img src="{{ asset('public/storage/images/' . $farmer->file->user_file_name) }}" alt="no img"
-                        id="region_farmer">
-                @endif
 
-                <span class="mr-3">{{ $farmer['farmer_name'] }}</span>
+            <div class="row">
+            @foreach ($village->farmers as $farmer)
+                
+                    <div class="col-md-3 mb-1">
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item data-content-list">
+                                @if ($farmer->file == null)
+                                    <img src="{{ asset('public/images/farmericon.png') }}" 
+                                        id="region_farmer">
+                                @else
+                                    <img src="{{ asset('public/storage/images/' . $farmer->file->user_file_name) }}"
+                                         id="region_farmer">
+                                @endif
+
+                                <span>{{ $farmer['farmer_name'] }}</span>
+                            </li>
+
+                        </ul>
+                    </div>
+               
+
+
             @endforeach
+        </div>
             <hr>
 
 
@@ -433,10 +455,11 @@
                 </p>
             </b>
             @foreach ($village->buyers as $buyer)
+
                 @if ($buyer->file == null)
-                    <img src="{{ asset('public/images/farmericon.png') }}" alt="" id="region_farmer">
+                    <img src="{{ asset('public/images/farmericon.png') }}"  id="region_farmer">
                 @else
-                    <img src="{{ asset('public/storage/images/' . $buyer->file->user_file_name) }}" alt="no img"
+                    <img src="{{ asset('public/storage/images/' . $buyer->file->user_file_name) }}"
                         id="region_farmer">
                 @endif
 
