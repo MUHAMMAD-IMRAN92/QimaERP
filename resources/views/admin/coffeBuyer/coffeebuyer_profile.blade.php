@@ -47,9 +47,10 @@
 
         #region_farmer {
             border-radius: 50%;
-            width: 3% !important;
+            width: 15% !important;
 
         }
+
 
         .blacklink .hover:hover {
             cursor: pointer;
@@ -200,7 +201,6 @@
                 });
             });
         });
-
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -390,34 +390,50 @@
                 <p> Villages Responsible For
                 </p>
             </b>
-            @foreach ($buyer->villages as $village)
-                @if ($village['picture_id'] == null)
-                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
-                @else
-                    <img src="{{ asset('public/storage/images/' . $farmer['picture_id']) }}" alt="no img"
-                        id="region_farmer">
-                @endif
+            <div class="row">
+                @foreach ($buyer->villages as $village)
+                    <div class="col-md-4 mb-1">
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item data-content-list">
+                                @if ($village['picture_id'] == null)
+                                    <img src="{{ asset('public/images/farmericon.png') }}" id="region_farmer">
+                                @else
+                                    <img src="{{ asset('public/storage/images/' . $farmer['picture_id']) }}"
+                                        id="region_farmer">
+                                @endif
 
-                <span class="mr-3">{{ $village['village_title'] }}</span>
-            @endforeach
+                                <span class="mr-3">{{ $village['village_title'] }}</span>
+                            </li>
 
+                        </ul>
+                    </div>
+                @endforeach
+            </div>
             <hr>
-            <hr>
+
             <b>
                 <p>Farmers Bought From
                 </p>
             </b>
-            @foreach ($buyer->farmers as $farmer)
-                @if ($farmer['farmer_image'] == null)
-                    <img src="{{ asset('public/images/farmericon.png') }}" alt="no img" id="region_farmer">
-                @else
-                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image']) }}" alt="no img"
-                        id="region_farmer">
-                @endif
+            <div class="row">
+                @foreach ($buyer->farmers as $farmer)
+                    <div class="col-md-4 mb-1">
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item data-content-list">
+                                @if ($farmer['farmer_image'] == null)
+                                    <img src="{{ asset('public/images/farmericon.png') }}" id="region_farmer">
+                                @else
+                                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image']) }}"
+                                        id="region_farmer">
+                                @endif
 
-                <span class="mr-3">{{ $farmer['farmer_name'] }}</span>
-            @endforeach
-            
+                                <span class="mr-3">{{ $farmer['farmer_name'] }}</span>
+                            </li>
+
+                        </ul>
+                    </div>
+                @endforeach
+            </div>
             <hr>
             <b>
                 <p>TRANSACTIONS </p>
@@ -428,7 +444,8 @@
                         <ol class="breadcrumb float-sm-right txt-size">
                             <li class="breadcrumb-item active">
                                 {{ $transaction->created_at }} /{{ $buyer->first_name }} /
-                                {{explode('-' , $transaction->batch_number)[0] . '-' . explode('-' , $transaction->batch_number)[1]}} /
+                                {{ explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] }}
+                                /
                                 {{ $transaction->details->sum('container_weight') }}.00
 
                             </li>
