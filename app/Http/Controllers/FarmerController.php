@@ -186,7 +186,7 @@ class FarmerController extends Controller
         $validator = Validator::make($request->all(), [
             'village_code' => 'required',
             'farmer_name' => 'required',
-            'farmer_nicn' => 'required',
+            'farmer_nicn' => 'required | unique:farmers',
         ]);
         if ($validator->fails()) {
             //::validation failed
