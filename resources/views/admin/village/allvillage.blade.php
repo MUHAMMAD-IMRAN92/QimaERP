@@ -38,7 +38,7 @@ $(document).ready( function () {
                     <div class="col-sm-6">
                         <h1>Add New Village <a href="{{ URL::to('') }}/admin/addnewvillage"
                                 class="btn btn-add rounded-circle">
-                                <button class="btn btn-dark">Add Farmer</button>
+                                <button class="btn btn-dark">Add Village</button>
                             </a>
 
                         </h1>
