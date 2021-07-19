@@ -101,6 +101,33 @@
                                 Dashboard
                             </p>
                         </a>
+                    </li>  <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/allregion"
+                            class="nav-link {{ Request::is('admin/allregion') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-globe"></i>
+                            <p>
+                                Regions
+                            </p>
+                        </a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/allfarmer"
+                            class="nav-link {{ Request::is('admin/allfarmer') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-tractor"></i>
+                            <p>
+                                Farmers
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/allcoffeebuyer"
+                            class="nav-link  {{ Request::is('admin/allcoffeebuyer') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-user"></i>
+                            <p>
+                                Coffee Buyers
+                            </p>
+                        </a>
                     </li>
                     <li
                         class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
@@ -132,6 +159,7 @@
                             </li>
                         </ul>
                     </li>
+                  
                     <li class="nav-item active">
                         <a href="{{ URL::to('') }}/admin/allgovernor"
                             class="nav-link {{ Request::is('admin/allgovernor') ? 'active' : '' }}">
@@ -145,16 +173,7 @@
                 @else
 
                     @endhasrole
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allregion"
-                            class="nav-link {{ Request::is('admin/allregion') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-globe"></i>
-                            <p>
-                                Regions
-                            </p>
-                        </a>
 
-                    </li>
 
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allvillage"
@@ -165,24 +184,8 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allfarmer"
-                            class="nav-link {{ Request::is('admin/allfarmer') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-tractor"></i>
-                            <p>
-                                Farmers
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allcoffeebuyer"
-                            class="nav-link  {{ Request::is('admin/allcoffeebuyer') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-user"></i>
-                            <p>
-                                Coffee Buyers
-                            </p>
-                        </a>
-                    </li>
+
+
                     @hasrole('Super Admin')
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allbatchnumber"
