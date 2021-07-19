@@ -139,6 +139,15 @@
                             </p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ url('admin/inventory') }}"
+                            class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-pallet"></i>
+                            <p>
+                                Inventory
+                            </p>
+                        </a>
+                    </li>
                     <li
                         class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
                         <a href="{{ url('admin/allusers') }}" class="nav-link">
@@ -169,7 +178,15 @@
                             </li>
                         </ul>
                     </li>
-
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/alltransection"
+                            class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
+                            <i class="nav-icon fas fa-exchange-alt"></i>
+                            <p>
+                                Transactions
+                            </p>
+                        </a>
+                    </li>
 
 
                 @else
@@ -255,15 +272,7 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/alltransection"
-                            class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
-                            <i class="nav-icon fas fa-exchange-alt"></i>
-                            <p>
-                                Transactions
-                            </p>
-                        </a>
-                    </li>
+
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/system_definition"
                             class="nav-link {{ Request::is('admin/system_definition') ? 'active' : '' }}">
@@ -368,15 +377,7 @@
 
                     @endhasrole
 
-                    <li class="nav-item">
-                        <a href="{{ url('admin/inventory') }}"
-                            class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-pallet"></i>
-                            <p>
-                                Inventory
-                            </p>
-                        </a>
-                    </li>
+
 
                 </ul>
             </nav>
