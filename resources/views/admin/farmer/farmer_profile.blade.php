@@ -193,7 +193,6 @@
                 });
             });
         });
-
     </script>
 
     <!-- Content Wrapper. Contains page content -->
@@ -463,7 +462,9 @@
                                 {{ $transaction->created_at }} /{{ $farmer->farmer_name }} /
                                 {{ $farmer->governerate_title }} /
                                 {{ $farmer->region_title }} /
-                                {{ $transaction->details->sum('container_weight') }}.00
+                                @php
+                                    echo floatval($transaction->details->sum('container_weight'));
+                                @endphp
 
                             </li>
                         </ol>
