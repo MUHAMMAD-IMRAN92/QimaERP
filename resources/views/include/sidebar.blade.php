@@ -101,7 +101,17 @@
                                 Dashboard
                             </p>
                         </a>
-                    </li>  <li class="nav-item">
+                    </li>
+                    <li class="nav-item active">
+                        <a href="{{ URL::to('') }}/admin/allgovernor"
+                            class="nav-link {{ Request::is('admin/allgovernor') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-user-alt"></i>
+                            <p>
+                                Governorates
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allregion"
                             class="nav-link {{ Request::is('admin/allregion') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-globe"></i>
@@ -159,16 +169,8 @@
                             </li>
                         </ul>
                     </li>
-                  
-                    <li class="nav-item active">
-                        <a href="{{ URL::to('') }}/admin/allgovernor"
-                            class="nav-link {{ Request::is('admin/allgovernor') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-user-alt"></i>
-                            <p>
-                                Governorates
-                            </p>
-                        </a>
-                    </li>
+
+
 
                 @else
 
