@@ -240,7 +240,7 @@
                     <p>Governorate</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ $regions->count() }}</h3>
+                    <h3>{{ App\Region::count() }}</h3>
 
                     <p>Regions</p>
                 </div>
@@ -250,7 +250,7 @@
                     <p>Villages </p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ $farmers->count() }}</h3>
+                    <h3>{{ App\Farmer::count() }}</h3>
 
                     <p>Farmers </p>
                 </div>
@@ -326,7 +326,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($farmers->take(5) as $farmer)
+                                    @foreach ($farmers as $farmer)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
 
@@ -360,7 +360,7 @@
 
                                     @foreach ($regions->take(5) as $region)
                                         <tr style="white-space:nowrap">
-                                            <td>{{ $region->region_id }}</td>
+                                            <td>{{  $loop->iteration }}</td>
                                             
                                             <td >{{ $region->region_title }}</td>
                                         </tr>
