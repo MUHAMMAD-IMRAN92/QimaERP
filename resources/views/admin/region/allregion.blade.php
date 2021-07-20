@@ -274,7 +274,7 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item btn btn-success"><a href="{{ url('admin/addnewvillage') }}">Add
+                            <li class="breadcrumb-item btn btn-success"><a href="{{ url('admin/addnewregion') }}">Add
                                     Region</a></li>
                         </ol>
                     </div>
