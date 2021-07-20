@@ -50,15 +50,18 @@ class AuthController extends Controller
             ]);
         }
         $sorted = $ids->sortBy('weight');
-        $top =   array_reverse($sorted->values()->take(-30)->toArray());
+        $top =   array_reverse($sorted->values()->take(-20)->toArray());
         // return array_reverse($top);
         foreach ($top as $t) {
             $transaction =  Transaction::where('transaction_id', $t['transaction_id'])->first();
             $code =  explode('-', $transaction->batch_number)[3];
             // $farmers->push($code);
             $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $code . '%')->first();
-            if (!$farmers->contains($farmer)) {
-                $farmers->push($farmer);
+            if ($farmer != null) {
+
+                if (!$farmers->contains($farmer)) {
+                    $farmers->push($farmer);
+                }
             }
             $regionCode =  explode('-', $transaction->batch_number)[1];
             $region = Region::where('region_code', 'LIKE', '%' . $regionCode . '%')->first();
@@ -76,9 +79,9 @@ class AuthController extends Controller
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
             $farmerPrice = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmerPrice) {
-                        $farmerPrice = $farmerPrice->price_per_kg;
-                    }
+            if ($farmerPrice) {
+                $farmerPrice = $farmerPrice->price_per_kg;
+            }
             if (!$farmerPrice) {
                 $village_code = Str::beforeLast($farmer_code, '-');
                 $village = Village::where('village_code',  $village_code)->first();
@@ -95,7 +98,6 @@ class AuthController extends Controller
             $totalPrice += $weight * $price;
             $totalWeight += $weight;
         }
-
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),
@@ -121,16 +123,16 @@ class AuthController extends Controller
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
             $farmerPrice = Farmer::where('farmer_code', $farmer_code)->first();
-                    if ($farmerPrice) {
-                        $farmerPrice = $farmerPrice->price_per_kg;
-                    }
+            if ($farmerPrice) {
+                $farmerPrice = $farmerPrice->price_per_kg;
+            }
             if (!$farmerPrice) {
                 $village_code = Str::beforeLast($farmer_code, '-');
                 if ($village_code) {
-                     $price = Village::where('village_code',  $village_code)->first();
-                            if ($price) {
-                                $price = $price->price_per_kg;
-                            }
+                    $price = Village::where('village_code',  $village_code)->first();
+                    if ($price) {
+                        $price = $price->price_per_kg;
+                    }
                 }
             } else {
                 $farmer = Farmer::where('farmer_code', $farmer_code)->first();
@@ -181,7 +183,7 @@ class AuthController extends Controller
                     if (!$farmerPrice) {
                         $village_code = Str::beforeLast($farmer_code, '-');
                         if ($village_code) {
-                             $price = Village::where('village_code',  $village_code)->first();
+                            $price = Village::where('village_code',  $village_code)->first();
                             if ($price) {
                                 $price = $price->price_per_kg;
                             }
@@ -233,7 +235,7 @@ class AuthController extends Controller
                     if (!$farmerPrice) {
                         $village_code = Str::beforeLast($farmer_code, '-');
                         if ($village_code) {
-                             $price = Village::where('village_code',  $village_code)->first();
+                            $price = Village::where('village_code',  $village_code)->first();
                             if ($price) {
                                 $price = $price->price_per_kg;
                             }
@@ -288,7 +290,7 @@ class AuthController extends Controller
                     if (!$farmerPrice) {
                         $village_code = Str::beforeLast($farmer_code, '-');
                         if ($village_code) {
-                             $price = Village::where('village_code',  $village_code)->first();
+                            $price = Village::where('village_code',  $village_code)->first();
                             if ($price) {
                                 $price = $price->price_per_kg;
                             }
@@ -344,7 +346,7 @@ class AuthController extends Controller
                     if (!$farmerPrice) {
                         $village_code = Str::beforeLast($farmer_code, '-');
                         if ($village_code) {
-                             $price = Village::where('village_code',  $village_code)->first();
+                            $price = Village::where('village_code',  $village_code)->first();
                             if ($price) {
                                 $price = $price->price_per_kg;
                             }
@@ -400,7 +402,7 @@ class AuthController extends Controller
                     if (!$farmerPrice) {
                         $village_code = Str::beforeLast($farmer_code, '-');
                         if ($village_code) {
-                             $price = Village::where('village_code',  $village_code)->first();
+                            $price = Village::where('village_code',  $village_code)->first();
                             if ($price) {
                                 $price = $price->price_per_kg;
                             }
@@ -458,7 +460,7 @@ class AuthController extends Controller
                     if (!$farmerPrice) {
                         $village_code = Str::beforeLast($farmer_code, '-');
                         if ($village_code) {
-                             $price = Village::where('village_code',  $village_code)->first();
+                            $price = Village::where('village_code',  $village_code)->first();
                             if ($price) {
                                 $price = $price->price_per_kg;
                             }

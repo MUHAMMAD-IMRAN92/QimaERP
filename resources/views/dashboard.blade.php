@@ -336,14 +336,15 @@
                                         </tr> @endforeach
                                     @endif --}}
                                     @foreach ($farmers as $farmer)
-                                        @if ($farmer != null)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
 
-                                                <td>{{ $farmer['farmer_name'] }}</td>
+                                        <tr>
 
-                                            </tr>
-                                        @endif
+                                            <td>{{ $loop->iteration }}</td>
+
+                                            <td>{{ $farmer['farmer_name'] }}</td>
+
+                                        </tr>
+
                                     @endforeach
                                 </tbody>
                             </table>
