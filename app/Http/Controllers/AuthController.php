@@ -50,7 +50,7 @@ class AuthController extends Controller
             ]);
         }
         $sorted = $ids->sortBy('weight');
-        $top =   array_reverse($sorted->values()->take(-20)->toArray());
+        $top =   array_reverse($sorted->values()->take(-30)->toArray());
         // return array_reverse($top);
         foreach ($top as $t) {
             $transaction =  Transaction::where('transaction_id', $t['transaction_id'])->first();
