@@ -327,12 +327,14 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($farmers as $farmer)
+                                    @if($farmer != null)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
 
-                                            <td>{{ $farmer->farmer_name }}</td>
+                                            <td>{{ $farmer['farmer_name'] }}</td>
 
                                         </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
