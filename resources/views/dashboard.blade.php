@@ -29,9 +29,11 @@
             text-decoration: none;
 
         }
+
         .blacklink .hover:hover {
             cursor: pointer;
         }
+
     </style>
 
     <script>
@@ -175,7 +177,6 @@
             });
 
         });
-
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -303,7 +304,6 @@
                                 }
                             }
                         });
-
                     </script>
                 </div>
             </div>
@@ -326,14 +326,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (count($farmers) < 5)
+                                        @php
+                                        $loop = 5 - count($farmers); @endphp
+                                        @foreach (App\Farmer::all()->take($loop) as $farmer) <tr style="white-space:nowrap">
+                                        <td>{{ $loop->iteration }}</td>
+
+                                        <td>{{ $farmer['farmer_name'] }}</td>
+                                        </tr> @endforeach
+                                    @endif
                                     @foreach ($farmers as $farmer)
-                                    @if($farmer != null)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                        @if ($farmer != null)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
 
-                                            <td>{{ $farmer['farmer_name'] }}</td>
+                                                <td>{{ $farmer['farmer_name'] }}</td>
 
-                                        </tr>
+                                            </tr>
                                         @endif
                                     @endforeach
                                 </tbody>
@@ -354,17 +363,25 @@
                                 <thead>
                                     <tr style="white-space:nowrap">
                                         <th style="width: 10px">Sr#</th>
-                                       
+
                                         <th>Region Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (count($regions) < 5)
+                                        @php
+                                        $loop = 5 - count($regions); @endphp
+                                        @foreach (App\Region::all()->take($loop) as $region) <tr style="white-space:nowrap">
+                                        <td>{{ $loop->iteration }}</td>
 
-                                    @foreach ($regions->take(5) as $region)
+                                        <td>{{ $region->region_title }}</td>
+                                        </tr> @endforeach
+                                    @endif
+                                    @foreach ($regions as $region)
                                         <tr style="white-space:nowrap">
-                                            <td>{{  $loop->iteration }}</td>
-                                            
-                                            <td >{{ $region->region_title }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+
+                                            <td>{{ $region->region_title }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -508,7 +525,6 @@
                                 }
                             }
                         });
-
                     </script>
                 </div>
                 <div class="col-md-7 ">
@@ -544,7 +560,6 @@
                                 }
                             }
                         });
-
                     </script>
                 </div>
             </div>
@@ -581,7 +596,6 @@
                             }
                         }
                     });
-
                 </script>
             </div>
         </div>
