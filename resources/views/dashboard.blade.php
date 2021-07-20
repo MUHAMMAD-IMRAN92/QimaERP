@@ -326,7 +326,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (count($farmers) < 5)
+                                    {{-- @if (count($farmers) < 5)
                                         @php
                                         $loop = 5 - count($farmers); @endphp
                                         @foreach (App\Farmer::all()->take($loop) as $farmer) <tr style="white-space:nowrap">
@@ -334,7 +334,7 @@
 
                                         <td>{{ $farmer['farmer_name'] }}</td>
                                         </tr> @endforeach
-                                    @endif
+                                    @endif --}}
                                     @foreach ($farmers as $farmer)
                                         @if ($farmer != null)
                                             <tr>
@@ -368,7 +368,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (count($regions) < 5)
+                                    {{-- @if (count($regions) < 5)
                                         @php
                                         $loop = 5 - count($regions); @endphp
                                         @foreach (App\Region::all()->take($loop) as $region) <tr style="white-space:nowrap">
@@ -376,7 +376,7 @@
 
                                         <td>{{ $region->region_title }}</td>
                                         </tr> @endforeach
-                                    @endif
+                                    @endif --}}
                                     @foreach ($regions as $region)
                                         <tr style="white-space:nowrap">
                                             <td>{{ $loop->iteration }}</td>
