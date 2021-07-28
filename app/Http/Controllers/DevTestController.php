@@ -28,6 +28,11 @@ class DevTestController extends Controller
         // ]);
 
 
-        return 'ok';
+        $sum = 0;
+        $details = TransactionDetail::whereIn('transaction_id', [2154, 2159, 2160, 2161, 2164]);
+        foreach ($details as $detail) {
+            $sum += $detail->constainer_weight;
+        }
+        return $sum;
     }
 }
