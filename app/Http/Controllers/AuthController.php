@@ -544,7 +544,7 @@ class AuthController extends Controller
         } elseif ($date == 'yearToDate') {
 
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->startOfYear();
 
             $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();

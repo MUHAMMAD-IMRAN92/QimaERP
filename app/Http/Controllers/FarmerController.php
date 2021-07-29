@@ -603,7 +603,7 @@ class FarmerController extends Controller
         } elseif ($date == 'yearToDate') {
 
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->startOfYear();
 
             $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
@@ -796,7 +796,7 @@ class FarmerController extends Controller
             ])->render();
         } elseif ($request->date == 'yearToDate') {
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->startOfYear();
             $farmer = Farmer::find($id);
 
