@@ -69,7 +69,7 @@
                                         <label for="exampleInputPassword1">Price Per Kg </label>
                                         <input type="number" id="price_per_kg" class="form-control" value="" name="price_per_kg"
                                             placeholder="Price Per Kg" @error('price_per_kg') is-invalid @enderror>
-                                        @error('farmer_nicn')
+                                        @error('price_per_kg')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
