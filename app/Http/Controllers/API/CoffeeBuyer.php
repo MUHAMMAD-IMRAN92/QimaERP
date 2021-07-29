@@ -137,10 +137,12 @@ class CoffeeBuyer extends Controller
                 }
 
                 if ($farmer->farmer_id_card_picture) {
-                    $destinationPath = 'storage/app/images/';
+                    // $destinationPath = 'storage/app/images/';
+                    $destinationPath = 'public/images';
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
                     file_put_contents($destinationPath . $id_card_file_name, $idfile);
+                    // $request->file('profile_picture')->storeAs('public/images', $file_name);
                     $userIdCardImage = FileSystem::create([
                         'user_file_name' => $id_card_file_name,
                     ]);
@@ -1009,7 +1011,7 @@ class CoffeeBuyer extends Controller
                         'data' => []
                     ]);
                 }
-                
+
                 $parentBatchCode = $farmer->farmer_code . '-' . ($lastBatch);
             }
             $parentBatch = BatchNumber::create([
