@@ -126,7 +126,8 @@ class CoffeeBuyer extends Controller
                 $profileImageId = null;
                 $idcardImageId = null;
                 if ($farmer->farmer_picture) {
-                    $destinationPath = 'storage/app/images/';
+                    // $destinationPath = 'storage/app/images/';
+                    $destinationPath = 'public/images';
                     $file = base64_decode($farmer->farmer_picture);
                     $file_name = time() . $i . getFileExtensionForBase64($file);
                     file_put_contents($destinationPath . $file_name, $file);
@@ -481,7 +482,8 @@ class CoffeeBuyer extends Controller
                     foreach ($transactionsInvoices as $key => $transactionsInvoice) {
                         if ($transactionsInvoice->invoice_image) {
                             //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
-                            $destinationPath = 'storage/app/images/';
+                            // $destinationPath = 'storage/app/images/';
+                            $destinationPath = 'public/images';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
                             file_put_contents($destinationPath . $file_name, $file);
@@ -860,7 +862,8 @@ class CoffeeBuyer extends Controller
                 foreach ($transactionsInvoices as $key => $transactionsInvoice) {
 
                     if ($transactionsInvoice->invoice_image) {
-                        $destinationPath = 'storage/app/images/';
+                        // $destinationPath = 'storage/app/images/';
+                        $destinationPath = 'public/images';
                         $file = base64_decode($transactionsInvoice->invoice_image);
                         $file_name = time() . $i . getFileExtensionForBase64($file);
                         file_put_contents($destinationPath . $file_name, $file);
