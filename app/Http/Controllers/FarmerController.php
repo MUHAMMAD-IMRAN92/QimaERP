@@ -713,8 +713,8 @@ class FarmerController extends Controller
             ])->render();
         } elseif ($request->date == 'weekToDate') {
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY);
-            $end = $now->endOfWeek(Carbon::SATURDAY);
+            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
 
             $farmer = Farmer::find($id);
 
