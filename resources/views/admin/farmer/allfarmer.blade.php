@@ -21,11 +21,12 @@
             height: 70px fit-content;
             background-color: purple !important;
         }
-        a{
+
+        a {
             color: rgb(0, 0, 0);
         }
 
-      .blacklink a {
+        .blacklink a {
 
             color: rgb(0, 0, 0);
             background-color: transparent;
@@ -136,7 +137,6 @@
                 });
             });
         });
-
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -286,7 +286,7 @@
                                                     </td>
                                                 @else
                                                     <td> <img class="famerimg"
-                                                            src="{{ asset('public/storage/images/' . $farmer->image) }}"
+                                                            src="{{ asset('storage/app/storage/app/images/' . $farmer->image) }}"
                                                             alt=""></td>
                                                 @endif
 

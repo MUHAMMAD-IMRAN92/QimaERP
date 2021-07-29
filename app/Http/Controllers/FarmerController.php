@@ -197,7 +197,7 @@ class FarmerController extends Controller
         if ($request->profile_picture) {
             $file = $request->profile_picture;
             $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $request->file('profile_picture')->storeAs('public/images', $file_name);
+            $request->file('profile_picture')->storeAs('storage/app/images/', $file_name);
             $userProfileImage = FileSystem::create([
                 'user_file_name' => $file_name,
             ]);
