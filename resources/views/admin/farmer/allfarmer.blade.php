@@ -286,7 +286,7 @@
                                                     </td>
                                                 @else
                                                     <td> <img class="famerimg"
-                                                            src="{{ asset('storage/app/storage/app/images/' . $farmer->image) }}"
+                                                            src="{{ asset('storage/app/images/' . $farmer->image) }}"
                                                             alt=""></td>
                                                 @endif
 
