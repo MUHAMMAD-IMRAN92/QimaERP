@@ -326,15 +326,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @if (count($farmers) < 5)
+                                    @if (count($farmers) == 0)
                                         @php
                                         $loop = 5 - count($farmers); @endphp
-                                        @foreach (App\Farmer::all()->take($loop) as $farmer) <tr style="white-space:nowrap">
-                                        <td>{{ $loop->iteration }}</td>
+                                        @foreach (App\Farmer::all()->take(5) as $farmer)
+                                            <tr style="white-space:nowrap">
+                                                <td>{{ $loop->iteration }}</td>
 
-                                        <td>{{ $farmer['farmer_name'] }}</td>
-                                        </tr> @endforeach
-                                    @endif --}}
+                                                <td>{{ $farmer['farmer_name'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                     @foreach ($farmers as $farmer)
 
                                         <tr>
@@ -369,15 +371,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @if (count($regions) < 5)
+                                    @if (count($regions) == 0)
                                         @php
                                         $loop = 5 - count($regions); @endphp
-                                        @foreach (App\Region::all()->take($loop) as $region) <tr style="white-space:nowrap">
-                                        <td>{{ $loop->iteration }}</td>
+                                        @foreach (App\Region::all()->take(5) as $region)
+                                            <tr style="white-space:nowrap">
+                                                <td>{{ $loop->iteration }}</td>
 
-                                        <td>{{ $region->region_title }}</td>
-                                        </tr> @endforeach
-                                    @endif --}}
+                                                <td>{{ $region->region_title }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                     @foreach ($regions as $region)
                                         <tr style="white-space:nowrap">
                                             <td>{{ $loop->iteration }}</td>
