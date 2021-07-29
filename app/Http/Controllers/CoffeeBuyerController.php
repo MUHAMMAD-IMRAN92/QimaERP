@@ -743,7 +743,7 @@ class CoffeeBuyerController extends Controller
             ])->render();
         } elseif ($request->date == 'monthToDate') {
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->firstOfMonth();
             $buyer = User::find($id);
             $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->get();
