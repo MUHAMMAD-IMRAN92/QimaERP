@@ -27,7 +27,6 @@ class DevTestController extends Controller
             'live_test' => true
         ]);
 
-
         // $sum = 0;
         // $details = TransactionDetail::whereIn('transaction_id', [2154, 2159, 2160, 2161, 2164])->get();
         // foreach ($details as $detail) {

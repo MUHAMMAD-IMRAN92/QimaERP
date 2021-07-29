@@ -489,7 +489,7 @@ class AuthController extends Controller
         } elseif ($date == 'monthToDate') {
 
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->firstOfMonth();
 
             $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
