@@ -29,9 +29,11 @@
             text-decoration: none;
 
         }
+
         .blacklink .hover:hover {
             cursor: pointer;
         }
+
     </style>
 
     <script>
@@ -175,7 +177,6 @@
             });
 
         });
-
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -240,7 +241,7 @@
                     <p>Governorate</p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ $regions->count() }}</h3>
+                    <h3>{{ App\Region::count() }}</h3>
 
                     <p>Regions</p>
                 </div>
@@ -250,7 +251,7 @@
                     <p>Villages </p>
                 </div>
                 <div class="col-sm-1 color bg-primary">
-                    <h3>{{ $farmers->count() }}</h3>
+                    <h3>{{ App\Farmer::count() }}</h3>
 
                     <p>Farmers </p>
                 </div>
@@ -303,7 +304,6 @@
                                 }
                             }
                         });
-
                     </script>
                 </div>
             </div>
@@ -326,13 +326,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($farmers->take(5) as $farmer)
+                                    @if (count($farmers) == 0)
+                                        @php
+                                        $loop = 5 - count($farmers); @endphp
+                                        @foreach (App\Farmer::all()->take(5) as $farmer)
+                                            <tr style="white-space:nowrap">
+                                                <td>{{ $loop->iteration }}</td>
+
+                                                <td>{{ $farmer['farmer_name'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    @foreach ($farmers as $farmer)
+
                                         <tr>
+
                                             <td>{{ $loop->iteration }}</td>
 
-                                            <td>{{ $farmer->farmer_name }}</td>
+                                            <td>{{ $farmer['farmer_name'] }}</td>
 
                                         </tr>
+
                                     @endforeach
                                 </tbody>
                             </table>
@@ -352,17 +366,27 @@
                                 <thead>
                                     <tr style="white-space:nowrap">
                                         <th style="width: 10px">Sr#</th>
-                                       
+
                                         <th>Region Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (count($regions) == 0)
+                                        @php
+                                        $loop = 5 - count($regions); @endphp
+                                        @foreach (App\Region::all()->take(5) as $region)
+                                            <tr style="white-space:nowrap">
+                                                <td>{{ $loop->iteration }}</td>
 
-                                    @foreach ($regions->take(5) as $region)
+                                                <td>{{ $region->region_title }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    @foreach ($regions as $region)
                                         <tr style="white-space:nowrap">
-                                            <td>{{ $region->region_id }}</td>
-                                            
-                                            <td >{{ $region->region_title }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+
+                                            <td>{{ $region->region_title }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -506,7 +530,6 @@
                                 }
                             }
                         });
-
                     </script>
                 </div>
                 <div class="col-md-7 ">
@@ -542,7 +565,6 @@
                                 }
                             }
                         });
-
                     </script>
                 </div>
             </div>
@@ -579,7 +601,6 @@
                             }
                         }
                     });
-
                 </script>
             </div>
         </div>

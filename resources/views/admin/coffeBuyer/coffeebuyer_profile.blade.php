@@ -446,7 +446,9 @@
                                 {{ $transaction->created_at }} /{{ $buyer->first_name }} /
                                 {{ explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] }}
                                 /
-                                {{ $transaction->details->sum('container_weight') }}.00
+                                @php
+                                 echo   floatval($transaction->details->sum('container_weight') );
+                                @endphp
 
                             </li>
                         </ol>

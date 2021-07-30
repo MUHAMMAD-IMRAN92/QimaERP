@@ -102,36 +102,6 @@
                             </p>
                         </a>
                     </li>
-                    <li
-                        class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
-                        <a href="{{ url('admin/allusers') }}" class="nav-link">
-                            <i class="nav-icon fas fa-user"></i>
-                            <p>
-                                Users Settings
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview pl-2 nav-dropdown">
-                            <li class="nav-item">
-                                <a href="{{ url('admin/allusers') }}"
-                                    class="nav-link {{ Request::is('admin/allusers') ? 'active' : '' }}">
-                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
-                                    <p>
-                                        Users
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('admin/roles') }}"
-                                    class="nav-link {{ Request::is('admin/roles') ? 'active' : '' }}">
-                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
-                                    <p>
-                                        Roles
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
                     <li class="nav-item active">
                         <a href="{{ URL::to('') }}/admin/allgovernor"
                             class="nav-link {{ Request::is('admin/allgovernor') ? 'active' : '' }}">
@@ -141,10 +111,6 @@
                             </p>
                         </a>
                     </li>
-
-                @else
-
-                    @endhasrole
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allregion"
                             class="nav-link {{ Request::is('admin/allregion') ? 'active' : '' }}">
@@ -154,16 +120,6 @@
                             </p>
                         </a>
 
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allvillage"
-                            class="nav-link {{ Request::is('admin/allvillage') ? 'active' : '' }} ">
-                            <i class="nav-icon fas fa-tree"></i>
-                            <p>
-                                Villages
-                            </p>
-                        </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allfarmer"
@@ -183,6 +139,34 @@
                             </p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ url('admin/inventory') }}"
+                            class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-pallet"></i>
+                            <p>
+                                Inventory
+                            </p>
+                        </a>
+                    </li>
+                    
+
+
+                @else
+
+                    @endhasrole
+
+
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/allvillage"
+                            class="nav-link {{ Request::is('admin/allvillage') ? 'active' : '' }} ">
+                            <i class="nav-icon fas fa-tree"></i>
+                            <p>
+                                Villages
+                            </p>
+                        </a>
+                    </li>
+
+
                     @hasrole('Super Admin')
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allbatchnumber"
@@ -250,15 +234,7 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/alltransection"
-                            class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
-                            <i class="nav-icon fas fa-exchange-alt"></i>
-                            <p>
-                                Transactions
-                            </p>
-                        </a>
-                    </li>
+
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/system_definition"
                             class="nav-link {{ Request::is('admin/system_definition') ? 'active' : '' }}">
@@ -359,19 +335,50 @@
                             </p>
                         </a>
                     </li>
+                    <li
+                        class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
+                        <a href="{{ url('admin/allusers') }}" class="nav-link">
+                            <i class="nav-icon fas fa-user"></i>
+                            <p>
+                                Users Settings
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview pl-2 nav-dropdown">
+                            <li class="nav-item">
+                                <a href="{{ url('admin/allusers') }}"
+                                    class="nav-link {{ Request::is('admin/allusers') ? 'active' : '' }}">
+                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <p>
+                                        Users
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('admin/roles') }}"
+                                    class="nav-link {{ Request::is('admin/roles') ? 'active' : '' }}">
+                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <p>
+                                        Roles
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/alltransection"
+                            class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
+                            <i class="nav-icon fas fa-exchange-alt"></i>
+                            <p>
+                                Transactions
+                            </p>
+                        </a>
+                    </li>
                 @else
 
                     @endhasrole
 
-                    <li class="nav-item">
-                        <a href="{{ url('admin/inventory') }}"
-                            class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-pallet"></i>
-                            <p>
-                                Inventory
-                            </p>
-                        </a>
-                    </li>
+
 
                 </ul>
             </nav>

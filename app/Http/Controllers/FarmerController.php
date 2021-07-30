@@ -197,7 +197,7 @@ class FarmerController extends Controller
         if ($request->profile_picture) {
             $file = $request->profile_picture;
             $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $request->file('profile_picture')->storeAs('public/images', $file_name);
+            $request->file('profile_picture')->storeAs('images', $file_name);
             $userProfileImage = FileSystem::create([
                 'user_file_name' => $file_name,
             ]);
@@ -571,7 +571,7 @@ class FarmerController extends Controller
         } elseif ($date == 'monthToDate') {
 
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->firstOfMonth();
 
             $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
@@ -603,7 +603,7 @@ class FarmerController extends Controller
         } elseif ($date == 'yearToDate') {
 
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->startOfYear();
 
             $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
@@ -713,8 +713,8 @@ class FarmerController extends Controller
             ])->render();
         } elseif ($request->date == 'weekToDate') {
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY);
-            $end = $now->endOfWeek(Carbon::SATURDAY);
+            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
 
             $farmer = Farmer::find($id);
 
@@ -740,7 +740,7 @@ class FarmerController extends Controller
             ])->render();
         } elseif ($request->date == 'monthToDate') {
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->firstOfMonth();
             $farmer = Farmer::find($id);
 
@@ -796,7 +796,7 @@ class FarmerController extends Controller
             ])->render();
         } elseif ($request->date == 'yearToDate') {
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->startOfYear();
             $farmer = Farmer::find($id);
 
