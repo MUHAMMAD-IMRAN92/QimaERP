@@ -141,7 +141,7 @@
                     },
                     success: function(data) {
                         $('#tables').html(data.view);
-                        // console.log(data.view);
+                        console.log(data.view);
                     }
                 });
             });
