@@ -684,7 +684,7 @@ class RegionController extends Controller
         $regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
         $governorates = Governerate::all();
         $villages = Village::where('village_code', 'LIKE', $governorateCode . '%')->get();
-
+        $farmers = Farmer::where('farmer_code', 'LIKE', $governorateCode . '%')->get();
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $governorateCode . '%')->where('sent_to', 2)->get();
         $total_coffee = 0;
         $totalPrice = 0;
@@ -711,7 +711,7 @@ class RegionController extends Controller
         }
 
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('governorates',  'regions', 'villages', 'total_coffee', 'totalPrice'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('governorates',  'regions', 'villages', 'farmers',  'total_coffee', 'totalPrice'))->render(),
             'regions' => $regions
         ]);
     }
