@@ -127,9 +127,11 @@ class CoffeeBuyer extends Controller
                 $idcardImageId = null;
                 if ($farmer->farmer_picture) {
                     $destinationPath = 'storage/app/images/';
+                    // $destinationPath = 'public/images';
                     $file = base64_decode($farmer->farmer_picture);
                     $file_name = time() . $i . getFileExtensionForBase64($file);
                     file_put_contents($destinationPath . $file_name, $file);
+                    
                     $userProfileImage = FileSystem::create([
                         'user_file_name' => $file_name,
                     ]);
@@ -138,9 +140,11 @@ class CoffeeBuyer extends Controller
 
                 if ($farmer->farmer_id_card_picture) {
                     $destinationPath = 'storage/app/images/';
+                    // $destinationPath = 'public/images';
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
                     file_put_contents($destinationPath . $id_card_file_name, $idfile);
+                    // $request->file('profile_picture')->storeAs('public/images', $file_name);
                     $userIdCardImage = FileSystem::create([
                         'user_file_name' => $id_card_file_name,
                     ]);
@@ -480,6 +484,7 @@ class CoffeeBuyer extends Controller
                         if ($transactionsInvoice->invoice_image) {
                             //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
                             $destinationPath = 'storage/app/images/';
+                            // $destinationPath = 'public/images';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
                             file_put_contents($destinationPath . $file_name, $file);
@@ -859,6 +864,7 @@ class CoffeeBuyer extends Controller
 
                     if ($transactionsInvoice->invoice_image) {
                         $destinationPath = 'storage/app/images/';
+                        // $destinationPath = 'public/images';
                         $file = base64_decode($transactionsInvoice->invoice_image);
                         $file_name = time() . $i . getFileExtensionForBase64($file);
                         file_put_contents($destinationPath . $file_name, $file);
@@ -1009,7 +1015,7 @@ class CoffeeBuyer extends Controller
                         'data' => []
                     ]);
                 }
-                
+
                 $parentBatchCode = $farmer->farmer_code . '-' . ($lastBatch);
             }
             $parentBatch = BatchNumber::create([

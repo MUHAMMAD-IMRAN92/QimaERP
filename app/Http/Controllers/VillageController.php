@@ -336,7 +336,7 @@ class VillageController extends Controller
             ])->render();
         } elseif ($request->date == 'monthToDate') {
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->firstOfMonth();
             $farmer = Farmer::find($id);
             $village = Village::find($id);
@@ -420,7 +420,7 @@ class VillageController extends Controller
             ])->render();
         } elseif ($request->date == 'yearToDate') {
             $now = Carbon::now();
-            $date = Carbon::today()->toDateString();
+            $date = Carbon::tomorrow()->toDateString();
             $start = $now->startOfYear();
             $village = Village::find($id);
 
