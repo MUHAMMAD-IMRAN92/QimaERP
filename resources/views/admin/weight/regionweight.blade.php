@@ -58,7 +58,7 @@
                   <tbody>
                      @php
                     $gov=$governore->governerate_code;
-                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($gov){
+                    $totalweight = App\TransactionDetail::whereHas('transaction', function($q) use($gov){
                             $q->where('is_parent', 0)
                             ->Where('batch_number','LIKE', "$gov%");
                         })->sum('container_weight');
@@ -106,7 +106,7 @@
                     @foreach($region as $row)
                     @php
                     $region=$row->region_code;
-                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($region){
+                    $totalweight = App\TransactionDetail::whereHas('transaction', function($q) use($region){
                             $q->where('is_parent', 0)
                             ->Where('batch_number','LIKE', "$region%");
                         })->sum('container_weight');
