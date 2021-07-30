@@ -97,8 +97,8 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Uk WareHose</li>
-                            <li class="breadcrumb-item active">Set Prieces</li>
+                            <li class="breadcrumb-item active">Uk WareHouse</li>
+                            <li class="breadcrumb-item active">Set Prices</li>
                         </ol>
                     </div>
                 </div>
