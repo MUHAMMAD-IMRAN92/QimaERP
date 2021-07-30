@@ -46,7 +46,7 @@
                   <thead>
                      @php
                     $row=$region->region_code;
-                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($row){
+                    $totalweight = App\TransactionDetail::whereHas('transaction', function($q) use($row){
                             $q->where('is_parent', 0)
                             ->Where('batch_number','LIKE', "$row%");
                         })->sum('container_weight');
@@ -104,7 +104,7 @@
                     @foreach($village as $row)
                     @php
                     $village=$row->village_code;
-                    $totalweight = App\TransactionDetail::whereHas('transection', function($q) use($village){
+                    $totalweight = App\TransactionDetail::whereHas('transaction', function($q) use($village){
                             $q->where('is_parent', 0)
                             ->Where('batch_number','LIKE', "$village%");
                         })->sum('container_weight');
