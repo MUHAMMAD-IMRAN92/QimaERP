@@ -16,14 +16,14 @@
           <div class="col-sm-6">
             <h1>Transactions Information 
               <a href="" class="btn btn-add rounded-circle"> 
-                <i class="fas fa-user-plus add-client-icon"></i>
+                {{-- <i class="fas fa-user-plus add-client-icon"></i> --}}
               </a>
             </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">All Transections</li>
+              <li class="breadcrumb-item active">All Transactions</li>
             </ol>
           </div>
         </div>
