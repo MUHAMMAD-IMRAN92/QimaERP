@@ -133,7 +133,7 @@ class VillageController extends Controller
     {
         $village = $village->gov_region();
         $villageCode = $village->village_code;
-        $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first()['created_at'];
+        $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
         if ($village->first_purchase) {
             $village->first_purchase = $village->first_purchase['created_at'];
         }
