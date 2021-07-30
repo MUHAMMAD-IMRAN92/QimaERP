@@ -153,7 +153,7 @@ class VillageController extends Controller
 
             $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first();
             if( $farmerPrice){
-                $farmerPrice =  $farmerPrice['price_per_kg']
+                $farmerPrice =  $farmerPrice['price_per_kg'];
             }
             if (!$farmerPrice) {
 
