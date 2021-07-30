@@ -137,8 +137,10 @@ class VillageController extends Controller
         if ($village->first_purchase) {
             $village->first_purchase = $village->first_purchase['created_at'];
         }
-        $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first()['created_at'];
-
+        $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+        if ($village->last_purchase) {
+            $village->last_purchase = $village->last_purchase['created_at'];
+        }
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
         $quantity = 0;
         foreach ($transactions as $transaction) {
