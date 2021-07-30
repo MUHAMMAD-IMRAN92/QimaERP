@@ -240,6 +240,7 @@ class RegionController extends Controller
         $governorates = Governerate::whereBetween('created_at', [$request->from, $request->to])->get();
         $regions = Region::whereBetween('created_at', [$request->from, $request->to])->get();
         $villages = Village::whereBetween('created_at', [$request->from, $request->to])->get();
+        $farmers = Farmer::whereBetween('created_at', [$request->from, $request->to])->get();
         $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$request->from, $request->to])->get();
 
         $totalWeight = 0;
@@ -276,6 +277,7 @@ class RegionController extends Controller
             'governorates' =>   $governorates,
             'regions' => $regions,
             'villages' => $villages,
+            'farmers' => $farmers,
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice
 
