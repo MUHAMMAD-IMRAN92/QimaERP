@@ -151,11 +151,17 @@ class VillageController extends Controller
         foreach ($transactions as $transaction) {
             $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
-            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first()['price_per_kg'];
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first();
+            if( $farmerPrice){
+                $farmerPrice =  $farmerPrice['price_per_kg']
+            }
             if (!$farmerPrice) {
 
                 $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                $vilagePrice = Village::where('village_code', $villageCode)->first();
+                if( $vilagePrice){
+                    $vilagePrice =  $vilagePrice->price_per_kg;
+                }
                 foreach ($transactions as $transaction) {
                     $quantity = $transaction->details->sum('container_weight');
                     $price +=  $quantity * $vilagePrice;
