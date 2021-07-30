@@ -12,6 +12,11 @@
 
     <p>Villages </p>
 </div>
+<div class="col-sm-1 color bg-primary">
+    <h3>{{ count($farmers) }}</h3>
+
+    <p>Farmers </p>
+</div>
 <div class="col-sm-1 color bg-info">
     <h4>{{ $total_coffee }}</h4>
     <p>Quantity </p>

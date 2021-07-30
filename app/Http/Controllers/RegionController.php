@@ -25,6 +25,7 @@ class RegionController extends Controller
     {
         $governorates = Governerate::all();
         $regions = Region::all();
+        $farmers = Farmer::all();
         $villages = Village::all();
         $now = Carbon::now();
         $date = Carbon::today()->toDateString();
@@ -141,6 +142,7 @@ class RegionController extends Controller
             'governorates' =>   $governorates,
             'regions' => $regions,
             'villages' => $villages,
+            'farmers' => $farmers,
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice,
             // 'chartTransactions' =>  $chartTransactions
@@ -321,6 +323,7 @@ class RegionController extends Controller
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
@@ -365,6 +368,7 @@ class RegionController extends Controller
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
@@ -413,6 +417,7 @@ class RegionController extends Controller
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
@@ -462,6 +467,7 @@ class RegionController extends Controller
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
@@ -511,6 +517,7 @@ class RegionController extends Controller
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
@@ -562,6 +569,7 @@ class RegionController extends Controller
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
@@ -610,6 +618,7 @@ class RegionController extends Controller
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
@@ -659,6 +668,7 @@ class RegionController extends Controller
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice
 
@@ -713,6 +723,7 @@ class RegionController extends Controller
         $regionCode = $region->region_code;
         $regions = Region::all();
         $villages = Village::where('village_code', 'LIKE', $regionCode . '%')->get();
+        $farmers = Farmer::where('farmer_code', 'LIKE', $regionCode . '%')->get();
 
         $governorates = Governerate::all();
 
@@ -742,7 +753,7 @@ class RegionController extends Controller
         }
 
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('governorates', 'regions', 'villages', 'total_coffee', 'totalPrice'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice'))->render(),
             'villages' => $villages
         ]);
     }
