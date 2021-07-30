@@ -16,7 +16,7 @@
           <div class="col-sm-6">
             <h1>Transactions Information 
               <a href="" class="btn btn-add rounded-circle"> 
-                <i class="fas fa-user-plus add-client-icon"></i>
+                {{-- <i class="fas fa-user-plus add-client-icon"></i> --}}
               </a>
             </h1>
           </div>
