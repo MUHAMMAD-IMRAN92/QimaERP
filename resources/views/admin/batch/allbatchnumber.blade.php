@@ -81,7 +81,7 @@
                                             = '<?= asset('/') ?>';
                                     $(document).ready(function () {
                                         var t = $('#get_batch_number').DataTable({
-                                            "processing": true,
+                                            // "processing": true,
                                             "serverSide": true,
                                             "deferRender": true,
                                             "language": {
