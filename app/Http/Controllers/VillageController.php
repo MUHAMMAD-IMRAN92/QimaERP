@@ -134,6 +134,9 @@ class VillageController extends Controller
         $village = $village->gov_region();
         $villageCode = $village->village_code;
         $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first()['created_at'];
+        if ($village->first_purchase) {
+            $village->first_purchase = $village->first_purchase['created_at'];
+        }
         $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first()['created_at'];
 
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
@@ -254,7 +257,7 @@ class VillageController extends Controller
         } elseif ($request->date == 'yesterday') {
             $now = Carbon::now();
             $yesterday = Carbon::yesterday();
-           
+
             $village = Village::find($id);
 
             $villageCode = $village->village_code;
