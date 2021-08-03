@@ -415,9 +415,7 @@
 
                     <p>Quantity</p>
                 </div>
-                <div class="col-sm-1 color bg-dark"></div>
-                <div class="col-sm-1 color bg-danger"></div>
-                <div class="col-sm-1 color bg-success"></div>
+             
 
             </div>
             <hr>
