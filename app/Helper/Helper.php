@@ -220,6 +220,12 @@ function containerType()
             'type' => 'Sample Container Number',
             'user_role' => 0,
         ),
+        31 => array(
+            'id' => 29,
+            'code' => 'EE',
+            'type' => 'Elephent Beans',
+            'user_role' => 0,
+        ),
     );
 
     return $arr;
