@@ -239,7 +239,7 @@
                     @else
                         <td> <img class="famerimg"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ asset('public/storage/images/' . $farmer->image) }}" alt=" no img"></td>
+                                src="{{ asset('storage/app/images/' . $farmer->image) }}" alt=" no img"></td>
                     @endif
 
                 </div>
@@ -415,7 +415,7 @@
 
                     <p>Quantity</p>
                 </div>
-             
+
 
             </div>
             <hr>
@@ -443,7 +443,7 @@
                 @else
                     <td> <img class="famerimg"
                             style="width: 150px  ; height:80px ; border-radius:50%; border: 1px solid gray;"
-                            src="{{ asset('public/storage/images/' . $farmer->cnicImage) }}" alt="no img"></td>
+                            src="{{ asset('storage/app/images/' . $farmer->cnicImage) }}" alt="no img"></td>
                 @endif
 
 
