@@ -101,6 +101,7 @@ class FarmerController extends Controller
     {
 
         $data['farmer'] = Farmer::find($id);
+     
         return view('admin.farmer.editfarmer', $data);
     }
 
