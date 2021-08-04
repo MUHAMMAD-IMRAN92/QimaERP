@@ -6,6 +6,7 @@ use App\Farmer;
 use App\Region;
 use App\Village;
 use App\Transaction;
+use Facade\FlareClient\Stacktrace\Frame;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -105,29 +106,50 @@ class VillageController extends Controller
     {
         // dd($id);
         $data['village'] = Village::find($id);
+        $code = $data['village']->village_code;
+        $data['farmers'] = Farmer::where('farmer_code', 'LIKE', $code . '%')->get();
+        $data['transaction'] = Transaction::where('batch_number', 'LIKE', $code . '%')->get();
         return view('admin.village.editvillage', $data);
     }
 
     public function update(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'village_title' => 'required|max:100|unique:villages,village_title',
-            'village_title_ar' => 'required|max:100|unique:villages,village_title_ar',
+            'village_title' => 'required|max:100',
+            'village_title_ar' => 'required|max:100',
             'village_id' => 'required',
         ]);
         if ($validator->fails()) {
             //::validation failed
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        $updatevillage = Village::find($request->village_id);
-        $updatevillage->village_title = $request->village_title;
-        $updatevillage->village_title_ar = $request->village_title_ar;
-        $updatevillage->price_per_kg = $request->price_per_kg;
+        $alreadyvillage = Village::where('village_code', $request->code . '-' . $request->village_code)->first();
+        if ($alreadyvillage) {
+            return  back()->with('msg', 'Village Code Already Taken');
+        } else {
+            $updatevillage = Village::find($request->village_id);
+            $code = $updatevillage->village_code;
+            $farmers = Farmer::where('farmer_code', 'LIKE', $code . '%')->get();
+            foreach ($farmers as $farmer) {
+                $code = $farmer->farmer_code;
+                $arr =  explode('-', $code);
+                $newFarmerCode = data_set($arr, [2], $request->village_code);
+                $newFarmerCode =  implode('-', $newFarmerCode);
+                $farmer->update([
+                    'farmer_code' => $newFarmerCode
+                ]);
+            }
+            $updatevillage->village_title = $request->village_title;
+            $updatevillage->village_title_ar = $request->village_title_ar;
+            $updatevillage->price_per_kg = $request->price_per_kg;
+            $updatevillage->village_code = $request->code . '-' . $request->village_code;
 
-        // dd($updatevillage);
-        $updatevillage->update();
-        return redirect('admin/allvillage')->with('update', 'Village Update Successfully!');
+            // dd($updatevillage);
+            $updatevillage->update();
+
+
+            return redirect('admin/allvillage')->with('update', 'Village Update Successfully!');
+        }
     }
     public function villageProfile(Village $village)
     {
@@ -152,14 +174,14 @@ class VillageController extends Controller
             $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
             $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first();
-            if( $farmerPrice){
+            if ($farmerPrice) {
                 $farmerPrice =  $farmerPrice['price_per_kg'];
             }
             if (!$farmerPrice) {
 
                 $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
                 $vilagePrice = Village::where('village_code', $villageCode)->first();
-                if( $vilagePrice){
+                if ($vilagePrice) {
                     $vilagePrice =  $vilagePrice->price_per_kg;
                 }
                 foreach ($transactions as $transaction) {
