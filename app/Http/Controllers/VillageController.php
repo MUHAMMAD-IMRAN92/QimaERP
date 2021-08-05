@@ -125,7 +125,26 @@ class VillageController extends Controller
         }
         $alreadyvillage = Village::where('village_code', $request->code . '-' . $request->village_code)->first();
         if ($alreadyvillage) {
-            return  back()->with('msg', 'Village Code Already Taken');
+            $updatevillage = Village::find($request->village_id);
+            $code = $updatevillage->village_code;
+            $farmers = Farmer::where('farmer_code', 'LIKE', $code . '%')->get();
+            foreach ($farmers as $farmer) {
+                $code = $farmer->farmer_code;
+                $arr =  explode('-', $code);
+                $newFarmerCode = data_set($arr, [2], $request->village_code);
+                $newFarmerCode =  implode('-', $newFarmerCode);
+                $farmer->update([
+                    'farmer_code' => $newFarmerCode
+                ]);
+            }
+            $updatevillage->village_title = $request->village_title;
+            $updatevillage->village_title_ar = $request->village_title_ar;
+            $updatevillage->price_per_kg = $request->price_per_kg;
+            $updatevillage->village_code = $request->code . '-' . $request->village_code;
+
+            // dd($updatevillage);
+            $updatevillage->update();
+            return redirect('admin/allvillage');
         } else {
             $updatevillage = Village::find($request->village_id);
             $code = $updatevillage->village_code;
