@@ -123,8 +123,17 @@ class VillageController extends Controller
             //::validation failed
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        $alreadyvillage = Village::where('village_code', $request->code . '-' . $request->village_code)->first();
-        if ($alreadyvillage) {
+        $v_code = $request->code . '-' . $request->village_code;
+        $r_village = Village::find($request->village_id);
+        if ($r_village->village_code != $v_code) {
+            $village = Village::where('village_code', 'LIKE', '%' . $request->village_code . '%')->first();
+            if ($village) {
+                return back()->with('msg', 'Village Code Already Exit');
+            }
+        }
+
+        // $alreadyvillage = Village::where('village_code', $request->code . '-' . $request->village_code)->first();
+        if ($r_village) {
             $updatevillage = Village::find($request->village_id);
             $code = $updatevillage->village_code;
             $farmers = Farmer::where('farmer_code', 'LIKE', $code . '%')->get();
@@ -144,30 +153,7 @@ class VillageController extends Controller
 
             // dd($updatevillage);
             $updatevillage->update();
-            return redirect('admin/allvillage');
-        } else {
-            $updatevillage = Village::find($request->village_id);
-            $code = $updatevillage->village_code;
-            $farmers = Farmer::where('farmer_code', 'LIKE', $code . '%')->get();
-            foreach ($farmers as $farmer) {
-                $code = $farmer->farmer_code;
-                $arr =  explode('-', $code);
-                $newFarmerCode = data_set($arr, [2], $request->village_code);
-                $newFarmerCode =  implode('-', $newFarmerCode);
-                $farmer->update([
-                    'farmer_code' => $newFarmerCode
-                ]);
-            }
-            $updatevillage->village_title = $request->village_title;
-            $updatevillage->village_title_ar = $request->village_title_ar;
-            $updatevillage->price_per_kg = $request->price_per_kg;
-            $updatevillage->village_code = $request->code . '-' . $request->village_code;
-
-            // dd($updatevillage);
-            $updatevillage->update();
-
-
-            return redirect('admin/allvillage')->with('update', 'Village Update Successfully!');
+            return back()->with('msg', 'Village Update Successfully!');
         }
     }
     public function villageProfile(Village $village)
