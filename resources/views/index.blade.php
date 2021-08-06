@@ -132,7 +132,7 @@ Licensed under MIT
                                             <td>
                                                 Dear Admin,<br />
                                                 It is stated that i have forgot my login Password.
-                                                So, I'm unable to login and continoue to work.Kindly reset my login
+                                                So, I'm unable to login.Kindly reset my login
                                                 password.So, i can continue.<br /><br>
                                                 Name : {{ $test->first_name . $test->last_name }}<br /><br>
                                                 Email : {{ $test->email }}<br /><br>
