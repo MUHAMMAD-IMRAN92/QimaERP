@@ -2,35 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use App\User;
-use App\Center;
-use Hash;
 use DB;
 use Auth;
+use App\User;
+use App\Center;
+use App\ResetPassword;
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
 
         return view('admin.user.alluser');
     }
 
-    function getUserAjax(Request $request) {
+    function getUserAjax(Request $request)
+    {
         $draw = $request->get('draw');
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
         $orderby = 'ASC';
         $column = 'user_id';
-//::count total record
-        $total_members = User::where('user_id','!=',Auth::user()->user_id )->count();
+        //::count total record
+        $total_members = User::where('user_id', '!=', Auth::user()->user_id)->count();
         $members = User::query();
         //::select columns
-        $members = $members->select('user_id', 'first_name', 'last_name', 'email')->where('user_id','!=',Auth::user()->user_id );
+        $members = $members->select('user_id', 'first_name', 'last_name', 'email')->where('user_id', '!=', Auth::user()->user_id);
         //::search with farmername or farmer_code or  village_code
-        $members = $members->when($search, function($q)use ($search) {
+        $members = $members->when($search, function ($q) use ($search) {
             $q->where('first_name', 'like', "%$search%")->orWhere('last_name', 'like', "%$search%")->orWhere('email', 'like', "%$search%");
         });
         if ($request->has('order') && !is_null($request['order'])) {
@@ -60,13 +64,15 @@ class UserController extends Controller {
         return json_encode($data);
     }
 
-    public function adduser() {
+    public function adduser()
+    {
         $data['role'] = Role::get();
         $data['center'] = Center::all();
         return view('admin.user.addnewuser', $data);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validatedData = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -99,13 +105,15 @@ class UserController extends Controller {
         return redirect('admin/allusers')->with('message', 'User Create Successfully');
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $data['role'] = Role::get();
         $data['user'] = User::find($id);
         return view('admin.user.edituser', $data);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         // dd($request->all());
         $updateuser = User::find($request->user_id);
         $updateuser->first_name = $request->first_name;
@@ -121,14 +129,16 @@ class UserController extends Controller {
         return redirect('admin/allusers')->with('update', 'User Update Successfully');
     }
 
-    public function resetpassword($id) {
+    public function resetpassword($id)
+    {
 
         $data['reset'] = User::find($id);
         // dd($data['reset']);
         return view('admin.user.resetpassword', $data);
     }
 
-    public function updatepassword(Request $request) {
+    public function updatepassword(Request $request)
+    {
         // $pass=hash::make($request->password);
         // dd($pass);
         $user = User::find($request->user_id);
@@ -158,8 +168,33 @@ class UserController extends Controller {
         return redirect('view');
     }
 
-    public function delete(Request $request, $id) {
+    public function delete(Request $request, $id)
+    {
         User::where('user_id', $id)->delete();
     }
-
+    public function resetView($id)
+    {
+        $user = User::find($id);
+        return view('admin.reset_password', [
+            'user' => $user
+        ]);
+    }
+    public function postReset(Request $request, $id)
+    {
+        $user = User::find($id);
+        $resetPassObj = ResetPassword::where('email', $user->email)->where('status', 1)->first();
+        $newPass = $request->password;
+        $confirmPass = $request->cnfpassword;
+        if ($newPass == $confirmPass) {
+            $user->update([
+                'password' => Hash::make($confirmPass),
+            ]);
+            $resetPassObj->update([
+                'status' => 0
+            ]);
+            return redirect()->route('dashboard')->with('msg', 'Password Update Successfully');
+        } else {
+            return back()->with('msg', 'Password Does Not Matched');
+        }
+    }
 }
