@@ -25,9 +25,11 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('login', 'AuthController@adminLogin');
+    Route::get('/reset_view/{id}', 'UserController@resetView')->middleware('auth');
+    Route::post('/reset_password/{id}', 'UserController@postReset')->middleware('auth');
     Route::post('login', 'AuthController@adminPostLogin');
     Route::group(['middleware' => ['CheckRole']], function () {
-        Route::get('dashboard', 'AuthController@dashboard')->middleware('auth', 'CheckRole');
+        Route::get('dashboard', 'AuthController@dashboard')->name('dashboard')->middleware('auth', 'CheckRole');
         Route::get('dashboardByDate', 'AuthController@dashboardByDate');
         Route::get('dashboardByDays', 'AuthController@dashboardByDays');
         Route::get('logout', 'AuthController@adminLogout');
@@ -201,7 +203,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/orders/{order}', 'OrderController@show')->name('orders.show');
         Route::post('/orders', 'OrderController@store')->name('orders.store');
         Route::post('/paidOrder', 'OrderController@paidOrder');
-        
+
 
         Route::get('/customers', 'CustomerController@index');
         Route::get('/local_inventory', 'LocalMarketProductsController@weights');
@@ -226,6 +228,5 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/uk_warehouse/set_price/{id}', 'UkWareHouseController@prices')->name('uk.setPrice');
         Route::post('/uk_warehouse/post_price/{id}', 'UkWareHouseController@post');
         Route::post('/uk_warehouse/assignToChaina', 'UkWareHouseController@assignToChaina')->name('uk.assigntochaina');
-
     });
 });

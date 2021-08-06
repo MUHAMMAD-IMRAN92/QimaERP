@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], function () {
@@ -9,8 +10,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], 
     // Logged In users
     Route::middleware(['auth:sanctum'])->group(function () {
 
-        //::Common Routes
-
+        //Reset User Pasword
+        Route::post('/req_resetPassword', 'API\CommonController@resetPassword');
+        // Route::get('/rest_view', 'API\CommonController@resetView');
         // Admin Panel Routes
 
         //::governerate

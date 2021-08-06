@@ -327,11 +327,11 @@
                                 <td colspan=""><strong>PRICE PER KG</strong>
                                 </td>
 
-                                @if ($farmer->price_per_kg == null)
-                                    <td colspan="4">{{ number_format($farmer->price * $farmer->quantity) }}</td>
-                                @else
-                                    <td colspan="4">{{ number_format($farmer->price_per_kg * $farmer->quantity) }}
+                                @if ($farmer->price_per_kg != null)
+                                    <td colspan="4">{{ number_format($farmer->price_per_kg) }}
                                     </td>
+                                @else
+                                    <td colspan="4">{{ number_format($farmer->price) }}</td>
                                 @endif
 
                                 <td colspan="4"></td>

@@ -21,7 +21,7 @@
                 @endif
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>System Definations
+                        <h1>System Definitions
 
                             <a href="{{ route('systemdefinition.create') }}" class="btn btn-add rounded-circle">
                                 <i class="fas fa-plus add-client-icon "></i>

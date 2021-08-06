@@ -20,13 +20,17 @@ class UkWareHouseController extends Controller
                 }
             ]
 
-        )->with('details')->where('is_parent', 0)->where('sent_to', 43)->get();
+        )->with(['details' => function ($query) {
+            $query->where('container_status', 0);
+        }])->where('is_parent', 0)->where('sent_to', 43)->get();
 
         $transactionsWS = Transaction::with([
             'meta' => function ($query) {
                 $query->where('key', 'Price Per KG');
             }
-        ])->with('details')->where('is_parent', 0)->where('sent_to', 44)->get();
+        ])->with(['details' => function ($query) {
+            $query->where('container_status', 0);
+        }])->where('is_parent', 0)->where('sent_to', 44)->get();
 
         return view('admin.uk_warehouse.set_prices', [
             'transactionWOS' => $transactionsWOS,
@@ -115,6 +119,8 @@ class UkWareHouseController extends Controller
             $containers = $transaction->details;
             $detailNSMP = $containers->filter(function ($container) {;
                 return  $container->container_number[0] . $container->container_number[1] . $container->container_number[2] != 'SMP';
+            })->filter(function ($container) {
+                return  $container->container_status != 1;
             });
 
             foreach ($detailNSMP as $detail) {

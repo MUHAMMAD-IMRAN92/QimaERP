@@ -2,25 +2,31 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
-use Illuminate\Validation\Rule;
-use Illuminate\Http\Request;
-use App\TransactionDetail;
-use App\TransactionLog;
-use App\BatchNumber;
-use App\Transaction;
-use App\Governerate;
-use App\FileSystem;
+use Storage;
+use App\User;
+use Exception;
+use App\Center;
+use App\Farmer;
+use App\Region;
+use App\Season;
+use App\Village;
 use App\Container;
 use App\LoginUser;
-use App\Village;
-use App\Region;
-use App\Farmer;
-use App\Center;
-use App\User;
-use App\Season;
-use Storage;
+use App\FileSystem;
+use App\BatchNumber;
+use App\Governerate;
+use App\Transaction;
+use App\ResetPassword;
+use App\TransactionLog;
+use App\TransactionDetail;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use App\Mail\reset_password;
+use Dotenv\Result\Success;
+use Illuminate\Support\Facades\Mail;
+use Facade\FlareClient\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CommonController extends Controller
 {
@@ -281,5 +287,20 @@ class CommonController extends Controller
         $data = array_values(containerType());
 
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_CONTAINER"), $data);
+    }
+    public function resetPassword(Request $request)
+    {
+        $user  = User::where('email', $request->email)->first();
+        if ($user->count() > 0) {
+
+            ResetPassword::create([
+                'email' => $request->email
+            ]);
+            Mail::to('admin@superadmin.com')->send(new reset_password($user));
+
+            return response()->json(['status' => 'Success', 'message' => 'Email sent to your admin succesfully']);
+        } else {
+            throw new Exception('User Not Found');
+        }
     }
 }
