@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
-use Illuminate\Http\Request;
-use App\TransactionDetail;
-use App\TransactionLog;
-use App\Transaction;
-use App\LoginUser;
 use App\User;
+use Throwable;
+use App\LoginUser;
+use Carbon\Carbon;
 use App\CenterUser;
 use App\BatchNumber;
-use Carbon\Carbon;
+use App\Transaction;
+use App\TransactionLog;
+use App\TransactionDetail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class ProcessingManagerController extends Controller
 {
@@ -57,7 +60,7 @@ class ProcessingManagerController extends Controller
             if ($parentCheckBatch && isset($parentCheckBatch->buyer)) {
                 $transaction->buyer_name = $parentCheckBatch->buyer->first_name . ' ' . $parentCheckBatch->buyer->last_name;
             }
-          
+
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
             $transaction->center_name = $transaction->log->center_name;
@@ -116,59 +119,93 @@ class ProcessingManagerController extends Controller
                 //                    array_push($transationRef, $transactionDetailsvalue->reference_id);
                 //                }
                 //            }
-                if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
-                    $isSpecial = false;
-                    if ($sentTransaction->transaction->sent_to == 5) {
-                        $type = 'special_processing';
-                        $isSpecial = true;
-                    } else {
-                        $type = 'coffee_drying';
-                    }
-                    $transaction = Transaction::create([
-                        'batch_number' => $sentTransaction->transaction->batch_number,
-                        'is_parent' => $sentTransaction->transaction->is_parent,
-                        'is_mixed' => $sentTransaction->transaction->is_mixed,
-                        'created_by' => $sentTransaction->transaction->created_by,
-                        'is_local' => FALSE,
-                        'is_special' => $isSpecial,
-                        'transaction_type' => 2,
-                        'local_code' => $sentTransaction->transaction->local_code,
-                        'transaction_status' => 'sent',
-                        // 'reference_id' => implode(",", $transationRef),
-                        'reference_id' => $sentTransaction->transaction->reference_id,
-                        'is_server_id' => 1,
-                        'is_new' => 0,
-                        'sent_to' => $sentTransaction->transaction->sent_to,
-                        'is_sent' => 1,
-                        'session_no' => $sentTransaction->transaction->session_no,
-                        'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
-                        'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
-                    ]);
-                    $transactionLog = TransactionLog::create([
-                        'transaction_id' => $transaction->transaction_id,
-                        'action' => 'sent',
-                        'created_by' => $this->userId,
-                        'entity_id' => $sentTransaction->transaction->center_id,
-                        'center_name' => $sentTransaction->transaction->center_name,
-                        'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
-                        'type' => $type,
-                    ]);
-                    $transactionContainers = $sentTransaction->transactionDetails;
-                    foreach ($transactionContainers as $key => $transactionContainer) {
-                        TransactionDetail::create([
-                            'transaction_id' => $transaction->transaction_id,
-                            'container_number' => $transactionContainer->container_number,
-                            'created_by' => $transactionContainer->created_by,
-                            'is_local' => FALSE,
-                            'container_weight' => $transactionContainer->container_weight,
-                            'weight_unit' => $transactionContainer->weight_unit,
-                            'center_id' => $transactionContainer->center_id,
-                            'reference_id' => $transactionContainer->reference_id,
-                        ]);
+                DB::beginTransaction();
+                try {
+                    if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+                        $isSpecial = false;
+                        if ($sentTransaction->transaction->sent_to == 5) {
+                            $type = 'special_processing';
+                            $isSpecial = true;
+                        } else {
+                            $type = 'coffee_drying';
+                        }
 
-                        TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                        // $transaction = Transaction::create([
+                        //     'batch_number' => $sentTransaction->transaction->batch_number,
+                        //     'is_parent' => $sentTransaction->transaction->is_parent,
+                        //     'is_mixed' => $sentTransaction->transaction->is_mixed,
+                        //     'created_by' => $sentTransaction->transaction->created_by,
+                        //     'is_local' => FALSE,
+                        //     'is_special' => $isSpecial,
+                        //     'transaction_type' => 2,
+                        //     'local_code' => $sentTransaction->transaction->local_code,
+                        //     'transaction_status' => 'sent',
+                        //     // 'reference_id' => implode(",", $transationRef),
+                        //     'reference_id' => $sentTransaction->transaction->reference_id,
+                        //     'is_server_id' => 1,
+                        //     'is_new' => 0,
+                        //     'sent_to' => $sentTransaction->transaction->sent_to,
+                        //     'is_sent' => 1,
+                        //     'session_no' => $sentTransaction->transaction->session_no,
+                        //     'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
+                        //     'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
+                        // ]); 
+                        $savedtransaction = new Transaction();
+                        $savedtransaction->batch_number =  $sentTransaction->transaction->batch_number;
+                        $savedtransaction->is_parent =  $sentTransaction->transaction->is_parent;
+                        $savedtransaction->is_mixed =  $sentTransaction->transaction->is_mixed;
+                        $savedtransaction->created_by =  $sentTransaction->transaction->created_by;
+                        $savedtransaction->is_local = FALSE;
+                        $savedtransaction->is_special = $isSpecial;
+                        $savedtransaction->transaction_type = 2;
+                        $savedtransaction->local_code =  $sentTransaction->transaction->local_code;
+                        $savedtransaction->transaction_status = 'sent';
+                        $savedtransaction->reference_id =  $sentTransaction->transaction->reference_id;
+                        $savedtransaction->is_server_id = 1;
+                        $savedtransaction->is_new = 0;
+                        $savedtransaction->sent_to =  $sentTransaction->transaction->sent_to;
+                        $savedtransaction->is_sent = 1;
+                        $savedtransaction->session_no =  $sentTransaction->transaction->session_no;
+                        $savedtransaction->local_created_at = toSqlDT($sentTransaction->transaction->local_created_at);
+                        $savedtransaction->local_updated_at =   toSqlDT($sentTransaction->transaction->local_updated_at);
+
+                        $transactionContainers = $sentTransaction->transactionDetails;
+                        $count = 0;
+                        foreach ($transactionContainers as $key => $transactionContainer) {
+                            $count++;
+                            if ($count == 1) {
+                                $savedtransaction->save();
+                                $transactionLog = TransactionLog::create([
+                                    'transaction_id' => $savedtransaction->transaction_id,
+                                    'action' => 'sent',
+                                    'created_by' => $this->userId,
+                                    'entity_id' => $sentTransaction->transaction->center_id,
+                                    'center_name' => $sentTransaction->transaction->center_name,
+                                    'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                                    'type' => $type,
+                                ]);
+                            }
+                            TransactionDetail::create([
+                                'transaction_id' => $savedtransaction->transaction_id,
+                                'container_number' => $transactionContainer->container_number,
+                                'created_by' => $transactionContainer->created_by,
+                                'is_local' => FALSE,
+                                'container_weight' => $transactionContainer->container_weight,
+                                'weight_unit' => $transactionContainer->weight_unit,
+                                'center_id' => $transactionContainer->center_id,
+                                'reference_id' => $transactionContainer->reference_id,
+                            ]);
+
+                            TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                        }
+                        array_push($reciviedCoffee, $savedtransaction->transaction_id);
                     }
-                    array_push($reciviedCoffee, $transaction->transaction_id);
+                    DB::commit();
+                } catch (Throwable $th) {
+                    DB::rollback();
+                    return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
+                        'line' => $th->getLine()
+                    ]), 499);
                 }
             }
         }

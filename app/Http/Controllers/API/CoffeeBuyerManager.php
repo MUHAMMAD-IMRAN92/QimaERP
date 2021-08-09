@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\TransactionDetail;
-use App\TransactionLog;
-use App\Transaction;
-use App\LoginUser;
+use App\User;
+use Throwable;
 use App\Center;
 use App\Farmer;
-use App\User;
-use App\BatchNumber;
+use App\LoginUser;
 use Carbon\Carbon;
+use App\BatchNumber;
+use App\Transaction;
+use App\TransactionLog;
+use App\TransactionDetail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CoffeeBuyerManager extends Controller
 {
@@ -114,64 +117,72 @@ class CoffeeBuyerManager extends Controller
                         array_push($sentCoffeeArray, $sentTransaction->transactions->transaction_id);
                     }
                 } else {
+                    DB::beginTransaction();
+                    try {
+                        $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
+                        if ($alreadyExistTransaction) {
+                            $sentTransaction->transactions->already_sent = true;
+                            $sentTransaction->transactions->created_at =  toSqlDT($sentTransaction->transactions->created_at);
+                            $sentTransaction->transactions->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
+                            $sentTransaction->transactions->local_updated_at = toSqlDT($sentTransaction->transactions->local_updated_at);
 
-                    $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
-                    if ($alreadyExistTransaction) {
-                        $sentTransaction->transactions->already_sent = true;
-                        $sentTransaction->transactions->created_at =  toSqlDT($sentTransaction->transactions->created_at);
-                        $sentTransaction->transactions->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
-                        $sentTransaction->transactions->local_updated_at = toSqlDT($sentTransaction->transactions->local_updated_at);
-
-                        foreach ($sentTransaction->transactions_detail as $detail) {
-                            $detail->created_at = toSqlDT($detail->created_at);
-                        }
-                        array_push($alreadySentCoffee, $sentTransaction);
-                    } else {
-                        $transaction = Transaction::create([
-                            'batch_number' => $sentTransaction->transactions->batch_number,
-                            'is_parent' => $sentTransaction->transactions->is_parent,
-                            'is_mixed' => $sentTransaction->transactions->is_mixed,
-                            'created_by' => $sentTransaction->transactions->created_by,
-                            'is_local' => FALSE,
-                            'transaction_type' => 2,
-                            'local_code' => $sentTransaction->transactions->local_code,
-                            'transaction_status' => 'sent',
-                            'reference_id' => $sentTransaction->transactions->reference_id,
-                            'is_server_id' => 1,
-                            'is_new' => $sentTransaction->transactions->is_new,
-                            'sent_to' => 3,
-                            'is_sent' => 0,
-                            'session_no' => $sentTransaction->transactions->session_no,
-                            'local_created_at' => toSqlDT($sentTransaction->transactions->local_created_at),
-                            'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at)
-
-                        ]);
-
-                        $transactionLog = TransactionLog::create([
-                            'transaction_id' => $transaction->transaction_id,
-                            'action' => 'sent',
-                            'created_by' => $sentTransaction->transactions->created_by,
-                            'entity_id' => $sentTransaction->transactions->center_id,
-                            'center_name' => $sentTransaction->transactions->center_name,
-                            'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at),
-                            'local_created_at' =>  toSqlDT($sentTransaction->transactions->local_created_at),
-                            'type' => 'center',
-                        ]);
-
-                        $transactionContainers = $sentTransaction->transactions_detail;
-                        foreach ($transactionContainers as $key => $transactionContainer) {
-                            TransactionDetail::create([
-                                'transaction_id' => $transaction->transaction_id,
-                                'container_number' => $transactionContainer->container_number,
+                            foreach ($sentTransaction->transactions_detail as $detail) {
+                                $detail->created_at = toSqlDT($detail->created_at);
+                            }
+                            array_push($alreadySentCoffee, $sentTransaction);
+                        } else {
+                            $transaction = Transaction::create([
+                                'batch_number' => $sentTransaction->transactions->batch_number,
+                                'is_parent' => $sentTransaction->transactions->is_parent,
+                                'is_mixed' => $sentTransaction->transactions->is_mixed,
                                 'created_by' => $sentTransaction->transactions->created_by,
                                 'is_local' => FALSE,
-                                'container_weight' => $transactionContainer->container_weight,
-                                'weight_unit' => $transactionContainer->weight_unit,
-                                'center_id' => $transactionContainer->center_id,
-                                'reference_id' => 0,
+                                'transaction_type' => 2,
+                                'local_code' => $sentTransaction->transactions->local_code,
+                                'transaction_status' => 'sent',
+                                'reference_id' => $sentTransaction->transactions->reference_id,
+                                'is_server_id' => 1,
+                                'is_new' => $sentTransaction->transactions->is_new,
+                                'sent_to' => 3,
+                                'is_sent' => 0,
+                                'session_no' => $sentTransaction->transactions->session_no,
+                                'local_created_at' => toSqlDT($sentTransaction->transactions->local_created_at),
+                                'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at)
+
                             ]);
+
+                            $transactionLog = TransactionLog::create([
+                                'transaction_id' => $transaction->transaction_id,
+                                'action' => 'sent',
+                                'created_by' => $sentTransaction->transactions->created_by,
+                                'entity_id' => $sentTransaction->transactions->center_id,
+                                'center_name' => $sentTransaction->transactions->center_name,
+                                'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at),
+                                'local_created_at' =>  toSqlDT($sentTransaction->transactions->local_created_at),
+                                'type' => 'center',
+                            ]);
+
+                            $transactionContainers = $sentTransaction->transactions_detail;
+                            foreach ($transactionContainers as $key => $transactionContainer) {
+                                TransactionDetail::create([
+                                    'transaction_id' => $transaction->transaction_id,
+                                    'container_number' => $transactionContainer->container_number,
+                                    'created_by' => $sentTransaction->transactions->created_by,
+                                    'is_local' => FALSE,
+                                    'container_weight' => $transactionContainer->container_weight,
+                                    'weight_unit' => $transactionContainer->weight_unit,
+                                    'center_id' => $transactionContainer->center_id,
+                                    'reference_id' => 0,
+                                ]);
+                            }
+                            array_push($sentCoffeeArray, $transaction->transaction_id);
+                            DB::commit();
                         }
-                        array_push($sentCoffeeArray, $transaction->transaction_id);
+                    } catch (Throwable $th) {
+                        DB::rollback();
+                        return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
+                            'line' => $th->getLine()
+                        ]), 499);
                     }
                 }
             }
