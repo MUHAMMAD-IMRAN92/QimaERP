@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\User;
-use Throwable;
 use App\Center;
 use App\Farmer;
 use App\LoginUser;
@@ -18,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class CenterManagerController extends Controller
 {
@@ -108,12 +108,11 @@ class CenterManagerController extends Controller
                     array_push($reciviedCoffee, $transaction->transaction_id);
                     DB::commit();
                 }
-            } catch (Throwable $th) {
+            } catch (Throwable $e) {
                 DB::rollback();
+
+                return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
             }
-            return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
-                'line' => $th->getLine()
-            ]), 499);
         }
         $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail', 'log')->get();
         $dataArray = array();
