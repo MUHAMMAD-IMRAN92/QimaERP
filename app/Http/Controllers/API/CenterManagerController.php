@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\TransactionDetail;
-use App\TransactionLog;
-use App\Transaction;
-use App\LoginUser;
+use App\User;
+use Throwable;
 use App\Center;
 use App\Farmer;
-use App\User;
+use App\LoginUser;
+use Carbon\Carbon;
 use App\CenterUser;
 use App\BatchNumber;
-use Carbon\Carbon;
+use App\Transaction;
+use App\TransactionLog;
+use App\TransactionDetail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CenterManagerController extends Controller
 {
@@ -56,51 +59,61 @@ class CenterManagerController extends Controller
                     array_push($transationRef, $transactionDetailsvalue->reference_id);
                 }
             }
-            if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
-                $transaction = Transaction::create([
-                    'batch_number' => $sentTransaction->transaction->batch_number,
-                    'is_parent' => $sentTransaction->transaction->is_parent,
-                    'is_mixed' => $sentTransaction->transaction->is_mixed,
-                    'created_by' => $sentTransaction->transaction->created_by,
-                    'is_local' => FALSE,
-                    'transaction_type' => $sentTransaction->transaction->transaction_type,
-                    'local_code' => $sentTransaction->transaction->local_code,
-                    'transaction_status' => 'received',
-                    'reference_id' => implode(",", $transationRef),
-                    'is_server_id' => 1,
-                    'is_new' => 0,
-                    'sent_to' => 4,
-                    'is_sent' => 1,
-                    'session_no' => $sentTransaction->transaction->session_no,
-                    'local_created_at' => Carbon::parse($sentTransaction->transaction->local_created_at)->toDateTimeString(),
-                    'local_updated_at' => Carbon::parse($sentTransaction->transaction->local_updated_at)->toDateTimeString()
-                ]);
-                $transactionLog = TransactionLog::create([
-                    'transaction_id' => $transaction->transaction_id,
-                    'action' => 'received',
-                    'created_by' => $sentTransaction->transaction->created_by,
-                    'entity_id' => $sentTransaction->transaction->center_id,
-                    'center_name' => $sentTransaction->transaction->center_name,
-                    'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
-                    'type' => 'center',
-                ]);
-                $transactionContainers = $sentTransaction->transactionDetails;
-                foreach ($transactionContainers as $key => $transactionContainer) {
-                    TransactionDetail::create([
-                        'transaction_id' => $transaction->transaction_id,
-                        'container_number' => $transactionContainer->container_number,
-                        'created_by' => $transactionContainer->created_by,
-                        'is_local' => FALSE,
-                        'container_weight' => $transactionContainer->container_weight,
-                        'weight_unit' => $transactionContainer->weight_unit,
-                        'center_id' => $transactionContainer->center_id,
-                        'reference_id' => $transactionContainer->reference_id,
-                    ]);
+            DB::beginTransaction();
 
-                    TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+            try {
+                if (isset($sentTransaction->transaction) && $sentTransaction->transaction) {
+                    $transaction = Transaction::create([
+                        'batch_number' => $sentTransaction->transaction->batch_number,
+                        'is_parent' => $sentTransaction->transaction->is_parent,
+                        'is_mixed' => $sentTransaction->transaction->is_mixed,
+                        'created_by' => $sentTransaction->transaction->created_by,
+                        'is_local' => FALSE,
+                        'transaction_type' => $sentTransaction->transaction->transaction_type,
+                        'local_code' => $sentTransaction->transaction->local_code,
+                        'transaction_status' => 'received',
+                        'reference_id' => implode(",", $transationRef),
+                        'is_server_id' => 1,
+                        'is_new' => 0,
+                        'sent_to' => 4,
+                        'is_sent' => 1,
+                        'session_no' => $sentTransaction->transaction->session_no,
+                        'local_created_at' => Carbon::parse($sentTransaction->transaction->local_created_at)->toDateTimeString(),
+                        'local_updated_at' => Carbon::parse($sentTransaction->transaction->local_updated_at)->toDateTimeString()
+                    ]);
+                    $transactionLog = TransactionLog::create([
+                        'transaction_id' => $transaction->transaction_id,
+                        'action' => 'received',
+                        'created_by' => $sentTransaction->transaction->created_by,
+                        'entity_id' => $sentTransaction->transaction->center_id,
+                        'center_name' => $sentTransaction->transaction->center_name,
+                        'local_created_at' => date("Y-m-d H:i:s", strtotime($sentTransaction->transaction->created_at)),
+                        'type' => 'center',
+                    ]);
+                    $transactionContainers = $sentTransaction->transactionDetails;
+                    foreach ($transactionContainers as $key => $transactionContainer) {
+                        TransactionDetail::create([
+                            'transaction_id' => $transaction->transaction_id,
+                            'container_number' => $transactionContainer->container_number,
+                            'created_by' => $transactionContainer->created_by,
+                            'is_local' => FALSE,
+                            'container_weight' => $transactionContainer->container_weight,
+                            'weight_unit' => $transactionContainer->weight_unit,
+                            'center_id' => $transactionContainer->center_id,
+                            'reference_id' => $transactionContainer->reference_id,
+                        ]);
+
+                        TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                    }
+                    array_push($reciviedCoffee, $transaction->transaction_id);
+                    DB::commit();
                 }
-                array_push($reciviedCoffee, $transaction->transaction_id);
+            } catch (Throwable $th) {
+                DB::rollback();
             }
+            return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
+                'line' => $th->getLine()
+            ]), 499);
         }
         $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $reciviedCoffee)->with('transactionDetail', 'log')->get();
         $dataArray = array();
