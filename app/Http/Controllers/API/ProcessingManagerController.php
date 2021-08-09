@@ -160,7 +160,9 @@ class ProcessingManagerController extends Controller
                             'type' => $type,
                         ]);
                         $transactionContainers = $sentTransaction->transactionDetails;
+                        $count = 0;
                         foreach ($transactionContainers as $key => $transactionContainer) {
+
                             TransactionDetail::create([
                                 'transaction_id' => $transaction->transaction_id,
                                 'container_number' => $transactionContainer->container_number,
