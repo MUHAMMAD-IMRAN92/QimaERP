@@ -155,7 +155,7 @@ class ProcessingManagerController extends Controller
                         $savedtransaction->is_parent =  $sentTransaction->transaction->is_parent;
                         $savedtransaction->is_mixed =  $sentTransaction->transaction->is_mixed;
                         $savedtransaction->created_by =  $sentTransaction->transaction->created_by;
-                        $savedtransaction->is_local =  ' FALSE';
+                        $savedtransaction->is_local = FALSE;
                         $savedtransaction->is_special = $isSpecial;
                         $savedtransaction->transaction_type = 2;
                         $savedtransaction->local_code =  $sentTransaction->transaction->local_code;
