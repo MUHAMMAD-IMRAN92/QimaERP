@@ -166,8 +166,8 @@ class ProcessingManagerController extends Controller
                         $savedtransaction->sent_to =  $sentTransaction->transaction->sent_to;
                         $savedtransaction->is_sent = 1;
                         $savedtransaction->session_no =  $sentTransaction->transaction->session_no;
-                        $savedtransaction->local_created_at =  $sentTransaction->transaction->local_created_at;
-                        $savedtransaction->local_updated_at =  $sentTransaction->transaction->local_updated_at;
+                        $savedtransaction->local_created_at = toSqlDT($sentTransaction->transaction->local_created_at);
+                        $savedtransaction->local_updated_at =   toSqlDT($sentTransaction->transaction->local_updated_at);
 
                         $transactionContainers = $sentTransaction->transactionDetails;
                         $count = 0;
