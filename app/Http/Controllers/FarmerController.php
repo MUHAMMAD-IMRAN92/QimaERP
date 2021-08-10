@@ -172,7 +172,7 @@ class FarmerController extends Controller
             $updatefarmer->save();
             //    return redirect('admin/allfarmer');
             return back()->with(['msg' => 'farmer was updated Successfully.']);
-         }
+        }
         //  else {
         //     // $updatefarmer = Farmer::find($request->farmer_id);
         //     if ($request->profile_picture) {
@@ -328,7 +328,7 @@ class FarmerController extends Controller
         $farmer = $farmer->transactions();
         $farmer->image = $farmer->getImage();
         $farmer->cnicImage = $farmer->cnic();
-
+        $farmer->invoice = $farmer->farmerInvoice();
         return view('admin.farmer.farmer_profile', [
             'farmer' => $farmer
         ]);
