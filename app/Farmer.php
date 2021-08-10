@@ -146,5 +146,17 @@ class Farmer extends Model
     public function farmerInvoice()
     {
         $farmerCode = $this->farmer_code;
+        $transaction = Transaction::where('sent_to', 2)->where('batch_number', 'LIKE',   '%' . $farmerCode . '%')->first();
+        if ($transaction) {
+            $transInvoice = TransactionInvoice::where('transaction_id', $transaction->transaction_id)->first();
+            $inovice = $transInvoice->invoice_id;
+            if ($file = FileSystem::where('file_id', $inovice)->first()) {
+                $inovice = $file->user_file_name;
+            }
+            // return $file;
+            return $inovice;
+        } else {
+            return null;
+        }
     }
 }
