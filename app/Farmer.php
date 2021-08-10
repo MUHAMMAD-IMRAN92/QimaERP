@@ -123,8 +123,8 @@ class Farmer extends Model
                 $sum += $transaction->details->sum('container_weight');
             }
             return $sum;
-        }else{
-          return  $transactions=null;
+        } else {
+            return  $transactions = null;
         }
     }
     public function price()
@@ -141,5 +141,10 @@ class Farmer extends Model
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE',  $village_code . '%')->where('sent_to', 2)->get();
         $this->transactions = $transactions;
         return $this;
+    }
+
+    public function farmerInvoice()
+    {
+        $farmerCode = $this->farmer_code;
     }
 }
