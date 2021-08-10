@@ -36,39 +36,58 @@ class AuthController extends Controller
     {
         $governorate = Governerate::all();
         $villages = Village::all();
-        $ids = collect();
+        $regionWeight = collect();
 
         $farmers = collect();
         $regions = collect();
-        $transactions = Transaction::where('batch_number', 'not like', '%BATCH%')->where('batch_number', 'not like', '%GR%')->where('batch_number', 'not like', '%SRG%')
-            ->with(['details'])
-            ->get();
-        foreach ($transactions as $transaction) {
-            $ids->push([
-                'transaction_id' => $transaction->transaction_id,
-                'weight' =>  $transaction->details->sum('container_weight')
+        // $transactions = Transaction::where('batch_number', 'not like', '%BATCH%')->where('batch_number', 'not like', '%GR%')->where('batch_number', 'not like', '%SRG%')
+        //     ->with(['details'])
+        //     ->get();
+        $regions = Region::all();
+        foreach ($regions as $region) {
+            $regionCode = $region->region_code;
+            $weight = 0;
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            $regionWeight->push([
+                'regionId' => $region->region_id,
+                'weight' =>  $weight
             ]);
         }
-        $sorted = $ids->sortBy('weight');
-        $top =   array_reverse($sorted->values()->take(-20)->toArray());
-        // return array_reverse($top);
-        foreach ($top as $t) {
-            $transaction =  Transaction::where('transaction_id', $t['transaction_id'])->first();
-            $code =  explode('-', $transaction->batch_number)[3];
-            // $farmers->push($code);
-            $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $code . '%')->first();
-            if ($farmer != null) {
+        // return $regionWeight;
+        $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+        $regions = $regionsByWeight->take(5)->pluck('regionId');
+        $regions = Region::whereIn('region_id', $regions)->get();
 
-                if (!$farmers->contains($farmer)) {
-                    $farmers->push($farmer);
-                }
-            }
-            $regionCode =  explode('-', $transaction->batch_number)[1];
-            $region = Region::where('region_code', 'LIKE', '%' . $regionCode . '%')->first();
-            if (!$regions->contains($region)) {
-                $regions->push($region);
-            }
-        }
+
+        // foreach ($transactions as $transaction) {
+        //     $ids->push([
+        //         'transaction_id' => $transaction->transaction_id,
+        //         'weight' =>  $transaction->details->sum('container_weight')
+        //     ]);
+        // }
+        // $sorted = $ids->sortBy('weight');    
+        // $top =   array_reverse($sorted->values()->take(-20)->toArray());
+        // return array_reverse($top);
+        // foreach ($top as $t) {
+        //     $transaction =  Transaction::where('transaction_id', $t['transaction_id'])->first();
+        //     $code =  explode('-', $transaction->batch_number)[3];
+        //     // $farmers->push($code);
+        //     $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $code . '%')->first();
+        //     if ($farmer != null) {
+
+        //         if (!$farmers->contains($farmer)) {
+        //             $farmers->push($farmer);
+        //         }
+        //     }
+        //     $regionCode =  explode('-', $transaction->batch_number)[1];
+        //     $region = Region::where('region_code', 'LIKE', '%' . $regionCode . '%')->first();
+        //     if (!$regions->contains($region)) {
+        //         $regions->push($region);
+        //     }
+        // }
 
         $transactions = Transaction::with('details')->where('sent_to', 2)->get();
         $totalWeight = 0;
