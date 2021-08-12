@@ -115,7 +115,7 @@ class Farmer extends Model
     {
         $farmerCode = $this->farmer_code;
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
-            ->where('sent_to', 2)
+            ->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')
             ->get();
         if ($transactions) {
             $sum = 0;
@@ -137,8 +137,8 @@ class Farmer extends Model
     }
     public function transactions()
     {
-        $village_code = $this->village_code;
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',  $village_code . '%')->where('sent_to', 2)->get();
+        $farmerCode = $this->farmer_code;
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")->where('sent_to', 2)->get();
         $this->transactions = $transactions;
         return $this;
     }
@@ -149,12 +149,13 @@ class Farmer extends Model
         $transaction = Transaction::where('sent_to', 2)->where('batch_number', 'LIKE',   '%' . $farmerCode . '%')->first();
         if ($transaction) {
             $transInvoice = TransactionInvoice::where('transaction_id', $transaction->transaction_id)->first();
-            $inovice = $transInvoice->invoice_id;
-            if ($file = FileSystem::where('file_id', $inovice)->first()) {
-                $inovice = $file->user_file_name;
+            if ($transInvoice) {
+                $inovice = $transInvoice->invoice_id;
+                if ($file = FileSystem::where('file_id', $inovice)->first()) {
+                    $inovice = $file->user_file_name;
+                }
+                return $inovice;
             }
-            // return $file;
-            return $inovice;
         } else {
             return null;
         }

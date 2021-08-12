@@ -85,7 +85,7 @@ class User extends Authenticatable
     public function special()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('batch_number', 'NOT LIKE', '%000%')->get();
         if ($transactions) {
             $sum = 0;
             foreach ($transactions as $transaction) {
@@ -97,7 +97,7 @@ class User extends Authenticatable
     public function nonSpecial()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('batch_number', 'NOT LIKE', '%000%')->get();
         if ($transactions) {
             $sum = 0;
             foreach ($transactions as $transaction) {
@@ -109,7 +109,7 @@ class User extends Authenticatable
     public function nonSpecialPrice()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('sent_to', 2)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -147,7 +147,7 @@ class User extends Authenticatable
     public function specialPrice()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('sent_to', 2)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
