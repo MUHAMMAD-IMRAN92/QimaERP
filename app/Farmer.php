@@ -154,10 +154,8 @@ class Farmer extends Model
                 if ($file = FileSystem::where('file_id', $inovice)->first()) {
                     $inovice = $file->user_file_name;
                 }
+                return $inovice;
             }
-
-            // return $file;
-            return $inovice;
         } else {
             return null;
         }
