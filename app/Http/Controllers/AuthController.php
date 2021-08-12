@@ -37,6 +37,7 @@ class AuthController extends Controller
         $governorate = Governerate::all();
         $villages = Village::all();
         $regionWeight = collect();
+        $farmerWeight = collect();
 
         $farmers = collect();
         $regions = collect();
@@ -47,7 +48,7 @@ class AuthController extends Controller
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
             }
@@ -61,6 +62,23 @@ class AuthController extends Controller
         $regions = $regionsByWeight->take(5)->pluck('regionId');
         $regions = Region::whereIn('region_id', $regions)->get();
 
+
+        $farmers = Farmer::all();
+        foreach ($farmers as $farmer) {
+            $farmerCode = $farmer->farmer_code;
+            $weight = 0;
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $farmerCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            $farmerWeight->push([
+                'farmerId' => $farmer->farmer_id,
+                'weight' =>  $weight
+            ]);
+        }
+        $farmerByWeight = $farmerWeight->sortBy('weight')->reverse()->values();
+        $farmer = $farmerByWeight->take(5)->pluck('farmerId');
+        $farmers = Farmer::whereIn('farmer_id', $farmer)->get();
 
         // foreach ($transactions as $transaction) {
         //     $ids->push([
