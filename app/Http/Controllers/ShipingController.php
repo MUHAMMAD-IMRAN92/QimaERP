@@ -99,8 +99,8 @@ class ShipingController extends Controller
         if ($farmerByName) {
             foreach ($oldtransactions as $transaction) {
                 foreach ($transaction->meta as $metas) {
-                    $faremrId = explode('-', $metas->value)[3];
-                    $farmer = Farmer::find($faremrId);
+                    $faremrCode = explode('-', $metas->value)[3];
+                    $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $faremrCode . '%')->first();
                     if ($farmer) {
                         if ($farmer->farmer_name == $farmerByName->farmer_name) {
                             $transactionBysearch->push($transaction);
@@ -111,8 +111,8 @@ class ShipingController extends Controller
         } elseif ($farmerByCode) {
             foreach ($oldtransactions as $transaction) {
                 foreach ($transaction->meta as $metas) {
-                    $faremrId = explode('-', $metas->value)[3];
-                    $farmer = Farmer::find($faremrId);
+                    $faremrCode = explode('-', $metas->value)[3];
+                    $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $faremrCode . '%')->first();
                     if ($farmer) {
                         if ($farmer->farmer_code == $farmerByCode->farmer_code) {
                             $transactionBysearch->push($transaction);
@@ -120,7 +120,7 @@ class ShipingController extends Controller
                     }
                 }
             }
-        } 
+        }
 
         //     //returning results
         return response()->json([

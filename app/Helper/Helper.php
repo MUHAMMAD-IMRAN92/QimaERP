@@ -1,6 +1,7 @@
 <?php
 
 use App\Lot;
+use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
@@ -296,4 +297,20 @@ function lotNumberGen()
         }
     }
     return 'LOT-' . $year . '-' . Str::padLeft($serial, 4, 0);
+}
+
+function mixFarmes($id)
+{
+    $transactions = Transaction::where('transaction_id', $id)->get();
+    foreach ($transactions as $transaction) {
+        if ($transaction->sent_to == 2) {
+            $farmers = collect();
+            $farmer = explode('-', $transaction->batch_number)[3];
+            $farmers->push(['farmerCode' =>  $farmer]);
+            return $farmers;
+        } else {
+            $id = $transaction->reference_id;
+            mixFarmes($id);
+        }
+    }
 }
