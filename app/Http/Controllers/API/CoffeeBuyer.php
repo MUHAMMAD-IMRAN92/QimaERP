@@ -217,6 +217,8 @@ class CoffeeBuyer extends Controller
             'batch_number' => 'required',
         ]);
 
+        \Log::info($request);
+
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);

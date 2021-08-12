@@ -30,7 +30,7 @@ class RegionController extends Controller
         $now = Carbon::now();
         $date = Carbon::today()->toDateString();
         $start = $now->firstOfMonth();
-        // $chartTransactions = Transaction::with('details')->where('sent_to', 2)
+        // $chartTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE','%000%')
         //     ->get()
         //     ->groupBy(function ($transaction) {
         //         return $transaction->created_at->day;
@@ -60,7 +60,7 @@ class RegionController extends Controller
 
         // }
         //  ->whereBetween('created_at', [$start, $date])
-        $transactions = Transaction::with('details')->where('sent_to', 2)->get();
+        $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
         $totalWeight = 0;
         $totalPrice = 0;
         foreach ($transactions as $transaction) {
@@ -241,7 +241,7 @@ class RegionController extends Controller
         $regions = Region::whereBetween('created_at', [$request->from, $request->to])->get();
         $villages = Village::whereBetween('created_at', [$request->from, $request->to])->get();
         $farmers = Farmer::whereBetween('created_at', [$request->from, $request->to])->get();
-        $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$request->from, $request->to])->get();
+        $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$request->from, $request->to])->get();
 
         $totalWeight = 0;
         $totalPrice = 0;
@@ -294,7 +294,7 @@ class RegionController extends Controller
             $villages = Village::whereDate('created_at',  $date)->get();
             $governorates = Governerate::whereDate('created_at',  $date)->get();
             $regions = Region::whereDate('created_at',  $date)->get();
-            $transactions = Transaction::with('details')->where('sent_to', 2)->whereDate('created_at', $date)->get();
+            $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $date)->get();
 
             $totalWeight = 0;
             $totalPrice = 0;
@@ -346,7 +346,7 @@ class RegionController extends Controller
             $villages = Village::whereDate('created_at',  $yesterday)->get();
             $governorates = Governerate::whereDate('created_at',  $yesterday)->get();
             $regions = Region::whereDate('created_at',  $yesterday)->get();
-            $transactions  = Transaction::with('details')->where('sent_to', 2)->whereDate('created_at', $yesterday)->get();
+            $transactions  = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $yesterday)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             if ($transactions) {
@@ -400,7 +400,7 @@ class RegionController extends Controller
             $villages = Village::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $governorates = Governerate::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $regions = Region::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
-            $transactions = Transaction::with('details')->where('sent_to', 2)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             if ($transactions) {
@@ -456,7 +456,7 @@ class RegionController extends Controller
             $villages = Village::whereYear('created_at', $year)->get();
             $governorates = Governerate::whereYear('created_at', $year)->get();
             $regions = Region::whereYear('created_at', $year)->get();
-            $transactions = Transaction::with('details')->where('sent_to', 2)->whereYear('created_at', $year)->get();
+            $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             if ($transactions) {
@@ -511,7 +511,7 @@ class RegionController extends Controller
             $villages = Village::whereYear('created_at', $year)->get();
             $governorates = Governerate::whereYear('created_at', $year)->get();
             $regions = Region::whereYear('created_at', $year)->get();
-            $transactions = Transaction::with('details')->where('sent_to', 2)->whereYear('created_at', $year)->get();
+            $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             if ($transactions) {
@@ -568,7 +568,7 @@ class RegionController extends Controller
             $villages = Village::whereBetween('created_at', [$start, $end])->get();
             $governorates = Governerate::whereBetween('created_at', [$start, $end])->get();
             $regions = Region::whereBetween('created_at', [$start, $end])->get();
-            $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $end])->get();
+            $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $end])->get();
             $totalWeight = 0;
             $totalPrice = 0;
             if ($transactions) {
@@ -623,7 +623,7 @@ class RegionController extends Controller
             $villages = Village::whereBetween('created_at', [$start, $date])->get();
             $governorates = Governerate::whereBetween('created_at', [$start, $date])->get();
             $regions = Region::whereBetween('created_at', [$start, $date])->get();
-            $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
+            $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
             if ($transactions) {
@@ -678,7 +678,7 @@ class RegionController extends Controller
             $villages = Village::whereBetween('created_at', [$start, $date])->get();
             $governorates = Governerate::whereBetween('created_at', [$start, $date])->get();
             $regions = Region::whereBetween('created_at', [$start, $date])->get();
-            $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
+            $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
             if ($transactions) {
