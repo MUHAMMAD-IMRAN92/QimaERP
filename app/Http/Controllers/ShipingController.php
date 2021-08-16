@@ -15,7 +15,7 @@ class ShipingController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::with('details', 'meta')->where('is_parent', 0)
+        $transactions = Transaction::with('details', 'meta')->with('child')->where('is_parent', 0)
             ->where('sent_to', 39)->get();
 
         return view('admin.shipping.index', [
@@ -99,30 +99,57 @@ class ShipingController extends Controller
         if ($farmerByName) {
             foreach ($oldtransactions as $transaction) {
                 foreach ($transaction->meta as $metas) {
-                    $faremrId = explode('-', $metas->value)[3];
-                    $farmer = Farmer::find($faremrId);
-                    if ($farmer) {
-                        if ($farmer->farmer_name == $farmerByName->farmer_name) {
-                            $transactionBysearch->push($transaction);
+                    $faremrCode = explode('-', $metas->value)[3];
+                    if ($faremrCode != '000') {
+                        $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $faremrCode . '%')->first();
+                        if ($farmer) {
+                            if ($farmer->farmer_name == $farmerByName->farmer_name) {
+                                $transactionBysearch->push($transaction);
+                            }
                         }
                     }
                 }
             }
-        } elseif ($farmerByCode) {
+        }
+         elseif ($farmerByCode) {
             foreach ($oldtransactions as $transaction) {
                 foreach ($transaction->meta as $metas) {
-                    $faremrId = explode('-', $metas->value)[3];
-                    $farmer = Farmer::find($faremrId);
-                    if ($farmer) {
-                        if ($farmer->farmer_code == $farmerByCode->farmer_code) {
-                            $transactionBysearch->push($transaction);
+                    $faremrCode = explode('-', $metas->value)[3];
+                    if ($faremrCode != '000') {
+                        $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $faremrCode . '%')->first();
+                        if ($farmer) {
+                            if ($farmer->farmer_code == $farmerByCode->farmer_code) {
+                                $transactionBysearch->push($transaction);
+                            }
                         }
                     }
                 }
             }
-        } 
+        }
+        foreach ($oldtransactions as $transaction) {
+            foreach ($transaction->meta as $metas) {
+                $faremrCode = explode('-', $metas->value)[3];
+                if ($faremrCode == '000') {
+                    $batch =  $metas->value;
+                    $transactionbatch = Transaction::where('batch_number', $batch)->first();
+                    $transactions =  Transaction::where('is_parent', $transactionbatch->transaction_id)->get();
+                    foreach ($transactions as $trans) {
+                        $faremrCode = explode('-', $trans->batch_number)[3];
+                        $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $faremrCode . '%')->first();
+                        if ($farmer) {
+                            if ($farmer['farmer_code'] == $farmerByCode['farmer_code']) {
+                                $transactionBysearch->push($transaction);
+                            }
+                            if ($farmer['farmer_name'] == $farmerByName['farmer_name']) {
+                                $transactionBysearch->push($transaction);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-        //     //returning results
+
         return response()->json([
             'view' => view('admin.shipping.shipping_view', [
                 'transactions' =>  $transactionBysearch
