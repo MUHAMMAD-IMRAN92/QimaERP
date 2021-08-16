@@ -1,8 +1,9 @@
 <?php
 
 use App\Lot;
-use App\Transaction;
+use App\Farmer;
 use Carbon\Carbon;
+use App\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
 
@@ -301,16 +302,17 @@ function lotNumberGen()
 
 function mixFarmes($id)
 {
-    $transactions = Transaction::where('transaction_id', $id)->get();
-    foreach ($transactions as $transaction) {
-        if ($transaction->sent_to == 2) {
-            $farmers = collect();
-            $farmer = explode('-', $transaction->batch_number)[3];
-            $farmers->push(['farmerCode' =>  $farmer]);
+    $farmers = collect();
+    $transaction = Transaction::where('transaction_id', $id)->first();
+    if ($transaction['sent_to'] == 2) {
+        if (explode('-', $transaction->batch_number)[3] != '000') {
+            $farmerCode = explode('-', $transaction->batch_number)[3];
+            $farmer =  Farmer::where('farmer_code', 'LIKE', '%' . $farmerCode  . '%')->first();
+            $farmers->push(['farmerCode' =>  $farmer->farmer_code]);
             return $farmers;
-        } else {
-            $id = $transaction->reference_id;
-            mixFarmes($id);
         }
+    } else {
+        $id = $transaction->reference_id;
+        mixFarmes($id);
     }
 }
