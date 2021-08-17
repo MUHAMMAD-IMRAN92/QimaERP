@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Customer;
 use App\Order;
 use App\OrderDetail;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -117,6 +118,19 @@ class OrderController extends Controller
     public function paidOrder(Request $request)
     {
 
+        // $validated = Validated::()
+        //     'order' => 'required',
+        // ]);
+        // if ($validated->fails()) {
+        // };
+
+        $validator = Validator::make($request->all(), [
+            'order' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return  back()->with('dmsg', 'No Order Selected For Mark As Paid');
+        }
         $orders = Order::whereIn('id', $request->order)->get();
         foreach ($orders as $order) {
             $order->update([
