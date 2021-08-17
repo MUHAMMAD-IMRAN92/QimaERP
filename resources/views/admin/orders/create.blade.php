@@ -27,10 +27,11 @@
                     <div class="col-md-2" v-for="product in inventory" :key="product.id">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">@{{ product.name }}</h5>
-                                <div class="card-text">Regular Weight: <br> <b>@{{ product.regular_weight }}</b> KG
+                                <h5 class="card-title">@{{ product . name }}</h5>
+                                <div class="card-text">Regular Weight: <br> <b>@{{ product . regular_weight }}</b> KG
                                 </div>
-                                <p class="card-text mt--1">Special Weight: <br> <b>@{{ product.special_weight }}</b> KG
+                                <p class="card-text mt--1">Special Weight: <br> <b>@{{ product . special_weight }}</b>
+                                    KG
                                 </p>
                             </div>
                         </div>
@@ -56,7 +57,7 @@
                                 <select class="form-control" id="customer" name="customer" v-model="selectCustomerId">
                                     <option value="0" selected class="text-indigo">New Customer</option>
                                     <option :value="customer.id" v-for="customer in customers">
-                                        @{{ customer.name }}</option>
+                                        @{{ customer . name }}</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -86,7 +87,7 @@
                                     v-model="orderProduct">
                                     <option value="0" selected disabled>Select a Product</option>
                                     <option :value="product.id" v-for="product in products" :key="product.id">
-                                        @{{ product.name }}
+                                        @{{ product . name }}
                                     </option>
                                 </select>
                             </div>
@@ -124,9 +125,9 @@
 
                         <p v-if="errors.length" class="text-danger">
                             <b>Please correct the following error(s):</b>
-                            <ul>
-                                <li v-for="error in errors">@{{ error }}</li>
-                            </ul>
+                        <ul>
+                            <li v-for="error in errors">@{{ error }}</li>
+                        </ul>
                         </p>
 
                         <div class="row">
@@ -146,13 +147,14 @@
                                     <tbody>
                                         <tr v-for="(order, index) in orders" :key="index">
                                             <th scope="row">@{{ index + 1 }}</th>
-                                            <td>@{{ findProductName(order.productId) }}</td>
-                                            <td>@{{ getVariant(order.isSpecial) }}</td>
-                                            <td>@{{ order.weight }}</td>
-                                            <td>@{{ formatNumber(order.price) }}</td>
-                                            <td>@{{ formatNumber(order.total) }}</td>
+                                            <td>@{{ findProductName(order . productId) }}</td>
+                                            <td>@{{ getVariant(order . isSpecial) }}</td>
+                                            <td>@{{ order . weight }}</td>
+                                            <td>@{{ formatNumber(order . price) }}</td>
+                                            <td>@{{ formatNumber(order . total) }}</td>
                                             <td>
-                                                <i @click="removeOrder(index)" class="fa fa-trash text-danger" style="cursor: pointer;"></i>
+                                                <i @click="removeOrder(index)" class="fa fa-trash text-danger"
+                                                    style="cursor: pointer;"></i>
                                             </td>
                                         </tr>
                                         <tr v-if="!orders.length">
@@ -172,7 +174,8 @@
                         <div class="row">
                             <div class="col-md-5"></div>
                             <div class="col-md-2">
-                                <button @click="createOrder()" class="btn btn-success">Create Order</button>
+                                <button @click="createOrder()" class="btn btn-success" id="create-order">Create
+                                    Order</button>
                             </div>
                         </div>
                     </div>
@@ -214,7 +217,7 @@
             }
         },
         methods: {
-            resetAll: function(){
+            resetAll: function() {
                 this.selectCustomerId = 0;
                 this.customer = {
                     name: null,
@@ -230,50 +233,50 @@
                 this.errors = [];
                 this.serverErrors = [];
             },
-            getCustomers: function(){
+            getCustomers: function() {
                 fetch('/admin/customers')
                     .then(res => res.json())
                     .then(data => {
                         this.customers = data.customers;
                     })
             },
-            getInventory: function(){
+            getInventory: function() {
                 fetch('/admin/local_inventory')
                     .then(res => res.json())
                     .then(data => {
                         this.inventory = data.inventory;
                     });
             },
-            getLocalProducts: function(){
+            getLocalProducts: function() {
                 fetch('/admin/local_products')
                     .then(res => res.json())
                     .then(data => {
                         this.products = data.products;
                     })
             },
-            resetCustomer: function(){
+            resetCustomer: function() {
                 this.selectCustomerId = 0;
             },
-            saveOrder: function(){
+            saveOrder: function() {
                 this.errors = [];
 
-                if(this.orderProduct == 0){
+                if (this.orderProduct == 0) {
                     this.errors.push('Please select a product');
                 }
 
-                if(this.orderWeight == 0){
+                if (this.orderWeight == 0) {
                     this.errors.push('Weight should be not more than zero.');
                 }
 
-                if(this.orderWeight % 10){
+                if (this.orderWeight % 10) {
                     this.errors.push('Weight should be mutiple of 10 like 10, 20, 60 etc.');
                 }
 
-                if(this.orderPrice == 0){
+                if (this.orderPrice == 0) {
                     this.errors.push('Price should be not more than zero.');
                 }
 
-                if(!this.errors.length){
+                if (!this.errors.length) {
                     let order = {
                         productId: this.orderProduct,
                         isSpecial: this.orderIsSpecial,
@@ -290,82 +293,86 @@
                     this.orderPrice = 0;
                 }
             },
-            findProduct: function(productId){
+            findProduct: function(productId) {
                 return this.products.find(product => product.id == productId);
             },
-            findProductName: function(productId){
+            findProductName: function(productId) {
                 let product = this.products.find(product => product.id == productId);
                 return product ? product.name : '';
             },
-            getVariant: function(isSpecial){
+            getVariant: function(isSpecial) {
                 return isSpecial ? 'Special' : 'Regular';
             },
-            removeOrder: function(index){
+            removeOrder: function(index) {
                 this.orders.splice(index, 1);
             },
-            clearErrors: function(){
+            clearErrors: function() {
                 this.errors = [];
                 this.serverErrors = [];
             },
-            createOrder: function(){
+            createOrder: function() {
                 this.errors = [];
 
-                if(this.selectCustomerId == 0){
-                    if(!this.customer.name){
+                if (this.selectCustomerId == 0) {
+                    if (!this.customer.name) {
                         this.errors.push('Customer name is required.');
                     }
 
-                    if(!this.customer.phone){
+                    if (!this.customer.phone) {
                         this.errors.push('Customers phone is required.');
                     }
-                    if(!this.customer.address){
+                    if (!this.customer.address) {
                         this.errors.push('Customers address is required.');
                     }
                 }
 
-                if(!this.orders.length){
+                if (!this.orders.length) {
                     this.errors.push('Your order is empty');
                 }
 
-                if(!this.errors.length){
+                if (!this.errors.length) {
                     let body = JSON.stringify({
-                            customerId: this.selectCustomerId,
-                            customer: this.customer,
-                            orders: this.orders
-                        });
+                        customerId: this.selectCustomerId,
+                        customer: this.customer,
+                        orders: this.orders
+                    });
                     console.log(body);
                     console.log(this.csrfToken);
+                    // let html = ' <div id = "loader"> Please Wait </div>';
+                    $('#create-order').hide();
                     fetch('/admin/orders', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json',
-                            'X-CSRF-TOKEN': this.csrfToken
-                        },
-                        body: JSON.stringify({
-                            customerId: this.selectCustomerId,
-                            customer: this.customer,
-                            orders: this.orders
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Accept: 'application/json',
+                                'X-CSRF-TOKEN': this.csrfToken
+                            },
+                            body: JSON.stringify({
+                                customerId: this.selectCustomerId,
+                                customer: this.customer,
+                                orders: this.orders
+                            })
                         })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(data.errors){
-                            Vue.$toast.error(data.message, this.toastOptions);
-                            this.serverErrors = data.errors;
-                            setTimeout(() => {
-                                this.serverErrors = [];
-                            }, 5000);
-                        } else {
-                            this.resetAll();
-                            Vue.$toast.success(data.message, this.toastOptions);
-                        }
-                    })
+                        .then(res => res.json())
+
+                        .then(data => {
+                            $('#create-order').show();
+                            if (data.errors) {
+                                Vue.$toast.error(data.message, this.toastOptions);
+                                this.serverErrors = data.errors;
+                                setTimeout(() => {
+                                    this.serverErrors = [];
+                                }, 5000);
+                            } else {
+                                this.resetAll();
+                                Vue.$toast.success(data.message, this.toastOptions);
+                            }
+                        })
                 }
             },
-            checkTenMulti: function(event){
+            checkTenMulti: function(event) {
                 let value = event.target.value;
-                if(value % 10){
+                if (value % 10) {
                     this.errors.push('Weight should be mutiple of 10 like 10, 20, 60 etc.');
                 } else {
                     this.errors = [];
@@ -382,10 +389,10 @@
             }
         },
         watch: {
-            selectCustomerId: function(customerId){
+            selectCustomerId: function(customerId) {
                 let customer = this.customers.find(customer => customer.id == customerId);
 
-                if(customer){
+                if (customer) {
                     this.customer = customer;
                 } else {
                     this.customer = {
@@ -398,10 +405,10 @@
             }
         },
         computed: {
-            newCustomer: function(){
+            newCustomer: function() {
                 return this.selectCustomerId == 0;
             },
-            orderTotal: function(){
+            orderTotal: function() {
                 return +(this.orderWeight * this.orderPrice).toFixed(2);
             },
             grandTotal: function() {
@@ -410,7 +417,7 @@
                 }, 0)
             }
         },
-        created(){
+        created() {
             this.getCustomers();
             this.getInventory();
             this.getLocalProducts();
