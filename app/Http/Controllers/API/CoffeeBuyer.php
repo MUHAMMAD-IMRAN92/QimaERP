@@ -23,6 +23,7 @@ use App\Jobs\TransactionInvoices;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -271,10 +272,11 @@ class CoffeeBuyer extends Controller
                     array_pop($removeLocalId);
                     // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
                     $farmerCode = implode("-", $removeLocalId);
+                    $userId = Auth::user()->user_id;
                     if ($childBatch->batch->is_server_id == 1) {
                         $farmer = Farmer::where('farmer_code', $farmerCode)->first();
                     } else {
-                        $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
+                        $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->where('local_code', 'like', "%$userId")->first();
                     }
 
                     if (!$farmer) {
