@@ -260,7 +260,8 @@ class CoffeeBuyer extends Controller
                 $childBatchNumberArray = array();
                 //::insert child transactions id
                 $childTransactionArray = array();
-                //::Add child batch number
+                //::Add child batch number  
+
                 foreach ($batch_numbers->child_batch as $key => $childBatch) {
                     $newLastBID = 1;
                     $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
@@ -272,7 +273,7 @@ class CoffeeBuyer extends Controller
                     array_pop($removeLocalId);
                     // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
                     $farmerCode = implode("-", $removeLocalId);
-                    $userId = Auth::user()->user_id;
+
                     if ($childBatch->batch->is_server_id == 1) {
                         $farmer = Farmer::where('farmer_code', $farmerCode)->first();
                     } else {
@@ -393,13 +394,13 @@ class CoffeeBuyer extends Controller
                     //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                     $farmerCode = implode("-", $removeLocalId);
 
-                    // if ($batch_numbers->batch->batch->is_server_id == 1) {
-                    //     $farmer = Farmer::where('farmer_code', $farmerCode)->first();
-                    // } else {
-                    //     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->first();
-                    // }
+                    if ($batch_numbers->batch->batch->is_server_id == 1) {
+                        $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+                    } else {
+                        $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->where('local_code', 'like', "%$userId")->first();
+                    }
 
-                    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+                    // $farmer = Farmer::where('farmer_code', $farmerCode)->first();
 
                     if (!$farmer) {
                         return response()->json([
