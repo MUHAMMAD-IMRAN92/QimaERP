@@ -329,17 +329,6 @@ class CoffeeBuyer extends Controller
                         //     ]);
                         //     $childSession = $sessiondata;
                         // }
-                        if ($childBatch->transactions[0]->transactions->farmer_id != 0) {
-                            $farmerId = $childBatch->transactions[0]->transactions->farmer_id;
-                            $farmer = Farmer::find($farmerId);
-                            $villageId = $childBatch->transactions[0]->transactions->farmer_id;
-                            // $villageId = 1;
-                            $village = Village::find($villageId);
-                            $villageCodeNum = explode('-', $village->village_code)[2];
-                            $farmerCodeArr = explode('-', $farmer->farmer_code);
-                            $farmerCodeArr[2] = $villageCodeNum;
-                            $farmer->farmer_code = implode('-', $farmerCodeArr);
-                        }
                     }
 
                     $newTransaction = Transaction::create([
