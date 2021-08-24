@@ -550,8 +550,8 @@ class CoffeeBuyer extends Controller
                         $i++;
                     }
                 }
+                array_push($batchesArray, $parentBatch->batch_id);
             }
-            array_push($batchesArray, $parentBatch->batch_id);
             BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
             Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
 
