@@ -273,7 +273,7 @@ class CoffeeBuyer extends Controller
                     array_pop($removeLocalId);
                     // $farmerCode = implode("-", $removeLocalId) . '_' . $childBatch->batch->created_by;
                     $farmerCode = implode("-", $removeLocalId);
-
+                    $userId = Auth::user()->user_id;
                     if ($childBatch->batch->is_server_id == 1) {
                         $farmer = Farmer::where('farmer_code', $farmerCode)->first();
                     } else {
