@@ -290,7 +290,6 @@ class CoffeeBuyer extends Controller
                         $farmerCodeArr = explode('-', $farmer->farmer_code);
                         $farmerCodeArr[2] = $villageCodeNum;
                         $farmer->farmer_code = implode('-', $farmerCodeArr);
-                        }
                     }
                     if (!$farmer) {
                         return response()->json([
