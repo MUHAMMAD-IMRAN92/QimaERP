@@ -291,6 +291,7 @@ class CoffeeBuyer extends Controller
                         $farmerCodeArr[2] = $villageCodeNum;
                         $farmer->farmer_code = implode('-', $farmerCodeArr);
                     }
+                    // return $farmer->farmer_code;
                     if (!$farmer) {
                         return response()->json([
                             'status' => 'error',
@@ -373,9 +374,9 @@ class CoffeeBuyer extends Controller
                             ]);
                         }
                     }
+                    array_push($childBatchNumberArray, $newBatch->batch_id);
+                    array_push($childTransactionArray, $newTransaction->transaction_id);
                 }
-                array_push($childBatchNumberArray, $newBatch->batch_id);
-                array_push($childTransactionArray, $newTransaction->transaction_id);
             }
 
             //::add parent batch
