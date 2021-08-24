@@ -375,6 +375,7 @@ class CoffeeBuyer extends Controller
                         }
                     }
                     array_push($childBatchNumberArray, $newBatch->batch_id);
+
                     array_push($childTransactionArray, $newTransaction->transaction_id);
                 }
             }
