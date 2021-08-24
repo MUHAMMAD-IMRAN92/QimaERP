@@ -283,7 +283,7 @@ class CoffeeBuyer extends Controller
                     if ($childBatch->transactions[0]->transactions->farmer_id != 0) {
                         $farmerId = $childBatch->transactions[0]->transactions->farmer_id ;
                         $farmer = Farmer::find($farmerId);
-                        $villageId = $childBatch->transactions[0]->transactions->farmer_id ;
+                        $villageId = $childBatch->transactions[0]->transactions->village_id;
                         // $villageId = 1;
                         $village = Village::find($villageId);
                         $villageCodeNum = explode('-', $village->village_code)[2];
