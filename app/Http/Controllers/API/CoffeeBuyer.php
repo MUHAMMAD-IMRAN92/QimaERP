@@ -393,7 +393,7 @@ class CoffeeBuyer extends Controller
                 if ($checkMixed == 0) {
                     //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                     $farmerCode = implode("-", $removeLocalId);
-
+                    $userId = Auth::user()->user_id;
                     if ($batch_numbers->batch->batch->is_server_id == 1) {
                         $farmer = Farmer::where('farmer_code', $farmerCode)->first();
                     } else {
