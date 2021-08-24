@@ -18,6 +18,7 @@ use App\CoffeeSession;
 use App\TransactionLog;
 use App\TransactionDetail;
 use App\TransactionInvoice;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Jobs\TransactionInvoices;
 use Illuminate\Support\Facades\DB;
@@ -318,6 +319,28 @@ class CoffeeBuyer extends Controller
                         //     ]);
                         //     $childSession = $sessiondata;
                         // }
+                        if ($childBatch->transactions[0]->transactions->farmer_id != 0) {
+                            $farmerId = $childBatch->transactions[0]->transactions->farmer_id;
+                            $farmer = Farmer::find($farmerId);
+                            $villageId = $childBatch->transactions[0]->transactions->village_id;
+                            $village = Village::find($villageId);
+                            $batch = Str::beforeLast($newBatch->batch_number, '-');
+                            if ($farmer->farmer_code != $batch) {
+                                $farmerId = $childBatch->transactions[0]->transactions->farmer_id;
+                                $farmer = Farmer::find($farmerId);
+                                $villageId = $childBatch->transactions[0]->transactions->village_id;
+                                $village = Village::find($villageId);
+                                $villageCodeNum = explode('-', $village->village_code)[2];
+                                $arr = explode('-', $newBatch->batch_number);
+                                array_pop($arr);
+                                array_pop($arr);
+                                array_pop($arr);
+                                array_push($arr, $villageCodeNum);
+                                $num = Str::afterLast($farmer->farmer_code, '-');
+                                array_push($arr, $num);
+                                $newBatch->batch_number = implode('-', $arr);
+                            }
+                        }
 
                         $newTransaction = Transaction::create([
                             'batch_number' => $newBatch->batch_number,
@@ -441,7 +464,28 @@ class CoffeeBuyer extends Controller
                     //     ]);
                     //     $pSession = $sessiondata;
                     // }
-
+                    if ($childBatch->transactions[0]->transactions->farmer_id != 0) {
+                        $farmerId = $childBatch->transactions[0]->transactions->farmer_id;
+                        $farmer = Farmer::find($farmerId);
+                        $villageId = $childBatch->transactions[0]->transactions->village_id;
+                        $village = Village::find($villageId);
+                        $batch = Str::beforeLast($newBatch->batch_number, '-');
+                        if ($farmer->farmer_code != $batch) {
+                            $farmerId = $childBatch->transactions[0]->transactions->farmer_id;
+                            $farmer = Farmer::find($farmerId);
+                            $villageId = $childBatch->transactions[0]->transactions->village_id;
+                            $village = Village::find($villageId);
+                            $villageCodeNum = explode('-', $village->village_code)[2];
+                            $arr = explode('-', $newBatch->batch_number);
+                            array_pop($arr);
+                            array_pop($arr);
+                            array_pop($arr);
+                            array_push($arr, $villageCodeNum);
+                            $num = Str::afterLast($farmer->farmer_code, '-');
+                            array_push($arr, $num);
+                            $parentBatch->batch_number = implode('-', $arr);
+                        }
+                    }
                     $parentTransaction = Transaction::create([
                         'batch_number' => $parentBatch->batch_number,
                         'is_parent' => 0,
