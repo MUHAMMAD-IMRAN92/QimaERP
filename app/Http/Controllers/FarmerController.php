@@ -109,9 +109,9 @@ class FarmerController extends Controller
 
     public function update(Request $request)
     {
+        $request->all();
         $validatedData = $request->validate([
             'farmer_nicn' => 'required|unique:farmers,farmer_id' . $request->farmer_ids,
-
         ]);
         $f_code = $request->code . '-'  . $request->farmer_code;
         $updatefarmer = Farmer::findOrFail($request->farmer_id);
