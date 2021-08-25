@@ -109,7 +109,7 @@ class FarmerController extends Controller
 
     public function update(Request $request)
     {
-        $request->all();
+        // $request->all();
         $validatedData = $request->validate([
             'farmer_nicn' => 'required|unique:farmers,farmer_id' . $request->farmer_ids,
         ]);
