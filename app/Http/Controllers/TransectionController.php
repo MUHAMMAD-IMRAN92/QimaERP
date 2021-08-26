@@ -23,8 +23,8 @@ class TransectionController extends Controller
         // $transaction
         $transaction = Transaction::find($id);
         $batchNumber = $transaction->batch_number;
-        $allTransactions = Transaction::where('batch_number', $batchNumber)->with('details')->get();
-        $transactionChild = Transaction::where('is_parent', $id)->with('details')->get();
+        $allTransactions = Transaction::where('batch_number', $batchNumber)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
+        $transactionChild = Transaction::where('is_parent', $id)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
 
         $data['allTransactions'] =  $allTransactions;
         $data['batchNumber'] =  $batchNumber;

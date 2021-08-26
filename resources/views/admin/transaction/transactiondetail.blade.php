@@ -26,7 +26,7 @@
         }
 
         .card {
-            height: 500px;
+            /* height: 500px; */
             border-radius: 15px !important;
             /* background-color: rgba(0, 0, 0, 0.4) !important; */
         }
@@ -115,9 +115,6 @@
             margin-bottom: 15px !important;
         }
 
-        .active {
-            background-color: rgba(0, 0, 0, 0.3);
-        }
 
         .user_img {
             height: 70px;
@@ -192,7 +189,7 @@
             margin-bottom: auto;
             margin-left: 10px;
             border-radius: 25px;
-            background-color: #82ccdd;
+            background-color: #e8e9e5;
             padding: 10px;
             position: relative;
         }
@@ -270,10 +267,6 @@
             background-color: rgba(0, 0, 0, 0.2);
         }
 
-        .card-body {
-            height: 100rem;
-        }
-
         @media(max-width: 576px) {
             .contacts_card {
                 margin-bottom: 15px !important;
@@ -324,7 +317,34 @@
                                                 </div>
                                             </td> --}}
                                             <div class="card-body msg_card_body">
-
+                                                @foreach ($transactionChild as $key => $child)
+                                                    <div class="d-flex justify-content-start mb-4">
+                                                        <div class="img_cont_msg">
+                                                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                                                class="rounded-circle user_img_msg">
+                                                            {{-- <p class="rounded-circle user_img_msg"></p> --}}
+                                                        </div>
+                                                        <div class="msg_cotainer">
+                                                            {{-- @php
+                                                            $user = ;
+                                                        @endphp --}}
+                                                            {{ App\User::find($child->created_by)->first_name . App\User::find($child->created_by)->last_name }}
+                                                            <br>
+                                                            @foreach ($child->details as $key => $detail)
+                                                                {{ $detail->container_number }} :
+                                                                {{ $detail->container_weight }}
+                                                                <br>
+                                                            @endforeach
+                                                            @foreach ($child->meta as $key => $metas)
+                                                                {{ $metas->key }} :
+                                                                {{ $metas->value }}
+                                                                <br>
+                                                            @endforeach
+                                                            <span
+                                                                class="msg_time">{{ $allTransaction->created_at }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                                 @foreach ($allTransactions as $key => $allTransaction)
                                                     <div class="d-flex justify-content-start mb-4">
                                                         <div class="img_cont_msg">
@@ -341,6 +361,11 @@
                                                             @foreach ($allTransaction->details as $key => $detail)
                                                                 {{ $detail->container_number }} :
                                                                 {{ $detail->container_weight }}
+                                                                <br>
+                                                            @endforeach
+                                                            @foreach ($allTransaction->meta as $key => $metas)
+                                                                {{ $metas->key }} :
+                                                                {{ $metas->value }}
                                                                 <br>
                                                             @endforeach
                                                             <span
