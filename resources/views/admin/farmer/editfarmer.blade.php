@@ -53,24 +53,18 @@
                                 <div class="card-body">
                                     <div class="form-group">
 
-                                        <input type="hidden" id="farmer_code" class="form-control"
-                                            id="exampleInputPassword1"
+                                        <input type="hidden" class="form-control"
                                             value="{{ Str::beforelast($farmer->farmer_code, '-') }}" name="code"
-                                            placeholder="Last Name" @error('farmer_name') is-invalid @enderror
-                                            {{ count($transaction) > 0 ? 'disabled' : '' }}>
-                                        @error('farmer_name')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                            {{ count($transaction) > 0 ? 'readonly' : '' }}>
+
                                     </div>
                                     <div class="form-group">
                                         <label for="farmer_code">Farmer Code</label>
-                                        <input type="text" id="farmer_code" class="form-control" id="exampleInputPassword1"
+                                        <input type="text" class="form-control" id=""
                                             value="{{ Str::afterlast($farmer->farmer_code, '-') }}" name="farmer_code"
                                             placeholder="Last Name" @error('farmer_name') is-invalid @enderror
-                                            {{ count($transaction) > 0 ? 'disabled' : '' }}>
-                                        @error('farmer_name')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                            {{ count($transaction) > 0 ? 'readonly' : '' }}>
+
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Farmer Name</label>
