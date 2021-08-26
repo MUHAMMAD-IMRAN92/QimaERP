@@ -74,7 +74,7 @@
                                             <input type="text" id="village_title" class="form-control"
                                                 id="exampleInputPassword1" name="village_code" placeholder="Title"
                                                 value="{{ Str::afterLast($village->village_code, '-') }}"
-                                                {{ count($transaction) > 0 ? 'disabled' : '' }}>
+                                                {{ count($transaction) > 0 ? 'readonly' : '' }}>
 
                                         </div>
                                         <div class="form-group">
