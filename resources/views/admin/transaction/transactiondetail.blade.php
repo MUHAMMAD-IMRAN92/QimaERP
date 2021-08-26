@@ -341,7 +341,7 @@
                                                                 <br>
                                                             @endforeach
                                                             <span
-                                                                class="msg_time">{{ $allTransaction->created_at }}</span>
+                                                                class="msg_time">{{ $child->created_at }}</span>
                                                         </div>
                                                     </div>
                                                 @endforeach
