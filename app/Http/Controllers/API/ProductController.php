@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     protected $millingFors = [1, 2];
     protected $sortingFors = [3, 4, 5, 6];
-    protected $exportFors = [3, 4];
+    protected $exportFors = [3, 4 , 9];
 
     public function all()
     {
