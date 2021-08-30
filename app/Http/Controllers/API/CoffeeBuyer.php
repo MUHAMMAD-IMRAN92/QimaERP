@@ -392,7 +392,7 @@ class CoffeeBuyer extends Controller
             $checkMixed = 0;
             if ($removeLocalId[3] == '000') {
                 $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
-                $checkMixed = 0;
+                $checkMixed = 1;
             }
             if ($removeLocalId[2] == '00') {
                 $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
@@ -402,7 +402,7 @@ class CoffeeBuyer extends Controller
                 $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
                 $checkMixed = 1;
             }
-            if ($checkMixed == 0) {
+            if ($checkMixed != 0) {
                 //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                 $farmerCode = implode("-", $removeLocalId);
                 $userId = Auth::user()->user_id;
