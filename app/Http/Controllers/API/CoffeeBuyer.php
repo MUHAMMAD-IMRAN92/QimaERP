@@ -449,10 +449,9 @@ class CoffeeBuyer extends Controller
                             'data' => []
                         ]);
                     }
-
-                    $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
                 }
 
+                $parentBatchCode = $farmer['farmer_code'] . '-' . ($newLastBID);
                 $parentBatch = BatchNumber::create([
                     'batch_number' => $parentBatchCode,
                     'is_parent' => 0,
