@@ -402,7 +402,7 @@ class CoffeeBuyer extends Controller
                 $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
                 $checkMixed = 1;
             }
-            if ($checkMixed != 0) {
+            if ($checkMixed == 0) {
                 //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                 $farmerCode = implode("-", $removeLocalId);
                 $userId = Auth::user()->user_id;
