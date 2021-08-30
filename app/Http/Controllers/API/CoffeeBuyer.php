@@ -218,7 +218,6 @@ class CoffeeBuyer extends Controller
         $validator = Validator::make($request->all(), [
             'batch_number' => 'required',
         ]);
-
         \Log::info($request);
 
         if ($validator->fails()) {
@@ -403,8 +402,7 @@ class CoffeeBuyer extends Controller
                 $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
                 $checkMixed = 1;
             }
-
-            if ($checkMixed == 0) {
+            if ($checkMixed != 0) {
                 //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                 $farmerCode = implode("-", $removeLocalId);
                 $userId = Auth::user()->user_id;
@@ -449,9 +447,9 @@ class CoffeeBuyer extends Controller
                             'data' => []
                         ]);
                     }
+                    $parentBatchCode = $farmer['farmer_code'] . '-' . ($newLastBID);
                 }
 
-                $parentBatchCode = $farmer['farmer_code'] . '-' . ($newLastBID);
                 $parentBatch = BatchNumber::create([
                     'batch_number' => $parentBatchCode,
                     'is_parent' => 0,
