@@ -442,6 +442,7 @@ class CoffeeBuyer extends Controller
                     //     $parentBatch->batch_number = implode('-', $arr);
                     // }
                     // return $farmer;
+                    $parentBatchCode = $farmer['farmer_code'] . '-' . ($newLastBID);
                     if (!$farmer) {
                         return response()->json([
                             'status' => 'error',
@@ -451,7 +452,6 @@ class CoffeeBuyer extends Controller
                     }
                 }
 
-                $parentBatchCode = $farmer['farmer_code'] . '-' . ($newLastBID);
                 $parentBatch = BatchNumber::create([
                     'batch_number' => $parentBatchCode,
                     'is_parent' => 0,

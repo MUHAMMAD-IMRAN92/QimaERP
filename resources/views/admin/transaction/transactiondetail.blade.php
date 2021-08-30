@@ -329,6 +329,7 @@
                                                             $user = ;
                                                         @endphp --}}
                                                             {{ App\User::find($child->created_by)->first_name . App\User::find($child->created_by)->last_name }}
+                                                            ({{ $child->transaction_status }})
                                                             <br>
                                                             @foreach ($child->details as $key => $detail)
                                                                 {{ $detail->container_number }} :
@@ -340,8 +341,7 @@
                                                                 {{ $metas->value }}
                                                                 <br>
                                                             @endforeach
-                                                            <span
-                                                                class="msg_time">{{ $child->created_at }}</span>
+                                                            <span class="msg_time">{{ $child->created_at }}</span>
                                                         </div>
                                                     </div>
                                                 @endforeach
@@ -357,6 +357,7 @@
                                                                 $user = ;
                                                             @endphp --}}
                                                             {{ App\User::find($allTransaction->created_by)->first_name . App\User::find($allTransaction->created_by)->last_name }}
+                                                            ({{ $allTransaction->transaction_status }})
                                                             <br>
                                                             @foreach ($allTransaction->details as $key => $detail)
                                                                 {{ $detail->container_number }} :
