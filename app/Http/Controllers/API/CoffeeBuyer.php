@@ -413,7 +413,7 @@ class CoffeeBuyer extends Controller
                 } else {
                     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->where('local_code', 'like', "%$userId")->first();
                 }
-
+         
                 // $farmer = Farmer::where('farmer_code', $farmerCode)->first();
                 if ($batch_numbers->batch->transactions[0]->transactions->farmer_id != 0) {
                     $farmerId = $batch_numbers->batch->transactions[0]->transactions->farmer_id;
@@ -450,9 +450,8 @@ class CoffeeBuyer extends Controller
                         ]);
                     }
 
-                    $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
                 }
-
+                $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
                 $parentBatch = BatchNumber::create([
                     'batch_number' => $parentBatchCode,
                     'is_parent' => 0,
