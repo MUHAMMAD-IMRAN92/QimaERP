@@ -406,51 +406,51 @@ class CoffeeBuyer extends Controller
 
             if ($checkMixed != 0) {
                 //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
-                $farmerCode = implode("-", $removeLocalId);
-                $userId = Auth::user()->user_id;
-                if ($batch_numbers->batch->batch->is_server_id == 1) {
-                    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
-                } else {
-                    $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->where('local_code', 'like', "%$userId")->first();
-                }
+                // $farmerCode = implode("-", $removeLocalId);
+                // $userId = Auth::user()->user_id;
+                // if ($batch_numbers->batch->batch->is_server_id == 1) {
+                //     $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+                // } else {
+                //     $farmer = Farmer::where('local_code', 'like', "%$farmerCode%")->where('local_code', 'like', "%$userId")->first();
+                // }
 
-                // $farmer = Farmer::where('farmer_code', $farmerCode)->first();
-                if ($batch_numbers->batch->transactions[0]->transactions->farmer_id != 0) {
-                    $farmerId = $batch_numbers->batch->transactions[0]->transactions->farmer_id;
-                    $farmer = Farmer::find($farmerId);
-                    $villageId = $batch_numbers->batch->transactions[0]->transactions->village_id;
-                    // $villageId = 1;
-                    $village = Village::find($villageId);
-                    $villageCodeNum = explode('-', $village->village_code)[2];
-                    $farmerCodeArr = explode('-', $farmer->farmer_code);
-                    $farmerCodeArr[2] = $villageCodeNum;
-                    $farmer->farmer_code = implode('-', $farmerCodeArr);
-                    // $batch = Str::beforeLast($newBatch->batch_number, '-');
-                    // if ($farmer->farmer_code != $batch) {
-                    //     $farmerId = $childBatch->transactions[0]->transactions->farmer_id;
-                    //     $farmer = Farmer::find($farmerId);
-                    //     $villageId = $childBatch->transactions[0]->transactions->village_id;
-                    //     $village = Village::find($villageId);
-                    //     $villageCodeNum = explode('-', $village->village_code)[2];
-                    //     $arr = explode('-', $newBatch->batch_number);
-                    //     array_pop($arr);
-                    //     array_pop($arr);
-                    //     array_pop($arr);
-                    //     array_push($arr, $villageCodeNum);
-                    //     $num = Str::afterLast($farmer->farmer_code, '-');
-                    //     array_push($arr, $num);
-                    //     $parentBatch->batch_number = implode('-', $arr);
-                    // }
-                    // return $farmer;
-                    if (!$farmer) {
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'Farmer Not found.',
-                            'data' => []
-                        ]);
-                    }
-                }
-                $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
+                // // $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+                // if ($batch_numbers->batch->transactions[0]->transactions->farmer_id != 0) {
+                //     $farmerId = $batch_numbers->batch->transactions[0]->transactions->farmer_id;
+                //     $farmer = Farmer::find($farmerId);
+                //     $villageId = $batch_numbers->batch->transactions[0]->transactions->village_id;
+                //     // $villageId = 1;
+                //     $village = Village::find($villageId);
+                //     $villageCodeNum = explode('-', $village->village_code)[2];
+                //     $farmerCodeArr = explode('-', $farmer->farmer_code);
+                //     $farmerCodeArr[2] = $villageCodeNum;
+                //     $farmer->farmer_code = implode('-', $farmerCodeArr);
+                //     // $batch = Str::beforeLast($newBatch->batch_number, '-');
+                //     // if ($farmer->farmer_code != $batch) {
+                //     //     $farmerId = $childBatch->transactions[0]->transactions->farmer_id;
+                //     //     $farmer = Farmer::find($farmerId);
+                //     //     $villageId = $childBatch->transactions[0]->transactions->village_id;
+                //     //     $village = Village::find($villageId);
+                //     //     $villageCodeNum = explode('-', $village->village_code)[2];
+                //     //     $arr = explode('-', $newBatch->batch_number);
+                //     //     array_pop($arr);
+                //     //     array_pop($arr);
+                //     //     array_pop($arr);
+                //     //     array_push($arr, $villageCodeNum);
+                //     //     $num = Str::afterLast($farmer->farmer_code, '-');
+                //     //     array_push($arr, $num);
+                //     //     $parentBatch->batch_number = implode('-', $arr);
+                //     // }
+                //     // return $farmer;
+                //     if (!$farmer) {
+                //         return response()->json([
+                //             'status' => 'error',
+                //             'message' => 'Farmer Not found.',
+                //             'data' => []
+                //         ]);
+                //     }
+                // }
+                // $parentBatchCode = $farmer->farmer_code . '-' . ($newLastBID);
                 $parentBatch = BatchNumber::create([
                     'batch_number' => $parentBatchCode,
                     'is_parent' => 0,
