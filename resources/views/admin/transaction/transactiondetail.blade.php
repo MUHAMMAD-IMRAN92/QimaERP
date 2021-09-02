@@ -317,34 +317,7 @@
                                                 </div>
                                             </td> --}}
                                             <div class="card-body msg_card_body">
-                                                @foreach ($transactionChild as $key => $child)
-                                                    <div class="d-flex justify-content-start mb-4">
-                                                        <div class="img_cont_msg">
-                                                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                                                class="rounded-circle user_img_msg">
-                                                            {{-- <p class="rounded-circle user_img_msg"></p> --}}
-                                                        </div>
-                                                        <div class="msg_cotainer">
-                                                            {{-- @php
-                                                            $user = ;
-                                                        @endphp --}}
-                                                            {{ App\User::find($child->created_by)->first_name . App\User::find($child->created_by)->last_name }}
-                                                            ({{ $child->transaction_status }})
-                                                            <br>
-                                                            @foreach ($child->details as $key => $detail)
-                                                                {{ $detail->container_number }} :
-                                                                {{ $detail->container_weight }}
-                                                                <br>
-                                                            @endforeach
-                                                            @foreach ($child->meta as $key => $metas)
-                                                                {{ $metas->key }} :
-                                                                {{ $metas->value }}
-                                                                <br>
-                                                            @endforeach
-                                                            <span class="msg_time">{{ $child->created_at }}</span>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
+                                            
                                                 @foreach ($allTransactions as $key => $allTransaction)
                                                     <div class="d-flex justify-content-start mb-4">
                                                         <div class="img_cont_msg">
@@ -374,7 +347,34 @@
                                                         </div>
                                                     </div>
                                                 @endforeach
-
+                                                @foreach ($transactionChild as $key => $child)
+                                                <div class="d-flex justify-content-start mb-4">
+                                                    <div class="img_cont_msg">
+                                                        <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                                            class="rounded-circle user_img_msg">
+                                                        {{-- <p class="rounded-circle user_img_msg"></p> --}}
+                                                    </div>
+                                                    <div class="msg_cotainer">
+                                                        {{-- @php
+                                                        $user = ;
+                                                    @endphp --}}
+                                                        {{ App\User::find($child->created_by)->first_name . App\User::find($child->created_by)->last_name }}
+                                                        ({{ $child->transaction_status }})
+                                                        <br>
+                                                        @foreach ($child->details as $key => $detail)
+                                                            {{ $detail->container_number }} :
+                                                            {{ $detail->container_weight }}
+                                                            <br>
+                                                        @endforeach
+                                                        @foreach ($child->meta as $key => $metas)
+                                                            {{ $metas->key }} :
+                                                            {{ $metas->value }}
+                                                            <br>
+                                                        @endforeach
+                                                        <span class="msg_time">{{ $child->created_at }}</span>
+                                                    </div>
+                                                </div>
+                                            @endforeach
 
                                             </div>
                                         </tbody>
