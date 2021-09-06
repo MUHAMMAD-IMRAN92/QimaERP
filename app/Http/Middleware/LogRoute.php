@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\logs;
 use Closure;
+use App\logs;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 class LogRoute
@@ -28,10 +29,9 @@ class LogRoute
         //     'seprator' => 'done Here'
         // ];
         // \Log::info($log);
-
         $log = new Logs();
         $log->method =  $request->getMethod();
-        $log->url = $request->getUri();
+        $log->url = Str::afterLast($request->getUri(), '/');
         $log->request = json_encode($request->all());
         $log->response =  $response->getContent();
         $log->save();
