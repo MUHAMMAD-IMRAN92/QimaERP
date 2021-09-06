@@ -3,9 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\logs;
+use App\Logs;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 
 class LogRoute
 {
