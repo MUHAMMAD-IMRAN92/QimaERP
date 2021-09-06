@@ -2,9 +2,11 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\LogRoute;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
-class Kernel extends HttpKernel {
+class Kernel extends HttpKernel
+{
 
     /**
      * The application's global HTTP middleware stack.
@@ -21,6 +23,8 @@ class Kernel extends HttpKernel {
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\LogRoute::class,
+
     ];
 
     /**
@@ -37,10 +41,12 @@ class Kernel extends HttpKernel {
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
         ],
         'api' => [
             'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
         ],
     ];
 
@@ -63,12 +69,13 @@ class Kernel extends HttpKernel {
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'nocache' => \App\Http\Middleware\NoCache::class,
-       // 'admin' => \App\Http\Middleware\CheckAdmin::class,
+        // 'admin' => \App\Http\Middleware\CheckAdmin::class,
         'checkAppKey' => \App\Http\Middleware\checkAppKey::class,
         'checkSession' => \App\Http\Middleware\CheckUserSession::class,
         'headersmid' => \App\Http\Middleware\midheaders::class,
+        'logs' => \App\Http\Middleware\LogRoute::class,
         'CheckRole' => \App\Http\Middleware\CheckRole::class,
         'logger' => \App\Http\Middleware\LogRoute::class,
-    ];
 
+    ];
 }
