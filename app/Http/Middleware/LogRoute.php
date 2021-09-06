@@ -16,16 +16,18 @@ class LogRoute
      */
     public function handle($request, Closure $next)
     {
+        // dd($request->all());
         $response = $next($request);
 
         $log = [
             'URI' => $request->getUri(),
             'METHOD' => $request->getMethod(),
             'REQUEST_BODY' => $request->all(),
-            'RESPONSE' => $response->getContent()
+            'RESPONSE' => $response->getContent(),
+            'seprator' => 'done Here'
         ];
 
-        Log::channel('requests')->info($log);
+        \Log::info($log);
 
         return $response;
     }
