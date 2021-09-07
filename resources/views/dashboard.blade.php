@@ -265,12 +265,12 @@
 
                 <p>Farmers </p>
             </div>
-            <div class="col-sm-1 color bg-dark">
+            <div class="col-sm-1 color bg-dark"  style="width:fit-content !important; max-width:20% !important;">
                 <h3>{{ $totalWeight }}</h3>
                 <p>Total Coffee </p>
             </div>
-            <div class="col-sm-1 color bg-danger">
-                <h3>{{ $totalPrice }}</h3>
+            <div class="col-sm-1 color bg-danger"   style="width:fit-content !important; max-width:20% !important; ">
+                <h3 >{{ $totalPrice }}</h3>
                 <p>Yer Coffee Purchased</p>
             </div>
             <div class="col-sm-1 color bg-warning"></div>
