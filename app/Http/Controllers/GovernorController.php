@@ -87,7 +87,7 @@ class GovernorController extends Controller {
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-                    'governerate_code' => 'required|max:100|unique:governerates,governerate_code',
+                    'governerate_code' => 'required|max:100',
                     'governerate_title' => 'required|max:100',
                     'governor_id' => 'required',
         ]);
