@@ -70,8 +70,7 @@
   </div>
   <!-- /.content-wrapper -->
    <script>
-    let base_path
-    = '<?= asset('/') ?>';
+    let base_path= '<?= asset('/') ?>';
     $(document).ready(function () {
         var t = $('#governors').DataTable({
             "processing": true,
@@ -81,7 +80,7 @@
                 "searchPlaceholder": "Search by Code And Title"
             },
             "ajax": {
-                url: '<?= asset('admin/getgovernors') ?>',
+                url: '<?= asset('admin/getgovernors') ?>'
             },
             "columns": [
                 {"data": null},

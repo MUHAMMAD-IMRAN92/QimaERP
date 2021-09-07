@@ -3,7 +3,7 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey']], function () {
+Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey', 'api']], function () {
 
     Route::post('/login', 'API\AuthController@login');
 
