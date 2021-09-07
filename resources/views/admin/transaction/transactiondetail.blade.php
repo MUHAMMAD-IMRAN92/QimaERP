@@ -332,13 +332,14 @@
                                                             {{ App\User::find($allTransaction->created_by)->first_name . App\User::find($allTransaction->created_by)->last_name }}
                                                             ({{ $allTransaction->transaction_status }})
                                                             <br>
-                                                            @foreach ($allTransaction->details as $key => $detail)
+                                                            
+                                                            @foreach ($allTransaction->details as $key => $detail)      
                                                                 {{ $detail->container_number }} :
                                                                 {{ $detail->container_weight }}
                                                                 <br>
                                                             @endforeach
                                                             @foreach ($allTransaction->meta as $key => $metas)
-                                                                {{ $metas->key }} :
+                                                                {{ucwords( Str::of($metas->key)->replace('_', ' ') )}} :
                                                                 {{ $metas->value }}
                                                                 <br>
                                                             @endforeach
@@ -367,7 +368,7 @@
                                                                 <br>
                                                             @endforeach
                                                             @foreach ($child->meta as $key => $metas)
-                                                                {{ $metas->key }} :
+                                                                {{ucwords( Str::of($metas->key)->replace('_', ' ')) }} :
                                                                 {{ $metas->value }}
                                                                 <br>
                                                             @endforeach
