@@ -262,9 +262,18 @@
 
         }
 
+        .more-padding-on-right {
+            padding-right: 100px;
+
+        }
+
         .action_menu ul li:hover {
             cursor: pointer;
             background-color: rgba(0, 0, 0, 0.2);
+        }
+        .table-justify td{
+            display:flex;
+            justify-content: space-between;
         }
 
         @media(max-width: 576px) {
@@ -306,80 +315,114 @@
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     <h4>{{ $batchNumber }}</h4>
-                                    <table class="table table-bordered ">
-                                        <tbody>
-                                            {{-- <td>
-                                                <div class="row">
-                                                    <div class="col-md-1 circle">
-                                                        12:00
-                                                    </div>
-                                                    <div class="col-md-5 message"></div>
+                                    <div class="card-body msg_card_body">
+
+                                        @foreach ($allTransactions as $key => $allTransaction)
+                                            <div class="d-flex justify-content-start mb-4">
+                                                <div class="img_cont_msg">
+                                                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                                        class="rounded-circle user_img_msg">
                                                 </div>
-                                            </td> --}}
-                                            <div class="card-body msg_card_body">
+                                                <div class="msg_cotainer">
 
-                                                @foreach ($allTransactions as $key => $allTransaction)
-                                                    <div class="d-flex justify-content-start mb-4">
-                                                        <div class="img_cont_msg">
-                                                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                                                class="rounded-circle user_img_msg">
-                                                            {{-- <p class="rounded-circle user_img_msg"></p> --}}
-                                                        </div>
-                                                        <div class="msg_cotainer">
-                                                            {{-- @php
-                                                                $user = ;
-                                                            @endphp --}}
-                                                            {{ App\User::find($allTransaction->created_by)->first_name . App\User::find($allTransaction->created_by)->last_name }}
-                                                            ({{ $allTransaction->transaction_status }})
-                                                            <br>
-                                                            
-                                                            @foreach ($allTransaction->details as $key => $detail)      
-                                                                {{ $detail->container_number }} :
-                                                                {{ $detail->container_weight }}
-                                                                <br>
-                                                            @endforeach
-                                                            @foreach ($allTransaction->meta as $key => $metas)
-                                                                {{ucwords( Str::of($metas->key)->replace('_', ' ') )}} :
-                                                                {{ $metas->value }}
-                                                                <br>
-                                                            @endforeach
-                                                            <span
-                                                                class="msg_time">{{ $allTransaction->created_at }}</span>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                                @foreach ($transactionChild as $key => $child)
-                                                    <div class="d-flex justify-content-start mb-4">
-                                                        <div class="img_cont_msg">
-                                                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                                                class="rounded-circle user_img_msg">
-                                                            {{-- <p class="rounded-circle user_img_msg"></p> --}}
-                                                        </div>
-                                                        <div class="msg_cotainer">
-                                                            {{-- @php
-                                                        $user = ;
-                                                    @endphp --}}
-                                                            {{ App\User::find($child->created_by)->first_name . App\User::find($child->created_by)->last_name }}
-                                                            ({{ $child->transaction_status }})
-                                                            <br>
-                                                            @foreach ($child->details as $key => $detail)
-                                                                {{ $detail->container_number }} :
-                                                                {{ $detail->container_weight }}
-                                                                <br>
-                                                            @endforeach
-                                                            @foreach ($child->meta as $key => $metas)
-                                                                {{ucwords( Str::of($metas->key)->replace('_', ' ')) }} :
-                                                                {{ $metas->value }}
-                                                                <br>
-                                                            @endforeach
-                                                            <span class="msg_time">{{ $child->created_at }}</span>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
+                                                    {{ App\User::find($allTransaction->created_by)->first_name . App\User::find($allTransaction->created_by)->last_name }}
+                                                    ({{ $allTransaction->transaction_status }})
+                                                    <br>
+                                                    {{ $allTransaction->batch_number }}
+                                                    <table style="width:100%;">
 
+
+
+                                                        @foreach ($allTransaction->details as $key => $detail)
+                                                            <tr class="">
+                                                                <td>
+                                                                    {{ $detail->container_number }}
+                                                                </td>
+                                                                @if (count($allTransaction->meta ) == 0 )
+                                                                <td style="float:right;" class="">
+                                                                    {{ $detail->container_weight }}
+
+                                                                </td>
+                                                                @else
+                                                                <td >
+                                                                    {{ $detail->container_weight }}
+
+                                                                </td>
+                                                                @endif
+                                                            </tr>
+
+
+                                                        @endforeach
+
+                                                        @foreach ($allTransaction->meta as $key => $metas)
+                                                            <tr>
+                                                                <td>
+                                                                    {{ ucwords(Str::of($metas->key)->replace('_', ' ')) }}
+
+                                                                </td>
+                                                                <td>
+                                                                    {{ $metas->value }}
+                                                                </td>
+                                                            </tr>
+
+
+                                                        @endforeach
+                                                    </table>
+                                                    <span class="msg_time">{{ $allTransaction->created_at }}</span>
+                                                </div>
                                             </div>
-                                        </tbody>
-                                    </table>
+                                        @endforeach
+                                        @foreach ($transactionChild as $key => $child)
+                                            <div class="d-flex justify-content-start mb-4">
+                                                <div class="img_cont_msg">
+                                                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                                        class="rounded-circle user_img_msg">
+                                                </div>
+                                                <div class="msg_cotainer">
+
+                                                    {{ App\User::find($child->created_by)->first_name . App\User::find($child->created_by)->last_name }}
+                                                    ({{ $child->transaction_status }})
+                                                    <br>
+                                                    {{ $child->batch_number }}
+
+
+                                                    <table>
+
+                                                        @foreach ($child->details as $key => $detail)
+                                                            <tr>
+                                                                <td>
+                                                                    {{ $detail->container_number }}
+                                                                </td>
+                                                                <td class="more-padding-on-right">
+                                                                    {{ $detail->container_weight }}
+
+                                                                </td>
+                                                            </tr>
+
+
+                                                        @endforeach
+
+                                                        @foreach ($child->meta as $key => $metas)
+                                                            <tr>
+                                                                <td>
+                                                                    {{ ucwords(Str::of($metas->key)->replace('_', ' ')) }}
+
+                                                                </td>
+                                                                <td>
+                                                                    {{ $metas->value }}
+                                                                </td>
+                                                            </tr>
+
+
+                                                        @endforeach
+                                                    </table>
+                                                    <span class="msg_time">{{ $child->created_at }}</span>
+                                                </div>
+                                            </div>
+                                        @endforeach
+
+                                    </div>
+
                                 </div>
                                 <!-- /.card-body -->
                             </div>
