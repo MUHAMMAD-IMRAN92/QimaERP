@@ -25,7 +25,7 @@ class GovernorController extends Controller {
         $search = $request->search['value'];
         $orderby = 'DESC';
         $column = 'governerate_id';
-//::count total record
+           //::count total record
         $total_members = Governerate::count();
         $members = Governerate::query();
         //::select columns
