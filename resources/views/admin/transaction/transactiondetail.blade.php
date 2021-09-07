@@ -386,14 +386,14 @@
                                                     {{ $child->batch_number }}
 
 
-                                                    <table>
+                                                    <table style="width:100%;">
 
                                                         @foreach ($child->details as $key => $detail)
                                                             <tr>
                                                                 <td>
                                                                     {{ $detail->container_number }}
                                                                 </td>
-                                                                <td class="more-padding-on-right">
+                                                                <td >
                                                                     {{ $detail->container_weight }}
 
                                                                 </td>
