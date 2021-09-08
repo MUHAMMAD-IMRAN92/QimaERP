@@ -155,14 +155,29 @@ class AuthController extends Controller
         }
         $now = Carbon::now();
         $currentYear = $now->year;
-        $transaction = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->with('details')->get();
-        $createdAt = [];
-        $quantity = [];
-        foreach ($transaction as $trans) {
-            array_push($createdAt, $trans->created_at->toDateString());
-            array_push($quantity, $trans->details->sum('container_weight'));
-        }
+        $collection = Transaction::all();
 
+        $transaction = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->with('details')->get();
+        // $grouped = $collection->groupBy('for');
+        $grouped = $transaction->groupBy(function ($item) {
+            return $item->created_at->format('m');
+        });
+        $createdAt = [];
+
+        $quantity = [];
+
+
+        foreach ($grouped as $key => $trans) {
+            $weight = 0;
+            foreach ($trans as $tran) {
+                $weight += $tran->details->sum('container_weight');
+            }
+            $monthNum = $key;
+            $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
+
+            array_push($quantity, $weight);
+            array_push($createdAt, $monthName);
+        }
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),

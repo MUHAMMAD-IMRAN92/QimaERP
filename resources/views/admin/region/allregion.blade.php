@@ -397,14 +397,14 @@
                     var yValues = @json($regionQuantity);
 
                     new Chart("myChart", {
-                        type: "line",
+                        type: "bar",
                         data: {
                             labels: xValues,
                             datasets: [{
                                 fill: true,
                                 lineTension: 0,
-                                backgroundColor: "rgba(0,0,255,0.2)",
-                                // backgroundColor: "purple",
+                                // backgroundColor: "rgba(0,0,255,0.2)",
+                                backgroundColor: "purple",
                                 borderColor: "purple",
                                 // borderColor: "rgba(0,0,255,0.1)",
                                 data: yValues

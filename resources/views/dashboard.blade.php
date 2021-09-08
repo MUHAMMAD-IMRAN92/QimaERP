@@ -291,15 +291,15 @@
                         var xValues = @json($createdAt);
                         var yValues = @json($quantity);
                         new Chart("myChart", {
-                            type: "line",
+                            type: "bar",
                             data: {
                                 labels: xValues,
                                 datasets: [{
                                     pointRadius: 1,
-                                    fill: true,
+                                    fill: false,
                                     lineTension: 0,
-                                    backgroundColor: "rgba(0,0,255,0.2)",
-                                    // backgroundColor: "purple",
+                                    // backgroundColor: "rgba(0,0,255,0.2)",
+                                    backgroundColor: "purple",
                                     borderColor: "purple",
                                     // borderColor: "rgba(0,0,255,0.1)",
                                     data: yValues
@@ -314,10 +314,14 @@
 
                                         ticks: {
                                             min: 1,
-                                            max: 600
+                                            max: 10000
                                         }
                                     }],
+                                    xAxes: [{
+                                        barPercentage: 0.4
+                                    }]
                                 }
+
                             }
                         });
                     </script>
