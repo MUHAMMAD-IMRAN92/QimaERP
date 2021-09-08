@@ -15,7 +15,7 @@
 
         .color {
 
-            width: 200px  ;
+            width: 200px;
             height: 80px fit-content;
             margin-left: 2px;
         }
@@ -83,7 +83,7 @@
 
                         $('#regions_dropdown').append(html);
                         $('#transactions').html(data.view);
-                        
+
                     }
                 });
             });
@@ -106,7 +106,7 @@
                                 village
                                 .village_title + '</option>';
                         });
-                        
+
 
                         $('#village_dropdown').append(html);
                         $('#transactions').html(data.view);
@@ -252,7 +252,6 @@
                 });
             });
         });
-
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -394,18 +393,20 @@
                 <canvas id="myChart" style="width:100%;max-height:300px"></canvas>
 
                 <script>
-                    var xValues = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30];
-                    var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+                    var xValues = @json($regionName);
+                    var yValues = @json($regionQuantity);
 
                     new Chart("myChart", {
                         type: "line",
                         data: {
                             labels: xValues,
                             datasets: [{
-                                fill: false,
+                                fill: true,
                                 lineTension: 0,
-                                backgroundColor: "rgba(0,0,255,1.0)",
-                                borderColor: "rgba(0,0,255,0.1)",
+                                backgroundColor: "rgba(0,0,255,0.2)",
+                                // backgroundColor: "purple",
+                                borderColor: "purple",
+                                // borderColor: "rgba(0,0,255,0.1)",
                                 data: yValues
                             }]
                         },
@@ -417,17 +418,16 @@
                                 yAxes: [{
                                     ticks: {
                                         min: 6,
-                                        max: 16
+                                        max: 6000
                                     }
                                 }],
                             }
                         }
                     });
-
                 </script>
             </div>
         </div>
- 
+
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">

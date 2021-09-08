@@ -136,7 +136,19 @@ class RegionController extends Controller
 
             return $governorate;
         });
+        $regionName = [];
+        $regionQuantity = [];
+        foreach ($regions as $region) {
+            $regionCode = $region->region_code;
+            $weight = 0;
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
 
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            array_push($regionName, $region->region_title);
+            array_push($regionQuantity, $weight);
+        }
         return view('admin.region.allregion', [
             'governorates' =>   $governorates,
             'regions' => $regions,
@@ -144,6 +156,8 @@ class RegionController extends Controller
             'farmers' => $farmers,
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice,
+            'regionName' => $regionName,
+            'regionQuantity' => $regionQuantity,
             // 'chartTransactions' =>  $chartTransactions
 
         ]);
