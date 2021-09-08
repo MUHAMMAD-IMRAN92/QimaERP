@@ -45,13 +45,31 @@ class AuthController extends Controller
         //     ->with(['details'])
         //     ->get();
         $regions = Region::all();
+        $regionName = [];
+        $regionQuantity = [];
+        $govName = [];
+        $govQuantity = [];
+        foreach ($governorate as $govern) {
+            $govCode = $govern->governerate_code;
+            $weight = 0;
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            array_push($govName, $govern->governerate_title);
+            array_push($govQuantity, $weight);
+        }
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
             $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
+
+
                 $weight +=  $transaction->details->sum('container_weight');
             }
+            array_push($regionName, $region->region_title);
+            array_push($regionQuantity, $weight);
             $regionWeight->push([
                 'regionId' => $region->region_id,
                 'weight' =>  $weight
@@ -135,13 +153,29 @@ class AuthController extends Controller
             $totalPrice += $weight * $price;
             $totalWeight += $weight;
         }
+        $now = Carbon::now();
+        $currentYear = $now->year;
+        $transaction = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->with('details')->get();
+        $createdAt = [];
+        $quantity = [];
+        foreach ($transaction as $trans) {
+            array_push($createdAt, $trans->created_at->toDateString());
+            array_push($quantity, $trans->details->sum('container_weight'));
+        }
+
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),
             'villages' => $villages,
             'regions' => $regions->take(5),
             'totalWeight' => $totalWeight,
-            'totalPrice' => $totalPrice
+            'totalPrice' => $totalPrice,
+            'quantity' => $quantity,
+            'createdAt' => $createdAt,
+            'regionName' => $regionName,
+            'regionQuantity' => $regionQuantity,
+            'govName' => $govName,
+            'govQuantity' => $govQuantity
         ]);
     }
     public function dashboardByDate(Request $request)
