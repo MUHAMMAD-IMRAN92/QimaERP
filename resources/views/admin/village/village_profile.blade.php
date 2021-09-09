@@ -15,6 +15,10 @@
             margin-left: 4px;
         }
 
+        .list-group .list-group-item {
+            width: 100%;
+        }
+
         .blacklink a {
             color: black;
         }
@@ -54,15 +58,18 @@
         .blacklink .hover:hover {
             cursor: pointer;
         }
-        .data-content-list{
+
+        .data-content-list {
             display: flex;
             align-items: center;
             padding-left: 4px;
             padding-right: 4px;
         }
-        .data-content-list span{
+
+        .data-content-list span {
             margin-left: 5px;
         }
+
     </style>
     <script>
         $(document).ready(function() {
@@ -237,7 +244,8 @@
                 <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}">EDIT
                         INFORMATION</a></span> &nbsp |
 
-                <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}"> OVERRIDE PRICE
+                <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}"> OVERRIDE
+                        PRICE
                     </a></span> &nbsp |
                 <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span>
 
@@ -423,17 +431,16 @@
             </b>
 
             <div class="row">
-            @foreach ($village->farmers as $farmer)
-                
+                @foreach ($village->farmers as $farmer)
+
                     <div class="col-md-4 mb-1">
                         <ul class="list-group list-group-horizontal">
                             <li class="list-group-item data-content-list">
                                 @if ($farmer->file == null)
-                                    <img src="{{ asset('public/images/farmericon.png') }}" 
-                                        id="region_farmer">
+                                    <img src="{{ asset('public/images/farmericon.png') }}" id="region_farmer">
                                 @else
                                     <img src="{{ asset('public/storage/images/' . $farmer->file->user_file_name) }}"
-                                         id="region_farmer">
+                                        id="region_farmer">
                                 @endif
 
                                 <span>{{ $farmer['farmer_name'] }}</span>
@@ -441,30 +448,40 @@
 
                         </ul>
                     </div>
-               
 
 
-            @endforeach
-        </div>
+
+                @endforeach
+            </div>
             <hr>
-
-
-
             <b>
                 <p>Coffee Buyers
                 </p>
             </b>
-            @foreach ($village->buyers as $buyer)
 
-                @if ($buyer->file == null)
-                    <img src="{{ asset('public/images/farmericon.png') }}"  id="region_farmer">
-                @else
-                    <img src="{{ asset('public/storage/images/' . $buyer->file->user_file_name) }}"
-                        id="region_farmer">
-                @endif
+            <div class="row">
+                @foreach ($village->buyers as $buyer)
 
-                <span class="mr-3">{{ $buyer['first_name'] }}</span>
-            @endforeach
+                    <div class="col-md-4 mb-1">
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item data-content-list">
+                                @if ($buyer->file == null)
+                                    <img src="{{ asset('public/images/farmericon.png') }}" id="region_farmer">
+                                @else
+                                    <img src="{{ asset('public/storage/images/' . $buyer->file->user_file_name) }}"
+                                        id="region_farmer">
+                                @endif
+
+                                <span>{{ $buyer['first_name'] }}</span>
+                            </li>
+
+                        </ul>
+                    </div>
+
+
+
+                @endforeach
+            </div>
 
         </section>
 
