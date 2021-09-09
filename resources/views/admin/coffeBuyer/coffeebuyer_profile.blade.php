@@ -392,7 +392,7 @@
             </b>
             <div class="row">
                 @foreach ($buyer->villages as $village)
-                    <div class="col-md-4 mb-1">
+                    <div class="col-sm-4 mb-1">
                         <ul class="list-group list-group-horizontal">
                             <li class="list-group-item data-content-list">
                                 @if ($village['picture_id'] == null)
@@ -417,7 +417,7 @@
             </b>
             <div class="row">
                 @foreach ($buyer->farmers as $farmer)
-                    <div class="col-md-4 mb-1">
+                    <div class="col-sm-4 mb-1">
                         <ul class="list-group list-group-horizontal">
                             <li class="list-group-item data-content-list">
                                 @if ($farmer['farmer_image'] == null)
