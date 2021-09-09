@@ -55,7 +55,9 @@
         .blacklink .hover:hover {
             cursor: pointer;
         }
-
+       .list-group .list-group-item{
+           widows: 100%;
+       }
     </style>
 
     <script>
