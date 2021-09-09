@@ -283,7 +283,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <canvas id="myChart" style="width:100%;max-height:300px"></canvas>
+                    <canvas id="myChart" style="width:100%;max-height:500px"></canvas>
 
                     <script>
                         console.log(@json($quantity));
