@@ -17,11 +17,13 @@
 
     <p>Farmers </p>
 </div>
-<div class="col-sm-1 color bg-info">
+<div class="col-sm-1 color bg-info"
+    style="width:fit-content !important; max-width:20% !important ">
     <h4>{{ $total_coffee }}</h4>
     <p>Quantity </p>
 </div>
-<div class="col-sm-1 color bg-dark">
+<div class="col-sm-1 color bg-dark"
+    style="width:fit-content !important; max-width:20% !important ">
     <h4>{{ $totalPrice }}</h4>
     <p>yer coffee bought </p>
 </div>
