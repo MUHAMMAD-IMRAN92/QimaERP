@@ -56,7 +56,7 @@
             cursor: pointer;
         }
        .list-group .list-group-item{
-           widows: 100%;
+           width: 100%;
        }
     </style>
 
