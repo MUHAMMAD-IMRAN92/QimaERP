@@ -392,7 +392,7 @@
         </div>
         <div class="row">
             <div class="col-md-11 ml-4">
-                <canvas id="myChart" style="width:100%;max-height:300px"></canvas>
+                <canvas id="myChart" style="width:100%;max-height:500px"></canvas>
 
                 <script>
                     var xValues = @json($regionName);
