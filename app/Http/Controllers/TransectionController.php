@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Transaction;
 use App\TransactionDetail;
 use App\Farmer;
+use App\FileSystem;
+use App\TransactionInvoice;
 
 class TransectionController extends Controller
 {
@@ -24,12 +26,31 @@ class TransectionController extends Controller
         $transaction = Transaction::find($id);
         $batchNumber = $transaction->batch_number;
         $allTransactions = Transaction::where('batch_number', $batchNumber)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
-        $transactionChild = Transaction::where('is_parent', $id)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
+        $parentId = $allTransactions->first()->is_parent;
 
+        if ($parentId != 0) {
+            $transactionparentId = Transaction::find($parentId);
+            $transactionsparentId = Transaction::where('batch_number', $transactionparentId->batch_number)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
+            $data['transactionparentId'] = $transactionsparentId;
+        }
+        $transactionChild = Transaction::where('is_parent', $id)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
         $data['allTransactions'] =  $allTransactions;
         $data['batchNumber'] =  $batchNumber;
 
         $data['transactionChild'] = $transactionChild;
+        $invoice = TransactionInvoice::whereIn('transaction_id', [$allTransactions->last()['transaction_id']])->get();
+        $data['invoiceName'] = [];
+        foreach ($invoice as $inv) {
+            $invName = FileSystem::find($inv->invoice_id);
+            array_push($data['invoiceName'], $invName->user_file_name);
+        }
+        if ($transactionChild->count() > 0) {
+            $invoice = TransactionInvoice::whereIn('transaction_id', [$transactionChild->last()['transaction_id']])->get();
+            foreach ($invoice as $inv) {
+                $invName = FileSystem::find($inv->invoice_id);
+                array_push($data['invoiceName'], $invName->user_file_name);
+            }
+        }
         // dd($data['TransactionChild']);
         return view('admin.transaction.transactiondetail', $data);
     }
