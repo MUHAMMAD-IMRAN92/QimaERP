@@ -38,13 +38,19 @@ class TransectionController extends Controller
         $data['batchNumber'] =  $batchNumber;
 
         $data['transactionChild'] = $transactionChild;
-        $invoice = TransactionInvoice::where('transaction_id', $id)->get();
+        $invoice = TransactionInvoice::whereIn('transaction_id', [$allTransactions->last()['transaction_id']])->get();
         $data['invoiceName'] = [];
         foreach ($invoice as $inv) {
             $invName = FileSystem::find($inv->invoice_id);
             array_push($data['invoiceName'], $invName->user_file_name);
         }
-      
+        if ($transactionChild->count() > 0) {
+            $invoice = TransactionInvoice::whereIn('transaction_id', [$transactionChild->last()['transaction_id']])->get();
+            foreach ($invoice as $inv) {
+                $invName = FileSystem::find($inv->invoice_id);
+                array_push($data['invoiceName'], $invName->user_file_name);
+            }
+        }
         // dd($data['TransactionChild']);
         return view('admin.transaction.transactiondetail', $data);
     }
