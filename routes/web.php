@@ -88,7 +88,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
         Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
-
+        Route::get('farmer_invoice/invoices/{id}', 'FarmerController@farmerInvoice');
         //Coffee Buyer
         Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');
         Route::get('filtercoffeebuyer', 'CoffeeBuyerController@filterByDate');

@@ -8,13 +8,14 @@ use App\Village;
 use App\FileSystem;
 use App\Governerate;
 use App\Transaction;
+use App\TransactionInvoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use PhpParser\Node\Stmt\Return_;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
-use PhpParser\Node\Stmt\Return_;
 
 class FarmerController extends Controller
 {
@@ -328,7 +329,7 @@ class FarmerController extends Controller
         $farmer = $farmer->transactions();
         $farmer->image = $farmer->getImage();
         $farmer->cnicImage = $farmer->cnic();
-        $farmer->invoice = $farmer->farmerInvoice();
+
         return view('admin.farmer.farmer_profile', [
             'farmer' => $farmer
         ]);
@@ -943,5 +944,27 @@ class FarmerController extends Controller
                 'farmer' => $farmer
             ])->render();
         }
+    }
+    public function farmerInvoice($id)
+    {
+        $farmer = Farmer::find($id);
+        $inoviceName = [];
+        // $farmer->invoice = $farmer->farmerInvoice();
+        $farmerCode  = $farmer->farmer_code;
+        $transactions = Transaction::where('sent_to', 2)->where('batch_number', 'LIKE',   '%' . $farmerCode . '%')->get();
+        foreach ($transactions as $transaction) {
+            $transInvoices = TransactionInvoice::where('transaction_id', $transaction->transaction_id)->get();
+            foreach ($transInvoices as  $transInvoice) {
+                $inovice = $transInvoice->invoice_id;
+                if ($file = FileSystem::where('file_id', $inovice)->first()) {
+                    $inovice = $file->user_file_name;
+                    array_push($inoviceName,  $inovice);
+                }
+            }
+        }
+
+        return view('admin.farmer.views.invoice ', [
+            'invoices' =>  $inoviceName
+        ])->render();
     }
 }
