@@ -283,6 +283,7 @@
             border-radius: 50px;
         }
 
+        
         @media(max-width: 576px) {
             .contacts_card {
                 margin-bottom: 15px !important;
