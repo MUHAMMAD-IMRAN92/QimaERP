@@ -629,8 +629,8 @@
                                         <div class="col-4 mt-5">
                                             @if (!empty($invoiceName))
                                                 @foreach ($invoiceName as $inv)
-                                                    <img src="{{ asset('storage/app/images/' . $inv) }}" alt="No Image"
-                                                        class="transaction-image">
+                                                    <img src="{{ asset('storage/app/images/' . $inv) }}" id="myImg"
+                                                        alt="No Image" class="transaction-image">
                                                     <div id="myModal" class="modal">
                                                         <span class="close">&times;</span>
                                                         <img class="modal-content" id="img01">
