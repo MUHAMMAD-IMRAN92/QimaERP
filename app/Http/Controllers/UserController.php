@@ -134,7 +134,7 @@ class UserController extends Controller
 
         $data['reset'] = User::find($id);
         // dd($data['reset']);
-        return view('admin.user.resetpassword', $data);
+        return view('admin.user.Resetpassword', $data);
     }
 
     public function updatepassword(Request $request)
