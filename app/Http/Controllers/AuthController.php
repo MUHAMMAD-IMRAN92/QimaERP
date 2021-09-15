@@ -8,6 +8,7 @@ use App\Region;
 use App\Village;
 use App\LoginUser;
 use App\Governerate;
+use App\Http\Controllers\API\UkWareHouse;
 use App\Transaction;
 use App\TransactionDetail;
 use Illuminate\Support\Arr;
@@ -178,6 +179,75 @@ class AuthController extends Controller
             array_push($quantity, $weight);
             array_push($createdAt, $monthName);
         }
+        $today = Carbon::today()->toDateString();
+        $stocks = [];
+        $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+            ->where('created_at', $today)
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($YemenWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+        $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->where('created_at', $today)
+
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($UKWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+        $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+            ->where('created_at', $today)
+
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+        $nonspecialstocks = [];
+        $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+            ->where('created_at', $today)
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($YemenWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+        $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->where('created_at', $today)
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($UKWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+        $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+            ->where('created_at', $today)
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),
@@ -190,7 +260,9 @@ class AuthController extends Controller
             'regionName' => $regionName,
             'regionQuantity' => $regionQuantity,
             'govName' => $govName,
-            'govQuantity' => $govQuantity
+            'govQuantity' => $govQuantity,
+            'stock' => $stocks,
+            'nonspecialstock' => $nonspecialstocks,
         ]);
     }
     public function dashboardByDate(Request $request)
@@ -702,5 +774,116 @@ class AuthController extends Controller
     {
         $data = $request->from;
         dd($data);
+    }
+    public function endDateAjax(Request $request)
+    {
+        $today = Carbon::today()->toDateString();
+        $endDate = $request->endDate;
+        $stocks = [];
+        $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+            ->where('created_at',  $today)
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $todayweight = 0;
+        foreach ($YemenWarehouseTransactions as $key => $transaction) {
+            $todayweight += $transaction->details->sum('container_weight');
+        }
+        $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+            ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($YemenWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "Yemen", "today" => $todayweight, "end" => $weight]);
+        $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->where('created_at', $today)
+
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $todayweight = 0;
+        foreach ($UKWarehouseTransactions as $key => $transaction) {
+            $todayweight += $transaction->details->sum('container_weight');
+        }
+        $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->whereBetween('created_at', [$endDate, $today])
+
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($UKWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "UK", "today" => $todayweight, "end" => $weight]);
+        $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+            ->where('created_at', $today)
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $todayweight = 0;
+        foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+            $todayweight += $transaction->details->sum('container_weight');
+        }
+        $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+            ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+
+        array_push($stocks, ["wareHouse" => "China", "today" => $todayweight, "end" => $weight]);
+        return view('admin.special_stock_view', [
+            'stock' => $stocks
+        ])->render();
+    }
+
+    public function endDateAjaxNonSpecial(Request $request)
+    {
+        $today = Carbon::today()->toDateString();
+        $endDate = $request->endDate;
+        $stocks = [];
+        $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+            ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($YemenWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+        $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($UKWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+        $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+            ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+        return view('admin.special_stock_view', [
+            'stock' => $stocks
+        ])->render();
     }
 }

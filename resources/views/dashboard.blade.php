@@ -174,7 +174,34 @@
                     }
                 });
             });
-
+            $('#specialCoffee').on('change', function() {
+                let endDate = $("#specialCoffee").val();
+                $.ajax({
+                    url: "{{ url('admin/dashboard/specialCoffee') }}",
+                    type: "GET",
+                    data: {
+                        'endDate': endDate
+                    },
+                    success: function(data) {
+                        $('#ajaxSpecialCoffee').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#nonspecialCoffee').on('change', function() {
+                let endDate = $("#specialCoffee").val();
+                $.ajax({
+                    url: "{{ url('admin/dashboard/nonspecialCoffee') }}",
+                    type: "GET",
+                    data: {
+                        'endDate': endDate
+                    },
+                    success: function(data) {
+                        $('#ajaxnonspecialCoffee').html(data);
+                        console.log(data);
+                    }
+                });
+            });
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
@@ -264,13 +291,11 @@
 
                     <p>Farmers </p>
                 </div>
-                <div class="col-sm-1 color bg-dark"
-                    style="width:fit-content !important; max-width:30% !important">
+                <div class="col-sm-1 color bg-dark" style="width:fit-content !important; max-width:30% !important">
                     <h3>{{ $totalWeight }}</h3>
                     <p>Total Coffee </p>
                 </div>
-                <div class="col-sm-1 color bg-danger"
-                    style="width:fit-content !important; max-width:30% !important">
+                <div class="col-sm-1 color bg-danger" style="width:fit-content !important; max-width:30% !important">
                     <h3>{{ $totalPrice }}</h3>
                     <p>Yer Coffee Purchased</p>
                 </div>
@@ -423,42 +448,33 @@
                                 </b> </h3>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6>Today</h6>
-                                    <div class="set-width bg-primary m-1">
-                                        <p class="ml-1">2000</p>
-                                        <p class="ml-1">....</p>
-                                    </div>
-                                    <div class="set-width bg-primary m-1 ">
-                                        <p class="ml-1">1000</p>
-                                        <p class="ml-1">China </p>
-                                    </div>
-                                    <div class="set-width bg-primary m-1 ">
-                                        <p class="ml-1">1000</p>
-                                        <p class="ml-1">China </p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6>End Date</h6>
-                                    <div class="set-width bg-primary m-1">
-                                        <p class="ml-1">2000</p>
-                                        <p class="ml-1">....</p>
-                                    </div>
-                                    <div class="set-width bg-primary m-1 ">
-                                        <p class="ml-1">1000</p>
-                                        <p class="ml-1">China </p>
-                                    </div>
-                                    <div class="set-width bg-primary m-1 ">
-                                        <p class="ml-1">1000</p>
-                                        <p class="ml-1">China </p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6"></div>
-                            </div>
+                        <div class="card-body" id="ajaxSpecialCoffee">
+                            <input type="date" id="specialCoffee" name="endDate" class="form-control"
+                                style="margin-top: -10px;">
+                            <h6>Today</h6>
+                            <h6 style=" margin-left: 53%;  margin-top: -26px;">
+                                End Date
+                            </h6>
+                            @foreach ($stock as $key => $s)
+                                <div class="row">
 
 
+                                    <div class="col-md-6">
+
+                                        <div class="set-width bg-primary ">
+                                            <p class="ml-1">{{ $s['wareHouse'] }}</p>
+                                            <p class="ml-1">{{ $s['today'] }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="set-width bg-primary ">
+                                            <p class="ml-1">{{ $s['wareHouse'] }}</p>
+                                            <p class="ml-1">{{ $s['end'] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                         <!-- /.card-body -->
 
@@ -472,40 +488,36 @@
                                 </b> </h3>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6>Today</h6>
-                                    <div class="set-width bg-primary m-1">
-                                        <p class="ml-1">2000</p>
-                                        <p class="ml-1">....</p>
+                        <div class="card-body" id="ajaxnonspecialCoffee"> <input type="date" id="nonspecialCoffee"
+                                name="endDate" class="form-control" style="margin-top: -10px;">
+                            <h6>Today</h6>
+                            <h6
+                                style="     margin-left: 53%;
+                                                                                                                                                                                                            margin-top: -26px;">
+                                End
+                                Date
+                            </h6>
+                            @foreach ($nonspecialstock as $key => $s)
+                                <div class="row">
+
+
+                                    <div class="col-md-6">
+
+                                        <div class="set-width bg-primary ">
+                                            <p class="ml-1">{{ $s['wareHouse'] }}</p>
+                                            <p class="ml-1">{{ $s['today'] }}</p>
+                                        </div>
                                     </div>
-                                    <div class="set-width bg-primary m-1 ">
-                                        <p class="ml-1">1000</p>
-                                        <p class="ml-1">China </p>
-                                    </div>
-                                    <div class="set-width bg-primary m-1 ">
-                                        <p class="ml-1">1000</p>
-                                        <p class="ml-1">China </p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6>End Date</h6>
-                                    <div class="set-width bg-primary m-1">
-                                        <p class="ml-1">2000</p>
-                                        <p class="ml-1">....</p>
-                                    </div>
-                                    <div class="set-width bg-primary m-1 ">
-                                        <p class="ml-1">1000</p>
-                                        <p class="ml-1">China </p>
-                                    </div>
-                                    <div class="set-width bg-primary m-1 ">
-                                        <p class="ml-1">1000</p>
-                                        <p class="ml-1">China </p>
+                                    <div class="col-md-6">
+
+                                        <div class="set-width bg-primary ">
+                                            <p class="ml-1">{{ $s['wareHouse'] }}</p>
+                                            <p class="ml-1">{{ $s['end'] }}</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6"></div>
-                            </div>
+                            @endforeach
+
 
 
                         </div>

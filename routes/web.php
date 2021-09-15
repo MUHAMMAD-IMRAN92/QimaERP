@@ -34,6 +34,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('dashboardByDays', 'AuthController@dashboardByDays');
         Route::get('logout', 'AuthController@adminLogout');
 
+        //dashboardAjaxCalls
+        Route::get('dashboard/specialCoffee', 'AuthController@endDateAjax');
+        Route::get('dashboard/nonspecialCoffee', 'AuthController@endDateAjaxNonSpecial');
 
         //Governor Controller
         Route::get('allgovernor', 'GovernorController@allgovernor')->middleware('auth');
