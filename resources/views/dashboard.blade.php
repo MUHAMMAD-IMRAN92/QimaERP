@@ -537,7 +537,7 @@
 
                 <div class="col-md-6 ">
                     <center>Governorate Wise</center>
-                    <canvas id="4rd" class="ml-2" style="width:100%;max-width:500px; height:300px;"></canvas>
+                    <canvas id="4rd" class="ml-2" style="width:100%; height:300px;"></canvas>
 
                     <script>
                         var xValues = @json($govName);
@@ -576,7 +576,7 @@
                 </div>
                 <div class="col-md-6 ">
                     <center>Region Wise</center>
-                    <canvas id="3rd" class="ml-2" style="width:100%;max-width:500px; height:300px;"></canvas>
+                    <canvas id="3rd" class="ml-2" style="width:100%; height:300px;"></canvas>
 
                     <script>
                         var xValues = @json($regionName);
