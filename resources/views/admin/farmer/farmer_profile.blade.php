@@ -206,6 +206,13 @@
                     }
                 });
             });
+            $('#iddocuments').on('click', function() {
+                function refreshPage() {
+                    window.location.reload();
+                };
+                $('#idimage').focus();
+
+            });
         });
     </script>
 
@@ -436,16 +443,16 @@
             <hr>
             <div class="row ml-2 blacklink">
 
-                <a href="" class="ml-2">
+                <a href="http://qima.test/admin/farmer/profile/94/#idimage" class="ml-2" id="iddocuments">
                     <p>ID DOCUMENTS &nbsp;|</p>
                 </a>
                 <span class="ml-2" id="reciepts">
-                    <p> RECIEPTS &nbsp;|</p>
+                    <p>RECIEPTS &nbsp;|</p>
                 </span>
-                <a href="" class="ml-2">
+                <a href="#" class="ml-2">
                     <p>LOANS &nbsp;|</p>
                 </a>
-                <a href="" class="ml-2">
+                <a href="#" class="ml-2">
                     <p>PREMIUMS &nbsp;</p>
                 </a>
 
@@ -454,12 +461,13 @@
 
                 @if ($farmer->cnicImage == null)
                     <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
-                            style="width: 150px ; height:80px ; border-radius:50%; border: 1px solid gray;" alt=""></td>
+                            style="width: 150px ; height:80px ; border-radius:50%; border: 1px solid gray;" alt=""
+                            id="idimage"></td>
                 @else
                     <td> <img class="famerimg"
                             style="width: 150px  ; height:80px ; border-radius:50%; border: 1px solid gray;"
-                            src="{{ asset('storage/app/images/' . $farmer->cnicImage) }}" alt="no img"></td>
-                @endif
+                            src="{{ asset('storage/app/images/' . $farmer->cnicImage) }}" alt="no img" id="idimage"></td>
+                                         @endif
 
 
             </div>
