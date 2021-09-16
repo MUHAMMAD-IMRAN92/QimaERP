@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
+use App\BatchNumber;
 use App\Transaction;
 use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Exception;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -55,7 +56,10 @@ class YemenOperativeController extends Controller
             ->get();
 
         foreach ($transactions as $key => $transaction) {
-
+            $withBacthBuyer = BatchNumber::where('batch_number', $transaction->batch_number)->with('buyer')->first();
+            if ($withBacthBuyer && isset($withBacthBuyer->buyer)) {
+                $transaction->buyer_name = $withBacthBuyer->buyer->first_name . ' ' . $withBacthBuyer->buyer->last_name;
+            }
             $childTransaction = array();
             $transactionDetail = $transaction->transactionDetail;
             $transaction->center_id = $transaction->log->entity_id;
@@ -119,10 +123,10 @@ class YemenOperativeController extends Controller
 
                     $parentTransaction = Transaction::where('transaction_id', $sentTransaction->transaction->reference_id)->first();
 
-                    if(!$parentTransaction){
+                    if (!$parentTransaction) {
                         throw new Exception('Parent Transaction not found.');
                     }
-                    if($sentTransaction->transaction->sent_to == 13){
+                    if ($sentTransaction->transaction->sent_to == 13) {
                         $transaction = Transaction::create([
                             'batch_number' => $sentTransaction->transaction->batch_number,
                             'is_parent' => $sentTransaction->transaction->is_parent,
@@ -143,7 +147,7 @@ class YemenOperativeController extends Controller
                             'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
                             'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
                         ]);
-    
+
                         $transactionLog = TransactionLog::create([
                             'transaction_id' => $transaction->transaction_id,
                             'action' => 'received',
@@ -154,9 +158,9 @@ class YemenOperativeController extends Controller
                             'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at),
                             'type' => 'received_by_yemen',
                         ]);
-    
+
                         $transactionContainers = $sentTransaction->transactionDetails;
-                        
+
                         foreach ($transactionContainers as $key => $transactionContainer) {
                             TransactionDetail::create([
                                 'transaction_id' => $transaction->transaction_id,
@@ -168,14 +172,14 @@ class YemenOperativeController extends Controller
                                 'center_id' => $transactionContainer->center_id,
                                 'reference_id' => $transactionContainer->reference_id,
                             ]);
-    
+
                             TransactionDetail::where('transaction_id', $sentTransaction->transaction->reference_id)
                                 ->where('container_number', $transactionContainer->container_number)
                                 ->update(['container_status' => 1]);
                         }
                     }
 
-                    if($sentTransaction->transaction->sent_to == 15){
+                    if ($sentTransaction->transaction->sent_to == 15) {
                         $transaction = Transaction::create([
                             'batch_number' => $sentTransaction->transaction->batch_number,
                             'is_parent' => $sentTransaction->transaction->is_parent,
@@ -196,7 +200,7 @@ class YemenOperativeController extends Controller
                             'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
                             'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
                         ]);
-    
+
                         $transactionLog = TransactionLog::create([
                             'transaction_id' => $transaction->transaction_id,
                             'action' => 'sent',
@@ -207,9 +211,9 @@ class YemenOperativeController extends Controller
                             'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at),
                             'type' => 'sent_to_mill',
                         ]);
-    
+
                         $transactionContainers = $sentTransaction->transactionDetails;
-                        
+
                         foreach ($transactionContainers as $key => $transactionContainer) {
                             TransactionDetail::create([
                                 'transaction_id' => $transaction->transaction_id,
@@ -221,7 +225,7 @@ class YemenOperativeController extends Controller
                                 'center_id' => $transactionContainer->center_id,
                                 'reference_id' => $transactionContainer->reference_id,
                             ]);
-    
+
                             TransactionDetail::where('transaction_id', $sentTransaction->transaction->reference_id)
                                 ->where('container_number', $transactionContainer->container_number)
                                 ->update(['container_status' => 1]);
