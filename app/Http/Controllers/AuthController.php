@@ -854,13 +854,22 @@ class AuthController extends Controller
     }
 
     public function endDateAjaxNonSpecial(Request $request)
+
     {
         $today = Carbon::today()->toDateString();
         $endDate = $request->endDate;
         $nonspecialstock = [];
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+            ->where('created_at',  $today)
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $todayweight = 0;
+        foreach ($YemenWarehouseTransactions as $key => $transaction) {
+            $todayweight += $transaction->details->sum('container_weight');
+        }
+        $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->whereBetween('created_at', [$endDate, $today])
-            ->where('is_parent', 0)
             ->where('is_special', 0)
             ->with('meta')
             ->get();
@@ -868,10 +877,22 @@ class AuthController extends Controller
         foreach ($YemenWarehouseTransactions as $key => $transaction) {
             $weight += $transaction->details->sum('container_weight');
         }
-        array_push($nonspecialstock, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+        array_push($nonspecialstock, ["wareHouse" => "Yemen", "today" => $todayweight, "end" => $weight]);
+        $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->where('created_at', $today)
 
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $todayweight = 0;
+        foreach ($UKWarehouseTransactions as $key => $transaction) {
+            $todayweight += $transaction->details->sum('container_weight');
+        }
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_parent', 0)
+
+
             ->where('is_special', 0)
             ->with('meta')
             ->get();
@@ -879,8 +900,16 @@ class AuthController extends Controller
         foreach ($UKWarehouseTransactions as $key => $transaction) {
             $weight += $transaction->details->sum('container_weight');
         }
-        array_push($nonspecialstock, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
-
+        array_push($nonspecialstock, ["wareHouse" => "UK", "today" => $todayweight, "end" => $weight]);
+        $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+            ->where('created_at', $today)
+            ->where('is_special', 0)
+            ->with('meta')
+            ->get();
+        $todayweight = 0;
+        foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+            $todayweight += $transaction->details->sum('container_weight');
+        }
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_special', 0)
@@ -890,7 +919,8 @@ class AuthController extends Controller
         foreach ($ChinaWarehouseTransactions as $key => $transaction) {
             $weight += $transaction->details->sum('container_weight');
         }
-        array_push($nonspecialstock, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+
+        array_push($nonspecialstock, ["wareHouse" => "China", "today" => $todayweight, "end" => $weight]);
         return view('admin.nonspecial_stock_view', [
             'nonspecialstock' => $nonspecialstock
         ])->render();
