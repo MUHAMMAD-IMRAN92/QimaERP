@@ -788,6 +788,7 @@ class AuthController extends Controller
         $stocks = [];
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at',  $today)
+            ->where('is_parent', 0)
             ->where('is_special', 1)
             ->with('meta')
             ->get();
@@ -797,6 +798,7 @@ class AuthController extends Controller
         }
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_parent', 0)
             ->where('is_special', 1)
             ->with('meta')
             ->get();
@@ -806,8 +808,8 @@ class AuthController extends Controller
         }
         array_push($stocks, ["wareHouse" => "Yemen", "today" => $todayweight, "end" => $weight]);
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->where('is_parent', 0)
             ->where('created_at', $today)
-
             ->where('is_special', 1)
             ->with('meta')
             ->get();
@@ -818,8 +820,6 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-
-
             ->where('is_special', 1)
             ->with('meta')
             ->get();
@@ -830,6 +830,7 @@ class AuthController extends Controller
         array_push($stocks, ["wareHouse" => "UK", "today" => $todayweight, "end" => $weight]);
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
+            ->where('is_parent', 0)
             ->where('is_special', 1)
             ->with('meta')
             ->get();
@@ -839,6 +840,7 @@ class AuthController extends Controller
         }
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_parent', 0)
             ->where('is_special', 1)
             ->with('meta')
             ->get();
@@ -861,6 +863,7 @@ class AuthController extends Controller
         $nonspecialstock = [];
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at',  $today)
+            ->where('is_parent', 0)
             ->where('is_special', 0)
             ->with('meta')
             ->get();
@@ -870,6 +873,7 @@ class AuthController extends Controller
         }
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_parent', 0)
             ->where('is_special', 0)
             ->with('meta')
             ->get();
@@ -879,8 +883,8 @@ class AuthController extends Controller
         }
         array_push($nonspecialstock, ["wareHouse" => "Yemen", "today" => $todayweight, "end" => $weight]);
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->where('is_parent', 0)
             ->where('created_at', $today)
-
             ->where('is_special', 0)
             ->with('meta')
             ->get();
@@ -891,8 +895,6 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-
-
             ->where('is_special', 0)
             ->with('meta')
             ->get();
@@ -904,6 +906,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
             ->where('is_special', 0)
+            ->where('is_parent', 0)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -912,6 +915,7 @@ class AuthController extends Controller
         }
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->whereBetween('created_at', [$endDate, $today])
+            ->where('is_parent', 0)
             ->where('is_special', 0)
             ->with('meta')
             ->get();
