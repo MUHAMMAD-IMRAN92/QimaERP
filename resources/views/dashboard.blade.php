@@ -176,6 +176,7 @@
             });
             $('#specialCoffee').on('change', function() {
                 let endDate = $("#specialCoffee").val();
+                // alert(endDate);
                 $.ajax({
                     url: "{{ url('admin/dashboard/specialCoffee') }}",
                     type: "GET",
@@ -183,13 +184,16 @@
                         'endDate': endDate
                     },
                     success: function(data) {
-                        $('#ajaxSpecialCoffee').html(data);
+                        // alert('pres');
+                        $('#ajaxspecialCoffee').html(data);
                         console.log(data);
                     }
                 });
             });
             $('#nonspecialCoffee').on('change', function() {
-                let endDate = $("#specialCoffee").val();
+                let endDate = $("#nonspecialCoffee").val();
+                // alert(endDate);
+
                 $.ajax({
                     url: "{{ url('admin/dashboard/nonspecialCoffee') }}",
                     type: "GET",
@@ -447,10 +451,10 @@
                                     <center> SPECIALTY COFFEE IN STOCK</center>
                                 </b> </h3>
                         </div>
-                        <!-- /.card-header -->
-                        <div class="card-body" id="ajaxSpecialCoffee">
-                            <input type="date" id="specialCoffee" name="endDate" class="form-control"
-                                style="margin-top: -10px;">
+                        <!-- /.card-header --><input type="date" id="specialCoffee" name="endDate" class="form-control"
+                            style="margin-bottom : -10px;">
+                        <div class="card-body" id="ajaxspecialCoffee">
+
                             <h6>Today</h6>
                             <h6 style=" margin-left: 53%;  margin-top: -26px;">
                                 End Date
@@ -488,12 +492,14 @@
                                 </b> </h3>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body" id="ajaxnonspecialCoffee"> <input type="date" id="nonspecialCoffee"
-                                name="endDate" class="form-control" style="margin-top: -10px;">
+                        <input type="date" id="nonspecialCoffee" name="endDate" class="form-control"
+                            style="margin-bottom : -10px;">
+                        <div class="card-body" id="ajaxnonspecialCoffee">
+
                             <h6>Today</h6>
                             <h6
                                 style="     margin-left: 53%;
-                                                                                                                                                                                                            margin-top: -26px;">
+                                                                                                                                                                                                                                        margin-top: -26px;">
                                 End
                                 Date
                             </h6>
