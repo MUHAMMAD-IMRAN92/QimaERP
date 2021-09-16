@@ -967,4 +967,17 @@ class FarmerController extends Controller
             'invoices' =>  $inoviceName
         ])->render();
     }
+    public function farmeridCard($id)
+    {
+        $imageName = null;
+        $inoviceName = [];
+        $farmer = Farmer::find($id);
+        if ($file = FileSystem::where('file_id', $farmer->idcard_picture_id)->first()) {
+            $farmer->cnicImage = $file->user_file_name;
+            // array_push($farmer->cnicImage,  $imageName);
+        }
+        return view('admin.farmer.views.idcard ', [
+            'farmer' =>  $farmer
+        ])->render();
+    }
 }
