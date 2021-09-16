@@ -49,7 +49,8 @@
             cursor: pointer;
         }
 
-        #reciepts {
+        #reciepts,
+        #iddocuments {
             cursor: pointer;
         }
 
@@ -207,11 +208,14 @@
                 });
             });
             $('#iddocuments').on('click', function() {
-                function refreshPage() {
-                    window.location.reload();
-                };
-                $('#idimage').focus();
-
+                $.ajax({
+                    url: "{{ url('admin/farmer_id_documents/' . $farmer->farmer_id) }}",
+                    type: "GET",
+                    success: function(data) {
+                        $('#farmer-inovices').html(data);
+                        console.log(data);
+                    }
+                });
             });
         });
     </script>
@@ -443,18 +447,18 @@
             <hr>
             <div class="row ml-2 blacklink">
 
-                <a href="http://qima.test/admin/farmer/profile/94/#idimage" class="ml-2" id="iddocuments">
+                <span href="" class="ml-2" id="iddocuments">
                     <p>ID DOCUMENTS &nbsp;|</p>
-                </a>
+                </span>
                 <span class="ml-2" id="reciepts">
                     <p>RECIEPTS &nbsp;|</p>
                 </span>
-                <a href="#" class="ml-2">
+                <span href="#" class="ml-2">
                     <p>LOANS &nbsp;|</p>
-                </a>
-                <a href="#" class="ml-2">
+                </span>
+                <span href="#" class="ml-2">
                     <p>PREMIUMS &nbsp;</p>
-                </a>
+                </span>
 
             </div>
             <div class="row ml-2" id="farmer-inovices">
@@ -467,7 +471,7 @@
                     <td> <img class="famerimg"
                             style="width: 150px  ; height:80px ; border-radius:50%; border: 1px solid gray;"
                             src="{{ asset('storage/app/images/' . $farmer->cnicImage) }}" alt="no img" id="idimage"></td>
-                                         @endif
+                @endif
 
 
             </div>
