@@ -131,12 +131,14 @@ class CoffeeBuyer extends Controller
                 $profileImageId = null;
                 $idcardImageId = null;
                 if ($farmer->farmer_picture) {
-                    $destinationPath = 'storage/app/images/';
+                    $destinationPath =  'invoices/';
                     // $destinationPath = 'public/images';
                     $file = base64_decode($farmer->farmer_picture);
                     $file_name = time() . $i . getFileExtensionForBase64($file);
                     // file_put_contents($destinationPath . $file_name, $file);
-                    Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                    // Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                    $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
+                    Storage::disk('s3')->setVisibility($path, 'public');
 
                     $userProfileImage = FileSystem::create([
                         'user_file_name' => $file_name,
@@ -145,12 +147,14 @@ class CoffeeBuyer extends Controller
                 }
 
                 if ($farmer->farmer_id_card_picture) {
-                    $destinationPath = 'storage/app/images/';
+                    $destinationPath =  'invoices/';
                     // $destinationPath = 'public/images';
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
                     // file_put_contents($destinationPath . $id_card_file_name, $idfile);
-                    Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
+                    // Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
+                    $path =   Storage::putFile($destinationPath . $id_card_file_name, $idfile, 's3');
+                    Storage::disk('s3')->setVisibility($path, 'public');
 
                     // $request->file('profile_picture')->storeAs('public/images', $file_name);
                     $userIdCardImage = FileSystem::create([
@@ -532,12 +536,14 @@ class CoffeeBuyer extends Controller
                         foreach ($transactionsInvoices as $key => $transactionsInvoice) {
                             if ($transactionsInvoice->invoice_image) {
                                 //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
-                                $destinationPath = 'storage/app/images/';
+                                $destinationPath =  'invoices/';
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
                                 // file_put_contents($destinationPath . $file_name, $file);
-                                Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                                // Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                                $path =  Storage::putFile($destinationPath . $file_name, $file, 's3');
+                                Storage::disk('s3')->setVisibility($path, 'public');
 
                                 $userProfileImage = FileSystem::create([
                                     'user_file_name' => $file_name,
@@ -682,12 +688,14 @@ class CoffeeBuyer extends Controller
                         foreach ($transactionsInvoices as $key => $transactionsInvoice) {
                             if ($transactionsInvoice->invoice_image) {
                                 //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
-                                $destinationPath = 'storage/app/images/';
+                                $destinationPath =  'invoices/';
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
                                 // file_put_contents($destinationPath . $file_name, $file);
-                                Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                                // Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                                $path =  Storage::putFile($destinationPath . $file_name, $file, 's3');
+                                Storage::disk('s3')->setVisibility($path, 'public');
 
                                 $userProfileImage = FileSystem::create([
                                     'user_file_name' => $file_name,
@@ -927,7 +935,7 @@ class CoffeeBuyer extends Controller
     //                    foreach ($transactionsInvoices as $key => $transactionsInvoice) {
     //
     //                        if ($transactionsInvoice->invoice_image) {
-    //                            $destinationPath = 'storage/app/images/';
+    //                            $destinationPath =  'invoices/';
     //                            $file = base64_decode($transactionsInvoice->invoice_image);
     //                            $file_name = time() . $i . getFileExtensionForBase64($file);
     //                            file_put_contents($destinationPath . $file_name, $file);
@@ -1074,12 +1082,14 @@ class CoffeeBuyer extends Controller
                     foreach ($transactionsInvoices as $key => $transactionsInvoice) {
 
                         if ($transactionsInvoice->invoice_image) {
-                            $destinationPath = 'storage/app/images/';
+                            $destinationPath =  'invoices/';
                             // $destinationPath = 'public/images';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
                             // file_put_contents($destinationPath . $file_name, $file);
-                            Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                            // Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                            $path = Storage::putFile($destinationPath . $file_name, $file, 's3');
+                            Storage::disk('s3')->setVisibility($path, 'public');
 
                             $userProfileImage = FileSystem::create([
                                 'user_file_name' => $file_name,
