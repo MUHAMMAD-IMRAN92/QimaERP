@@ -138,9 +138,9 @@ class CoffeeBuyer extends Controller
                     $file = base64_decode($farmer->farmer_picture);
                     $file_name = time() . $i . getFileExtensionForBase64($file);
                     // file_put_contents($destinationPath . $file_name, $file);
-                    Storage::disk('s3')->put($destinationPath . '/' . $file_name, $file);
+                    Storage::disk('s3')->put($destinationPath . $file_name, $file);
                     // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
-                    return    $path = Storage::disk('s3')->url($file_name);
+                    $path = Storage::disk('s3')->url($file_name);
                     Storage::disk('s3')->setVisibility($path, 'public');
 
                     $userProfileImage = FileSystem::create([
@@ -155,7 +155,7 @@ class CoffeeBuyer extends Controller
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
                     // file_put_contents($destinationPath . $id_card_file_name, $idfile);
-                    Storage::disk('s3')->put($destinationPath . '/' . $id_card_file_name, $idfile);
+                    Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
                     $path = Storage::disk('s3')->url($id_card_file_name);
 
                     Storage::disk('s3')->setVisibility($path, 'public');
@@ -547,7 +547,7 @@ class CoffeeBuyer extends Controller
                                 // file_put_contents($destinationPath . $file_name, $file);
                                 // Storage::disk('s3')->put($destinationPath . $file_name, $file);
 
-                                Storage::disk('s3')->put($destinationPath . '/' . $file_name, $file);
+                                Storage::disk('s3')->put($destinationPath  . $file_name, $file);
                                 // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
                                 $path = Storage::disk('s3')->url($file_name);
                                 Storage::disk('s3')->setVisibility($path, 'public');
@@ -698,7 +698,7 @@ class CoffeeBuyer extends Controller
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
-                                Storage::disk('s3')->put($destinationPath . '/' . $file_name, $file);
+                                Storage::disk('s3')->put($destinationPath  . $file_name, $file);
                                 // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
                                 $path = Storage::disk('s3')->url($file_name);
                                 Storage::disk('s3')->setVisibility($path, 'public');
@@ -1092,7 +1092,7 @@ class CoffeeBuyer extends Controller
                             // $destinationPath = 'public/images';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
-                            Storage::disk('s3')->put($destinationPath . '/' . $file_name, $file);
+                            Storage::disk('s3')->put($destinationPath  . $file_name, $file);
                             // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
                             $path = Storage::disk('s3')->url($file_name);
                             Storage::disk('s3')->setVisibility($path, 'public');
