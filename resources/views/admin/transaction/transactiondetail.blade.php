@@ -283,7 +283,7 @@
             border-radius: 50px;
         }
 
-
+        
         @media(max-width: 576px) {
             .contacts_card {
                 margin-bottom: 15px !important;
@@ -499,8 +499,8 @@
                                         <div class="col-4 mt-5">
                                             @if (!empty($invoiceName))
                                                 @foreach ($invoiceName as $inv)
-                                                    <img src="{{ Storage::disk('s3')->url('images/' . $inv) }}"
-                                                        alt="No Image" class="transaction-image">
+                                                    <img src="{{ asset('storage/app/images/' . $inv) }}" alt="No Image"
+                                                        class="transaction-image">
                                                     <br>
                                                 @endforeach
                                             @endif

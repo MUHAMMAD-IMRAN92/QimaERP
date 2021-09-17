@@ -260,13 +260,12 @@
             <div class="row">
                 <div class="col-md-4">
                     @if ($farmer->picture_id == null)
-                        <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                        <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;" alt=""></td>
                     @else
                         <td> <img class="famerimg"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ Storage::disk('s3')->url('images/' . $farmer->image) }}" {{-- src="https://qima.s3.us-east-2.amazonaws.com/images/1631859778.JPG" --}}
-                                alt=" no img"></td>
+                                src="{{ asset('storage/app/images/' . $farmer->image) }}" alt=" no img"></td>
                     @endif
 
                 </div>
@@ -465,14 +464,13 @@
             <div class="row ml-2" id="farmer-inovices">
 
                 @if ($farmer->cnicImage == null)
-                    <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                    <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
                             style="width: 150px ; height:80px ; border-radius:50%; border: 1px solid gray;" alt=""
                             id="idimage"></td>
                 @else
                     <td> <img class="famerimg"
                             style="width: 150px  ; height:80px ; border-radius:50%; border: 1px solid gray;"
-                            src="{{ Storage::disk('s3')->url('images/' . $farmer->cnicImage) }}" alt="no img"
-                            id="idimage"></td>
+                            src="{{ asset('storage/app/images/' . $farmer->cnicImage) }}" alt="no img" id="idimage"></td>
                 @endif
 
 

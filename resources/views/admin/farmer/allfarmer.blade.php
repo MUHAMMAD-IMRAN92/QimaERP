@@ -177,13 +177,10 @@
         </div>
         <br>
         <div class="row ml-3 blacklink ">
-            <span class="ml-3"> <a
-                    href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}">
-                    YESTERDAY</a></span>
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}"> YESTERDAY</a></span>
             &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO
-                    DATE
+            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO DATE
                 </a></span>
             &nbsp |
             <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH TO
@@ -285,12 +282,11 @@
                                             <tr>
                                                 @if ($farmer->picture_id == null)
                                                     <td> <img class="famerimg"
-                                                            src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
-                                                            alt="">
+                                                            src="{{ asset('public/images/farmericon.png') }}" alt="">
                                                     </td>
                                                 @else
                                                     <td> <img class="famerimg"
-                                                            src="{{ Storage::disk('s3')->url('images/' . $farmer->image) }}"
+                                                            src="{{ asset('storage/app/images/' . $farmer->image) }}"
                                                             alt=""></td>
                                                 @endif
 
