@@ -55,9 +55,11 @@
         .blacklink .hover:hover {
             cursor: pointer;
         }
-       .list-group .list-group-item{
-           width: 100%;
-       }
+
+        .list-group .list-group-item {
+            width: 100%;
+        }
+
     </style>
 
     <script>
@@ -240,12 +242,12 @@
             <div class="row">
                 <div class="col-md-4">
                     @if ($buyer->image == null)
-                        <td> <img class="famerimg ml-4" src="{{ asset('public/images/farmericon.png') }}"
+                        <td> <img class="famerimg ml-4" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                                 style="width: 200px ; height:200px; border-radius:50%; border: 1px solid gray;" alt=""></td>
                     @else
                         <td> <img class="famerimg ml-4"
                                 style="width:  200px ; height: 200px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ asset('public/storage/images/' . $buyer->image) }}" alt=" no img"></td>
+                                src="{{ Storage::disk('s3')->url('images/' . $buyer->image) }}" alt=" no img"></td>
                     @endif
 
                 </div>
@@ -398,9 +400,9 @@
                         <ul class="list-group list-group-horizontal">
                             <li class="list-group-item data-content-list">
                                 @if ($village['picture_id'] == null)
-                                    <img src="{{ asset('public/images/farmericon.png') }}" id="region_farmer">
+                                    <img src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" id="region_farmer">
                                 @else
-                                    <img src="{{ asset('public/storage/images/' . $farmer['picture_id']) }}"
+                                    <img src=" {{ Storage::disk('s3')->url('images/' . $farmer['picture_id']) }}"
                                         id="region_farmer">
                                 @endif
 
@@ -423,9 +425,9 @@
                         <ul class="list-group list-group-horizontal">
                             <li class="list-group-item data-content-list">
                                 @if ($farmer['farmer_image'] == null)
-                                    <img src="{{ asset('public/images/farmericon.png') }}" id="region_farmer">
+                                    <img src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" id="region_farmer">
                                 @else
-                                    <img src="{{ asset('public/storage/images/' . $farmer['farmer_image']) }}"
+                                    <img src="{{ Storage::disk('s3')->url('images/' . $farmer['farmer_image']) }}"
                                         id="region_farmer">
                                 @endif
 
@@ -443,16 +445,16 @@
             @foreach ($buyer->transactions as $transaction)
                 <div class="row ml-2">
                     <div class="">
-                        <ol class="breadcrumb float-sm-right txt-size">
-                            <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} /{{ $buyer->first_name }} /
-                                {{ explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] }}
-                                /
-                                @php
-                                 echo   floatval($transaction->details->sum('container_weight') );
-                                @endphp
+                        <ol class=" breadcrumb float-sm-right txt-size">
+                        <li class="breadcrumb-item active">
+                            {{ $transaction->created_at }} /{{ $buyer->first_name }} /
+                            {{ explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] }}
+                            /
+                            @php
+                                echo floatval($transaction->details->sum('container_weight'));
+                            @endphp
 
-                            </li>
+                        </li>
                         </ol>
                     </div>
                 </div>
