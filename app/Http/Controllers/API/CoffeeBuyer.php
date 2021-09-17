@@ -140,7 +140,7 @@ class CoffeeBuyer extends Controller
                     // file_put_contents($destinationPath . $file_name, $file);
                     Storage::disk('s3')->put($destinationPath . '/' . $file_name, $file);
                     // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
-                    $path = Storage::disk('s3')->url($file_name);
+                    return    $path = Storage::disk('s3')->url($file_name);
                     Storage::disk('s3')->setVisibility($path, 'public');
 
                     $userProfileImage = FileSystem::create([
