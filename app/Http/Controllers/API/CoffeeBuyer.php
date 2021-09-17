@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use Storage;
 use App\User;
 use Exception;
 use Throwable;
@@ -25,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -135,7 +135,8 @@ class CoffeeBuyer extends Controller
                     // $destinationPath = 'public/images';
                     $file = base64_decode($farmer->farmer_picture);
                     $file_name = time() . $i . getFileExtensionForBase64($file);
-                    file_put_contents($destinationPath . $file_name, $file);
+                    // file_put_contents($destinationPath . $file_name, $file);
+                    Storage::disk('s3')->put($destinationPath . $file_name, $file);
 
                     $userProfileImage = FileSystem::create([
                         'user_file_name' => $file_name,
@@ -148,7 +149,9 @@ class CoffeeBuyer extends Controller
                     // $destinationPath = 'public/images';
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
-                    file_put_contents($destinationPath . $id_card_file_name, $idfile);
+                    // file_put_contents($destinationPath . $id_card_file_name, $idfile);
+                    Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
+
                     // $request->file('profile_picture')->storeAs('public/images', $file_name);
                     $userIdCardImage = FileSystem::create([
                         'user_file_name' => $id_card_file_name,
@@ -533,7 +536,9 @@ class CoffeeBuyer extends Controller
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
-                                file_put_contents($destinationPath . $file_name, $file);
+                                // file_put_contents($destinationPath . $file_name, $file);
+                                Storage::disk('s3')->put($destinationPath . $file_name, $file);
+
                                 $userProfileImage = FileSystem::create([
                                     'user_file_name' => $file_name,
                                 ]);
@@ -681,7 +686,9 @@ class CoffeeBuyer extends Controller
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
-                                file_put_contents($destinationPath . $file_name, $file);
+                                // file_put_contents($destinationPath . $file_name, $file);
+                                Storage::disk('s3')->put($destinationPath . $file_name, $file);
+
                                 $userProfileImage = FileSystem::create([
                                     'user_file_name' => $file_name,
                                 ]);
@@ -1071,7 +1078,9 @@ class CoffeeBuyer extends Controller
                             // $destinationPath = 'public/images';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
-                            file_put_contents($destinationPath . $file_name, $file);
+                            // file_put_contents($destinationPath . $file_name, $file);
+                            Storage::disk('s3')->put($destinationPath . $file_name, $file);
+
                             $userProfileImage = FileSystem::create([
                                 'user_file_name' => $file_name,
                             ]);
