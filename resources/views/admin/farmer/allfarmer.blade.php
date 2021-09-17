@@ -285,7 +285,7 @@
                                             <tr>
                                                 @if ($farmer->picture_id == null)
                                                     <td> <img class="famerimg"
-                                                            src="{{ Storage::disk('s3')->url('images/' . 'dumy') }}"
+                                                            src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                                                             alt="">
                                                     </td>
                                                 @else

@@ -55,8 +55,10 @@ class CoffeeBuyer extends Controller
         $villageCode = $request->village_code;
         $farmerCode = $request->farmer_code;
         $farmerNicn = $request->farmer_nicn;
-        $user_image = asset('storage/app/images/demo_user_image.png');
-        $user_image_path = asset('storage/app/images/');
+        // $user_image = asset('storage/app/images/demo_user_image.png');
+        // $user_image_path = asset('storage/app/images/');
+        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+        $user_image_path = Storage::disk('s3')->url('images/');
         $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
             $q->where(function ($q) use ($farmerName) {
                 $q->where('farmer_name', 'like', "%$farmerName%");
@@ -190,8 +192,8 @@ class CoffeeBuyer extends Controller
             $i++;
             $x++;
         }
-        $user_image = asset('storage/app/images/demo_user_image.png');
-        $user_image_path = asset('storage/app/images/');
+        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+        $user_image_path = Storage::disk('s3')->url('images/');
         $farmers = Farmer::whereIn('farmer_id', $formaersId)->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
             $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
         }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
@@ -1103,9 +1105,10 @@ class CoffeeBuyer extends Controller
                         $i++;
                     }
                 }
-                $user_image = asset('storage/app/images/demo_user_image.png');
-                $user_image_path = asset('storage/app/images/');
-
+                // $user_image = asset('storage/app/images/demo_user_image.png');
+                // $user_image_path = asset('storage/app/images/');
+                $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+                $user_image_path = Storage::disk('s3')->url('images/');
                 $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->with(['transactions_invoices.invoice' => function ($query) use ($user_image, $user_image_path) {
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                 }])->first();
@@ -1147,8 +1150,10 @@ class CoffeeBuyer extends Controller
     function coffeeBuyerCoffee(Request $request)
     {
         $allTransactions = array();
-        $user_image = asset('storage/app/images/demo_user_image.png');
-        $user_image_path = asset('storage/app/images/');
+        // $user_image = asset('storage/app/images/demo_user_image.png');
+        // $user_image_path = asset('storage/app/images/');
+        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+        $user_image_path = Storage::disk('s3')->url('images/');
         $transactions = Transaction::where('is_parent', 0)
             ->where('created_by', $this->userId)
             ->where('transaction_status', 'created')
