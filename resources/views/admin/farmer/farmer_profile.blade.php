@@ -265,8 +265,8 @@
                     @else
                         <td> <img class="famerimg"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ Storage::disk('s3')->response('images/' . $farmer->image) }}"
-                                {{-- src="https://qima.s3.us-east-2.amazonaws.com/images/1631859778.JPG" --}} alt=" no img"></td>
+                                src="{{ Storage::disk('s3')->url('images/' . $farmer->image) }}" {{-- src="https://qima.s3.us-east-2.amazonaws.com/images/1631859778.JPG" --}}
+                                alt=" no img"></td>
                     @endif
 
                 </div>
