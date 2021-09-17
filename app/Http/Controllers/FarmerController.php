@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Return_;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class FarmerController extends Controller
@@ -264,7 +265,8 @@ class FarmerController extends Controller
         if ($request->profile_picture) {
             $file = $request->profile_picture;
             $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $request->file('profile_picture')->storeAs('images', $file_name, 's3');
+            $path = $request->file('profile_picture')->storeAs('images', $file_name, 's3');
+            Storage::setVisibility($path, 'public');
             $userProfileImage = FileSystem::create([
                 'user_file_name' => $file_name,
             ]);
