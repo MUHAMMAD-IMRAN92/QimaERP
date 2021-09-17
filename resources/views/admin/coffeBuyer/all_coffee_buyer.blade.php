@@ -22,7 +22,7 @@
             background-color: purple !important;
         }
 
-       .blacklink a {
+        .blacklink a {
 
             color: rgb(0, 0, 0);
             background-color: transparent;
@@ -30,9 +30,11 @@
             font-size: 14px;
 
         }
-        a{
+
+        a {
             color: rgb(0, 0, 0);
         }
+
         .famerimg {
 
             width: 20px;
@@ -146,7 +148,6 @@
                 });
             });
         });
-
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -187,21 +188,25 @@
 
         <br>
         <div class="row ml-2 blacklink ">
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">TODAY</a></span> &nbsp
+            <span class="ml-2"> <a
+                    href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">TODAY</a></span> &nbsp
             |
             <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'yesterday')) }}">
                     YESTERDAY</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'weekToDate')) }}"> WEEK TO DATE
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'weekToDate')) }}"> WEEK
+                    TO DATE
                 </a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'monthToDate')) }}">MONTH TO
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'monthToDate')) }}">MONTH
+                    TO
                     DATE</a></span>
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'lastmonth')) }}"> LAST
                     MONTH</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'yearToDate')) }}">YEAR TO
+            <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'yearToDate')) }}">YEAR
+                    TO
                     DATE</a></span>
             &nbsp |
             <span class="ml-2"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'currentyear')) }}"> 2021
@@ -299,12 +304,12 @@
 
                                                         @if ($coffeeBuyerManger->picture_id == null)
                                                             <td> <img class="famerimg"
-                                                                    src="{{ asset('public/images/farmericon.png') }}"
+                                                                    src="{{ Storage::disk('s3')->url('images/' . 'dumy') }}"
                                                                     alt="">
                                                             </td>
                                                         @else
                                                             <td> <img class="famerimg"
-                                                                    src="{{ asset('public/storage/images/' . $coffeeBuyerManger->image) }}"
+                                                                    src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyerManger->image) }}"
                                                                     alt=""></td>
                                                         @endif
                                                         <td>{{ $coffeeBuyerManger->first_name }}</td>
@@ -369,12 +374,12 @@
 
                                                         @if ($coffeeBuyer->picture_id == null)
                                                             <td> <img class="famerimg"
-                                                                    src="{{ asset('public/images/farmericon.png') }}"
+                                                                    src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                                                                     alt="">
                                                             </td>
                                                         @else
                                                             <td> <img class="famerimg"
-                                                                    src="{{ asset('public/storage/images/' . $coffeeBuyer->image) }}"
+                                                                    src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyer->image) }}"
                                                                     alt=""></td>
                                                         @endif
                                                         <td>{{ $coffeeBuyer->first_name }}</td>

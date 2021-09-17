@@ -15,6 +15,7 @@ use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -45,8 +46,9 @@ class CoffeeBuyerManager extends Controller
         $villageCode = $request->village_code;
         $farmerCode = $request->farmer_code;
         $farmerNicn = $request->farmer_nicn;
-        $user_image = asset('storage/app/images/demo_user_image.png');
-        $user_image_path = asset('storage/app/images/');
+       
+        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+        $user_image_path = Storage::disk('s3')->url('images');
         $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
             $q->where(function ($q) use ($farmerName) {
                 $q->where('farmer_name', 'like', "%$farmerName%");

@@ -1,7 +1,7 @@
 @if ($farmer['cnicImage'] == null)
-    <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
+    <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
             style="width: 150px ; height:80px ; border-radius:50%; border: 1px solid gray;" alt="" id="idimage"></td>
 @else
     <td> <img class="famerimg" style="width: 150px  ; height:80px ; border-radius:50%; border: 1px solid gray;"
-            src="{{ asset('storage/app/images/' . $farmer['cnicImage']) }}" alt="no img" id="idimage"></td>
+            src="{{ Storage::disk('s3')->url('images/' . $farmer['cnicImage']) }}" alt="no img" id="idimage"></td>
 @endif
