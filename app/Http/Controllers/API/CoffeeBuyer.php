@@ -155,8 +155,9 @@ class CoffeeBuyer extends Controller
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
                     // file_put_contents($destinationPath . $id_card_file_name, $idfile);
-                    // Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
-                    $path =   Storage::disk('s3')->put($destinationPath, $idfile);
+                    Storage::disk('s3')->put($destinationPath . '/' . $id_card_file_name, $idfile);
+                    $path = Storage::disk('s3')->url($id_card_file_name);
+
                     Storage::disk('s3')->setVisibility($path, 'public');
 
                     // $request->file('profile_picture')->storeAs('public/images', $file_name);
@@ -545,9 +546,11 @@ class CoffeeBuyer extends Controller
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
                                 // file_put_contents($destinationPath . $file_name, $file);
                                 // Storage::disk('s3')->put($destinationPath . $file_name, $file);
-                                $path =  Storage::putFile($destinationPath . $file_name, $file, 's3');
-                                Storage::disk('s3')->setVisibility($path, 'public');
 
+                                Storage::disk('s3')->put($destinationPath . '/' . $file_name, $file);
+                                // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
+                                $path = Storage::disk('s3')->url($file_name);
+                                Storage::disk('s3')->setVisibility($path, 'public');
                                 $userProfileImage = FileSystem::create([
                                     'user_file_name' => $file_name,
                                 ]);
@@ -695,9 +698,9 @@ class CoffeeBuyer extends Controller
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
-                                // file_put_contents($destinationPath . $file_name, $file);
-                                // Storage::disk('s3')->put($destinationPath . $file_name, $file);
-                                $path =  Storage::putFile($destinationPath . $file_name, $file, 's3');
+                                Storage::disk('s3')->put($destinationPath . '/' . $file_name, $file);
+                                // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
+                                $path = Storage::disk('s3')->url($file_name);
                                 Storage::disk('s3')->setVisibility($path, 'public');
 
                                 $userProfileImage = FileSystem::create([
@@ -1089,10 +1092,11 @@ class CoffeeBuyer extends Controller
                             // $destinationPath = 'public/images';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
-                            // file_put_contents($destinationPath . $file_name, $file);
-                            // Storage::disk('s3')->put($destinationPath . $file_name, $file);
-                            $path = Storage::putFile($destinationPath . $file_name, $file, 's3');
+                            Storage::disk('s3')->put($destinationPath . '/' . $file_name, $file);
+                            // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
+                            $path = Storage::disk('s3')->url($file_name);
                             Storage::disk('s3')->setVisibility($path, 'public');
+
 
                             $userProfileImage = FileSystem::create([
                                 'user_file_name' => $file_name,
