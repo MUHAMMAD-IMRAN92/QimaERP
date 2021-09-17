@@ -30,9 +30,9 @@ class DevTestController extends Controller
         // ]);
         $destinationPath =  'images/';
 
-        // Storage::disk('s3')->put('file.txt', 'Imran');
-        Storage::putFile($destinationPath, 'file.txt', 'local');
+        Storage::disk('local')->put($destinationPath . '/' . 'file.txt', 'Imran');
+        // Storage::putFile($destinationPath, 'file.txt', 'local');
 
-        return 'done';
+        return Storage::disk('local')->url('file.text');
     }
 }
