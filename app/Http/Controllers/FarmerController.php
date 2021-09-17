@@ -266,7 +266,8 @@ class FarmerController extends Controller
             $file = $request->profile_picture;
             $file_name = time() . '.' . $file->getClientOriginalExtension();
             $path = $request->file('profile_picture')->storeAs('images', $file_name, 's3');
-            Storage::setVisibility($path, 'public');
+
+            Storage::disk('s3')->setVisibility($path, 'public');
             $userProfileImage = FileSystem::create([
                 'user_file_name' => $file_name,
             ]);
