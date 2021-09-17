@@ -58,7 +58,7 @@ class CoffeeBuyer extends Controller
         // $user_image = asset('storage/app/images/demo_user_image.png');
         // $user_image_path = asset('storage/app/images/');
         $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
-        $user_image_path = Storage::disk('s3')->url('images/');
+        $user_image_path = Storage::disk('s3')->url('images');
         $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
             $q->where(function ($q) use ($farmerName) {
                 $q->where('farmer_name', 'like', "%$farmerName%");
@@ -152,7 +152,7 @@ class CoffeeBuyer extends Controller
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
                     // file_put_contents($destinationPath . $id_card_file_name, $idfile);
                     Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
-                   
+
                     // $request->file('profile_picture')->storeAs('public/images', $file_name);
                     $userIdCardImage = FileSystem::create([
                         'user_file_name' => $id_card_file_name,
@@ -538,7 +538,7 @@ class CoffeeBuyer extends Controller
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
                                 Storage::disk('s3')->put($destinationPath  . $file_name, $file);
-                               
+
                                 $userProfileImage = FileSystem::create([
                                     'user_file_name' => $file_name,
                                 ]);
@@ -1080,7 +1080,7 @@ class CoffeeBuyer extends Controller
                             $file_name = time() . $i . getFileExtensionForBase64($file);
                             Storage::disk('s3')->put($destinationPath  . $file_name, $file);
                             // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
-                          
+
 
 
                             $userProfileImage = FileSystem::create([
