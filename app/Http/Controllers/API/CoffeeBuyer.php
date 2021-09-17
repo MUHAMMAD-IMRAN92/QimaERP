@@ -131,7 +131,7 @@ class CoffeeBuyer extends Controller
                 $profileImageId = null;
                 $idcardImageId = null;
                 if ($farmer->farmer_picture) {
-                    $destinationPath =  'invoices/';
+                    $destinationPath =  'images/';
                     // $destinationPath = 'public/images';
                     $file = base64_decode($farmer->farmer_picture);
                     $file_name = time() . $i . getFileExtensionForBase64($file);
@@ -147,7 +147,7 @@ class CoffeeBuyer extends Controller
                 }
 
                 if ($farmer->farmer_id_card_picture) {
-                    $destinationPath =  'invoices/';
+                    $destinationPath =  'images/';
                     // $destinationPath = 'public/images';
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
@@ -536,7 +536,7 @@ class CoffeeBuyer extends Controller
                         foreach ($transactionsInvoices as $key => $transactionsInvoice) {
                             if ($transactionsInvoice->invoice_image) {
                                 //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
-                                $destinationPath =  'invoices/';
+                                $destinationPath =  'images/';
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
@@ -688,7 +688,7 @@ class CoffeeBuyer extends Controller
                         foreach ($transactionsInvoices as $key => $transactionsInvoice) {
                             if ($transactionsInvoice->invoice_image) {
                                 //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
-                                $destinationPath =  'invoices/';
+                                $destinationPath =  'images/';
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
@@ -935,7 +935,7 @@ class CoffeeBuyer extends Controller
     //                    foreach ($transactionsInvoices as $key => $transactionsInvoice) {
     //
     //                        if ($transactionsInvoice->invoice_image) {
-    //                            $destinationPath =  'invoices/';
+    //                            $destinationPath =  'images/';
     //                            $file = base64_decode($transactionsInvoice->invoice_image);
     //                            $file_name = time() . $i . getFileExtensionForBase64($file);
     //                            file_put_contents($destinationPath . $file_name, $file);
@@ -1082,7 +1082,7 @@ class CoffeeBuyer extends Controller
                     foreach ($transactionsInvoices as $key => $transactionsInvoice) {
 
                         if ($transactionsInvoice->invoice_image) {
-                            $destinationPath =  'invoices/';
+                            $destinationPath =  'images/';
                             // $destinationPath = 'public/images';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
