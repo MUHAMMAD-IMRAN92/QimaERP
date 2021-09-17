@@ -265,7 +265,7 @@
                     @else
                         <td> <img class="famerimg"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ asset('storage/app/images/' . $farmer->image) }}" alt=" no img"></td>
+                                src="{{ {{ Storage::disk('s3')->get($farmer->image)) }}" alt=" no img"></td>
                     @endif
 
                 </div>
@@ -470,7 +470,7 @@
                 @else
                     <td> <img class="famerimg"
                             style="width: 150px  ; height:80px ; border-radius:50%; border: 1px solid gray;"
-                            src="{{ asset('storage/app/images/' . $farmer->cnicImage) }}" alt="no img" id="idimage"></td>
+                            src="{{ Storage::disk('s3')->get($farmer->cnicImage) }}" alt="no img" id="idimage"></td>
                 @endif
 
 
