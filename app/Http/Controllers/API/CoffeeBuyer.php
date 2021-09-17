@@ -155,7 +155,7 @@ class CoffeeBuyer extends Controller
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
                     // file_put_contents($destinationPath . $id_card_file_name, $idfile);
                     // Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
-                    $path =   Storage::putFile($destinationPath . $id_card_file_name, $idfile, 's3');
+                    $path =   Storage::disk('s3')->put($destinationPath, $idfile);
                     Storage::disk('s3')->setVisibility($path, 'public');
 
                     // $request->file('profile_picture')->storeAs('public/images', $file_name);

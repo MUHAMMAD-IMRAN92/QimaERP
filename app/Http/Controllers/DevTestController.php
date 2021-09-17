@@ -28,7 +28,11 @@ class DevTestController extends Controller
         //     'msg' => 'Hello Dev, how is your day?',
         //     'live_test' => true
         // ]);
-        Storage::disk('s3')->put('file.txt', 'Imran');
-        return Storage::disk('s3')->get('file.txt');
+        $destinationPath =  'images/';
+
+        // Storage::disk('s3')->put('file.txt', 'Imran');
+        Storage::putFile($destinationPath, 'file.txt', 'local');
+
+        return 'done';
     }
 }
