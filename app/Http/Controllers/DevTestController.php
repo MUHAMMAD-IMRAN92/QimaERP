@@ -29,10 +29,10 @@ class DevTestController extends Controller
         //     'live_test' => true
         // ]);
         $destinationPath =  'images/';
-
-        Storage::disk('local')->put($destinationPath . '/' . 'file.txt', 'Imran');
+        $name  = 'file';
+        Storage::disk('local')->put($destinationPath . $name, 'Imran');
         // Storage::putFile($destinationPath, 'file.txt', 'local');
 
-        return Storage::disk('local')->url('file.text');
+        return Storage::disk('local')->url($name);
     }
 }
