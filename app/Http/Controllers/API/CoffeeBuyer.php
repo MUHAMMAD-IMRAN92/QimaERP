@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Storage;
 use App\User;
 use Exception;
 use Throwable;
@@ -24,7 +25,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -55,10 +55,8 @@ class CoffeeBuyer extends Controller
         $villageCode = $request->village_code;
         $farmerCode = $request->farmer_code;
         $farmerNicn = $request->farmer_nicn;
-        // $user_image = asset('storage/app/images/demo_user_image.png');
-        // $user_image_path = asset('storage/app/images/');
-        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
-        $user_image_path = Storage::disk('s3')->url('images');
+        $user_image = asset('storage/app/images/demo_user_image.png');
+        $user_image_path = asset('storage/app/images/');
         $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
             $q->where(function ($q) use ($farmerName) {
                 $q->where('farmer_name', 'like', "%$farmerName%");
@@ -133,11 +131,11 @@ class CoffeeBuyer extends Controller
                 $profileImageId = null;
                 $idcardImageId = null;
                 if ($farmer->farmer_picture) {
-                    $destinationPath =  'images/';
+                    $destinationPath = 'storage/app/images/';
                     // $destinationPath = 'public/images';
                     $file = base64_decode($farmer->farmer_picture);
                     $file_name = time() . $i . getFileExtensionForBase64($file);
-                    Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                    file_put_contents($destinationPath . $file_name, $file);
 
                     $userProfileImage = FileSystem::create([
                         'user_file_name' => $file_name,
@@ -146,13 +144,11 @@ class CoffeeBuyer extends Controller
                 }
 
                 if ($farmer->farmer_id_card_picture) {
-                    $destinationPath =  'images/';
+                    $destinationPath = 'storage/app/images/';
                     // $destinationPath = 'public/images';
                     $idfile = base64_decode($farmer->farmer_id_card_picture);
                     $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
-                    // file_put_contents($destinationPath . $id_card_file_name, $idfile);
-                    Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
-
+                    file_put_contents($destinationPath . $id_card_file_name, $idfile);
                     // $request->file('profile_picture')->storeAs('public/images', $file_name);
                     $userIdCardImage = FileSystem::create([
                         'user_file_name' => $id_card_file_name,
@@ -187,8 +183,8 @@ class CoffeeBuyer extends Controller
             $i++;
             $x++;
         }
-        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
-        $user_image_path = Storage::disk('s3')->url('images/');
+        $user_image = asset('storage/app/images/demo_user_image.png');
+        $user_image_path = asset('storage/app/images/');
         $farmers = Farmer::whereIn('farmer_id', $formaersId)->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
             $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
         }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
@@ -533,12 +529,11 @@ class CoffeeBuyer extends Controller
                         foreach ($transactionsInvoices as $key => $transactionsInvoice) {
                             if ($transactionsInvoice->invoice_image) {
                                 //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
-                                $destinationPath =  'images/';
+                                $destinationPath = 'storage/app/images/';
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
-                                Storage::disk('s3')->put($destinationPath  . $file_name, $file);
-
+                                file_put_contents($destinationPath . $file_name, $file);
                                 $userProfileImage = FileSystem::create([
                                     'user_file_name' => $file_name,
                                 ]);
@@ -682,13 +677,11 @@ class CoffeeBuyer extends Controller
                         foreach ($transactionsInvoices as $key => $transactionsInvoice) {
                             if ($transactionsInvoice->invoice_image) {
                                 //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
-                                $destinationPath =  'images/';
+                                $destinationPath = 'storage/app/images/';
                                 // $destinationPath = 'public/images';
                                 $file = base64_decode($transactionsInvoice->invoice_image);
                                 $file_name = time() . $i . getFileExtensionForBase64($file);
-                                Storage::disk('s3')->put($destinationPath  . $file_name, $file);
-                                // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
-
+                                file_put_contents($destinationPath . $file_name, $file);
                                 $userProfileImage = FileSystem::create([
                                     'user_file_name' => $file_name,
                                 ]);
@@ -927,7 +920,7 @@ class CoffeeBuyer extends Controller
     //                    foreach ($transactionsInvoices as $key => $transactionsInvoice) {
     //
     //                        if ($transactionsInvoice->invoice_image) {
-    //                            $destinationPath =  'images/';
+    //                            $destinationPath = 'storage/app/images/';
     //                            $file = base64_decode($transactionsInvoice->invoice_image);
     //                            $file_name = time() . $i . getFileExtensionForBase64($file);
     //                            file_put_contents($destinationPath . $file_name, $file);
@@ -1074,15 +1067,11 @@ class CoffeeBuyer extends Controller
                     foreach ($transactionsInvoices as $key => $transactionsInvoice) {
 
                         if ($transactionsInvoice->invoice_image) {
-                            $destinationPath =  'images/';
+                            $destinationPath = 'storage/app/images/';
                             // $destinationPath = 'public/images';
                             $file = base64_decode($transactionsInvoice->invoice_image);
                             $file_name = time() . $i . getFileExtensionForBase64($file);
-                            Storage::disk('s3')->put($destinationPath  . $file_name, $file);
-                            // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
-
-
-
+                            file_put_contents($destinationPath . $file_name, $file);
                             $userProfileImage = FileSystem::create([
                                 'user_file_name' => $file_name,
                             ]);
@@ -1095,10 +1084,9 @@ class CoffeeBuyer extends Controller
                         $i++;
                     }
                 }
-                // $user_image = asset('storage/app/images/demo_user_image.png');
-                // $user_image_path = asset('storage/app/images/');
-                $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
-                $user_image_path = Storage::disk('s3')->url('images/');
+                $user_image = asset('storage/app/images/demo_user_image.png');
+                $user_image_path = asset('storage/app/images/');
+
                 $currentBatch = Transaction::where('transaction_id', $newTransactionid)->with('transactionDetail')->with(['transactions_invoices.invoice' => function ($query) use ($user_image, $user_image_path) {
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                 }])->first();
@@ -1140,10 +1128,8 @@ class CoffeeBuyer extends Controller
     function coffeeBuyerCoffee(Request $request)
     {
         $allTransactions = array();
-        // $user_image = asset('storage/app/images/demo_user_image.png');
-        // $user_image_path = asset('storage/app/images/');
-        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
-        $user_image_path = Storage::disk('s3')->url('images/');
+        $user_image = asset('storage/app/images/demo_user_image.png');
+        $user_image_path = asset('storage/app/images/');
         $transactions = Transaction::where('is_parent', 0)
             ->where('created_by', $this->userId)
             ->where('transaction_status', 'created')

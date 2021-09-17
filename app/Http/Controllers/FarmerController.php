@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\Return_;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class FarmerController extends Controller
@@ -130,9 +129,7 @@ class FarmerController extends Controller
                 $file = $request->profile_picture;
                 $originalFileName = $file->getClientOriginalName();
                 $file_name = time() . '.' . $file->getClientOriginalExtension();
-                $path =   $request->file('profile_picture')->storeAs('images', $file_name, 's3');
-                Storage::disk('s3')->setVisibility($path, 'public');
-
+                $request->file('profile_picture')->storeAs('images', $file_name);
                 if ($request->picture_id != '') {
                     $userProfileImage = FileSystem::find($request->picture_id);
                     $userProfileImage->user_file_name = $file_name;
@@ -151,9 +148,7 @@ class FarmerController extends Controller
                 $file = $request->idcard_picture;
                 $originalFileName = $file->getClientOriginalName();
                 $file_name = time() . '.' . $file->getClientOriginalExtension();
-                $path =   $request->file('idcard_picture')->storeAs('images', $file_name, 's3');
-                Storage::disk('s3')->setVisibility($path, 'public');
-
+                $request->file('idcard_picture')->storeAs('images', $file_name);
                 if ($request->idcard_picture_id != '') {
                     $userIdCardImage = FileSystem::find($request->idcard_picture_id);
                     $userIdCardImage->user_file_name = $file_name;
@@ -269,8 +264,7 @@ class FarmerController extends Controller
         if ($request->profile_picture) {
             $file = $request->profile_picture;
             $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $path = $request->file('profile_picture')->storeAs('images', $file_name, 's3');
-            Storage::disk('s3')->setVisibility($path, 'public');
+            $request->file('profile_picture')->storeAs('images', $file_name);
             $userProfileImage = FileSystem::create([
                 'user_file_name' => $file_name,
             ]);
@@ -280,9 +274,7 @@ class FarmerController extends Controller
         if ($request->idcard_picture) {
             $file = $request->idcard_picture;
             $id_card_file_name = time() . '.' . $file->getClientOriginalExtension();
-            $path = $request->file('idcard_picture')->storeAs('images', $id_card_file_name, 's3');
-            Storage::disk('s3')->setVisibility($path, 'public');
-
+            $request->file('idcard_picture')->storeAs('images', $id_card_file_name);
             $userIdCardImage = FileSystem::create([
                 'user_file_name' => $id_card_file_name,
             ]);
