@@ -125,7 +125,8 @@
                                                     <div class="card set-padding">
                                                         <div class="row">
                                                             <div class="col-md-12 top-margin-set">
-                                                                <h4 class="card-title">Batch Number: {{ $batchNumber }}
+                                                                <h4 class="card-title">Batch Number:
+                                                                    {{ $batchNumber }}
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                         name="transaction_id[]"
                                                                         value="{{ $trans['transaction']->transaction_id }}"
@@ -135,9 +136,11 @@
                                                             </div>
                                                             @foreach ($trans['transactionDetails'] as $detail)
 
-                                                                <div class="col-md-6"> {{ $detail['container_number'] }}
+                                                                <div class="col-md-6">
+                                                                    {{ $detail['container_number'] }}
                                                                 </div>
-                                                                <div class="col-md-6">{{ $detail['container_weight'] }}
+                                                                <div class="col-md-6">
+                                                                    {{ $detail['container_weight'] }}
                                                                 </div>
 
                                                             @endforeach
@@ -186,7 +189,8 @@
                                                     } ?>
 
                                                 <div class="card-footer">
-                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                    <button type="submit" id="submitbtn"
+                                                        class="btn btn-primary">Submit</button>
                                                 </div>
                                             </form>
 
@@ -228,5 +232,10 @@
                 gov = null;
             }
         }
+        $(document).ready(function() {
+            $('#submitbtn').on('click', function() {
+                $('#submitbtn').hide();
+            });
+        });
     </script>
 @endsection

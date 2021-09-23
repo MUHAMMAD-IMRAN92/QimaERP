@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Transaction;
-use App\TransactionDetail;
 use App\Farmer;
 use App\FileSystem;
+use App\Transaction;
+use App\TransactionDetail;
 use App\TransactionInvoice;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class TransectionController extends Controller
 {
@@ -20,7 +21,7 @@ class TransectionController extends Controller
             'transaction' => $transaction
         ]);
     }
-    public function detail($id)
+    public function detail(Request $request, $id)
     {
         // $transaction
         $transaction = Transaction::find($id);
@@ -52,7 +53,15 @@ class TransectionController extends Controller
             }
         }
         // dd($data['TransactionChild']);
-        return view('admin.transaction.transactiondetail', $data);
+
+        $url =  $request->url();
+
+        $checkUrl =  Str::contains($url, 'rawTransaction');
+        if ($checkUrl) {
+            return view('admin.transaction.raw_transactions', $data);
+        } else {
+            return view('admin.transaction.transactiondetail', $data);
+        }
     }
     function getTransectionAjax(Request $request)
     {

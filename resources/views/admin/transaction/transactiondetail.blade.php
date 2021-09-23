@@ -369,14 +369,11 @@
                                                             <tr>
                                                                 <td>
                                                                     {{ ucwords(Str::of($metas->key)->replace('_', ' ')) }}
-
                                                                 </td>
                                                                 <td>
                                                                     {{ $metas->value }}
                                                                 </td>
                                                             </tr>
-
-
                                                         @endforeach
                                                     </table>
                                                     <span class="
@@ -501,6 +498,7 @@
                                                 @foreach ($invoiceName as $inv)
                                                     <img src="{{ Storage::disk('s3')->url('images/' . $inv) }}"
                                                         alt="No Image" class="transaction-image">
+                                                    <br>
                                                     <br>
                                                 @endforeach
                                             @endif
