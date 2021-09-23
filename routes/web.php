@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Transaction;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 
@@ -128,6 +128,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('alltransection', 'TransectionController@index')->middleware('auth');
         Route::get('transactiondetail/{id}', 'TransectionController@detail')->middleware('auth');
         Route::get('gettransection', 'TransectionController@getTransectionAjax');
+        Route::get('rawTransactions/{id}', 'TransectionController@detail');
 
         //Container Controller
         Route::get('addcontainer', 'ContainerController@addcontainer')->middleware('auth');
