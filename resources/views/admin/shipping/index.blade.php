@@ -7,10 +7,10 @@
             margin-left: 0.5em;
             width: 240px;
         }
-        #search:hover{
+
+        #search:hover {
             cursor: pointer;
         }
-        
 
     </style>
     <script>
@@ -32,8 +32,10 @@
                     }
                 });
             });
+            $("#submitShippingBtn").on('click', function() {
+                $("#submitShippingBtn").hide();
+            });
         });
-
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -122,7 +124,8 @@
                                     </table>
                                     <div class="row">
                                         <div class="col-md-10"></div>
-                                        <div class="col-md-2"> <input class="btn btn-success " type="submit" value="Submit">
+                                        <div class="col-md-2"> <input class="btn btn-success " id="submitShippingBtn"
+                                                type="submit" value="Submit">
                                         </div>
                                     </div>
 
