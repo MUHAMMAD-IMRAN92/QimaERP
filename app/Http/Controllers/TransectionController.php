@@ -24,21 +24,77 @@ class TransectionController extends Controller
     public function detail(Request $request, $id)
     {
         // $transaction
+        // $transaction = Transaction::find($id);
+        // $batchNumber = $transaction->batch_number;
+        // $allTransactions = Transaction::where('batch_number', $batchNumber)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
+        // foreach ($allTransactions as $trans) {
+        //     $parentId = $trans->is_parent;
+
+        //     if ($parentId != 0) {
+        //         $transactionparentId = Transaction::find($parentId);
+        //         if ($transactionparentId->batch_number !=  $batchNumber) {
+        //             $transactionsparentId = Transaction::where('batch_number', $transactionparentId->batch_number)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
+        //             $data['transactionparentId'] = $transactionsparentId;
+        //         }
+        //     }
+        // }
+
+        // $transactionChild = Transaction::where('is_parent', $id)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
+        // $data['allTransactions'] =  $allTransactions;
+        // $data['batchNumber'] =  $batchNumber;
+
+        // $data['transactionChild'] = $transactionChild;
+        // $invoice = TransactionInvoice::whereIn('transaction_id', [$allTransactions->last()['transaction_id']])->get();
+        // $data['invoiceName'] = [];
+        // foreach ($invoice as $inv) {
+        //     $invName = FileSystem::find($inv->invoice_id);
+        //     array_push($data['invoiceName'], $invName->user_file_name);
+        // }
+        // if ($transactionChild->count() > 0) {
+        //     $invoice = TransactionInvoice::whereIn('transaction_id', [$transactionChild->last()['transaction_id']])->get();
+        //     foreach ($invoice as $inv) {
+        //         $invName = FileSystem::find($inv->invoice_id);
+        //         array_push($data['invoiceName'], $invName->user_file_name);
+        //     }
+        // }
+        // // dd($data['TransactionChild']);
+
+        // $url =  $request->url();
+
+        // $checkUrl =  Str::contains($url, 'rawTransaction');
+        // if ($checkUrl) {
+        //     return view('admin.transaction.raw_transactions', $data);
+        // } else {
+        //     return view('admin.transaction.transactiondetail', $data);
+        // }
+        $data1 = collect();
         $transaction = Transaction::find($id);
         $batchNumber = $transaction->batch_number;
         $allTransactions = Transaction::where('batch_number', $batchNumber)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
-        $parentId = $allTransactions->first()->is_parent;
+        foreach ($allTransactions as $trans) {
+            $data1->push($trans);
+            $parentId = $trans->is_parent;
 
-        if ($parentId != 0) {
-            $transactionparentId = Transaction::find($parentId);
-            $transactionsparentId = Transaction::where('batch_number', $transactionparentId->batch_number)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
-            $data['transactionparentId'] = $transactionsparentId;
+            if ($parentId != 0) {
+                $transactionparentId = Transaction::find($parentId);
+                if ($transactionparentId->batch_number !=  $batchNumber) {
+                    $transactionsparentId = Transaction::where('batch_number', $transactionparentId->batch_number)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
+                    // $data['transactionparentId'] = $transactionsparentId;
+                    foreach ($transactionsparentId as $transParent) {
+                        $data1->push($transParent);
+                    }
+                    // $data1->push($transactionsparentId);
+                }
+            }
         }
-        $transactionChild = Transaction::where('is_parent', $id)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
-        $data['allTransactions'] =  $allTransactions;
-        $data['batchNumber'] =  $batchNumber;
 
-        $data['transactionChild'] = $transactionChild;
+        $transactionChild = Transaction::where('is_parent', $id)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
+        // $data1->push($allTransactions);
+        $data['batchNumber'] =  $batchNumber;
+        foreach ($transactionChild as $transChild) {
+            $data1->push($transChild);
+        }
+        // $data1->push($transactionChild);
         $invoice = TransactionInvoice::whereIn('transaction_id', [$allTransactions->last()['transaction_id']])->get();
         $data['invoiceName'] = [];
         foreach ($invoice as $inv) {
@@ -53,14 +109,22 @@ class TransectionController extends Controller
             }
         }
         // dd($data['TransactionChild']);
-
+        $data1->sortDesc();
+        $data1->values()->all();
+        // return $data;
         $url =  $request->url();
 
         $checkUrl =  Str::contains($url, 'rawTransaction');
         if ($checkUrl) {
-            return view('admin.transaction.raw_transactions', $data);
+            return view('admin.transaction.raw_transactions1',  [
+                'data1' => $data1,
+                'data' => $data
+            ]);
         } else {
-            return view('admin.transaction.transactiondetail', $data);
+            return view('admin.transaction.transactiondetail1', [
+                'data1' => $data1,
+                'data' => $data
+            ]);
         }
     }
     function getTransectionAjax(Request $request)

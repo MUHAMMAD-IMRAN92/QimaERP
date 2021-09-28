@@ -146,6 +146,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('updateseason', 'SeasonController@update');
         // Route::get('deleteseason/{id}', 'SeasonController@delete');
         Route::get('seasonclose/{id}', 'SeasonController@seasonclose');
+        Route::get('endSeason/{id}', 'SeasonController@endSeason');
 
 
 
