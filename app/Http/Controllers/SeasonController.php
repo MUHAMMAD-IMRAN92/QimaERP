@@ -6,55 +6,60 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Season;
 use App\BatchNumber;
+use App\Farmer;
+
 class SeasonController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
-    	return view('admin.season.allseason');
+        return view('admin.season.allseason');
     }
 
 
-    public function addseason(){
+    public function addseason()
+    {
 
-    	return view('admin.season.addnewseason');
+        return view('admin.season.addnewseason');
     }
 
-    public function store(Request $request){
-    	$validatedData = $request->validate([
-        'season_title' => 'required',
-        'start_date'    => 'required|date',
-        'end_date'      => 'required|date|after_or_equal:start_date',
-        'status' => 'required',
-    ]);
-    	 // dd($request->all());
-    	$season=new Season();
-    	$season->season_title=$request->season_title;
-    	$season->start_date=date('Y-m-d', strtotime($request->start_date));
-    	if($request->end_date != ''){
-    	$season->end_date=date('Y-m-d', strtotime($request->end_date));
-    	}
-    	$season->status=$request->status;
-    	$season->save();
-    	return redirect('admin/allseason');
-
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'season_title' => 'required',
+            'start_date'    => 'required|date',
+            'end_date'      => 'required|date|after_or_equal:start_date',
+            'status' => 'required',
+        ]);
+        // dd($request->all());
+        $season = new Season();
+        $season->season_title = $request->season_title;
+        $season->start_date = date('Y-m-d', strtotime($request->start_date));
+        if ($request->end_date != '') {
+            $season->end_date = date('Y-m-d', strtotime($request->end_date));
+        }
+        $season->status = $request->status;
+        $season->save();
+        return redirect('admin/allseason');
     }
 
-    function getSeasonAjax(Request $request) {
+    function getSeasonAjax(Request $request)
+    {
         $draw = $request->get('draw');
         $start = $request->get('start');
         $length = $request->get('length');
         $search = $request->search['value'];
         $orderby = 'ASC';
         $column = 'season_id';
-//::count total record
+        //::count total record
         $total_members = Season::count();
         $members = Season::query();
         //::select columns
         $members = $members->select('season_id', 'season_title', 'start_date', 'end_date');
         //::search with season_title or start_date or  end_date
-        $members = $members->when($search, function($q)use ($search) {
-                    $q->where('season_title', 'like', "%$search%")->orWhere('start_date', 'like', "%$search%")->orWhere('end_date', 'like', "%$search%");
-                });
+        $members = $members->when($search, function ($q) use ($search) {
+            $q->where('season_title', 'like', "%$search%")->orWhere('start_date', 'like', "%$search%")->orWhere('end_date', 'like', "%$search%");
+        });
         if ($request->has('order') && !is_null($request['order'])) {
             $orderBy = $request->get('order');
             $orderby = 'asc';
@@ -67,7 +72,7 @@ class SeasonController extends Controller
                 $column = 'start_date';
             } elseif (isset($orderBy[0]['column']) && $orderBy[0]['column'] == 3) {
                 $column = 'end_date';
-            }else {
+            } else {
                 $column = 'season_title';
             }
         }
@@ -84,50 +89,61 @@ class SeasonController extends Controller
 
 
 
-    public function edit($id){
-    	$data['season'] = Season::find($id);
-    	// dd($data);
-    	return view('admin/season/editseason',$data);
+    public function edit($id)
+    {
+        $data['season'] = Season::find($id);
+        // dd($data);
+        return view('admin/season/editseason', $data);
     }
 
-    public function update(Request $request){
-    	$validatedData = $request->validate([
-        'season_title' => 'required',
-        'start_date' => 'required',
-        'status' => 'required',
-    ]);
-    	$seasonupdate=Season::find($request->season_id);
-    	// dd($seasonupdate);
-    	$seasonupdate->season_title=$request->season_title;
-    	$seasonupdate->start_date=date('Y-m-d', strtotime($request->start_date));
-    	if($request->end_date != ''){
-    	$seasonupdate->end_date=date('Y-m-d', strtotime($request->end_date));
-    	}
-    	$seasonupdate->status=$request->status;
-    	$seasonupdate->update();
-    	return view('admin.season.allseason');
-    	// dd($seasonupdate);
+    public function update(Request $request)
+    {
+        $validatedData = $request->validate([
+            'season_title' => 'required',
+            'start_date' => 'required',
+            'status' => 'required',
+        ]);
+        $seasonupdate = Season::find($request->season_id);
+        // dd($seasonupdate);
+        $seasonupdate->season_title = $request->season_title;
+        $seasonupdate->start_date = date('Y-m-d', strtotime($request->start_date));
+        if ($request->end_date != '') {
+            $seasonupdate->end_date = date('Y-m-d', strtotime($request->end_date));
+        }
+        $seasonupdate->status = $request->status;
+        $seasonupdate->update();
+        return view('admin.season.allseason');
+        // dd($seasonupdate);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         die();
-    	$destroy = Season::find($id);
-    	// dd($destroy);
-    	$destroy->delete();
-    	return redirect()->back()->with('destroy', 'Season deleted Successfully!');
+        $destroy = Season::find($id);
+        // dd($destroy);
+        $destroy->delete();
+        return redirect()->back()->with('destroy', 'Season deleted Successfully!');
     }
 
-    public function seasonclose($id){
+    public function seasonclose($id)
+    {
         // dd($id);
-        $seasonend= Season::find($id);
-        $seasonend->status=1;
+        $seasonend = Season::find($id);
+        $seasonend->status = 1;
         $seasonend->save();
-        $conatiner=BatchNumber::where('season_id',$id)->get();
-        foreach($conatiner as $member) {
-                $member->season_status = 1;
-                $member->save();
-            }
+        $conatiner = BatchNumber::where('season_id', $id)->get();
+        foreach ($conatiner as $member) {
+            $member->season_status = 1;
+            $member->save();
+        }
         return redirect()->back()->with('close', 'Season Close Successfully!');
-
+    }
+    public function endSeason($id)
+    {
+        $farmer = Farmer::find($id);
+        $farmer->update([
+            'season_no' => $farmer->season_no + 1,
+        ]);
+        return back()->with('msg', 'Current Season of this farmer has ended successfully!');
     }
 }

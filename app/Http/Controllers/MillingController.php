@@ -179,6 +179,14 @@ class MillingController extends Controller
                 'session_no' => $serverbatch->session_no,
                 'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
             ]);
+            if (count($request->transaction_id) > 1) {
+                foreach ($request->transaction_id as $key => $transaction) {
+                    $transaction  = Transaction::find($transaction);
+                    $transaction->update([
+                        'is_parent' => $newtransaction->transaction_id,
+                    ]);
+                }
+            }
             $transactionLog = TransactionLog::create([
                 'transaction_id' => $newtransaction->transaction_id,
                 'action' => 'received',
