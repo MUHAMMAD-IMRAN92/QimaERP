@@ -23,6 +23,7 @@ use App\Jobs\TransactionInvoices;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Facade\FlareClient\Stacktrace\Frame;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -554,6 +555,19 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
+                    $mixSeason = 0;
+                    foreach ($childBatchNumberArray as $childBatch) {
+                        $farmerCode = explode('-', $childBatch)[3];
+                        $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $farmerCode . '%')->first();
+                        $farmerSeason = $farmer->season_no;
+                        if ($mixSeason < $farmerSeason) {
+                            $mixSeason = $farmerSeason;
+                        }
+                    }
+                    $parentBatch->update([
+                        'season_no' =>  $mixSeason,
+                    ]);
+
                     Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
                 }
                 if ($checkMixed == 0) {
@@ -705,6 +719,18 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
+                    $mixSeason = 0;
+                    foreach ($childBatchNumberArray as $childBatch) {
+                        $farmerCode = explode('-', $childBatch)[3];
+                        $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $farmerCode . '%')->first();
+                        $farmerSeason = $farmer->season_no;
+                        if ($mixSeason < $farmerSeason) {
+                            $mixSeason = $farmerSeason;
+                        }
+                    }
+                    $parentBatch->update([
+                        'season_no' =>  $mixSeason,
+                    ]);
                     Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
                 }
             }

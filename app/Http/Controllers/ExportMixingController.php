@@ -7,6 +7,7 @@ use Throwable;
 use App\BatchNumber;
 use App\Transaction;
 use App\CoffeeSession;
+use App\Farmer;
 use App\MetaTransation;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
@@ -63,7 +64,19 @@ class ExportMixingController extends Controller
             );
 
             $transactions = Transaction::whereIn('transaction_id', $request->mixings)->get();
-
+            $$mixSeason;
+            foreach ($transactions as $transaction) {
+                $batch = $transaction->batch_number;
+                $farmerCode = explode('-', $$batch)[3];
+                $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $farmerCode . '%')->first();
+                $farmerSeason = $farmer->season_no;
+                if ($mixSeason < $farmerSeason) {
+                    $mixSeason = $farmerSeason;
+                }
+            }
+            $batch->update([
+                'season_no' =>  $mixSeason,
+            ]);
             foreach ($transactions as $oldTransaction) {
                 $meta = new MetaTransation();
                 $meta->transaction_id = $transaction->transaction_id;
