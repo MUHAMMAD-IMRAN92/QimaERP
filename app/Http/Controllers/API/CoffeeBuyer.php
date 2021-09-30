@@ -557,9 +557,9 @@ class CoffeeBuyer extends Controller
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
                     $mixSeason = 0;
                     foreach ($childBatchNumberArray as $childBatch) {
-                        $farmerCode = explode('-', $childBatch)[3];
-                        $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $farmerCode . '%')->first();
-                        $farmerSeason = $farmer->season_no;
+                        // $farmerCode = explode('-', $childBatch)[3];
+                        $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
+                        $farmerSeason = $child_batch->season_no;
                         if ($mixSeason < $farmerSeason) {
                             $mixSeason = $farmerSeason;
                         }
