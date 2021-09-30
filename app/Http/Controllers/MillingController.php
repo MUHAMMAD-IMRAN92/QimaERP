@@ -144,6 +144,7 @@ class MillingController extends Controller
             }
             $serverbatch = Transaction::where('transaction_id', $request->transaction_id[0])->with('log')->first();
             if (count($request->transaction_id) > 1) {
+                $batchNumberSeason = BatchNumber::where('batch_number', $serverTran->batch_number)->first();
                 $mixBatch = $serverbatch->batch_number;
                 $a = explode("-", $mixBatch);
                 $batchNumber = implode('-', array_slice($a, 0, 3)) . '-000-' . $newLastBID;
@@ -153,6 +154,7 @@ class MillingController extends Controller
                     'is_mixed' => 1,
                     'created_by' => Auth::user()->user_id,
                     'is_local' => FALSE,
+                    'season_no' => $batchNumberSeason->season_no,
                     'local_code' => $batchNumber . '_' . Auth::user()->user_id . '-B-' . strtotime("now"),
                     'is_server_id' => 1,
                     'season_id' => $season->season_id,

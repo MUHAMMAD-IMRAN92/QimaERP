@@ -166,5 +166,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey', 'a
         //Chaina Warehouse
         Route::get('/china', 'API\chainaWareHouseController@get');
         Route::post('/china', 'API\chainaWareHouseController@post');
+
+        Route::post('support', 'API\AuthController@support');
     });
 });

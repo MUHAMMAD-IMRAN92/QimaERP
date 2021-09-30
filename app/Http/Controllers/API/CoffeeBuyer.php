@@ -23,6 +23,7 @@ use App\Jobs\TransactionInvoices;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Facade\FlareClient\Stacktrace\Frame;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -554,6 +555,19 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
+                    $mixSeason = 0;
+                    foreach ($childBatchNumberArray as $childBatch) {
+                        // $farmerCode = explode('-', $childBatch)[3];
+                        $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
+                        $farmerSeason = $child_batch->season_no;
+                        if ($mixSeason < $farmerSeason) {
+                            $mixSeason = $farmerSeason;
+                        }
+                    }
+                    $parentBatch->update([
+                        'season_no' =>  $mixSeason,
+                    ]);
+
                     Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
                 }
                 if ($checkMixed == 0) {
@@ -705,6 +719,18 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
+                    $mixSeason = 0;
+                    foreach ($childBatchNumberArray as $childBatch) {
+                        // $farmerCode = explode('-', $childBatch)[3];
+                        $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
+                        $farmerSeason = $child_batch->season_no;
+                        if ($mixSeason < $farmerSeason) {
+                            $mixSeason = $farmerSeason;
+                        }
+                    }
+                    $parentBatch->update([
+                        'season_no' =>  $mixSeason,
+                    ]);
                     Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
                 }
             }
@@ -1251,6 +1277,7 @@ class CoffeeBuyer extends Controller
                 'is_mixed' => $batch->is_mixed,
                 'created_by' => $batch->created_by,
                 'is_local' => FALSE,
+                'season_no' => $farmer->season_no,
                 'local_code' => $batch->local_code,
                 'is_server_id' => True,
                 'season_id' => $season->season_id,
