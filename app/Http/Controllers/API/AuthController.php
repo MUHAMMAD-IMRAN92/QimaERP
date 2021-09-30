@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\CoffeeSession;
 use App\User;
+use App\Support;
+use App\FileSystem;
 use App\Transaction;
+use App\CoffeeSession;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use AWS\CRT\HTTP\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class AuthController extends Controller
 {
@@ -69,5 +74,30 @@ class AuthController extends Controller
         $user->token = $user->createToken($request->email)->plainTextToken;
 
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.LOGIN"), $user);
+    }
+    function support(Request $request)
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+        ]);
+        $support = new Support();
+        $support->title = $request->title;
+        $support->description = $request->description;
+        if ($request->image) {
+            $destinationPath =  'images/';
+            $idfile = base64_decode($request->image);
+            $imagename = time()  . getFileExtensionForBase64($idfile);
+            Storage::disk('s3')->put($destinationPath . $imagename, $idfile);
+
+            $supportImage = FileSystem::create([
+                'user_file_name' => $imagename,
+            ]);
+            $supportImageId = $supportImage->file_id;
+            $support->file_id = $supportImageId;
+        }
+        $support->user_id = $request->user()->user_id;
+        $support->save();
+        return Response()->json(['status' => 'Success', 'Message' => ' Your Query Submitted Successfully']);
     }
 }
