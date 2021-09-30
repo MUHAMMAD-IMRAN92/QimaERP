@@ -311,7 +311,7 @@ class CoffeeBuyer extends Controller
                         'is_mixed' => 0,
                         'created_by' => $childBatch->batch->created_by,
                         'is_local' => FALSE,
-                        'season_no' => 4,
+                        'season_no' => $farmer->season_no,
                         'is_mixed' => 0,
                         'local_code' => $childBatch->batch->local_code,
                         'is_server_id' => $childBatch->batch->is_server_id,
@@ -461,7 +461,7 @@ class CoffeeBuyer extends Controller
                         'is_mixed' => $batch_numbers->batch->batch->is_mixed,
                         'created_by' => $batch_numbers->batch->batch->created_by,
                         'is_local' => FALSE,
-                        'season_no' => 5,
+                        'season_no' => $farmer->season_no,
                         'local_code' => $batch_numbers->batch->batch->local_code,
                         'is_server_id' => $batch_numbers->batch->batch->is_server_id,
                         'season_id' => $season->season_id,
@@ -556,13 +556,15 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
-                    $mixSeason = 10;
+                    $mixSeason = 1;
                     foreach ($childBatchNumberArray as $childBatch) {
                         // $farmerCode = explode('-', $childBatch)[3];
                         $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
                         $farmerSeason = $child_batch->season_no;
-                        if ($mixSeason < $farmerSeason) {
+                        if ($farmerSeason > $mixSeason) {
                             $mixSeason = $farmerSeason;
+                        } else {
+                            $mixSeason = $mixSeason;
                         }
                     }
                     $parentBatch->update([
@@ -624,7 +626,7 @@ class CoffeeBuyer extends Controller
                         'is_mixed' => $batch_numbers->batch->batch->is_mixed,
                         'created_by' => $batch_numbers->batch->batch->created_by,
                         'is_local' => FALSE,
-                        'season_no' => 6,
+                        'season_no' => $farmer->season_no,
                         'local_code' => $batch_numbers->batch->batch->local_code,
                         'is_server_id' => $batch_numbers->batch->batch->is_server_id,
                         'season_id' => $season->season_id,
@@ -720,13 +722,15 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
-                    $mixSeason = 11;
+                    $mixSeason = 1;
                     foreach ($childBatchNumberArray as $childBatch) {
                         // $farmerCode = explode('-', $childBatch)[3];
                         $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
                         $farmerSeason = $child_batch->season_no;
-                        if ($mixSeason < $farmerSeason) {
+                        if ($farmerSeason > $mixSeason) {
                             $mixSeason = $farmerSeason;
+                        } else {
+                            $mixSeason = $mixSeason;
                         }
                     }
                     $parentBatch->update([
@@ -1278,7 +1282,7 @@ class CoffeeBuyer extends Controller
                 'is_mixed' => $batch->is_mixed,
                 'created_by' => $batch->created_by,
                 'is_local' => FALSE,
-                'season_no' => 8,
+                'season_no' => $farmer->season_no,
                 'local_code' => $batch->local_code,
                 'is_server_id' => True,
                 'season_id' => $season->season_id,
