@@ -556,7 +556,7 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
-                    $mixSeason = 0;
+                    $mixSeason = 10;
                     foreach ($childBatchNumberArray as $childBatch) {
                         // $farmerCode = explode('-', $childBatch)[3];
                         $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
@@ -720,7 +720,7 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
-                    $mixSeason = 0;
+                    $mixSeason = 11;
                     foreach ($childBatchNumberArray as $childBatch) {
                         // $farmerCode = explode('-', $childBatch)[3];
                         $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
