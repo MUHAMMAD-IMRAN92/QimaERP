@@ -311,7 +311,7 @@ class CoffeeBuyer extends Controller
                         'is_mixed' => 0,
                         'created_by' => $childBatch->batch->created_by,
                         'is_local' => FALSE,
-                        'season_no' =>  $farmer->farmer_id,
+                        'season_no' => $farmer->season_no,
                         'is_mixed' => 0,
                         'local_code' => $childBatch->batch->local_code,
                         'is_server_id' => $childBatch->batch->is_server_id,
@@ -565,7 +565,7 @@ class CoffeeBuyer extends Controller
                         }
                     }
                     $parentBatch->update([
-                        'season_no' =>  $farmer->farmer_id
+                        'season_no' =>  $mixSeason,
                     ]);
 
                     Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
@@ -623,7 +623,7 @@ class CoffeeBuyer extends Controller
                         'is_mixed' => $batch_numbers->batch->batch->is_mixed,
                         'created_by' => $batch_numbers->batch->batch->created_by,
                         'is_local' => FALSE,
-                        'season_no' =>  $farmer->farmer_id,
+                        'season_no' => $farmer->season_no,
                         'local_code' => $batch_numbers->batch->batch->local_code,
                         'is_server_id' => $batch_numbers->batch->batch->is_server_id,
                         'season_id' => $season->season_id,
@@ -1277,7 +1277,7 @@ class CoffeeBuyer extends Controller
                 'is_mixed' => $batch->is_mixed,
                 'created_by' => $batch->created_by,
                 'is_local' => FALSE,
-                'season_no' =>  $farmer->farmer_id,
+                'season_no' => $farmer->season_no,
                 'local_code' => $batch->local_code,
                 'is_server_id' => True,
                 'season_id' => $season->season_id,
