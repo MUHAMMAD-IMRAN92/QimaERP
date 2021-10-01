@@ -461,7 +461,7 @@ class CoffeeBuyer extends Controller
                         'is_mixed' => $batch_numbers->batch->batch->is_mixed,
                         'created_by' => $batch_numbers->batch->batch->created_by,
                         'is_local' => FALSE,
-                        'season_no' => $farmer->season_no,
+                        // 'season_no' => $farmer->season_no,
                         'local_code' => $batch_numbers->batch->batch->local_code,
                         'is_server_id' => $batch_numbers->batch->batch->is_server_id,
                         'season_id' => $season->season_id,
