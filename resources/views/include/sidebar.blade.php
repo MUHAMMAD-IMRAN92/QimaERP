@@ -49,13 +49,14 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
+                            class="fas fa-bars"></i></a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown ">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
                         {{ ucfirst(Auth::User()->first_name) }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -148,7 +149,7 @@
                             </p>
                         </a>
                     </li>
-                    
+
 
 
                 @else
@@ -371,6 +372,15 @@
                             <i class="nav-icon fas fa-exchange-alt"></i>
                             <p>
                                 Transactions
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/support"
+                            class="nav-link  {{ Request::is('admin/support') ? 'active' : '' }} ">
+                            <i class="nav-icon fa fa-life-ring"></i>
+                            <p>
+                                Support Quries
                             </p>
                         </a>
                     </li>
