@@ -40,6 +40,19 @@ class ExportMixingController extends Controller
 
         try {
             $userId = $request->user()->user_id;
+            $transactions = Transaction::whereIn('transaction_id', $request->mixings)->get();
+
+            $mixSeason = 1;
+            foreach ($transactions as $transaction) {
+                $batch = $transaction->batch_number;
+                // $farmerCode = explode('-', $$batch)[3];
+                // $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $farmerCode . '%')->first();
+                $batchNum = BatchNumber::where('batch_number', $batch)->first();
+                $farmerSeason = $batchNum->season_no;
+                if ($mixSeason < $farmerSeason) {
+                    $mixSeason = $farmerSeason;
+                }
+            }
 
             $batch = BatchNumber::create([
                 'batch_number' => $request->batch_number,
@@ -48,7 +61,9 @@ class ExportMixingController extends Controller
                 'is_server_id' => true,
                 'season_id' => BatchNumber::max('season_id')
             ]);
-
+            $batch->update([
+                'season_no' =>  $mixSeason,
+            ]);
             $status = 'sent';
             $sentTo = 26;
             $type = 'sent_to_yo_mixing';
@@ -64,19 +79,7 @@ class ExportMixingController extends Controller
             );
 
             $transactions = Transaction::whereIn('transaction_id', $request->mixings)->get();
-            $mixSeason = 1;
-            foreach ($transactions as $transaction) {
-                $batch = $transaction->batch_number;
-                $farmerCode = explode('-', $$batch)[3];
-                $farmer = Farmer::where('farmer_code', 'LIKE', '%' . $farmerCode . '%')->first();
-                $farmerSeason = $farmer->season_no;
-                if ($mixSeason < $farmerSeason) {
-                    $mixSeason = $farmerSeason;
-                }
-            }
-            $batch->update([
-                'season_no' =>  $mixSeason,
-            ]);
+
             foreach ($transactions as $oldTransaction) {
                 $meta = new MetaTransation();
                 $meta->transaction_id = $transaction->transaction_id;
