@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Farmer;
 use App\Region;
+use App\Support;
 use App\Village;
 use App\LoginUser;
+use App\FileSystem;
 use App\Governerate;
-use App\Http\Controllers\API\UkWareHouse;
 use App\Transaction;
 use App\TransactionDetail;
 use Illuminate\Support\Arr;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\API\UkWareHouse;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\VarDumper\Cloner\Data;
 
@@ -928,5 +930,23 @@ class AuthController extends Controller
         return view('admin.nonspecial_stock_view', [
             'nonspecialstock' => $nonspecialstock
         ])->render();
+    }
+    public function support()
+    {
+        $support = Support::all();
+
+        return view('admin.support', [
+            'support' => $support,
+        ]);
+    }
+    public function viewSupport($id)
+    {
+        $support = Support::find($id);
+        if ($file = FileSystem::where('file_id', $support->file_id)->first()) {
+            $support->image = $file->user_file_name;
+        }
+        return view('admin.single_suport', [
+            'support' => $support,
+        ]);
     }
 }
