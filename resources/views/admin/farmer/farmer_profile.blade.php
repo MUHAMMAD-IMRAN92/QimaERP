@@ -500,8 +500,8 @@
                         <p>TRANSACTIONS </p>
                     </b>
                 </div>
-                <div class="col-2">
-
+                <div class="col-2 mt-1">
+                    <b>Current Season</b> : {{ $farmer->season_no }}
                 </div>
                 <div class="col-2 " id="end_season_btn">
                     <a class="btn btn-success" href="{{ url('admin/endSeason/' . $farmer->farmer_id) }}">End Season</a>
@@ -509,20 +509,20 @@
             </div>
 
             @foreach ($farmer->transactions->reverse() as $transaction)
-                <div class="row ml-2">
-                    <div class="">
-                    <ol class=" breadcrumb float-sm-right txt-size">
-                        <li class="breadcrumb-item active">
-                            {{ $transaction->created_at }} /{{ $farmer->farmer_name }} /
-                            {{ $farmer->governerate_title }} /
-                            {{ $farmer->region_title }} /
-                            @php
-                                echo floatval($transaction->details->sum('container_weight'));
-                            @endphp
-                            <span class="ml-5">{{ $transaction->batch_number }}</span>
-                        </li>
+                <div class="row">
+                    <div class="col-4">
+                        <ol class=" breadcrumb  txt-size">
+                            <li class="breadcrumb-item active">
+                                {{ $transaction->created_at }} /{{ $farmer->farmer_name }} /
+                                {{ $farmer->governerate_title }} /
+                                {{ $farmer->region_title }} /
+                                @php
+                                    echo floatval($transaction->details->sum('container_weight'));
+                                @endphp
+                            </li>
                         </ol>
                     </div>
+                    <span class="col-2 ">{{ $transaction->batch_number }}</span>
                 </div>
             @endforeach
         </section>

@@ -64,7 +64,7 @@ class ExportMixingController extends Controller
             );
 
             $transactions = Transaction::whereIn('transaction_id', $request->mixings)->get();
-            $$mixSeason;
+            $mixSeason = 1;
             foreach ($transactions as $transaction) {
                 $batch = $transaction->batch_number;
                 $farmerCode = explode('-', $$batch)[3];
@@ -103,7 +103,7 @@ class ExportMixingController extends Controller
         } catch (Throwable $th) {
             DB::rollBack();
 
-            dd($th);
+            // dd($th);
             return back()->withErrors([
                 'database' => $th->getMessage()
             ]);
