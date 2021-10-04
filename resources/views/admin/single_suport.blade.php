@@ -51,7 +51,7 @@
 
 
                                 <p><b style=" margin-left:30% ">Query By</b>
-                                    :{{ \App\user::find($support->user_id)->first_name }}{{ \App\user::find($support->user_id)->last_name }}
+                                    :{{ \App\user::find($support->user_id)->first_name . \App\user::find($support->user_id)->last_name }}
                                 </p>
                             </div>
                             <!-- /.card-body -->
