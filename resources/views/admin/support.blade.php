@@ -60,7 +60,7 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $row->title }}</td>
                                                 <td>{{ substr_replace($row->description, '...', 40) }}</td>
-                                                <td>{{ \App\User::find($row->user_id)->first_name }}{{ \App\User::find($row->user_id)->last_name }}
+                                                <td>{{ \App\User::find($row->user_id)->first_name . ' ' . \App\User::find($row->user_id)->last_name }}
                                                 </td>
                                                 <td><a href="view_support/{{ $row->id }}"
                                                         class="btn btn-info btn-sm"><i class="fa fa-info-circle"></i></a>
