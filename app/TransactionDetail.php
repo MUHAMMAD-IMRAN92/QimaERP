@@ -119,8 +119,6 @@ class TransactionDetail extends Model
             'weight_unit' => 'KG',
             'reference_id' => $referenceId
         ]);
-        TransactionDetail::where('transaction_id', $transactionId)
-            ->update(['container_status' => 1]);
         return $accumultedDetail;
     }
 }
