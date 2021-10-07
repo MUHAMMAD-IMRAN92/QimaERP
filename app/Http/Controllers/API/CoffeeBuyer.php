@@ -556,20 +556,18 @@ class CoffeeBuyer extends Controller
                     }
                     array_push($batchesArray, $parentBatch->batch_id);
                     BatchNumber::whereIn('batch_id', $childBatchNumberArray)->update(['is_parent' => $parentBatch->batch_id]);
-                    // $mixSeason = 1;
-                    // foreach ($childBatchNumberArray as $childBatch) {
-                    //     // $farmerCode = explode('-', $childBatch)[3];
-                    //     $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
-                    //     $farmerSeason = $child_batch->season_no;
-                    //     if ($farmerSeason > $mixSeason) {
-                    //         $mixSeason = $farmerSeason;
-                    //     } else {
-                    //         $mixSeason = $mixSeason;
-                    //     }
-                    // }
-                    // $parentBatch->update([
-                    //     'season_no' =>  $mixSeason,
-                    // ]);
+                    $mixSeason = 1;
+                    foreach ($childBatchNumberArray as $childBatch) {
+                        // $farmerCode = explode('-', $childBatch)[3];
+                        $child_batch = BatchNumber::where('batch_id', $childBatch)->first();
+                        $farmerSeason = $child_batch->season_no;
+                        if ($farmerSeason > $mixSeason) {
+                            $mixSeason = $farmerSeason;
+                        } 
+                    }
+                    $parentBatch->update([
+                        'season_no' =>  $mixSeason,
+                    ]);
 
                     Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
                 }
