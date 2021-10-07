@@ -563,9 +563,7 @@ class CoffeeBuyer extends Controller
                         $farmerSeason = $child_batch->season_no;
                         if ($farmerSeason > $mixSeason) {
                             $mixSeason = $farmerSeason;
-                        } else {
-                            $mixSeason = $mixSeason;
-                        }
+                        } 
                     }
                     $parentBatch->update([
                         'season_no' =>  $mixSeason,
@@ -729,8 +727,6 @@ class CoffeeBuyer extends Controller
                         $farmerSeason = $child_batch->season_no;
                         if ($farmerSeason > $mixSeason) {
                             $mixSeason = $farmerSeason;
-                        } else {
-                            $mixSeason = $mixSeason;
                         }
                     }
                     $parentBatch->update([
