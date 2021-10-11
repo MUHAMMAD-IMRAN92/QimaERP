@@ -72,12 +72,12 @@ class TransectionController extends Controller
         $batchNumber = $transaction->batch_number;
         $allTransactions = Transaction::where('batch_number', $batchNumber)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
         foreach ($allTransactions as $trans) {
-            $data1->push($trans);
+
             $parentId = $trans->is_parent;
 
             if ($parentId != 0) {
                 $transactionparentId = Transaction::find($parentId);
-                if ($transactionparentId->batch_number !=  $batchNumber) {
+                if ($transactionparentId->batch_number !=  $batchNumber) {  
                     $transactionsparentId = Transaction::where('batch_number', $transactionparentId->batch_number)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
                     // $data['transactionparentId'] = $transactionsparentId;
                     foreach ($transactionsparentId as $transParent) {
@@ -86,6 +86,7 @@ class TransectionController extends Controller
                     // $data1->push($transactionsparentId);
                 }
             }
+            $data1->push($trans);
         }
 
         $transactionChild = Transaction::where('is_parent', $id)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
