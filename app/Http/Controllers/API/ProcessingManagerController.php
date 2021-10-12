@@ -169,6 +169,8 @@ class ProcessingManagerController extends Controller
                         $savedtransaction->local_created_at = toSqlDT($sentTransaction->transaction->local_created_at);
                         $savedtransaction->local_updated_at =   toSqlDT($sentTransaction->transaction->local_updated_at);
 
+
+
                         $transactionContainers = $sentTransaction->transactionDetails;
                         $count = 0;
                         foreach ($transactionContainers as $key => $transactionContainer) {
@@ -199,6 +201,9 @@ class ProcessingManagerController extends Controller
                             TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
                         }
                         array_push($reciviedCoffee, $savedtransaction->transaction_id);
+                        $sentTransaction->transaction->update([
+                            'is_parent' => $savedtransaction->transaction_id,
+                        ])
                     }
                     DB::commit();
                 } catch (Throwable $th) {
