@@ -203,7 +203,7 @@ class ProcessingManagerController extends Controller
                         array_push($reciviedCoffee, $savedtransaction->transaction_id);
                         $sentTransaction->transaction->update([
                             'is_parent' => $savedtransaction->transaction_id,
-                        ])
+                        ]);
                     }
                     DB::commit();
                 } catch (Throwable $th) {
