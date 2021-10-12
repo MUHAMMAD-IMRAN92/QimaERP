@@ -194,11 +194,9 @@ class CenterManagerController extends Controller
             $centerId = $userCenter->center_id;
         }
         $allTransactions = array();
-        $transactions = Transaction::where('created_by', $userId)->where('transaction_status', 'received')->whereHas('transactionLog', function ($q) use ($centerId) {
+        $transactions = Transaction::where('is_parent', 0)->where('created_by', $userId)->where('transaction_status', 'received')->whereHas('transactionLog', function ($q) use ($centerId) {
             $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
-        })->with(['transactionDetail' => function ($query) {
-            $query->where('container_status', 0);
-        }])->with('log')->orderBy('transaction_id', 'desc')->get();
+        })->with('transactionDetail')->with('log')->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transaction->buyer_name = '';
