@@ -27,16 +27,16 @@
 
             <div class="container-fluid">
                 <div class="row">
+                    @if (session()->has('msg'))
+                        <div class="alert alert-success">
+                            <p>{{ session()->get('msg') }}<button type="button" class="close"
+                                    data-dismiss="alert">&times;</button></p>
 
+                        </div>
+                    @endif
                     <!-- left column -->
                     <div class="col-md-6 ">
-                        @if (\Session::has('message'))
-                            <div class="alert alert-success">
-                                <p>{{ \Session::get('message') }}<button type="button" class="close"
-                                        data-dismiss="alert">&times;</button></p>
 
-                            </div>
-                        @endif
                         <!-- general form elements -->
                         <div class="card card-primary ">
 
