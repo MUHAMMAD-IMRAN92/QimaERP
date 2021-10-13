@@ -1,5 +1,6 @@
 <?php
 
+use App\Center;
 use App\Transaction;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
@@ -122,6 +123,13 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('getcenter', 'CenterController@getCenterAjax');
         Route::get('editcenter/{id}', 'CenterController@edit')->middleware('auth');
         Route::post('updatecenter', 'CenterController@update');
+        Route::get('del_center/{id}', function ($id) {
+            $center = Center::find($id);
+            if ($center) {
+                $center->delete();
+                return back()->with('msg', 'Center Deleted Successfully');
+            }
+        });
 
 
         //Transection Controller
