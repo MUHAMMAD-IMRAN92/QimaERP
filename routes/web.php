@@ -172,6 +172,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('edituser/{id}', 'UserController@edit');
         Route::post('updateuser', 'UserController@update');
         Route::get('deleteuser/{id}', 'UserController@delete');
+        //update user password
+        Route::get('resetPasswordView/{id}', 'UserController@resetPasswordView');
+        Route::post('updateUserPassword', 'UserController@updateUserPassword');
 
         //roles
         Route::get('roles', 'RoleController@index')->name('roles.index');
