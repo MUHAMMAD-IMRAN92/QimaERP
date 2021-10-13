@@ -197,4 +197,24 @@ class UserController extends Controller
             return back()->with('msg', 'Password Does Not Matched');
         }
     }
+
+
+    public function resetPasswordView($id)
+    {
+        $user = User::find($id);
+        return view('admin.user.UserResetpassword', [
+            'user' => $user,
+        ]);
+    }
+    public function updateUserPassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed',
+        ]);
+        $user = User::find($request->id);
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+        return  redirect('admin/allusers')->with('msg', 'Password reset successfully');
+    }
 }
