@@ -211,10 +211,16 @@ class UserController extends Controller
         $request->validate([
             'password' => 'required|min:6|confirmed',
         ]);
+
         $user = User::find($request->id);
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-        return  redirect('admin/allusers')->with('msg', 'Password reset successfully');
+        if ($user) {
+
+            $user->update([
+                'password' => Hash::make($request->password),
+            ]);
+            return  redirect('admin/allusers')->with('msg', 'Password reset successfully!');
+        } else {
+            return back()->with('msg', 'Something went wrong please try again!');
+        }
     }
 }
