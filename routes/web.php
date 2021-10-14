@@ -249,9 +249,5 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('/support', 'AuthController@support');
         Route::get('/view_support/{id}', 'AuthController@viewSupport');
-
-
-        Route::get('importExportView', 'ExcelController@importExportView');
-        Route::post('import', 'ExcelController@import')->name('import');
     });
 });
