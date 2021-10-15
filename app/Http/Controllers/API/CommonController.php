@@ -214,6 +214,7 @@ class CommonController extends Controller
         if ($roleId == 2) {
             $user = User::find($user->user_id);
             $villages =  $user->VillagesResposibleFor();
+           
             if (count($villages) == 0) {
                 $search = $request->search;
                 $farmers = Farmer::when($search, function ($q) use ($search) {
