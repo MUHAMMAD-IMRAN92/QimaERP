@@ -128,9 +128,9 @@
             <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                     style="width: 150px ; height:80px ; border-radius:50%; border: 1px solid gray;" alt=""></td>
         @else
-            <td><img onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>" class="famerimg"
+            <td><img onclick="showModal('image_<?= 1 ?>')" id="image_<?= 1 ?>" class="famerimg"
                     style="width: 150px  ; height:152px ; border-radius:50%; border: 1px solid gray;"
-                    src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" alt="no img"></td>
+                    src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td>
         @endif
     @endforeach
     <!-- The Modal -->
@@ -155,13 +155,15 @@
             // }
 
             // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
         }
         // Get the modal
 
 
         // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
+        $('.close').on('click', function() {
+            var modal = document.getElementById("myModal");
             modal.style.display = "none";
-        }
+        });
+        // var span = document.getElementsByClassName("close")[0];
+        // span
     </script>
