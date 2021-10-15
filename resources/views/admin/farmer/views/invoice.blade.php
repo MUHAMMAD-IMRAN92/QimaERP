@@ -116,16 +116,21 @@
 
 <body>
 
-
-
+    {{-- <img id="myImg" src="img_snow.jpg" alt="Snow" style="width:100%;max-width:300px"> --}}
+    @php
+        $i = 0;
+    @endphp
     @foreach ($invoices as $inv)
+        @php
+            $i++;
+        @endphp
         @if ($inv == null)
             <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                     style="width: 150px ; height:80px ; border-radius:50%; border: 1px solid gray;" alt=""></td>
         @else
-            <td> <img id="myImg" class="famerimg"
-                    style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
-                    src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td>
+            <td><img onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>" class="famerimg"
+                    style="width: 150px  ; height:152px ; border-radius:50%; border: 1px solid gray;"
+                    src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" alt="no img"></td>
         @endif
     @endforeach
     <!-- The Modal -->
@@ -136,21 +141,24 @@
     </div>
 
     <script>
-        // Get the modal
-        var modal = document.getElementById("myModal");
+        function showModal(id) {
+            var modal = document.getElementById("myModal");
 
-        // Get the image and insert it inside the modal - use its "alt" text as a caption
-        var img = document.getElementById("myImg");
-        var modalImg = document.getElementById("img01");
-        var captionText = document.getElementById("caption");
-        img.onclick = function() {
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            var img = document.getElementById(id);
+            var modalImg = document.getElementById("img01");
+            var captionText = document.getElementById("caption");
+            // img.onclick = function() {
             modal.style.display = "block";
             modalImg.src = this.src;
             captionText.innerHTML = this.alt;
-        }
+            // }
 
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+        }
+        // Get the modal
+
 
         // When the user clicks on <span> (x), close the modal
         span.onclick = function() {
