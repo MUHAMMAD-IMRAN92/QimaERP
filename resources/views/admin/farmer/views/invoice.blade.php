@@ -27,7 +27,7 @@
         top: 0;
         width: 100%;
         /* Full width */
-        height: 100%;
+        height: 60%;
         /* Full height */
         overflow: auto;
         /* Enable scroll if needed */
@@ -128,10 +128,10 @@
             <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                     style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;" alt=""></td>
         @else
-    <td><img onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>" class="famerimg"
-            style="width: 150px  ; height:100px ; border-radius:30%; border: 1px solid gray;"
-            src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td>
-    @endif
+            <td><img onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>" class="famerimg"
+                    style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
+                    src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td>
+        @endif
     @endforeach
     <!-- The Modal -->
     <div id="myModal" class="modal">
@@ -152,7 +152,7 @@
             // img.onclick = function() {
             modal.style.display = "block";
             modalImg.src = img.src;
-            console.log(modalImg.src);
+            // console.log(modalImg.src);
             captionText.innerHTML = this.alt;
             // }
 
