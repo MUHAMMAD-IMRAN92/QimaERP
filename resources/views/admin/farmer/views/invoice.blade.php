@@ -129,7 +129,7 @@
                     style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;" alt=""></td>
         @else
     <td><img onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>" class="famerimg"
-            style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
+            style="width: 150px  ; height:100px ; border-radius:30%; border: 1px solid gray;"
             src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td>
     @endif
     @endforeach
