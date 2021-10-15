@@ -486,7 +486,7 @@
                             id="idimage"></td>
                 @else
                     <td> <img class="famerimg"
-                            style="width: 150px  ; height:80px ; border-radius:50%; border: 1px solid gray;"
+                            style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
                             src="{{ Storage::disk('s3')->url('images/' . $farmer->cnicImage) }}" alt="no img"
                             id="idimage"></td>
                 @endif
