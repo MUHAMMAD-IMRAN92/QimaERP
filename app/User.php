@@ -243,6 +243,17 @@ class User extends Authenticatable
             return $uniqueVillages;
         }
     }
+    public function VillagesResposibleFor()
+    {
+        $user_id = $this->user_id;
+        $userVillage = BuyerVillages::where('user_id', $user_id)->get();
+        $villages = [];
+        foreach ($userVillage as $villageId) {
+            $village = Village::find($villageId->village_id);
+            array_push($villages, $village);
+        }
+        return $villages;
+    }
     public function getTransactions()
     {
         $userId = $this->user_id;

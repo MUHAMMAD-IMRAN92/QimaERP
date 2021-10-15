@@ -26,6 +26,7 @@ use App\Mail\reset_password;
 use Dotenv\Result\Success;
 use Illuminate\Support\Facades\Mail;
 use Facade\FlareClient\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CommonController extends Controller
@@ -173,23 +174,54 @@ class CommonController extends Controller
 
     function villages(Request $request)
     {
-        $search = $request->search;
-        $villages = Village::when($search, function ($q) use ($search) {
-            $q->where(function ($q) use ($search) {
-                $q->where('village_title', 'like', "%$search%")->orwhere('village_title_ar', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
-            });
-        })->orderBy('village_title')->get();
+        $user = Auth::user();
+        $roles = $user->roles;
+        $roleId = 0;
+        foreach ($roles as $role) {
+            $roleId = $role->id;
+        }
+        if ($roleId == 2) {
+            $user = User::find($user->user_id);
+            $villages =  $user->VillagesResposibleFor();
+        } else {
+            $search = $request->search;
+            $villages = Village::when($search, function ($q) use ($search) {
+                $q->where(function ($q) use ($search) {
+                    $q->where('village_title', 'like', "%$search%")->orwhere('village_title_ar', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
+                });
+            })->orderBy('village_title')->get();
+        }
+
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_VILLAGE"), $villages);
     }
 
     function farmers(Request $request)
     {
-        $search = $request->search;
-        $farmers = Farmer::when($search, function ($q) use ($search) {
-            $q->where(function ($q) use ($search) {
-                $q->where('farmer_code', 'like', "%$search%")->orwhere('farmer_name', 'like', "%$search%");
-            });
-        })->orderBy('farmer_name')->get();
+        $user = Auth::user();
+        $roles = $user->roles;
+        $roleId = 0;
+        foreach ($roles as $role) {
+            $roleId = $role->id;
+        }
+        if ($roleId == 2) {
+            $user = User::find($user->user_id);
+            $villages =  $user->VillagesResposibleFor();
+            $farmers = [];
+            foreach ($villages as $village) {
+                $villagefarmer = Farmer::where('village_code', $village->village_code)->get();
+                foreach ($villagefarmer as $farmer) {
+                    array_push($farmers, $farmer);
+                }
+            }
+        } else {
+            $search = $request->search;
+            $farmers = Farmer::when($search, function ($q) use ($search) {
+                $q->where(function ($q) use ($search) {
+                    $q->where('farmer_code', 'like', "%$search%")->orwhere('farmer_name', 'like', "%$search%");
+                });
+            })->orderBy('farmer_name')->get();
+        }
+
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_FARMER"), $farmers);
     }
 

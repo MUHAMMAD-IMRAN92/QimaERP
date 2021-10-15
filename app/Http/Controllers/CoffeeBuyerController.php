@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BuyerVillages;
 use App\User;
 use App\Farmer;
 use App\Region;
@@ -523,6 +524,7 @@ class CoffeeBuyerController extends Controller
         $buyer->transactions = $buyer->getTransactions();
         $buyer->image = $buyer->getImage();
         $buyer->villages = $buyer->getVillages();
+        $buyer->resposibleVillage = $buyer->VillagesResposibleFor();
         $buyer->first_purchase = $buyer->firstPurchase();
         $buyer->last_purchase = $buyer->lastPurchase();
         $sum = 0;
@@ -1445,5 +1447,35 @@ class CoffeeBuyerController extends Controller
                 'coffeeBuyers' => $coffeeBuyers
             ])->render()
         ]);
+    }
+    public function assignVillages(User $user)
+    {
+        $village = Village::all();
+        return view(
+            'admin.coffeBuyer.assign_village',
+            [
+                'buyer' => $user,
+                'villages' => $village,
+            ]
+        );
+    }
+    public function upload(Request $request)
+    {
+
+
+        $request->validate([
+            'user_id' => 'required',
+            'villages' => 'required',
+        ]);
+
+        foreach ($request->villages as $village) {
+            $buyerVillage = BuyerVillages::create([
+                'user_id' => $request->user_id,
+                'village_id' => $village,
+            ]);
+        }
+
+        $buyer = User::find($request->user_id);
+        return redirect()->route('coffeBuyer.profile', $buyer)->with('msg',);
     }
 }

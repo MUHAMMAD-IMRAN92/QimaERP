@@ -229,7 +229,12 @@
                 </div>
             </div><!-- /.container-fluid -->
 
-
+            @if (Session::has('msg'))
+                <div class="alert alert-success" role="alert">
+                    <b>{{ Session::get('msg') }}</b>
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            @endif
 
             <div class="row  margin-left anchor">
                 <span class="ml-5" style="margin-left: 60% !important"> <a
@@ -390,27 +395,61 @@
 
             </div>
             <hr>
+
+
             <b>
-                <p> Villages Responsible For
-                </p>
+                <span> Villages Bought From
+                </span>
             </b>
             <div class="row">
                 @foreach ($buyer->villages as $village)
-                    <div class="col-sm-4 mb-1">
-                        <ul class="list-group list-group-horizontal">
-                            <li class="list-group-item data-content-list">
-                                @if ($village['picture_id'] == null)
-                                    <img src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" id="region_farmer">
-                                @else
-                                    <img src=" {{ Storage::disk('s3')->url('images/' . $farmer['picture_id']) }}"
-                                        id="region_farmer">
-                                @endif
+                    @if ($village)
+                        <div class="col-sm-4 mb-1">
+                            <ul class="list-group list-group-horizontal">
+                                <li class="list-group-item data-content-list">
+                                    @if ($village['picture_id'] == null)
+                                        <img src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                                            id="region_farmer">
+                                    @else
+                                        <img src=" {{ Storage::disk('s3')->url('images/' . $farmer['picture_id']) }}"
+                                            id="region_farmer">
+                                    @endif
 
-                                <span class="mr-3">{{ $village['village_title'] }}</span>
-                            </li>
+                                    <span class="mr-3">{{ $village['village_title'] }}</span>
+                                </li>
 
-                        </ul>
-                    </div>
+                            </ul>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+            <hr>
+            <b>
+                <span> Villages Responsible For
+                </span> <a href="{{ url('admin/assignVillages/' . $buyer->user_id) }}"
+                    class="btn btn-success ml-5 mb-2">Assign
+                    Villages</a>
+            </b>
+            <div class="row">
+                @foreach ($buyer->resposibleVillage as $village)
+                    @if ($village)
+                        <div class="col-sm-4 mb-1">
+                            <ul class="list-group list-group-horizontal">
+                                <li class="list-group-item data-content-list">
+                                    @if ($village['picture_id'] == null)
+                                        <img src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                                            id="region_farmer">
+                                    @else
+                                        <img src=" {{ Storage::disk('s3')->url('images/' . $farmer['picture_id']) }}"
+                                            id="region_farmer">
+                                    @endif
+
+                                    <span class="mr-3">{{ $village['village_title'] }}</span>
+                                </li>
+
+                            </ul>
+                        </div>
+                    @endif
                 @endforeach
             </div>
             <hr>
@@ -446,15 +485,15 @@
                 <div class="row ml-2">
                     <div class="">
                         <ol class=" breadcrumb float-sm-right txt-size">
-                        <li class="breadcrumb-item active">
-                            {{ $transaction->created_at }} /{{ $buyer->first_name }} /
-                            {{ explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] }}
-                            /
-                            @php
-                                echo floatval($transaction->details->sum('container_weight'));
-                            @endphp
+                            <li class="breadcrumb-item active">
+                                {{ $transaction->created_at }} /{{ $buyer->first_name }} /
+                                {{ explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] }}
+                                /
+                                @php
+                                    echo floatval($transaction->details->sum('container_weight'));
+                                @endphp
 
-                        </li>
+                            </li>
                         </ol>
                     </div>
                 </div>
