@@ -1451,9 +1451,16 @@ class CoffeeBuyerController extends Controller
     public function assignVillages(User $user)
     {
         $village = Village::all();
+        $buyerVillage =  $user->VillagesResposibleFor();
+        $villId = [];
+        foreach ($buyerVillage as $vill) {
+            array_push($villId, $vill->village_id);
+        }
+
         return view(
             'admin.coffeBuyer.assign_village',
             [
+                'villageId' => $villId,
                 'buyer' => $user,
                 'villages' => $village,
             ]
@@ -1467,6 +1474,8 @@ class CoffeeBuyerController extends Controller
             'user_id' => 'required',
             'villages' => 'required',
         ]);
+
+        $buyerVillages =  BuyerVillages::where('user_id', $request->user_id)->delete();
 
         foreach ($request->villages as $village) {
             $buyerVillage = BuyerVillages::create([

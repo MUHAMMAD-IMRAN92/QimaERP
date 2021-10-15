@@ -15,9 +15,10 @@ use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 
 class CoffeeBuyerManager extends Controller
 {
@@ -39,54 +40,217 @@ class CoffeeBuyerManager extends Controller
             return $next($request);
         });
     }
-
     function farmer(Request $request)
     {
-        $farmerName = $request->farmer_name;
-        $villageCode = $request->village_code;
-        $farmerCode = $request->farmer_code;
-        $farmerNicn = $request->farmer_nicn;
-       
-        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
-        $user_image_path = Storage::disk('s3')->url('images');
-        $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
-            $q->where(function ($q) use ($farmerName) {
-                $q->where('farmer_name', 'like', "%$farmerName%");
-            });
-        })->when($villageCode, function ($q) use ($villageCode) {
-            $q->where(function ($q) use ($villageCode) {
-                $q->where('village_code', 'like', "%$villageCode%");
-            });
-        })->when($farmerCode, function ($q) use ($farmerCode) {
-            $q->where(function ($q) use ($farmerCode) {
-                $q->where('farmer_code', 'like', "%$farmerCode%");
-            });
-        })->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
-            $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
-        }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
-            $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
-        }])->orderBy('farmer_name')->get();
-
-        foreach ($farmers as $key => $farmer) {
-            $farmer->farmer_id_card_picture = '';
-            $farmer->farmer_picture = '';
-            if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
-                $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
-            }
-            if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
-                $farmer->farmer_picture = $farmer->profileImage->user_file_name;
-            }
-            $farmer->farmer_village = $farmer->village_code;
-            $farmer->farmer_id_card_no = $farmer->farmer_nicn;
-            $farmer->makeHidden('idcardImage');
-            $farmer->makeHidden('profileImage');
-            $farmer->makeHidden('village_code');
-            $farmer->makeHidden('farmer_nicn');
-            $farmer->makeHidden('idcard_picture_id');
-            $farmer->makeHidden('picture_id');
+        $user = Auth::user();
+        $roles = $user->roles;
+        $roleId = 0;
+        foreach ($roles as $role) {
+            $roleId = $role->id;
         }
+        if ($roleId == 2) {
+            $user = User::find($user->user_id);
+            $villages =  $user->VillagesResposibleFor();
+
+            if (count($villages) == 0) {
+                $search = $request->search;
+                $farmers = Farmer::when($search, function ($q) use ($search) {
+                    $q->where(function ($q) use ($search) {
+                        $q->where('farmer_code', 'like', "%$search%")->orwhere('farmer_name', 'like', "%$search%");
+                    });
+                })->orderBy('farmer_name')->get();
+            }
+            $farmers = [];
+            foreach ($villages as $village) {
+                $villagefarmer = Farmer::where('village_code', $village->village_code)->get();
+                foreach ($villagefarmer as $farmer) {
+                    array_push($farmers, $farmer);
+                }
+            }
+        } else {
+            $search = $request->search;
+            $farmers = Farmer::when($search, function ($q) use ($search) {
+                $q->where(function ($q) use ($search) {
+                    $q->where('farmer_code', 'like', "%$search%")->orwhere('farmer_name', 'like', "%$search%");
+                });
+            })->orderBy('farmer_name')->get();
+        }
+
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_FARMER"), $farmers);
     }
+    // function farmer(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $roles = $user->roles;
+    //     $roleId = 0;
+    //     foreach ($roles as $role) {
+    //         $roleId = $role->id;
+    //     }
+    //     if ($roleId == 2) {
+    //         $user = User::find($user->user_id);
+    //         $villages =  $user->VillagesResposibleFor();
+    //         $farmers = [];
+    //         foreach ($villages as $village) {
+    //             $villagefarmer = Farmer::where('village_code', $village->village_code)->get();
+    //             foreach ($villagefarmer as $farmer) {
+    //                 array_push($farmers, $farmer);
+    //             }
+    //             foreach ($farmers as $key => $farmer) {
+    //                 $farmer->farmer_id_card_picture = '';
+    //                 $farmer->farmer_picture = '';
+    //                 if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
+    //                     $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
+    //                 }
+    //                 if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
+    //                     $farmer->farmer_picture = $farmer->profileImage->user_file_name;
+    //                 }
+    //                 $farmer->farmer_village = $farmer->village_code;
+    //                 $farmer->farmer_id_card_no = $farmer->farmer_nicn;
+    //                 $farmer->makeHidden('idcardImage');
+    //                 $farmer->makeHidden('profileImage');
+    //                 $farmer->makeHidden('village_code');
+    //                 $farmer->makeHidden('farmer_nicn');
+    //                 $farmer->makeHidden('idcard_picture_id');
+    //                 $farmer->makeHidden('picture_id');
+    //             }
+    //         }
+    //         if (count($villages) == 0) {
+
+    //             $farmerName = $request->farmer_name;
+    //             $villageCode = $request->village_code;
+    //             $farmerCode = $request->farmer_code;
+    //             $farmerNicn = $request->farmer_nicn;
+
+    //             $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+    //             $user_image_path = Storage::disk('s3')->url('images');
+    //             $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
+    //                 $q->where(function ($q) use ($farmerName) {
+    //                     $q->where('farmer_name', 'like', "%$farmerName%");
+    //                 });
+    //             })->when($villageCode, function ($q) use ($villageCode) {
+    //                 $q->where(function ($q) use ($villageCode) {
+    //                     $q->where('village_code', 'like', "%$villageCode%");
+    //                 });
+    //             })->when($farmerCode, function ($q) use ($farmerCode) {
+    //                 $q->where(function ($q) use ($farmerCode) {
+    //                     $q->where('farmer_code', 'like', "%$farmerCode%");
+    //                 });
+    //             })->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
+    //                 $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+    //             }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
+    //                 $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+    //             }])->orderBy('farmer_name')->get();
+
+    //             foreach ($farmers as $key => $farmer) {
+    //                 $farmer->farmer_id_card_picture = '';
+    //                 $farmer->farmer_picture = '';
+    //                 if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
+    //                     $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
+    //                 }
+    //                 if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
+    //                     $farmer->farmer_picture = $farmer->profileImage->user_file_name;
+    //                 }
+    //                 $farmer->farmer_village = $farmer->village_code;
+    //                 $farmer->farmer_id_card_no = $farmer->farmer_nicn;
+    //                 $farmer->makeHidden('idcardImage');
+    //                 $farmer->makeHidden('profileImage');
+    //                 $farmer->makeHidden('village_code');
+    //                 $farmer->makeHidden('farmer_nicn');
+    //                 $farmer->makeHidden('idcard_picture_id');
+    //                 $farmer->makeHidden('picture_id');
+    //             }
+    //         }
+    //     } else {
+    //         $farmerName = $request->farmer_name;
+    //         $villageCode = $request->village_code;
+    //         $farmerCode = $request->farmer_code;
+    //         $farmerNicn = $request->farmer_nicn;
+
+    //         $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+    //         $user_image_path = Storage::disk('s3')->url('images');
+    //         $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
+    //             $q->where(function ($q) use ($farmerName) {
+    //                 $q->where('farmer_name', 'like', "%$farmerName%");
+    //             });
+    //         })->when($villageCode, function ($q) use ($villageCode) {
+    //             $q->where(function ($q) use ($villageCode) {
+    //                 $q->where('village_code', 'like', "%$villageCode%");
+    //             });
+    //         })->when($farmerCode, function ($q) use ($farmerCode) {
+    //             $q->where(function ($q) use ($farmerCode) {
+    //                 $q->where('farmer_code', 'like', "%$farmerCode%");
+    //             });
+    //         })->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
+    //             $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+    //         }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
+    //             $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+    //         }])->orderBy('farmer_name')->get();
+
+    //         foreach ($farmers as $key => $farmer) {
+    //             $farmer->farmer_id_card_picture = '';
+    //             $farmer->farmer_picture = '';
+    //             if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
+    //                 $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
+    //             }
+    //             if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
+    //                 $farmer->farmer_picture = $farmer->profileImage->user_file_name;
+    //             }
+    //             $farmer->farmer_village = $farmer->village_code;
+    //             $farmer->farmer_id_card_no = $farmer->farmer_nicn;
+    //             $farmer->makeHidden('idcardImage');
+    //             $farmer->makeHidden('profileImage');
+    //             $farmer->makeHidden('village_code');
+    //             $farmer->makeHidden('farmer_nicn');
+    //             $farmer->makeHidden('idcard_picture_id');
+    //             $farmer->makeHidden('picture_id');
+    //         }
+    //         $farmerName = $request->farmer_name;
+    //         $villageCode = $request->village_code;
+    //         $farmerCode = $request->farmer_code;
+    //         $farmerNicn = $request->farmer_nicn;
+
+    //         $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+    //         $user_image_path = Storage::disk('s3')->url('images');
+    //         $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
+    //             $q->where(function ($q) use ($farmerName) {
+    //                 $q->where('farmer_name', 'like', "%$farmerName%");
+    //             });
+    //         })->when($villageCode, function ($q) use ($villageCode) {
+    //             $q->where(function ($q) use ($villageCode) {
+    //                 $q->where('village_code', 'like', "%$villageCode%");
+    //             });
+    //         })->when($farmerCode, function ($q) use ($farmerCode) {
+    //             $q->where(function ($q) use ($farmerCode) {
+    //                 $q->where('farmer_code', 'like', "%$farmerCode%");
+    //             });
+    //         })->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
+    //             $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+    //         }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
+    //             $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+    //         }])->orderBy('farmer_name')->get();
+
+    //         foreach ($farmers as $key => $farmer) {
+    //             $farmer->farmer_id_card_picture = '';
+    //             $farmer->farmer_picture = '';
+    //             if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
+    //                 $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
+    //             }
+    //             if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
+    //                 $farmer->farmer_picture = $farmer->profileImage->user_file_name;
+    //             }
+    //             $farmer->farmer_village = $farmer->village_code;
+    //             $farmer->farmer_id_card_no = $farmer->farmer_nicn;
+    //             $farmer->makeHidden('idcardImage');
+    //             $farmer->makeHidden('profileImage');
+    //             $farmer->makeHidden('village_code');
+    //             $farmer->makeHidden('farmer_nicn');
+    //             $farmer->makeHidden('idcard_picture_id');
+    //             $farmer->makeHidden('picture_id');
+    //         }
+    //     }
+
+    //     return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_FARMER"), $farmers);
+    // }
 
     function sentTransactions(Request $request)
     {
