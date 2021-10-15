@@ -56,9 +56,11 @@
                                             @foreach ($villages as $village)
                                                 <div class="col-3">
                                                     <input type="checkbox" name="villages[]" id="cars"
-                                                        value="{{ $village->village_id }}">
+                                                        value="{{ $village->village_id }}"
+                                                        {{ in_array($village->village_id, $villageId) ? 'checked' : '' }}>
                                                     {{ $village->village_title }}
                                                 </div>
+
                                             @endforeach
 
                                         </div>
