@@ -27,7 +27,7 @@
         top: 0;
         width: 100%;
         /* Full width */
-        height: 60%;
+        height: 100%;
         /* Full height */
         overflow: auto;
         /* Enable scroll if needed */
