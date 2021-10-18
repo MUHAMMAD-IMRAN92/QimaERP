@@ -59,12 +59,13 @@ class CoffeeBuyerManager extends Controller
                         $q->where('farmer_code', 'like', "%$search%")->orwhere('farmer_name', 'like', "%$search%");
                     });
                 })->orderBy('farmer_name')->get();
-            }
-            $farmers = [];
-            foreach ($villages as $village) {
-                $villagefarmer = Farmer::where('village_code', $village->village_code)->get();
-                foreach ($villagefarmer as $farmer) {
-                    array_push($farmers, $farmer);
+            } else {
+                $farmers = [];
+                foreach ($villages as $village) {
+                    $villagefarmer = Farmer::where('village_code', $village->village_code)->get();
+                    foreach ($villagefarmer as $farmer) {
+                        array_push($farmers, $farmer);
+                    }
                 }
             }
         } else {
