@@ -182,14 +182,17 @@ class CommonController extends Controller
         }
         if ($roleId == 2) {
             $user = User::find($user->user_id);
-            $villages =  $user->VillagesResposibleFor();
-            if (count($villages) == 0) {
+            $uservillage =  $user->VillagesResposibleFor();
+            // return  count($uservillage);
+            if (count($uservillage) == 0) {
                 $search = $request->search;
                 $villages = Village::when($search, function ($q) use ($search) {
                     $q->where(function ($q) use ($search) {
                         $q->where('village_title', 'like', "%$search%")->orwhere('village_title_ar', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
                     });
                 })->orderBy('village_title')->get();
+            } else {
+                $villages =  $user->VillagesResposibleFor();
             }
         } else {
             $search = $request->search;
@@ -214,7 +217,7 @@ class CommonController extends Controller
         if ($roleId == 2) {
             $user = User::find($user->user_id);
             $villages =  $user->VillagesResposibleFor();
-           
+
             if (count($villages) == 0) {
                 $search = $request->search;
                 $farmers = Farmer::when($search, function ($q) use ($search) {
