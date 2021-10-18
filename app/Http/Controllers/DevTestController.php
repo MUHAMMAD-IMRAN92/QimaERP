@@ -30,8 +30,14 @@ class DevTestController extends Controller
         //     'live_test' => true
         // ]);
         $farmers = Farmer::get()->groupBy('farmer_code');
+        $duplocateFarmer = collect();
         foreach ($farmers as $key => $farmer) {
-            echo $key . ':' . $farmer->count(). "<br>";
+            if (count($farmer) > 1) {
+                $duplocateFarmer->push($farmer);
+            }
+        }
+        foreach ($duplocateFarmer as $farmer) {
+            $farmer->last()->delete();
         }
     }
 }
