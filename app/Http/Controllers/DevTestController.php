@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use stdClass;
 use App\BatchNumber;
+use App\Farmer;
 use App\Transaction;
 use App\TransactionDetail;
 use Illuminate\Support\Arr;
@@ -21,12 +22,19 @@ class DevTestController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv4';
-        abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
+        // $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv4';
+        // abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
 
-        return response()->json([
-            'msg' => 'Hello Dev, how is your day?',
-            'live_test' => true
-        ]);
+        // return response()->json([
+        //     'msg' => 'Hello Dev, how is your day?',
+        //     'live_test' => true
+        // ]);
+        $farmers = Farmer::all()->groupBy('farmer_code');
+        $arr = [];
+        foreach ($farmers as $key => $farmer) {
+            // array_push($arr, $farmer->count());
+            return
+        }
+        return $arr;
     }
 }
