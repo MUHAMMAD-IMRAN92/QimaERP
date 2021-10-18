@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use stdClass;
 use App\BatchNumber;
+use App\Farmer;
 use App\Transaction;
 use App\TransactionDetail;
 use Illuminate\Support\Arr;
@@ -28,5 +29,6 @@ class DevTestController extends Controller
             'msg' => 'Hello Dev, how is your day?',
             'live_test' => true
         ]);
+      
     }
 }
