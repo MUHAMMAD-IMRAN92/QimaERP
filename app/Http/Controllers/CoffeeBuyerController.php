@@ -533,6 +533,22 @@ class CoffeeBuyerController extends Controller
             $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
             $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first();
+            // if ($farmerPrice) {
+            //     $price =  $farmerPrice->price_per_kg;
+            //     $quantity = $transaction->details->sum('container_weight');
+            //     $price +=  $quantity * $price;
+            // }
+            // if ($price ==  null) {
+            //     $village_code = Str::beforeLast($farmerPrice->farmer_code, '-');
+            //     $village = Village::where('village_code',  $village_code)->first();
+            //     if ($village) {
+            //         $price = $village->price_per_kg;
+
+            //         $quantity = $transaction->details->sum('container_weight');
+            //         $price +=  $quantity * $price;
+            //     }
+            // }
+
             if ($farmerPrice) {
                 $farmerPrice = $farmerPrice['price_per_kg'];
             }
@@ -544,15 +560,12 @@ class CoffeeBuyerController extends Controller
                     $vilagePrice = $village->price_per_kg;
                 }
 
-                foreach ($buyer->transactions as $transaction) {
-                    $quantity = $transaction->details->sum('container_weight');
-                    $price +=  $quantity * $vilagePrice;
-                }
+
+                $quantity = $transaction->details->sum('container_weight');
+                $price +=  $quantity * $vilagePrice;
             } else {
-                foreach ($buyer->transactions as $transaction) {
-                    $quantity = $transaction->details->sum('container_weight');
-                    $price +=  $quantity * $farmerPrice;
-                }
+                $quantity = $transaction->details->sum('container_weight');
+                $price +=  $quantity * $farmerPrice;
             }
         }
         $buyer->price = $price;
