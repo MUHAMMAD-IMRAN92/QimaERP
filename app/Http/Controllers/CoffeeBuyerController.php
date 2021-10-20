@@ -170,32 +170,36 @@ class CoffeeBuyerController extends Controller
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
+            // $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($date) {
+            //     $query->whereDate('created_at', $date);
+            // }])->where('name', 'Coffee Buying Manager')->first()->users;
+
+            // $coffeeBuyers = Role::with(['users' => function ($query) use ($date) {
+            //     $query->whereDate('created_at', $date);
+            // }])->where('name', 'Coffee Buyer')->first()->users;
+
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($date) {
-                $query->whereDate('created_at', $date);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
 
             $coffeeBuyers = Role::with(['users' => function ($query) use ($date) {
-                $query->whereDate('created_at', $date);
             }])->where('name', 'Coffee Buyer')->first()->users;
 
-
-
-            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($date) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->todayNonSpecialTransaction($date, 3);
+                $coffeeBuyingManager = $coffeeBuyingManager->todaySpecialTransaction($date, 3);
                 return   $coffeeBuyingManager;
             });
-            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer)  use ($date) {
                 $coffeeBuyer->image = $coffeeBuyer->getImage();
                 $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
                 $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
                 $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                $coffeeBuyer = $coffeeBuyer->todayNonSpecialTransaction($date, 2);
+                $coffeeBuyer = $coffeeBuyer->todaySpecialTransaction($date, 2);
                 return   $coffeeBuyer;
             });
             return view('admin.coffeBuyer.all_coffee_buyer', [
@@ -210,28 +214,26 @@ class CoffeeBuyerController extends Controller
             $date = Carbon::yesterday()->toDateString();
 
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($date) {
-                $query->whereDate('created_at', $date);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
 
             $coffeeBuyers = Role::with(['users' => function ($query) use ($date) {
-                $query->whereDate('created_at', $date);
             }])->where('name', 'Coffee Buyer')->first()->users;
-            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($date) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->todayNonSpecialTransaction($date, 3);
+                $coffeeBuyingManager = $coffeeBuyingManager->todaySpecialTransaction($date, 3);
                 return   $coffeeBuyingManager;
             });
-            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer)  use ($date) {
                 $coffeeBuyer->image = $coffeeBuyer->getImage();
                 $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
                 $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
                 $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                $coffeeBuyer = $coffeeBuyer->todayNonSpecialTransaction($date, 2);
+                $coffeeBuyer = $coffeeBuyer->todaySpecialTransaction($date, 2);
                 return   $coffeeBuyer;
             });
             $governorates = Governerate::all();
@@ -256,29 +258,27 @@ class CoffeeBuyerController extends Controller
 
 
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($lastMonth, $year) {
-                $query->whereMonth('created_at', $lastMonth)->whereYear('created_at',  $year);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
 
             $coffeeBuyers = Role::with(['users' => function ($query) use ($lastMonth, $year) {
-                $query->whereMonth('created_at', $lastMonth)->whereYear('created_at',  $year);
             }])->where('name', 'Coffee Buyer')->first()->users;
 
-            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($lastMonth, $year) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->lastMonthNonSpecialTransaction($lastMonth, $year, 3);
+                $coffeeBuyingManager = $coffeeBuyingManager->lastMonthSpecialTransaction($lastMonth, $year, 3);
                 return   $coffeeBuyingManager;
             });
-            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($lastMonth, $year) {
                 $coffeeBuyer->image = $coffeeBuyer->getImage();
                 $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
                 $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
                 $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                $coffeeBuyer = $coffeeBuyer->lastMonthNonSpecialTransaction($lastMonth, $year, 2);
+                $coffeeBuyer = $coffeeBuyer->lastMonthSpecialTransaction($lastMonth, $year, 2);
                 return   $coffeeBuyer;
             });
             $governorates = Governerate::all();
@@ -302,30 +302,29 @@ class CoffeeBuyerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $role = Role::with(['users' => function ($query) use ($year) {
-                $query->whereYear('created_at', $year);
             }])->where('name', 'Coffee Buying Manager')->first();
             $coffeeBuyingManagers = $role->users;
             $role = Role::with(['users' => function ($query) use ($year) {
-                $query->whereYear('created_at', $year);
             }])->where('name', 'Coffee Buyer')->first();
             $coffeeBuyers = $role->users;
 
-            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($year) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->yearNonSpecialTransaction($year, 3);
+                $coffeeBuyingManager = $coffeeBuyingManager->yearSpecialTransaction($year, 3);
                 return   $coffeeBuyingManager;
             });
-            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($year) {
                 $coffeeBuyer->image = $coffeeBuyer->getImage();
                 $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
                 $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
                 $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                $coffeeBuyer = $coffeeBuyer->yearNonSpecialTransaction($year, 2);
+                $coffeeBuyer = $coffeeBuyer->yearSpecialTransaction($year, 2);
                 return   $coffeeBuyer;
             });
 
@@ -346,29 +345,27 @@ class CoffeeBuyerController extends Controller
             $year = $date->year - 1;
 
             $role = Role::with(['users' => function ($query) use ($year) {
-                $query->whereYear('created_at', $year);
             }])->where('name', 'Coffee Buying Manager')->first();
             $coffeeBuyingManagers = $role->users;
             $role = Role::with(['users' => function ($query) use ($year) {
-                $query->whereYear('created_at', $year);
             }])->where('name', 'Coffee Buyer')->first();
             $coffeeBuyers = $role->users;
-            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($year) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->yearNonSpecialTransaction($year, 3);
+                $coffeeBuyingManager = $coffeeBuyingManager->yearSpecialTransaction($year, 3);
                 return   $coffeeBuyingManager;
             });
-            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($year) {
                 $coffeeBuyer->image = $coffeeBuyer->getImage();
                 $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
                 $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
                 $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                $coffeeBuyer = $coffeeBuyer->yearNonSpecialTransaction($year, 2);
+                $coffeeBuyer = $coffeeBuyer->yearSpecialTransaction($year, 2);
                 return   $coffeeBuyer;
             });
             $governorates = Governerate::all();
@@ -390,29 +387,27 @@ class CoffeeBuyerController extends Controller
             $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
 
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $end) {
-                $query->whereBetween('created_at', [$start, $end]);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
 
             $coffeeBuyers = Role::with(['users' => function ($query) use ($start, $end) {
-                $query->whereBetween('created_at', [$start, $end]);
             }])->where('name', 'Coffee Buyer')->first()->users;
 
-            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($start, $end) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->betweenNonSpecialTransaction($start, $end, 3);
+                $coffeeBuyingManager = $coffeeBuyingManager->betweenSpecialTransaction($start, $end, 3);
                 return   $coffeeBuyingManager;
             });
-            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($start, $end) {
                 $coffeeBuyer->image = $coffeeBuyer->getImage();
                 $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
                 $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
                 $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                $coffeeBuyer = $coffeeBuyer->betweenNonSpecialTransaction($start, $end, 2);
+                $coffeeBuyer = $coffeeBuyer->betweenSpecialTransaction($start, $end, 2);
                 return   $coffeeBuyer;
             });
             $governorates = Governerate::all();
@@ -433,30 +428,28 @@ class CoffeeBuyerController extends Controller
             $start = Carbon::now()->startOfMonth();
 
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $date) {
-                $query->whereBetween('created_at', [$start, $date]);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
 
             $coffeeBuyers = Role::with(['users' => function ($query) use ($start, $date) {
-                $query->whereBetween('created_at', [$start, $date]);
             }])->where('name', 'Coffee Buyer')->first()->users;
 
 
-            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($start, $date) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->betweenNonSpecialTransaction($start, $date, 3);
+                $coffeeBuyingManager = $coffeeBuyingManager->betweenSpecialTransaction($start, $date, 3);
                 return   $coffeeBuyingManager;
             });
-            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($start, $date) {
                 $coffeeBuyer->image = $coffeeBuyer->getImage();
                 $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
                 $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
                 $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                $coffeeBuyer = $coffeeBuyer->betweenNonSpecialTransaction($start, $date, 2);
+                $coffeeBuyer = $coffeeBuyer->betweenSpecialTransaction($start, $date, 2);
                 return   $coffeeBuyer;
             });
 
@@ -481,31 +474,29 @@ class CoffeeBuyerController extends Controller
             $regions = Region::all();
             $villages = Village::all();
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $date) {
-                $query->whereBetween('created_at', [$start, $date]);
             }])->where('name', 'Coffee Buying Manager')->first()->users;
 
             $coffeeBuyers = Role::with(['users' => function ($query) use ($start, $date) {
-                $query->whereBetween('created_at', [$start, $date]);
             }])->where('name', 'Coffee Buyer')->first()->users;
 
 
 
-            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+            $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($start, $date) {
                 $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->betweenNonSpecialTransaction($start, $date, 3);
+                $coffeeBuyingManager = $coffeeBuyingManager->betweenSpecialTransaction($start, $date, 3);
                 return   $coffeeBuyingManager;
             });
-            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+            $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($start, $date) {
                 $coffeeBuyer->image = $coffeeBuyer->getImage();
                 $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
                 $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
                 $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-                $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-                $coffeeBuyer = $coffeeBuyer->specialPrice();
+                $coffeeBuyer = $coffeeBuyer->betweenNonSpecialTransaction($start, $date, 2);
+                $coffeeBuyer = $coffeeBuyer->betweenSpecialTransaction($start, $date, 2);
                 return   $coffeeBuyer;
             });
             return view('admin.coffeBuyer.all_coffee_buyer', [
@@ -618,12 +609,18 @@ class CoffeeBuyerController extends Controller
 
     public function daysFilter(Request $request, $id)
     {
+        $sent_to = 2;
         if ($request->date == 'today') {
             $date = Carbon::today()->toDateString();
 
             $buyer = User::find($id);
 
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $date)->where('sent_to', 2)->get();
+            foreach ($buyer->roles as $role) {
+                if ($role->id == 1) {
+                    $sent_to = 3;
+                }
+            }
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $date)->where('sent_to',  $sent_to)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -665,8 +662,12 @@ class CoffeeBuyerController extends Controller
             $now = Carbon::now();
             $yesterday = Carbon::yesterday();
             $buyer = User::find($id);
-
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $yesterday)->where('sent_to', 2)->get();
+            foreach ($buyer->roles as $role) {
+                if ($role->id == 1) {
+                    $sent_to = 3;
+                }
+            }
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $yesterday)->where('sent_to',  $sent_to)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -710,8 +711,12 @@ class CoffeeBuyerController extends Controller
             $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
 
             $buyer = User::find($id);
-
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at', [$start,   $end])->where('sent_to', 2)->get();
+            foreach ($buyer->roles as $role) {
+                if ($role->id == 1) {
+                    $sent_to = 3;
+                }
+            }
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at', [$start,   $end])->where('sent_to',   $sent_to)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -754,7 +759,12 @@ class CoffeeBuyerController extends Controller
             $date = Carbon::tomorrow()->toDateString();
             $start = $now->firstOfMonth();
             $buyer = User::find($id);
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->get();
+            foreach ($buyer->roles as $role) {
+                if ($role->id == 1) {
+                    $sent_to = 3;
+                }
+            }
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to',  $sent_to)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -798,8 +808,12 @@ class CoffeeBuyerController extends Controller
             $lastMonth =  $date->subMonth()->format('m');
             $year = $date->year;
             $buyer = User::find($id);
-
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', 2)->get();
+            foreach ($buyer->roles as $role) {
+                if ($role->id == 1) {
+                    $sent_to = 3;
+                }
+            }
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', $sent_to)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -842,8 +856,12 @@ class CoffeeBuyerController extends Controller
             $date = Carbon::today()->toDateString();
             $start = $now->startOfYear();
             $buyer = User::find($id);
-
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->get();
+            foreach ($buyer->roles as $role) {
+                if ($role->id == 1) {
+                    $sent_to = 3;
+                }
+            }
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to', $sent_to)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -886,8 +904,12 @@ class CoffeeBuyerController extends Controller
 
             $year = $date->year;
             $buyer = User::find($id);
-
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', 2)->get();
+            foreach ($buyer->roles as $role) {
+                if ($role->id == 1) {
+                    $sent_to = 3;
+                }
+            }
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', $sent_to)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -931,8 +953,12 @@ class CoffeeBuyerController extends Controller
 
             $year = $date->year - 1;
             $buyer = User::find($id);
-
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', 2)->get();
+            foreach ($buyer->roles as $role) {
+                if ($role->id == 1) {
+                    $sent_to = 3;
+                }
+            }
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', $sent_to)->get();
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
