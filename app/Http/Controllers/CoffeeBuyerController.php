@@ -518,6 +518,7 @@ class CoffeeBuyerController extends Controller
                 $buyer->transactions = $buyer->getTransactions();
             }
         }
+
         $buyer->image = $buyer->getImage();
         $buyer->villages = $buyer->getVillages();
         $buyer->resposibleVillage = $buyer->VillagesResposibleFor();
@@ -533,21 +534,7 @@ class CoffeeBuyerController extends Controller
             $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
             $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first();
-            // if ($farmerPrice) {
-            //     $price =  $farmerPrice->price_per_kg;
-            //     $quantity = $transaction->details->sum('container_weight');
-            //     $price +=  $quantity * $price;
-            // }
-            // if ($price ==  null) {
-            //     $village_code = Str::beforeLast($farmerPrice->farmer_code, '-');
-            //     $village = Village::where('village_code',  $village_code)->first();
-            //     if ($village) {
-            //         $price = $village->price_per_kg;
 
-            //         $quantity = $transaction->details->sum('container_weight');
-            //         $price +=  $quantity * $price;
-            //     }
-            // }
 
             if ($farmerPrice) {
                 $farmerPrice = $farmerPrice['price_per_kg'];
@@ -578,7 +565,17 @@ class CoffeeBuyerController extends Controller
 
         $buyer = User::find($id);
 
-        $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 2)->get();
+        foreach ($buyer->roles as $role) {
+            if ($role->id == 1) {
+                $sent_to = 3;
+            }
+        }
+        if ($sent_to == 2) {
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 2)->get();
+        } else {
+
+            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 2)->get();
+        }
         $buyer->first_purchase = $buyer->firstPurchase();
         $buyer->last_purchase = $buyer->lastPurchase();
         $sum = 0;
@@ -629,7 +626,12 @@ class CoffeeBuyerController extends Controller
                     $sent_to = 3;
                 }
             }
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $date)->where('sent_to',  $sent_to)->get();
+            if ($sent_to == 2) {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('batch_number', 'NOT LIKE', '%000%')->where('created_at',  $date)->where('sent_to',  $sent_to)->get();
+            } else {
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $date)->where('sent_to',  $sent_to)->get();
+            }
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -674,7 +676,12 @@ class CoffeeBuyerController extends Controller
                     $sent_to = 3;
                 }
             }
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $yesterday)->where('sent_to',  $sent_to)->get();
+            if ($sent_to == 2) {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at',  $yesterday)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to',  $sent_to)->get();
+            } else {
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('sent_to',  $sent_to)->get();
+            }
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -721,7 +728,11 @@ class CoffeeBuyerController extends Controller
                     $sent_to = 3;
                 }
             }
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('created_at', [$start,   $end])->where('sent_to',   $sent_to)->get();
+            if ($sent_to == 2) {
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $end])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+            } else {
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $end])->where('sent_to', $sent_to)->get();
+            }
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -729,6 +740,7 @@ class CoffeeBuyerController extends Controller
                 $sum += $transaction->details->sum('container_weight');
             }
             $buyer->sum = $sum;
+
             $price = 0;
             foreach ($buyer->transactions as $transaction) {
                 $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
@@ -744,7 +756,6 @@ class CoffeeBuyerController extends Controller
                     if ($village) {
                         $vilagePrice = $village->price_per_kg;
                     }
-
 
                     $quantity = $transaction->details->sum('container_weight');
                     $price +=  $quantity * $vilagePrice;
@@ -767,7 +778,12 @@ class CoffeeBuyerController extends Controller
                     $sent_to = 3;
                 }
             }
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to',  $sent_to)->get();
+            if ($sent_to == 2) {
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->where('sent_to',  $sent_to)->get();
+            } else {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to',  $sent_to)->get();
+            }
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -814,7 +830,13 @@ class CoffeeBuyerController extends Controller
                     $sent_to = 3;
                 }
             }
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', $sent_to)->get();
+            if ($sent_to == 2) {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereMonth('created_at', $lastMonth)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->where('sent_to', $sent_to)->get();
+            } else {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', $sent_to)->get();
+            }
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -860,7 +882,13 @@ class CoffeeBuyerController extends Controller
                     $sent_to = 3;
                 }
             }
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to', $sent_to)->get();
+            if ($sent_to == 2) {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+            } else {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $date])->where('sent_to', $sent_to)->get();
+            }
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -906,7 +934,12 @@ class CoffeeBuyerController extends Controller
                     $sent_to = 3;
                 }
             }
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', $sent_to)->get();
+            if ($sent_to == 2) {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+            } else {
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', $sent_to)->get();
+            }
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
@@ -953,7 +986,12 @@ class CoffeeBuyerController extends Controller
                     $sent_to = 3;
                 }
             }
-            $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', $sent_to)->get();
+            if ($sent_to == 2) {
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+            } else {
+
+                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereYear('created_at',  $year)->where('sent_to', $sent_to)->get();
+            }
             $buyer->first_purchase = $buyer->firstPurchase();
             $buyer->last_purchase = $buyer->lastPurchase();
             $sum = 0;
