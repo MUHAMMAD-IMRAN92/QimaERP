@@ -595,22 +595,19 @@ class CoffeeBuyerController extends Controller
                 $farmerPrice = $farmerPrice['price_per_kg'];
             }
             if (!$farmerPrice) {
-
                 $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                $vilagePrice = Village::where('village_code', $villageCode)->first();
+                $village = Village::where('village_code', $villageCode)->first();
+                $vilagePrice = 0;
+                if ($village) {
+                    $vilagePrice = $village->price_per_kg;
+                }
 
-                if ($vilagePrice) {
-                    $vilagePrice = $vilagePrice->price_per_kg;
-                }
-                foreach ($buyer->transactions as $transaction) {
-                    $quantity = $transaction->details->sum('container_weight');
-                    $price +=  $quantity * $vilagePrice;
-                }
+
+                $quantity = $transaction->details->sum('container_weight');
+                $price +=  $quantity * $vilagePrice;
             } else {
-                foreach ($buyer->transactions as $transaction) {
-                    $quantity = $transaction->details->sum('container_weight');
-                    $price +=  $quantity * $farmerPrice;
-                }
+                $quantity = $transaction->details->sum('container_weight');
+                $price +=  $quantity * $farmerPrice;
             }
         }
         $buyer->price = $price;
@@ -649,21 +646,19 @@ class CoffeeBuyerController extends Controller
                     $farmerPrice = $farmerPrice['price_per_kg'];
                 }
                 if (!$farmerPrice) {
-
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first();
-                    if ($vilagePrice) {
-                        $vilagePrice = $vilagePrice->price_per_kg;
+                    $village = Village::where('village_code', $villageCode)->first();
+                    $vilagePrice = 0;
+                    if ($village) {
+                        $vilagePrice = $village->price_per_kg;
                     }
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $vilagePrice;
-                    }
+
+
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
                 } else {
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $farmerPrice;
-                    }
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
                 }
             }
             $buyer->price = $price;
@@ -696,21 +691,19 @@ class CoffeeBuyerController extends Controller
                     $farmerPrice = $farmerPrice['price_per_kg'];
                 }
                 if (!$farmerPrice) {
-
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first();
-                    if ($vilagePrice) {
-                        $vilagePrice = $vilagePrice->price_per_kg;
+                    $village = Village::where('village_code', $villageCode)->first();
+                    $vilagePrice = 0;
+                    if ($village) {
+                        $vilagePrice = $village->price_per_kg;
                     }
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $vilagePrice;
-                    }
+
+
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
                 } else {
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $farmerPrice;
-                    }
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
                 }
             }
             $buyer->price = $price;
@@ -745,21 +738,19 @@ class CoffeeBuyerController extends Controller
                     $farmerPrice = $farmerPrice['price_per_kg'];
                 }
                 if (!$farmerPrice) {
-
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first();
-                    if ($vilagePrice) {
-                        $vilagePrice = $vilagePrice->price_per_kg;
+                    $village = Village::where('village_code', $villageCode)->first();
+                    $vilagePrice = 0;
+                    if ($village) {
+                        $vilagePrice = $village->price_per_kg;
                     }
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $vilagePrice;
-                    }
+
+
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
                 } else {
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $farmerPrice;
-                    }
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
                 }
             }
             $buyer->price = $price;
@@ -793,21 +784,19 @@ class CoffeeBuyerController extends Controller
                     $farmerPrice = $farmerPrice['price_per_kg'];
                 }
                 if (!$farmerPrice) {
-
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first();
-                    if ($vilagePrice) {
-                        $vilagePrice = $vilagePrice->price_per_kg;
+                    $village = Village::where('village_code', $villageCode)->first();
+                    $vilagePrice = 0;
+                    if ($village) {
+                        $vilagePrice = $village->price_per_kg;
                     }
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $vilagePrice;
-                    }
+
+
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
                 } else {
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $farmerPrice;
-                    }
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
                 }
             }
             $buyer->price = $price;
@@ -842,21 +831,19 @@ class CoffeeBuyerController extends Controller
                     $farmerPrice = $farmerPrice['price_per_kg'];
                 }
                 if (!$farmerPrice) {
-
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first();
-                    if ($vilagePrice) {
-                        $vilagePrice = $vilagePrice->price_per_kg;
+                    $village = Village::where('village_code', $villageCode)->first();
+                    $vilagePrice = 0;
+                    if ($village) {
+                        $vilagePrice = $village->price_per_kg;
                     }
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $vilagePrice;
-                    }
+
+
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
                 } else {
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $farmerPrice;
-                    }
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
                 }
             }
             $buyer->price = $price;
@@ -890,21 +877,19 @@ class CoffeeBuyerController extends Controller
                     $farmerPrice = $farmerPrice['price_per_kg'];
                 }
                 if (!$farmerPrice) {
-
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first();
-                    if ($vilagePrice) {
-                        $vilagePrice = $vilagePrice->price_per_kg;
+                    $village = Village::where('village_code', $villageCode)->first();
+                    $vilagePrice = 0;
+                    if ($village) {
+                        $vilagePrice = $village->price_per_kg;
                     }
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $vilagePrice;
-                    }
+
+
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
                 } else {
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $farmerPrice;
-                    }
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
                 }
             }
             $buyer->price = $price;
@@ -938,21 +923,19 @@ class CoffeeBuyerController extends Controller
                     $farmerPrice = $farmerPrice['price_per_kg'];
                 }
                 if (!$farmerPrice) {
-
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first();
-                    if ($vilagePrice) {
-                        $vilagePrice = $vilagePrice->price_per_kg;
+                    $village = Village::where('village_code', $villageCode)->first();
+                    $vilagePrice = 0;
+                    if ($village) {
+                        $vilagePrice = $village->price_per_kg;
                     }
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $vilagePrice;
-                    }
+
+
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
                 } else {
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $farmerPrice;
-                    }
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
                 }
             }
             $buyer->price = $price;
@@ -987,21 +970,19 @@ class CoffeeBuyerController extends Controller
                     $farmerPrice = $farmerPrice['price_per_kg'];
                 }
                 if (!$farmerPrice) {
-
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first();
-                    if ($vilagePrice) {
-                        $vilagePrice = $vilagePrice->price_per_kg;
+                    $village = Village::where('village_code', $villageCode)->first();
+                    $vilagePrice = 0;
+                    if ($village) {
+                        $vilagePrice = $village->price_per_kg;
                     }
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $vilagePrice;
-                    }
+
+
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $vilagePrice;
                 } else {
-                    foreach ($buyer->transactions as $transaction) {
-                        $quantity = $transaction->details->sum('container_weight');
-                        $price +=  $quantity * $farmerPrice;
-                    }
+                    $quantity = $transaction->details->sum('container_weight');
+                    $price +=  $quantity * $farmerPrice;
                 }
             }
             $buyer->price = $price;
