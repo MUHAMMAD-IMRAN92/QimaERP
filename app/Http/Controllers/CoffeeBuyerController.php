@@ -45,7 +45,6 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyer = $coffeeBuyer->specialPrice();
             return   $coffeeBuyer;
         });
-
         // return $coffeeBuyingManagers;
         return view('admin.coffeBuyer.all_coffee_buyer', [
             'coffeeBuyerMangers' =>  $coffeeBuyingManagers,
@@ -133,24 +132,24 @@ class CoffeeBuyerController extends Controller
 
         $coffeeBuyers = Role::with('users')->where('name', 'Coffee Buyer')->first()->users;
 
-        $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$from, $to]);
-        $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$from,  $to]);
-        $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) {
+        // $coffeeBuyingManagers =  $coffeeBuyingManagers->whereBetween('created_at', [$from, $to]);
+        // $coffeeBuyers =  $coffeeBuyers->whereBetween('created_at', [$from,  $to]);
+        $coffeeBuyingManagers = $coffeeBuyingManagers->map(function ($coffeeBuyingManager) use ($from, $to) {
             $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
             $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
             $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
             $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-            $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
-            $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
+            $coffeeBuyingManager = $coffeeBuyingManager->betweenNonSpecialTransaction($from, $to, 3);
+            $coffeeBuyingManager = $coffeeBuyingManager->betweenSpecialTransaction($from, $to, 3);
             return   $coffeeBuyingManager;
         });
-        $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
+        $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) use ($from, $to) {
             $coffeeBuyer->image = $coffeeBuyer->getImage();
             $coffeeBuyer->first_purchase = $coffeeBuyer->firstPurchase();
             $coffeeBuyer->last_purchase = $coffeeBuyer->lastPurchase();
             $coffeeBuyer->specialcoffee = $coffeeBuyer->special();
-            $coffeeBuyer = $coffeeBuyer->nonSpecialPrice();
-            $coffeeBuyer = $coffeeBuyer->specialPrice();
+            $coffeeBuyer = $coffeeBuyer->betweenNonSpecialTransaction($from, $to, 2);
+            $coffeeBuyer = $coffeeBuyer->betweenSpecialTransaction($from, $to, 2);
             return   $coffeeBuyer;
         });
         return view('admin.coffeBuyer.views.index', [
