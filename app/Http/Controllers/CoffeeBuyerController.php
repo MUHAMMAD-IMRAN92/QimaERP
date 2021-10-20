@@ -981,7 +981,7 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
             $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
             $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
-            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 0])->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $governorateCode . '%')->where('sent_to', 2)->get();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 0])->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $governorateCode . '%')->where('sent_to', 3)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             foreach ($transactions as $transaction) {
@@ -1012,7 +1012,7 @@ class CoffeeBuyerController extends Controller
 
             $coffeeBuyingManager->non_special_price = $totalPrice;
             $coffeeBuyingManager->non_special_weight = $totalWeight;
-            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $governorateCode . '%')->where('sent_to', 2)->get();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $governorateCode . '%')->where('sent_to', 3)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             foreach ($transactions as $transaction) {
@@ -1141,7 +1141,7 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
             $totalWeight = 0;
             $totalPrice = 0;
-            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 0])->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 2)->get();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 0])->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 3)->get();
             foreach ($transactions as $transaction) {
                 $weight = $transaction->details->sum('container_weight');
                 $price = 0;
@@ -1172,7 +1172,7 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyingManager->non_special_price = $totalPrice;
             $coffeeBuyingManager->non_special_weight = $totalWeight;
 
-            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 2)->get();
+            $transactions = Transaction::with('details')->where(['created_by' =>   $coffeeBuyingManager->user_id, 'is_special' => 1])->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 3)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             foreach ($transactions as $transaction) {
@@ -1302,7 +1302,7 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
             $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
             $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
-            $transactions = Transaction::with('details')->where('created_by',   $coffeeBuyingManager->user_id)->where('is_special', 0)->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
+            $transactions = Transaction::with('details')->where('created_by',   $coffeeBuyingManager->user_id)->where('is_special', 0)->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 3)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             foreach ($transactions as $transaction) {
@@ -1333,7 +1333,7 @@ class CoffeeBuyerController extends Controller
 
             $coffeeBuyingManager->non_special_price = $totalPrice;
             $coffeeBuyingManager->non_special_weight = $totalWeight;
-            $transactions = Transaction::with('details')->where('created_by',   $coffeeBuyingManager->user_id)->where('is_special', 0)->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
+            $transactions = Transaction::with('details')->where('created_by',   $coffeeBuyingManager->user_id)->where('is_special', 0)->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 3)->get();
             $totalWeight = 0;
             $totalPrice = 0;
             foreach ($transactions as $transaction) {
