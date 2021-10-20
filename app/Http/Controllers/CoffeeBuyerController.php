@@ -521,7 +521,13 @@ class CoffeeBuyerController extends Controller
     {
 
         $buyer->farmers = $buyer->getFarmers();
-        $buyer->transactions = $buyer->getTransactions();
+        foreach ($buyer->roles as $role) {
+            if ($role->id == 1) {
+                $buyer->transactions = $buyer->getTransactionsManager();
+            } else {
+                $buyer->transactions = $buyer->getTransactions();
+            }
+        }
         $buyer->image = $buyer->getImage();
         $buyer->villages = $buyer->getVillages();
         $buyer->resposibleVillage = $buyer->VillagesResposibleFor();

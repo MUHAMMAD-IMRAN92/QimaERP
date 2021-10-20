@@ -262,6 +262,14 @@ class User extends Authenticatable
             return $transactions;
         }
     }
+    public function getTransactionsManager()
+    {
+        $userId = $this->user_id;
+        $transactions = Transaction::with('details')->where('created_by', $userId)->where('sent_to', 3)->get();
+        if ($transactions) {
+            return $transactions;
+        }
+    }
     public function nonSpecialPriceManager()
     {
         $userId = $this->user_id;
