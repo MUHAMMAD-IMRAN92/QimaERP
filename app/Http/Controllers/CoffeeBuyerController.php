@@ -729,7 +729,7 @@ class CoffeeBuyerController extends Controller
                 }
             }
             if ($sent_to == 2) {
-                $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $end])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+                $buyer->transactions =  Transaction::with('details')->where(['created_by' =>   $buyer->user_id, 'is_special' => 0])->whereBetween('created_at', [$start, $end])->where('sent_to', $sent_to)->get();
             } else {
                 $buyer->transactions = Transaction::with('details')->where('created_by', $buyer->user_id)->whereBetween('created_at', [$start, $end])->where('sent_to', $sent_to)->get();
             }
