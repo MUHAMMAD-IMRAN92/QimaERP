@@ -33,8 +33,8 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyingManager->image = $coffeeBuyingManager->getImage();
             $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
             $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
-            $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-            $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+            $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+            $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
             return   $coffeeBuyingManager;
         });
         $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -140,8 +140,8 @@ class CoffeeBuyerController extends Controller
             $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
             $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
             $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-            $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-            $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+            $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+            $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
             return   $coffeeBuyingManager;
         });
         $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -185,8 +185,8 @@ class CoffeeBuyerController extends Controller
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
                 return   $coffeeBuyingManager;
             });
             $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -221,8 +221,8 @@ class CoffeeBuyerController extends Controller
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
                 return   $coffeeBuyingManager;
             });
             $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -268,8 +268,8 @@ class CoffeeBuyerController extends Controller
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
                 return   $coffeeBuyingManager;
             });
             $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -315,8 +315,8 @@ class CoffeeBuyerController extends Controller
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
                 return   $coffeeBuyingManager;
             });
             $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -358,8 +358,8 @@ class CoffeeBuyerController extends Controller
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
                 return   $coffeeBuyingManager;
             });
             $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -402,8 +402,8 @@ class CoffeeBuyerController extends Controller
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
                 return   $coffeeBuyingManager;
             });
             $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -446,8 +446,8 @@ class CoffeeBuyerController extends Controller
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
                 return   $coffeeBuyingManager;
             });
             $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
@@ -495,8 +495,8 @@ class CoffeeBuyerController extends Controller
                 $coffeeBuyingManager->first_purchase = $coffeeBuyingManager->firstPurchase();
                 $coffeeBuyingManager->last_purchase = $coffeeBuyingManager->lastPurchase();
                 $coffeeBuyingManager->specialcoffee = $coffeeBuyingManager->special();
-                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPrice();
-                $coffeeBuyingManager = $coffeeBuyingManager->specialPrice();
+                $coffeeBuyingManager = $coffeeBuyingManager->nonSpecialPriceManager();
+                $coffeeBuyingManager = $coffeeBuyingManager->specialPriceManager();
                 return   $coffeeBuyingManager;
             });
             $coffeeBuyers = $coffeeBuyers->map(function ($coffeeBuyer) {
