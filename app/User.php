@@ -265,7 +265,7 @@ class User extends Authenticatable
     public function getTransactionsManager()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where('created_by', $userId)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 3)->get();
+        $transactions = Transaction::with('details')->where('created_by', $userId)->where('sent_to', 3)->get();
         if ($transactions) {
             return $transactions;
         }
@@ -273,7 +273,7 @@ class User extends Authenticatable
     public function nonSpecialPriceManager()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 3)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('sent_to', 3)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -306,7 +306,7 @@ class User extends Authenticatable
     public function specialPriceManager()
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 3)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('sent_to', 3)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -357,7 +357,7 @@ class User extends Authenticatable
     public function todaySpecialTransaction($date, $sent_to)
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->whereDate('created_at', $date)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->where('sent_to', $sent_to)->whereDate('created_at', $date)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -395,7 +395,12 @@ class User extends Authenticatable
     public function todayNonSpecialTransaction($date, $sent_to)
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->whereDate('created_at', $date)->get();
+        if ($sent_to == 2) {
+            $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('sent_to', $sent_to)->whereDate('created_at', $date)->get();
+        } else {
+
+            $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->where('sent_to', $sent_to)->whereDate('created_at', $date)->get();
+        }
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -433,7 +438,7 @@ class User extends Authenticatable
     public function lastMonthNonSpecialTransaction($month, $year, $sent_to)
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->whereMonth('created_at', $month)->whereYear('created_at',  $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->whereMonth('created_at', $month)->whereYear('created_at',  $year)->where('sent_to', $sent_to)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -471,7 +476,7 @@ class User extends Authenticatable
     public function lastMonthSpecialTransaction($month, $year, $sent_to)
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->whereMonth('created_at', $month)->whereYear('created_at',  $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->whereMonth('created_at', $month)->whereYear('created_at',  $year)->where('sent_to', $sent_to)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -509,7 +514,7 @@ class User extends Authenticatable
     public function yearSpecialTransaction($year, $sent_to)
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->whereYear('created_at', $year)->where('sent_to', $sent_to)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -546,7 +551,7 @@ class User extends Authenticatable
     public function yearNonSpecialTransaction($year, $sent_to)
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->whereYear('created_at', $year)->where('sent_to', $sent_to)->get();
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -584,7 +589,13 @@ class User extends Authenticatable
     public function betweenSpecialTransaction($start, $end, $sent_to)
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->whereBetween('created_at', [$start, $end])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+        if ($sent_to == 2) {
+
+            $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->whereBetween('created_at', [$start, $end])->where('sent_to', $sent_to)->get();
+        } else {
+
+            $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 1])->whereBetween('created_at', [$start, $end])->where('sent_to', $sent_to)->get();
+        }
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
@@ -622,7 +633,13 @@ class User extends Authenticatable
     public function betweenNonSpecialTransaction($start, $end, $sent_to)
     {
         $userId = $this->user_id;
-        $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->whereBetween('created_at', [$start, $end])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', $sent_to)->get();
+        if ($sent_to == 2) {
+
+            $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->whereBetween('created_at', [$start, $end])->where('sent_to', $sent_to)->get();
+        } else {
+
+            $transactions = Transaction::with('details')->where(['created_by' =>   $userId, 'is_special' => 0])->whereBetween('created_at', [$start, $end])->where('sent_to', $sent_to)->get();
+        }
         if ($transactions) {
             $totalWeight = 0;
             $totalPrice = 0;
