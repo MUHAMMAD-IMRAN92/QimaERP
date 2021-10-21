@@ -59,7 +59,7 @@ class CoffeeBuyerManager extends Controller
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                 }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
-                }])->orderBy('farmer_name')->get()->get();
+                }])->orderBy('farmer_name')->get();
                 foreach ($villagefarmer as $farmer) {
                     array_push($farmers, $farmer);
                 }
