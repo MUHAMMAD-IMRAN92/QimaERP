@@ -52,9 +52,9 @@ class CoffeeBuyerManager extends Controller
             $user = User::find($user->user_id);
             $villages =  $user->VillagesResposibleFor();
             $farmers = [];
+            $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+            $user_image_path = Storage::disk('s3')->url('images');
             foreach ($villages as $village) {
-                $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
-                $user_image_path = Storage::disk('s3')->url('images');
                 $villagefarmer = Farmer::where('village_code', $village->village_code)->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                 }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
