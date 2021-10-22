@@ -145,7 +145,7 @@
                             <div class="card-body">
 
 
-                                @if (isset($farmer->profileImage) ? $farmer->profileImage->user_file_name : 'dumy.png')
+                                @if (isset($farmer->profileImage))
                                     <div class="form-group" style="text-align: center;">
                                         <label for="customFile">Farmer Image</label><br>
 
@@ -157,7 +157,7 @@
                                     <h5 class="d-flex justify-content-center">No Profile Image Found </h5>
                                 @endif
 
-                                @if (isset($farmer->idcardImage->user_file_name) ? $farmer->idcardImage->user_file_name : 'dumy.png')
+                                @if (isset($farmer->idcardImage->user_file_name))
 
                                     <div class="form-group" style="text-align: center;">
 
