@@ -296,7 +296,7 @@
                     <p>Farmers </p>
                 </div>
                 <div class="col-sm-1 color bg-dark" style="width:fit-content !important; max-width:30% !important">
-                    <h3>{{ $totalWeight }}</h3>
+                    <h3>{{ round($totalWeight ,2)}}</h3>
                     <p>Total Coffee </p>
                 </div>
                 <div class="col-sm-1 color bg-danger" style="width:fit-content !important; max-width:30% !important">
