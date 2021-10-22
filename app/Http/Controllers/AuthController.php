@@ -61,7 +61,7 @@ class AuthController extends Controller
                 $weight +=  $transaction->details->sum('container_weight');
             }
             array_push($govName, $govern->governerate_title);
-            array_push($govQuantity, $weight);
+            array_push($govQuantity, round($weight, 2));
         }
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
@@ -76,7 +76,7 @@ class AuthController extends Controller
             array_push($regionQuantity, $weight);
             $regionWeight->push([
                 'regionId' => $region->region_id,
-                'weight' =>  $weight
+                'weight' =>  round($weight, 2)
             ]);
         }
         $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
@@ -94,7 +94,7 @@ class AuthController extends Controller
             }
             $farmerWeight->push([
                 'farmerId' => $farmer->farmer_id,
-                'weight' =>  $weight
+                'weight' => round($weight, 2)
             ]);
         }
         $farmerByWeight = $farmerWeight->sortBy('weight')->reverse()->values();
