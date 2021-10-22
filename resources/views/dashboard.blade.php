@@ -537,7 +537,7 @@
 
                 <div class="col-md-6 ">
                     <center>Governorate Wise</center>
-                    <canvas id="4rd" class="ml-2" style="width:100%; height:300px;"></canvas>
+                    <canvas id="4rd" class="ml-2" style="width:100%;"></canvas>
 
                     <script>
                         var xValues = @json($govName);
@@ -576,12 +576,21 @@
                 </div>
                 <div class="col-md-6 ">
                     <center>Region Wise</center>
-                    <canvas id="3rd" class="ml-2" style="width:100%; height:300px;"></canvas>
+                    <canvas id="3rd" class="ml-2" style="width:100%;"></canvas>
 
                     <script>
                         var xValues = @json($regionName);
                         var yValues = @json($regionQuantity);
                         var barColors = ["red", "green", "blue", "orange", "brown", "yellow", "purple", "black", "DeepPink", "DarkOrange",
+                            "LimeGreen",
+                            "Cyan", "orange",
+                            "yellow", "blue", "brown", "black", "blue",
+                            "LimeGreen",
+                            "Cyan", "orange",
+                            "yellow", "blue", "brown", "black", "blue",
+                            "LimeGreen",
+                            "Cyan", "orange",
+                            "yellow", "blue", "brown", "black", "blue",
                             "LimeGreen",
                             "Cyan", "orange",
                             "yellow", "blue", "brown", "black", "blue"
