@@ -272,7 +272,8 @@ class CoffeeBuyerManager extends Controller
                             }
                             array_push($alreadySentCoffee, $sentTransaction);
                         } else {
-                            $transaction = Transaction::create([
+                        \Log::info("GOT IT - ".$sentTransaction->transactions->reference_id . " - ".$sentTransaction->transactions->session_no . " - ". $sentTransaction->transactions->transaction_id ." " . $same_check);
+                        $transaction = Transaction::create([
                                 'batch_number' => $sentTransaction->transactions->batch_number,
                                 'is_parent' => $sentTransaction->transactions->is_parent,
                                 'is_mixed' => $sentTransaction->transactions->is_mixed,
