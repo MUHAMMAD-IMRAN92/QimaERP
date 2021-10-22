@@ -223,6 +223,7 @@ class CoffeeBuyerManager extends Controller
     function sentTransactions(Request $request)
     {
         //::validation
+        \Log::info($request->all());
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
