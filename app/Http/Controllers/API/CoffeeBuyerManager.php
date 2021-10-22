@@ -252,7 +252,7 @@ class CoffeeBuyerManager extends Controller
                         array_push($sentCoffeeArray, $sentTransaction->transactions->transaction_id);
                     }
                 } else {
-                    // DB::beginTransaction();
+                    
                     try {
                         $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                         // adding because we get same reference id and transaction id
@@ -272,6 +272,7 @@ class CoffeeBuyerManager extends Controller
                             }
                             array_push($alreadySentCoffee, $sentTransaction);
                         } else {
+                            DB::beginTransaction();
                             \Log::info("GOT IT - " . $sentTransaction->transactions->reference_id . " - " . $sentTransaction->transactions->session_no . " - " . $sentTransaction->transactions->transaction_id . " " . $same_check);
                             $transaction = Transaction::create([
                                 'batch_number' => $sentTransaction->transactions->batch_number,
@@ -322,11 +323,11 @@ class CoffeeBuyerManager extends Controller
                             \Log::info("New Details Obj - " .  $details);
 
                             array_push($sentCoffeeArray, $transaction->transaction_id);
-                            // DB::commit();
+                            DB::commit();
                             \Log::info("DB committed Here!");
                         }
                     } catch (Throwable $th) {
-                        // DB::rollback();
+                        DB::rollback();
                         return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
                             'line' => $th->getLine()
                         ]), 499);
