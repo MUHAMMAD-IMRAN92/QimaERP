@@ -68,9 +68,10 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Farmer Name</label>
-                                        <input type="text" id="farmer_name" class="form-control" id="exampleInputPassword1"
-                                            value="{{ $farmer->farmer_name }}" name="farmer_name" placeholder="Last Name"
-                                            @error('farmer_name') is-invalid @enderror>
+                                        <input type="text" id="farmer_name" class="form-control"
+                                            id="exampleInputPassword1" value="{{ $farmer->farmer_name }}"
+                                            name="farmer_name" placeholder="Last Name" @error('farmer_name') is-invalid
+                                            @enderror>
                                         @error('farmer_name')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -99,8 +100,8 @@
                                                 <label for="customFile">Farmer Image</label>
                                                 <input type="hidden" name="picture_id" value="{{ $farmer->picture_id }}">
                                                 <div class="">
-                                                    <input type="file" class="" name="profile_picture" id="customFile"
-                                                        @error('profile_picture') is-invalid @enderror>
+                                                    <input type="file" class="" name="profile_picture"
+                                                        id="customFile" @error('profile_picture') is-invalid @enderror>
                                                     @error('profile_picture')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -114,8 +115,8 @@
                                                 <input type="hidden" name="idcard_picture_id"
                                                     value="{{ $farmer->idcard_picture_id }}">
                                                 <div class="">
-                                                    <input type="file" class="" name="idcard_picture" id="customFile"
-                                                        @error('idcard_picture') is-invalid @enderror>
+                                                    <input type="file" class="" name="idcard_picture"
+                                                        id="customFile" @error('idcard_picture') is-invalid @enderror>
 
                                                     @error('idcard_picture')
                                                         <span class="text-danger">{{ $message }}</span>
@@ -144,26 +145,27 @@
                             <div class="card-body">
 
 
-                                @if (isset($farmer->profileImage) ? $farmer->profileImage->user_file_name : '')
+                                @if (isset($farmer->profileImage) ? $farmer->profileImage->user_file_name : 'dumy.png')
                                     <div class="form-group" style="text-align: center;">
                                         <label for="customFile">Farmer Image</label><br>
 
                                         <img class="img-thumbnail" style="height: 195px;margin-bottom: 10px"
-                                            src="{{ URL::to('') }}/storage/app/images/{{ isset($farmer->profileImage) ? $farmer->profileImage->user_file_name : '' }}">
+                                            {{-- src="{{ URL::to('') }}/storage/app/images/{{ isset($farmer->profileImage) ? $farmer->profileImage->user_file_name : '' }}" --}}
+                                            src=" {{ Storage::disk('s3')->url('images/' . $farmer->profileImage->user_file_name) }}">
                                     </div>
                                 @else
                                     <h5 class="d-flex justify-content-center">No Profile Image Found </h5>
                                 @endif
 
-                                @if (isset($farmer->idcardImage->user_file_name) ? $farmer->idcardImage->user_file_name : '')
+                                @if (isset($farmer->idcardImage->user_file_name) ? $farmer->idcardImage->user_file_name : 'dumy.png')
 
                                     <div class="form-group" style="text-align: center;">
 
                                         <label for="customFile">Id Card</label><br>
 
                                         <img class="img-thumbnail" style="height: 195px;margin-bottom: 10px"
-                                            src="{{ URL::to('') }}/storage/app/images/{{ isset($farmer->idcardImage->user_file_name) ? $farmer->idcardImage->user_file_name : '' }}">
-
+                                            {{-- src="{{ URL::to('') }}/storage/app/images/{{ isset($farmer->idcardImage->user_file_name) ? $farmer->idcardImage->user_file_name : '' }}" --}}
+                                            src=" {{ Storage::disk('s3')->url('images/' . $farmer->idcardImage->user_file_name) }} ">
                                     </div>
                                 @else
                                     <h5 class="d-flex justify-content-center" style="margin-top: 100px">No Id Image Found
