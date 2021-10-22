@@ -260,6 +260,7 @@ class CoffeeBuyerManager extends Controller
                         if ($sentTransaction->transactions->reference_id == $sentTransaction->transactions->transaction_id){
                             $same_check = 1;
                         }
+                        \Log::info("SAME CHECK - ".$sentTransaction->transactions->reference_id . " - ".$sentTransaction->transactions->session_no . " - ". $sentTransaction->transactions->transaction_id ." " . $same_check);
                         if ($alreadyExistTransaction && $same_check == 0) {
                             $sentTransaction->transactions->already_sent = true;
                             $sentTransaction->transactions->created_at =  toSqlDT($sentTransaction->transactions->created_at);
