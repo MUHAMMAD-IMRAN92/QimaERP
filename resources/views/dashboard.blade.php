@@ -32,7 +32,6 @@
         .blacklink .hover:hover {
             cursor: pointer;
         }
-
     </style>
 
     <script>
@@ -56,6 +55,8 @@
                 });
             });
             $('#today').on('click', function() {
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -70,7 +71,8 @@
                 });
             });
             $('#yesterday').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -85,7 +87,8 @@
                 });
             });
             $('#weekToDate').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -100,7 +103,8 @@
                 });
             });
             $('#monthToDate').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -115,7 +119,8 @@
                 });
             });
             $('#lastmonth').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -130,7 +135,8 @@
                 });
             });
             $('#yearToDate').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -145,7 +151,8 @@
                 });
             });
             $('#currentyear').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -160,7 +167,8 @@
                 });
             });
             $('#lastyear').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -212,7 +220,7 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
 
-        <div class="content-header">
+        <div class="content-header mx-lg-5">
             <div class="container-fluid">
                 @if (session()->has('msg'))
                     <div class="alert alert-success" id="alert">
@@ -223,8 +231,8 @@
                     </div>
                 @endif
                 <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">Dashboard</h1>
+                    <div class="col-sm-6 pl-0">
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Dashboard</h1>
 
                     </div><!-- /.col -->
                     <div class="col-sm-6">
@@ -234,81 +242,83 @@
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
-            <hr>
-            <div class="row ml-2">
+            <hr class="ml-2">
+            <div class="row ml-2 text-uppercase mb-2">
                 <strong>
                     <b>Date Filter</b>
                 </strong>
             </div>
-            <div class="row ml-2">
+            <div class="row ml-2 mb-2">
                 <form action="" method="POST" id="data-form">
-                    <label for="from">From</label>
-                    <input type="date" name="" id="from">
-                    <label for="To">To</label>
-                    <input type="date" name="" id="to">
+                    <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="from">From</label>
+                    <input class="mr-3" type="date" name="" id="from">
+                    <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="To">To</label>
+                    <input class="mr-3" type="date" name="" id="to">
                 </form>
             </div>
-            <div class="row ml-2 blacklink ">
-                <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
-                <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
+            <div class="row ml-2 blacklink letter-spacing-1">
+                <span class="hover" id="today"> TODAY</span> &nbsp |
+                <span class="ml-md-2 hover" id="yesterday"> YESTERDAY</span>
                 &nbsp |
-                <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
+                <span class="ml-md-2 hover" id="weekToDate"> WEEK TO DATE
                     </a></span>
                 &nbsp |
-                <span class="ml-2 hover" id="monthToDate"> MONTH
+                <span class="ml-md-2 hover" id="monthToDate"> MONTH
                     TO
                     DATE</a></span>
                 &nbsp |
-                <span class="ml-2 hover" id="lastmonth"> LAST
+                <span class="ml-md-2 hover" id="lastmonth"> LAST
                     MONTH</a></span>
                 &nbsp |
-                <span class="ml-2 hover" id="yearToDate"> YEAR TO
+                <span class="ml-md-2 hover" id="yearToDate"> YEAR TO
                     DATE</a></span>
                 &nbsp |
-                <span class="ml-2 hover" id="currentyear"> 2021
+                <span class="ml-md-2 hover" id="currentyear"> 2021
                     SEASON</a></span>
                 &nbsp |
-                <span class="ml-2 hover" id="lastyear"> 2020
+                <span class="ml-md-2 hover" id="lastyear"> 2020
                     SEASON</a></span>
                 &nbsp |
-                <span class="ml-2"> <a href="{{ url('/admin/dashboard') }}">ALL
+                <span class="ml-md-2 hover " style="font-weight: bold; text-decoration: underline;"> <a href="{{ url('/admin/dashboard') }}">ALL
                         TIME</a></span>
             </div>
-            <hr>
-            <div class="row ml-2" id="transactions">
-                <div class="col-sm-1 color bg-danger">
-                    <h3>{{ $governorate->count() }}</h3>
+            <hr class="ml-md-2">
+            <div class="col-lg-11 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
+                <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                    <h4>{{ $governorate->count() }}</h4>
                     <p>Governorate</p>
                 </div>
-                <div class="col-sm-1 color bg-primary">
-                    <h3>{{ App\Region::count() }}</h3>
+                <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                    <h4>{{ App\Region::count() }}</h4>
 
                     <p>Regions</p>
                 </div>
-                <div class="col-sm-1 color bg-warning">
-                    <h3>{{ $villages->count() }}</h3>
+                <div class="col-sm-1 color bg-darkRed p-2 content-box">
+                    <h4>{{ $villages->count() }}</h4>
 
                     <p>Villages </p>
                 </div>
-                <div class="col-sm-1 color bg-primary">
-                    <h3>{{ App\Farmer::count() }}</h3>
+                <div class="col-sm-1 color bg-mildGreen p-2 content-box">
+                    <h4>{{ App\Farmer::count() }}</h4>
 
                     <p>Farmers </p>
                 </div>
-                <div class="col-sm-1 color bg-dark" style="width:fit-content !important; max-width:30% !important">
-                    <h3>{{ $totalWeight }}</h3>
+                <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                    <h4>{{ $totalWeight }}</h4>
                     <p>Total Coffee </p>
                 </div>
-                <div class="col-sm-1 color bg-danger" style="width:fit-content !important; max-width:30% !important">
-                    <h3>{{ $totalPrice }}</h3>
+                <div class="col-sm-1 color bg-lightGreen p-2 content-box">
+                    <h4>{{ $totalPrice }}</h4>
                     <p>Yer Coffee Purchased</p>
                 </div>
-                <div class="col-sm-1 color bg-warning"></div>
-                <div class="col-sm-1 color bg-info"></div>
-                <div class="col-sm-1 color bg-dark"></div>
+                <div class="col-sm-1 color bg-brightGreen p-2 content-box"></div>
+                <div class="col-sm-1 color bg-Green p-2 content-box"></div>
+                <div class="col-sm-1 color bg-lighterGreen p-2 content-box"></div>
             </div>
-            <div class="row ml-2">
-                <h5>QUANTITY CHERRY BOUGHT</h5>
+            <div class="row ml-2 text-uppercase mb-2">
+                <strong>
+                    <b>QUANTITY CHERRY BOUGHT</b>
+                </strong>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -357,31 +367,37 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title"><b>Farmer</b> </h3>
+                <div class="col-md-3 vl">
+                    <div class="card shadow-none">
+                        <div class="text-uppercase px-3 h5">
+                            <strong>
+                                <b>Farmer</b>
+                            </strong>
+                            <p class="mb-0 card-custom-description">KG CHERRY<br>BOUGHT</p>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <table class="table table-bordered">
-                                <thead>
+                        <div class="card-body pt-0">
+                            <table class="table table-borderless">
+                                <!-- <thead>
                                     <tr>
                                         <th style="width: 10px">Sr#</th>
-
                                         <th>Farmer Name</th>
-
                                     </tr>
-                                </thead>
+                                </thead> -->
                                 <tbody>
                                     @if (count($farmers) == 0)
                                         @php
                                         $loop = 5 - count($farmers); @endphp
                                         @foreach (App\Farmer::all()->take(5) as $farmer)
                                             <tr style="white-space:nowrap">
-                                                <td>{{ $loop->iteration }}</td>
+                                                <!-- <td>{{ $loop->iteration }}</td> -->
 
-                                                <td>{{ $farmer['farmer_name'] }}</td>
+                                                <td class="d-flex align-items-center px-0">
+                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                                                    <span class="ml-3">
+                                                    {{ $farmer['farmer_name'] }}
+                                                    </span>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif
@@ -389,9 +405,14 @@
 
                                         <tr>
 
-                                            <td>{{ $loop->iteration }}</td>
+                                            <!-- <td>{{ $loop->iteration }}</td> -->
 
-                                            <td>{{ $farmer['farmer_name'] }}</td>
+                                            <td class="d-flex align-items-center px-0">
+                                                <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                                                <span class="ml-3">
+                                                {{ $farmer['farmer_name'] }}
+                                                </span>
+                                            </td>
 
                                         </tr>
 
@@ -403,38 +424,50 @@
 
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title"><b>Regions</b> </h3>
+                <div class="col-md-3 vl">
+                    <div class="card shadow-none">
+                        <div class="text-uppercase px-3 h5">
+                            <strong>
+                                <b>Regions</b>
+                            </strong>
+                            <p class="mb-0 card-custom-description">KG CHERRY<br>BOUGHT</p>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <table class="table table-bordered">
-                                <thead>
+                        <div class="card-body pt-0">
+                            <table class="table table-borderless">
+                                <!-- <thead>
                                     <tr style="white-space:nowrap">
                                         <th style="width: 10px">Sr#</th>
 
                                         <th>Region Name</th>
                                     </tr>
-                                </thead>
+                                </thead> -->
                                 <tbody>
                                     {{-- @if (count($regions) == 0)
                                     @php
                                     $loop = 5 - count($regions); @endphp
                                     @foreach (App\Region::all()->take(5) as $region)
                                         <tr style="white-space:nowrap">
-                                            <td>{{ $loop->iteration }}</td>
-
-                                            <td>{{ $region->region_title }}</td>
+                                            <!-- <td>{{ $loop->iteration }}</td> -->
+                                            <td class="d-flex align-items-center px-0">
+                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                                                    <span class="ml-3">
+                                                    {{ $region->region_title }}
+                                                    </span>
+                                                </td>
                                         </tr>
                                     @endforeach
                                 @endif --}}
                                     @foreach ($regions as $region)
                                         <tr style="white-space:nowrap">
-                                            <td>{{ $loop->iteration }}</td>
+                                            <!-- <td>{{ $loop->iteration }}</td> -->
 
-                                            <td>{{ $region['region_title'] }}</td>
+                                            <td class="d-flex align-items-center px-0">
+                                                <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                                                <span class="ml-3">
+                                                {{ $region['region_title'] }}
+                                                </span>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -444,37 +477,37 @@
 
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title"><b>
-                                    <center> SPECIALTY COFFEE IN STOCK</center>
-                                </b> </h3>
+                <div class="col-md-3 vl">
+                    <div class="card shadow-none h-100">
+
+                        <div class="text-center text-uppercase">
+                            <strong>
+                                <b>SPECIALTY COFFEE IN STOCK</b>
+                            </strong>
                         </div>
-                        <!-- /.card-header --><input type="date" id="specialCoffee" name="endDate" class="form-control"
-                            style="margin-bottom : -10px;">
-                        <div class="card-body" id="ajaxspecialCoffee">
-
-                            <h6>Today</h6>
-                            <h6 style=" margin-left: 53%;  margin-top: -26px;">
-                                End Date
-                            </h6>
+                        <!-- /.card-header -->
+                        <input type="date" id="specialCoffee" name="endDate" class="form-control border-0">
+                        <div class="card-body d-flex flex-column" id="ajaxspecialCoffee">
+                        <div class="row">
+                                <div class="text-center text-uppercase col-6 px-1">
+                                  <h6><b>Today</b></h6>
+                                </div>
+                                <div class="text-center text-uppercase col-6 px-1">
+                                <h6><b>End Date</b></h6>
+                                </div>
+                            </div>
                             @foreach ($stock as $key => $s)
-                                <div class="row">
-
-
-                                    <div class="col-md-6">
-
-                                        <div class="set-width bg-primary ">
-                                            <p class="ml-1">{{ $s['wareHouse'] }}</p>
-                                            <p class="ml-1">{{ $s['today'] }}</p>
+                                <div class="row mb-md-2 flex-1">
+                                    <div class="col-md-6 data-tabs px-1">
+                                        <div class="h-100 bg-dark-blue text-uppercase mb-2">
+                                        <h4 class="ml-1">{{ $s['today'] }}</h4>
+                                            <p class="ml-1 mb-0">{{ $s['wareHouse'] }}</p>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-
-                                        <div class="set-width bg-primary ">
-                                            <p class="ml-1">{{ $s['wareHouse'] }}</p>
-                                            <p class="ml-1">{{ $s['end'] }}</p>
+                                    <div class="col-md-6 data-tabs px-1">
+                                        <div class="h-100 bg-dark-blue text-uppercase mb-2">
+                                        <h4 class="ml-1">{{ $s['end'] }}</h4>
+                                            <p class="ml-1 mb-0">{{ $s['wareHouse'] }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -485,40 +518,38 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title"><b>
-                                    <center>COMMERCIAL COFFEE IN STOCK</center>
-                                </b> </h3>
+                    <div class="card shadow-none h-100">
+
+                        <div class="text-center text-uppercase">
+                            <strong>
+                                <b>COMMERCIAL COFFEE IN STOCK</b>
+                            </strong>
                         </div>
                         <!-- /.card-header -->
-                        <input type="date" id="nonspecialCoffee" name="endDate" class="form-control"
-                            style="margin-bottom : -10px;">
-                        <div class="card-body" id="ajaxnonspecialCoffee">
+                        <input type="date" id="nonspecialCoffee" name="endDate" class="form-control border-0">
+                        <div class="card-body d-flex flex-column" id="ajaxnonspecialCoffee">
 
-                            <h6>Today</h6>
-                            <h6
-                                style="     margin-left: 53%;
-                                                                                                                                                                                                                                        margin-top: -26px;">
-                                End
-                                Date
-                            </h6>
+                            <div class="row">
+                                <div class="text-center text-uppercase col-6 px-1">
+                                  <h6><b>Today</b></h6>
+                                </div>
+                                <div class="text-center text-uppercase col-6 px-1">
+                                <h6><b>End Date</b></h6>
+                                </div>
+                            </div>
                             @foreach ($nonspecialstock as $key => $s)
-                                <div class="row">
 
-
-                                    <div class="col-md-6">
-
-                                        <div class="set-width bg-primary ">
-                                            <p class="ml-1">{{ $s['wareHouse'] }}</p>
-                                            <p class="ml-1">{{ $s['today'] }}</p>
+                                <div class="row mb-md-2 flex-1">
+                                    <div class="col-md-6 data-tabs px-1">
+                                        <div class="h-100 bg-dark-blue text-uppercase mb-2">
+                                            <h4 class="ml-1">{{ $s['today'] }}</h4>
+                                            <p class="ml-1 mb-0">{{ $s['wareHouse'] }}</p>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-
-                                        <div class="set-width bg-primary ">
-                                            <p class="ml-1">{{ $s['wareHouse'] }}</p>
-                                            <p class="ml-1">{{ $s['end'] }}</p>
+                                    <div class="col-md-6 data-tabs px-1">
+                                        <div class="h-100 bg-dark-blue text-uppercase mb-2">
+                                            <h4 class="ml-1">{{ $s['end'] }}</h4>
+                                            <p class="ml-1 mb-0">{{ $s['wareHouse'] }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -537,7 +568,7 @@
 
                 <div class="col-md-6 ">
                     <center>Governorate Wise</center>
-                    <canvas id="4rd" class="ml-2" style="width:100%; height:300px;"></canvas>
+                    <canvas id="4rd" class="ml-md-2" style="width:100%; height:300px;"></canvas>
 
                     <script>
                         var xValues = @json($govName);
@@ -576,7 +607,7 @@
                 </div>
                 <div class="col-md-6 ">
                     <center>Region Wise</center>
-                    <canvas id="3rd" class="ml-2" style="width:100%; height:300px;"></canvas>
+                    <canvas id="3rd" class="ml-md-2" style="width:100%; height:300px;"></canvas>
 
                     <script>
                         var xValues = @json($regionName);

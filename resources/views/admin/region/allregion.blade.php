@@ -63,6 +63,7 @@
             });
             $('#governorate_dropdown').on('change', function(e) {
                 // let from = $('#governorate_dropdown').val();
+                $('.all_regions').css({'font-weight':'normal', 'text-decoration':'none'});
                 let from = e.target.value;
                 $.ajax({
                     url: "{{ url('admin/filterRegionByGovernrate') }}",
@@ -89,6 +90,8 @@
             });
             $('#regions_dropdown').on('change', function(e) {
                 // let from = $('#regions_dropdown').val();
+                $('.all_regions').css({'font-weight':'normal', 'text-decoration':'none'});
+
                 let from = e.target.value;
                 $.ajax({
                     url: "{{ url('admin/filterRegionByRegions') }}",
@@ -118,6 +121,8 @@
             });
             $('#village_dropdown').on('change', function(e) {
                 // let from = $('#regions_dropdown').val();
+                $('.all_regions').css({'font-weight':'normal', 'text-decoration':'none'});
+
                 let from = e.target.value;
                 $.ajax({
                     url: "{{ url('admin/filterRegionByVillages') }}",
@@ -133,6 +138,8 @@
                 });
             });
             $('#today').on('click', function() {
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/regionByDays') }}",
                     type: "GET",
@@ -147,7 +154,8 @@
                 });
             });
             $('#yesterday').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/regionByDays') }}",
                     type: "GET",
@@ -162,7 +170,8 @@
                 });
             });
             $('#weekToDate').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/regionByDays') }}",
                     type: "GET",
@@ -177,7 +186,8 @@
                 });
             });
             $('#monthToDate').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/regionByDays') }}",
                     type: "GET",
@@ -192,7 +202,8 @@
                 });
             });
             $('#lastmonth').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/regionByDays') }}",
                     type: "GET",
@@ -207,7 +218,8 @@
                 });
             });
             $('#yearToDate').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/regionByDays') }}",
                     type: "GET",
@@ -222,7 +234,8 @@
                 });
             });
             $('#currentyear').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/regionByDays') }}",
                     type: "GET",
@@ -237,7 +250,8 @@
                 });
             });
             $('#lastyear').on('click', function() {
-
+                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
                 $.ajax({
                     url: "{{ url('admin/regionByDays') }}",
                     type: "GET",
@@ -262,16 +276,17 @@
             </div>
         @endif
         <!-- Content Header (Page header) -->
+        <div class="mx-lg-5">
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
 
-                    <div class="col-sm-6">
-                        <h1>Region
+                    <div class="col-sm-6 pl-0">
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Region
 
                         </h1>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 ">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item btn btn-success"><a href="{{ url('admin/addnewregion') }}">Add
                                     Region</a></li>
@@ -280,52 +295,63 @@
                 </div>
             </div><!-- /.container-fluid -->
         </section>
-        <hr>
-        <div class="row ml-2">
-            <strong>
-                <b>Date Filter</b>
-            </strong>
+        <hr class="ml-md-2">
+        <div class="row ml-2 text-uppercase mb-2">
+                <strong>
+                    <b>Date Filter</b>
+                </strong>
         </div>
-        <div class="row ml-2">
+        <div class="row ml-2 mb-2">
             <form action="" method="POST" id="data-form">
-                <label for="from">From</label>
-                <input type="date" name="" id="from">
-                <label for="To">To</label>
-                <input type="date" name="" id="to">
+                <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="from">From</label>
+                <input class="mr-3" type="date" name="" id="from">
+                <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="To">To</label>
+                <input class="mr-3" type="date" name="" id="to">
             </form>
         </div>
 
-        <div class="row ml-2 blacklink ">
-            <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
-            <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
+        <div class="row ml-2 blacklink letter-spacing-1">
+            <span class="hover" id="today"> TODAY</span> &nbsp |
+            <span class="ml-md-2 hover" id="yesterday"> YESTERDAY</span>
             &nbsp |
-            <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
+            <span class="ml-md-2 hover" id="weekToDate"> WEEK TO DATE
                 </a></span>
             &nbsp |
-            <span class="ml-2 hover" id="monthToDate"> MONTH
+            <span class="ml-md-2 hover" id="monthToDate"> MONTH
                 TO
                 DATE</a></span>
             &nbsp |
-            <span class="ml-2 hover" id="lastmonth"> LAST
+            <span class="ml-md-2 hover" id="lastmonth"> LAST
                 MONTH</a></span>
             &nbsp |
             <span class="ml-2 hover" id="yearToDate"> YEAR TO
                 DATE</a></span>
             &nbsp |
-            <span class="ml-2 hover" id="currentyear"> 2021
+            <span class="ml-md-2 hover" id="currentyear"> 2021
                 SEASON</a></span>
             &nbsp |
-            <span class="ml-2 hover" id="lastyear"> 2020
+            <span class="ml-md-2 hover" id="lastyear"> 2020
                 SEASON</a></span>
             &nbsp |
-            <span class="ml-2"> <a href="{{ url('/admin/allregion') }}">ALL
+            <span class="ml-md-2" style="font-weight: bold; text-decoration: underline;"> <a href="{{ url('/admin/allregion') }}">ALL
                     TIME</a></span>
         </div>
-        <hr>
-        <div class="row">
-            <div class="col-md-12">
-                <b class="ml-2"><a href=""> All Regions</a></b> |
-                Governrate <select name="" id="governorate_dropdown">
+        <hr class="ml-md-2">
+        <div class="row ml-2 text-uppercase mb-2">
+                <strong>
+                    <b>Region Filter</b>
+                </strong>
+        </div>
+        <div class="row row ml-2 blacklink letter-spacing-1">
+            <div class="col-md-12 pl-0 text-uppercase">
+            <span class="all_regions" style="font-weight: bold; text-decoration: underline;">
+                <a href="" > All Regions</a>
+            </span>
+                 &nbsp |
+                 <span class="ml-md-2">
+                Governrate
+                 </span>
+                 <select class="ml-md-2" name="" id="governorate_dropdown">
                     <option value="0" selected disabled>Select Governrate</option>
                     @foreach ($governorates as $governorate)
                         <option value="{{ $governorate->governerate_id }}">{{ $governorate->governerate_title }}
@@ -333,13 +359,19 @@
                     @endforeach
 
                 </select>
-                Sub Region <select name="" id="regions_dropdown">
+                <span class="ml-md-2">
+                Sub Region
+                </span>
+                <select class="ml-md-2" name="" id="regions_dropdown">
                     <option value="0" selected disabled>Select Region</option>
                     @foreach ($regions as $region)
                         <option value="{{ $region->region_id }}">{{ $region->region_title }}</option>
                     @endforeach
                 </select>
-                Village <select name="" id="village_dropdown">
+                <span class="ml-md-2">
+                Village
+                </span>
+                <select class="ml-md-2" name="" id="village_dropdown">
                     <option value="0" selected disabled>Select Village</option>
                     @foreach ($villages as $village)
                         <option value="{{ $village->village_id }}">{{ $village->village_title }}</option>
@@ -349,46 +381,47 @@
 
         </div>
         <hr>
-        <div class="row ml-2" id="transactions">
-            <div class="col-sm-1 color bg-danger">
+        <div class="col-lg-12 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
+            <div class="col-sm-1 color bg-darkPurple p-2 content-box">
                 <h4>{{ count($governorates) }}</h4>
                 <p>Governorate</p>
             </div>
-            <div class="col-sm-1 color bg-primary">
+            <div class="col-sm-1 color bg-darkGreen p-2 content-box">
                 <h4>{{ count($regions) }}</h4>
 
                 <p>Regions</p>
             </div>
-            <div class="col-sm-1 color bg-warning">
+            <div class="col-sm-1 color bg-darkGreen p-2 content-box">
                 <h4>{{ count($villages) }}</h4>
 
                 <p>Villages </p>
             </div>
-            <div class="col-sm-1 color bg-primary">
+            <div class="col-sm-1 color bg-Green p-2 content-box">
                 <h3>{{ App\Farmer::count() }}</h3>
 
                 <p>Farmers </p>
             </div>
-            <div class="col-sm-1 color bg-info"
-                style="width:fit-content !important; max-width:20% !important; min-width :10% !important">
+            <div class="col-sm-1 color bg-darkRed p-2 content-box">
                 <h4>{{ $total_coffee }}</h4>
                 <p>Quantity </p>
             </div>
-            <div class="col-sm-1 color bg-dark"
-                style="width:fit-content !important; max-width:20% !important; min-width :10% !important">
+            <div class="col-sm-1 color bg-darkGreen p-2 content-box">
                 <h4>{{ $totalPrice }}</h4>
                 <p>yer coffee bought </p>
             </div>
-            <div class="col-sm-1 color bg-danger">
+            <div class="col-sm-1 color bg-lightBrown p-2 content-box">
 
             </div>
-            <div class="col-sm-1 color bg-warning"></div>
-            <div class="col-sm-1 color bg-info"></div>
-            <div class="col-sm-1 color bg-dark"></div>
+            <div class="col-sm-1 color bg-darkPurple p-2 content-box"></div>
+            <div class="col-sm-1 color bg-darkPurple p-2 content-box"></div>
+            <div class="col-sm-1 color bg-darkPurple p-2 content-box"></div>
+            <div class="col-sm-1 color bg-lightGreen p-2 content-box"></div>
         </div>
         <hr>
-        <div class="row ml-2">
-            <h5>QUANTITY CHERRY BOUGHT</h5>
+        <div class="row ml-2 text-uppercase mb-2">
+                <strong>
+                    <b>QUANTITY CHERRY BOUGHT</b>
+                </strong>
         </div>
         <div class="row">
             <div class="col-md-11 ml-4">
@@ -434,24 +467,24 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-12">
+                    <div>
 
                         <!-- /.card -->
 
                         <div class="card">
                             <!-- /.card-header -->
-                            <div class="card-body">
+                            <div class="">
 
-                                <table class="table table-striped">
+                                <table class="table table-bordered region-table-custom">
                                     <thead>
-                                        <tr>
+                                        <tr class="blacklink letter-spacing-1 text-uppercase">
 
-                                            <th>Governorates </th>
-                                            <th>Regions </th>
-                                            <th>Villages </th>
-                                            <th>Quantity</th>
-                                            <th>Values</th>
-                                            <th>Farmers</th>
+                                            <th>Governorate / </th>
+                                            <th>Region / </th>
+                                            <th>Villages / </th>
+                                            <th>Quantity /</th>
+                                            <th>Values /</th>
+                                            <th>Farmers /</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -515,6 +548,7 @@
             <!-- /.container-fluid -->
         </section>
         <!-- /.content -->
+        </div>
     </div>
     <!-- /.content-wrapper -->
 

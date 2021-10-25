@@ -26,3 +26,114 @@
     color: #fff !important;
     border-right: 1px solid #040404;
 }*/
+.sidebar-lightGray{
+    background-color: #DADADA;
+}
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #341F0D;
+    font-weight: bold;
+    background-color: transparent;
+}
+.nav-sidebar>.nav-item {
+    border-bottom: 2px solid #EDEDED;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+}
+.nav-sidebar .nav-item>.nav-link{
+    color: #000;
+}
+.nav-link{
+    padding: 0.7rem 1rem;
+}
+.vl-sidebar{
+    border-right: 2px solid #EDEDED;
+}
+.text-heading{
+    letter-spacing: 3px;
+    font-size: 4.5rem !important;
+    color: #DCDCDC !important;
+    }
+    .bg-dark-blue {
+        background-color: #3952BD ;
+    }
+    .bg-darkPurple{
+        background-color: #77325E;
+    }
+    .bg-darkGreen{
+        background-color: #295D3A;
+    }
+    .bg-darkRed{
+        background-color: #9E0000;
+    }
+    .bg-mildGreen{
+        background-color: #295D3A;
+    }
+    .bg-lightBrown{
+        background-color: #AF9770;
+    }
+    .bg-lightGreen{
+        background-color: #5E9770;
+    }
+    .bg-brightGreen{
+        background-color: #5E9770;
+    }
+    .bg-Green{
+        background-color: #295D3A;
+    }
+    .bg-lighterGreen{
+        background-color: #5E9770;
+    }
+    .vl{
+        border-right: 1px solid rgb(0 0 0/ 13%);
+    }
+
+    @media (max-width:768px){
+        .text-heading{
+            font-size: 3.5rem !important;
+        }
+    }
+    .data-tabs div{
+        padding: 0.5rem !important;
+        color: #fff;
+    }
+    .data-tabs div p, .card-custom-description{
+        font-size: 14px;
+        letter-spacing: 1px;
+        line-height: 14px;
+        margin-top: 0.2rem;
+    }
+    .flex-1{
+        flex:1;
+    }
+    @media (min-width:992px){
+    .data-tabs div{
+        flex: 1;
+        flex-wrap: wrap;
+        max-width: initial;
+        padding: 0.5rem !important;
+        padding-bottom: 20px !important;
+    }
+    .data-tabs div h3{
+        font-size: 1.5rem;
+    }
+    .data-tabs div p, .data-tabs div h4, .data-tabs div h3{
+        margin-bottom: 0;
+    }
+}
+.region-table-custom th,.region-table-custom td{
+    font-weight: normal;
+    letter-spacing: 2px;
+    font-size: 17px;
+    padding: 0.5rem 0.75rem;
+}
+.border-bottom-lightGray{
+    border-bottom: 1px solid rgba(0,0,0,.1);
+}
+.add-button{
+    font-weight: normal;
+    letter-spacing: 2px;
+    font-size: 17px;
+    color: #000;
+}

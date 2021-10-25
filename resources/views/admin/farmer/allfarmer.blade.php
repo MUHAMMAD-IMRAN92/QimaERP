@@ -136,72 +136,83 @@
                     }
                 });
             });
+            $(".blacklink .hover").each(function(i, obj) {
+            if($("a",obj).attr("href")==window.location.href){
+                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                console.log($("a",this).attr("href"), 'hello',window.location.href );
+            }else{
+                console.log($("a",this).attr("href"), 'hello11',window.location.href );
+
+            }
+
+        });
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+    <div class="mx-lg-5">
 
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
+                <div class="row mb-2 border-bottom-lightGray">
 
                     <div class="col-sm-6">
-                        <h1>FARMERS
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">FARMERS
 
                         </h1>
                     </div>
                     <hr>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 d-flex justify-content-end align-items-end">
                         <ol class="breadcrumb float-sm-right">
                             <a href="{{ URL::to('') }}/admin/add_farmer" class="btn btn-add rounded-circle">
-                                <button class="btn btn-dark">Add Farmer</button>
+                                <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase">Add Farmer</button>
                             </a>
                         </ol>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
         </section>
-        <div class="row ml-3">
-            <strong>
-                <b>Date Filter</b>
-            </strong>
+        <div class="row ml-2 text-uppercase mb-2">
+                <strong>
+                    <b>Date Filter</b>
+                </strong>
         </div>
-        <div class="row ml-3">
+        <div class="row ml-2 mb-2">
             <form action="" method="POST" id="data-form">
-                <label for="from">From</label>
-                <input type="date" name="" id="from">
-                <label for="To">To</label>
-                <input type="date" name="" id="to">
+                <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="from">From</label>
+                <input class="mr-3" type="date" name="" id="from">
+                <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="To">To</label>
+                <input class="mr-3" type="date" name="" id="to">
             </form>
         </div>
-        <br>
-        <div class="row ml-3 blacklink ">
-            <span class="ml-3"> <a
+
+        <div class="row ml-2 blacklink letter-spacing-1">
+            <span class="hover"> <a
                     href="{{ url('admin/farmer_by_date/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}">
+            <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yesterday')) }}">
                     YESTERDAY</a></span>
             &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO
+            <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'weekToDate')) }}"> WEEK TO
                     DATE
                 </a></span>
             &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH TO
+            <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH TO
                     DATE</a></span>
             &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST
+            <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastmonth')) }}"> LAST
                     MONTH</a></span>
             &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yearToDate')) }}">YEAR TO
+            <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'yearToDate')) }}">YEAR TO
                     DATE</a></span>
             &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021
+            <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}"> 2021
                     SEASON</a></span>
             &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020
+            <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020
                     SEASON</a></span>
             &nbsp |
-            <span class="ml-3"> <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
+            <span class="ml-md-2 hover" > <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
         </div>
         <hr>
         <div class="row ml-3">
@@ -337,6 +348,7 @@
             <!-- /.container-fluid -->
         </section>
         <!-- /.content -->
+    </div>
     </div>
     <!-- /.content-wrapper -->
 
