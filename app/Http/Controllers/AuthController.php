@@ -37,6 +37,7 @@ class AuthController extends Controller
 
     public function dashboard()
     {
+
         $governorate = Governerate::all();
         $villages = Village::all();
         $regionWeight = collect();
@@ -60,7 +61,7 @@ class AuthController extends Controller
                 $weight +=  $transaction->details->sum('container_weight');
             }
             array_push($govName, $govern->governerate_title);
-            array_push($govQuantity, $weight);
+            array_push($govQuantity, round($weight, 2));
         }
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
@@ -75,10 +76,9 @@ class AuthController extends Controller
             array_push($regionQuantity, $weight);
             $regionWeight->push([
                 'regionId' => $region->region_id,
-                'weight' =>  $weight
+                'weight' =>  round($weight, 2)
             ]);
         }
-        // return $regionWeight;
         $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
         $regions = $regionsByWeight->take(5)->pluck('regionId');
         $regions = Region::whereIn('region_id', $regions)->get();
@@ -94,7 +94,7 @@ class AuthController extends Controller
             }
             $farmerWeight->push([
                 'farmerId' => $farmer->farmer_id,
-                'weight' =>  $weight
+                'weight' => round($weight, 2)
             ]);
         }
         $farmerByWeight = $farmerWeight->sortBy('weight')->reverse()->values();
@@ -159,8 +159,7 @@ class AuthController extends Controller
         $now = Carbon::now();
         $currentYear = $now->year;
         $collection = Transaction::all();
-
-        $transaction = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->with('details')->get();
+        $transaction = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
         // $grouped = $collection->groupBy('for');
         $grouped = $transaction->groupBy(function ($item) {
             return $item->created_at->format('m');

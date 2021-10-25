@@ -615,6 +615,15 @@
                         var barColors = ["red", "green", "blue", "orange", "brown", "yellow", "purple", "black", "DeepPink", "DarkOrange",
                             "LimeGreen",
                             "Cyan", "orange",
+                            "yellow", "blue", "brown", "black", "blue",
+                            "LimeGreen",
+                            "Cyan", "orange",
+                            "yellow", "blue", "brown", "black", "blue",
+                            "LimeGreen",
+                            "Cyan", "orange",
+                            "yellow", "blue", "brown", "black", "blue",
+                            "LimeGreen",
+                            "Cyan", "orange",
                             "yellow", "blue", "brown", "black", "blue"
                         ];
                         new Chart("3rd", {
