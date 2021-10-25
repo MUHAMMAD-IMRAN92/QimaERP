@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="{{ asset('public/plugins/daterangepicker/daterangepicker.css') }}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('public/plugins/summernote/summernote-bs4.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url('public/css/custom.css') }}">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="{{ asset('public/plugins/select2/css/select2.min.css') }}" />
 
@@ -72,21 +72,31 @@
         <!-- /.navbar -->
     </div>
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="main-sidebar sidebar-lightGray elevation-4">
 
         <!-- Sidebar -->
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
-            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <!-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image">
-                    <img src="{{ URL::to('') }}/public/dist/img/user2-160x160.jpg" class="img-circle elevation-2"
+                    <img src="{{ URL::to('') }}/public/dist/img/qima_logo.png" class="img-circle elevation-2"
                         alt="User Image">
                 </div>
                 <div class="info">
                     <a href="/" class="d-block">QIMA</a>
                 </div>
+            </div> -->
+            <div class="text-center mt-5">
+             <img src="{{ URL::to('') }}/public/dist/img/qima_logo.png"
+                            alt="User Image">
             </div>
-
+            <div class="d-flex mt-5 mb-5 justify-content-center">
+             <img src="{{ URL::to('') }}/public/dist/img/message.png"
+                            alt="User Image">
+            <div class="vl-sidebar mx-4"></div>
+            <img src="{{ URL::to('') }}/public/dist/img/flag_1.png"
+                            alt="User Image">
+            </div>
             <!-- Sidebar Menu -->
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
@@ -97,7 +107,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/dashboard"
                             class="nav-link {{ Request::is('admin/dashboard') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
                             <p>
                                 Dashboard
                             </p>
@@ -106,7 +116,7 @@
                     <li class="nav-item active">
                         <a href="{{ URL::to('') }}/admin/allgovernor"
                             class="nav-link {{ Request::is('admin/allgovernor') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-user-alt"></i>
+                            <!-- <i class="nav-icon fas fa-user-alt"></i> -->
                             <p>
                                 Governorates
                             </p>
@@ -115,7 +125,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allregion"
                             class="nav-link {{ Request::is('admin/allregion') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-globe"></i>
+                            <!-- <i class="nav-icon fas fa-globe"></i> -->
                             <p>
                                 Regions
                             </p>
@@ -125,7 +135,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allfarmer"
                             class="nav-link {{ Request::is('admin/allfarmer') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-tractor"></i>
+                            <!-- <i class="nav-icon fas fa-tractor"></i> -->
                             <p>
                                 Farmers
                             </p>
@@ -134,7 +144,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allcoffeebuyer"
                             class="nav-link  {{ Request::is('admin/allcoffeebuyer') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-user"></i>
+                            <!-- <i class="nav-icon fas fa-user"></i> -->
                             <p>
                                 Coffee Buyers
                             </p>
@@ -143,7 +153,7 @@
                     <li class="nav-item">
                         <a href="{{ url('admin/inventory') }}"
                             class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-pallet"></i>
+                            <!-- <i class="nav-icon fas fa-pallet"></i> -->
                             <p>
                                 Inventory
                             </p>
@@ -160,7 +170,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allvillage"
                             class="nav-link {{ Request::is('admin/allvillage') ? 'active' : '' }} ">
-                            <i class="nav-icon fas fa-tree"></i>
+                            <!-- <i class="nav-icon fas fa-tree"></i> -->
                             <p>
                                 Villages
                             </p>
@@ -172,7 +182,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allbatchnumber"
                             class="nav-link  {{ Request::is('admin/allbatchnumber') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-sort-numeric-up-alt"></i>
+                            <!-- <i class="nav-icon fas fa-sort-numeric-up-alt"></i> -->
                             <p>
                                 Batch Numbers
                             </p>
@@ -180,7 +190,7 @@
                     </li>
                     <li class="nav-item {{ Request::is('admin/allcenter') ? 'menu-open' : '' }}">
                         <a href="{{ URL::to('') }}/admin/allcenter" class="nav-link ">
-                            <i class="nav-icon fab fa-centercode"></i>
+                            <!-- <i class="nav-icon fab fa-centercode"></i> -->
                             <p>
                                 Center
                                 <i class="fas fa-angle-left right"></i>
@@ -190,7 +200,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/allcenter') }}"
                                     class="nav-link  {{ Request::is('admin/allcenter') ? 'active' : '' }}">
-                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
                                     <p>All Center</p>
                                 </a>
                             </li>
@@ -199,7 +209,7 @@
                     </li>
                     <li class="nav-item {{ Request::is('admin/orders/*') ? 'menu-open' : '' }}">
                         <a href="" class="nav-link ">
-                            <i class="nav-icon fas fa-box"></i>
+                            <!-- <i class="nav-icon fas fa-box"></i> -->
                             <p>
                                 Orders
                                 <i class="fas fa-angle-left right"></i>
@@ -209,7 +219,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/orders/create') }}"
                                     class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-address-book"></i>
+                                    <!-- <i class="nav-icon fas fa-address-book"></i> -->
                                     <p>
                                         Create Order
                                     </p>
@@ -218,7 +228,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/orders') }}"
                                     class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-address-book"></i>
+                                    <!-- <i class="nav-icon fas fa-address-book"></i> -->
                                     <p>
                                         All Orders
                                     </p>
@@ -229,7 +239,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/shipping"
                             class="nav-link  {{ Request::is('admin/shipping') ? 'active' : '' }} ">
-                            <i class="fas fa-shipping-fast"> </i> &nbsp;
+                            <!-- <i class="fas fa-shipping-fast"> </i> &nbsp; -->
                             <p>
                                 Shipping
                             </p>
@@ -239,7 +249,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/system_definition"
                             class="nav-link {{ Request::is('admin/system_definition') ? 'active' : '' }}">
-                            <i class=" nav-icon fab fa-linode"></i>
+                            <!-- <i class=" nav-icon fab fa-linode"></i> -->
                             <p>
                                 System Definition
                             </p>
@@ -248,7 +258,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/environments"
                             class="nav-link  {{ Request::is('admin/environments') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-globe"></i>
+                            <!-- <i class="nav-icon fas fa-globe"></i> -->
                             <p>
                                 Environments
                             </p>
@@ -257,7 +267,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/allcontainer"
                             class="nav-link  {{ Request::is('admin/allcontainer') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-shopping-basket"></i>
+                            <!-- <i class="nav-icon fas fa-shopping-basket"></i> -->
                             <p>
                                 Containers
                             </p>
@@ -268,7 +278,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/milling_coffee"
                             class="nav-link {{ Request::is('admin/milling_coffee') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-tree"> </i>
+                            <!-- <i class="nav-icon fas fa-tree"> </i> -->
                             <p>
                                 Milling
                             </p>
@@ -277,7 +287,7 @@
 
                     <li class="nav-item {{ Request::is('admin/packaging/*') ? 'menu-open' : '' }}">
                         <a href="" class="nav-link ">
-                            <i class="nav-icon fas fa-box"></i>
+                            <!-- <i class="nav-icon fas fa-box"></i> -->
                             <p>
                                 Packaging Coffee
                                 <i class="fas fa-angle-left right"></i>
@@ -287,7 +297,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/packaging/mixing') }}"
                                     class="nav-link {{ Request::is('admin/packaging/mixing') ? 'active' : '' }}">
-                                    <i class="fas fa-mortar-pestle nav-icon"></i>
+                                    <!-- <i class="fas fa-mortar-pestle nav-icon"></i> -->
                                     <p>
                                         Mixing
                                     </p>
@@ -296,7 +306,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/packaging/approval') }}"
                                     class="nav-link {{ Request::is('admin/packaging/approval') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-stamp"></i>
+                                    <!-- <i class="nav-icon fas fa-stamp"></i> -->
                                     <p>
                                         Packaging Approval
                                     </p>
@@ -306,7 +316,7 @@
                     </li>
                     <li class="nav-item {{ Request::is('admin/uk_warehouse/*') ? 'menu-open' : '' }}">
                         <a href="" class="nav-link ">
-                            <i class="nav-icon fas fa-box"></i>
+                            <!-- <i class="nav-icon fas fa-box"></i> -->
                             <p>
                                 UK WareHouse
                                 <i class="fas fa-angle-left right"></i>
@@ -317,7 +327,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/uk_warehouse/index') }}"
                                     class="nav-link {{ Request::is('admin/uk_warehouse/index') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-dollar-sign"></i>
+                                    <!-- <i class="nav-icon fas fa-dollar-sign"></i> -->
                                     <p>
                                         Set Prices
                                     </p>
@@ -330,7 +340,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/governorweight"
                             class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-weight"></i>
+                            <!-- <i class="nav-icon fas fa-weight"></i> -->
                             <p>
                                 Total Weights
                             </p>
@@ -339,7 +349,7 @@
                     <li
                         class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
                         <a href="{{ url('admin/allusers') }}" class="nav-link">
-                            <i class="nav-icon fas fa-user"></i>
+                            <!-- <i class="nav-icon fas fa-user"></i> -->
                             <p>
                                 Users Settings
                                 <i class="fas fa-angle-left right"></i>
@@ -349,7 +359,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/allusers') }}"
                                     class="nav-link {{ Request::is('admin/allusers') ? 'active' : '' }}">
-                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
                                     <p>
                                         Users
                                     </p>
@@ -358,7 +368,7 @@
                             <li class="nav-item">
                                 <a href="{{ url('admin/roles') }}"
                                     class="nav-link {{ Request::is('admin/roles') ? 'active' : '' }}">
-                                    <i class="fas fa-long-arrow-alt-right nav-icon"></i>
+                                    <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
                                     <p>
                                         Roles
                                     </p>
@@ -369,7 +379,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/alltransection"
                             class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
-                            <i class="nav-icon fas fa-exchange-alt"></i>
+                            <!-- <i class="nav-icon fas fa-exchange-alt"></i> -->
                             <p>
                                 Transactions
                             </p>
@@ -378,7 +388,7 @@
                     <li class="nav-item">
                         <a href="{{ URL::to('') }}/admin/support"
                             class="nav-link  {{ Request::is('admin/support') ? 'active' : '' }} ">
-                            <i class="nav-icon fa fa-life-ring"></i>
+                            <!-- <i class="nav-icon fa fa-life-ring"></i> -->
                             <p>
                                 Support Quries
                             </p>
