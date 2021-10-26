@@ -7,7 +7,6 @@
     <title>Document</title>
 </head>
 <body>
-    imran
     <table>
         <thead>
             <tr>
@@ -37,9 +36,11 @@
                 <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                         style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;" alt=""></td>
             @else
-                <td><img   class="famerimg"
+                <td>
+                    <a href="{{ Storage::disk('s3')->url('images/' . $inv) }}" target="_blank">
+                    <img   class="famerimg"
                         style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
-                        src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td>
+                        src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td></a>
             @endif
                 @endforeach
             </td>
