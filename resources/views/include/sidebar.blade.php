@@ -48,7 +48,7 @@
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
-                <li class="nav-item">
+                <li class="nav-item menu-icon">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
                             class="fas fa-bars"></i></a>
                 </li>
@@ -72,7 +72,7 @@
         <!-- /.navbar -->
     </div>
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-lightGray elevation-4">
+    <aside class="main-sidebar sidebar-lightGray elevation-4 custom-sidebar">
 
         <!-- Sidebar -->
         <div class="sidebar">
@@ -86,16 +86,18 @@
                     <a href="/" class="d-block">QIMA</a>
                 </div>
             </div> -->
-            <div class="text-center mt-5">
-             <img src="{{ URL::to('') }}/public/dist/img/qima_logo.png"
-                            alt="User Image">
-            </div>
-            <div class="d-flex mt-5 mb-5 justify-content-center">
-             <img src="{{ URL::to('') }}/public/dist/img/message.png"
-                            alt="User Image">
-            <div class="vl-sidebar mx-4"></div>
-            <img src="{{ URL::to('') }}/public/dist/img/flag_1.png"
-                            alt="User Image">
+            <div class="user-panel d-flex flex-column">
+                <div class=" text-center mt-5">
+                <img style="width: auto; max-width: 100%;" src="{{ URL::to('') }}/public/dist/img/qima_logo.png"
+                                alt="User Image">
+                </div>
+                <div class="notification-icons d-flex  mt-5 mb-5 justify-content-center">
+                    <img style="width: auto;" src="{{ URL::to('') }}/public/dist/img/message.png"
+                                    alt="User Image">
+                    <div class="vl-sidebar mx-4"></div>
+                    <img style="width: auto;" src="{{ URL::to('') }}/public/dist/img/flag_1.png"
+                                    alt="User Image">
+                </div>
             </div>
             <!-- Sidebar Menu -->
             <nav class="mt-2">
@@ -406,3 +408,12 @@
         </div>
         <!-- /.sidebar -->
     </aside>
+<script>
+    $(document).ready(function() {
+      $('.menu-icon').on('click', function() {
+          console.log('hello');
+          $(".notification-icons").toggleClass("invisible");
+          $(".nav-sidebar .nav-item").toggleClass("border-0");
+    });
+});
+</script>
