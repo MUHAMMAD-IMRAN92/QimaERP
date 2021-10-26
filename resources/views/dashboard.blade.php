@@ -242,7 +242,7 @@
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
-            <hr class="ml-2">
+            <hr class="ml-md-2">
             <div class="row ml-2 text-uppercase mb-2">
                 <strong>
                     <b>Date Filter</b>
@@ -365,7 +365,7 @@
                     </script>
                 </div>
             </div>
-            <hr>
+            <hr class="ml-md-2">
             <div class="row">
                 <div class="col-md-3 vl">
                     <div class="card shadow-none">
@@ -563,7 +563,7 @@
                     </div>
                 </div>
             </div>
-
+            <hr class="col-">
             <div class="row">
 
                 <div class="col-md-6 ">
