@@ -9,18 +9,28 @@ class SupplyChainController extends Controller
 {
     public function supplyChain()
     {
-        $sentTo = ['Coffe Buyer' => 2, 'Coffee Buyer Manager' => 3, 'Center Manager' => 4, 'Processing Manager' => 5, 'Special processing' =>  7, 'Coffee drying' => 10, 'Yemen operative' => 13, 'Mill operative' => 17,   'Coffee Sorting' => 22, 'Yemen Pack Coffe' => 24, 'Yemen Pack Operative ' => 33, 'Yemen Local Market' => 193, 'Yemen Sales Operative' => 197, 'Shipping' => 39, 'Dispatch ' => 41, 'Uk Warehouse' => 43, 'China Warehouse' => 474];
+        $sentTo = ['Coffe Buyer' => 2, 'Coffee Buyer Manager' => 3, 'Center Manager' => 4, 'Processing Manager' => 5, 'Special processing' =>  7, 'Coffee drying' => 10, 'Yemen operative' => 13, 'Mill operative' => 17,   'Coffee Sorting' => 22,  'Yemen Pack Operative ' => 33, 'Yemen Local Market' => 193, 'Shipping' => 39, 'Uk Warehouse' => 43, 'China Warehouse' => 474];
         $weightLabel = [];
         $managerName = [];
         foreach ($sentTo as $key => $sent) {
             if ($sent == 2) {
                 $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             } elseif ($sent == 193) {
-                $transactions = Transaction::with(['details' => function ($query) {
-                    $query->where('container_status', 0)->with('metas');
-                }])->where('sent_to', $sent)->where('transaction_type', 5)->where('is_parent', 0)->whereHas('details', function ($q) {
-                    $q->where('container_status', 0);
-                })->get();
+                $transactions = Transaction::where('is_parent', 0)
+                    ->whereIn('sent_to', [20, 193, 194, 195, 201])
+                    ->whereIn('transaction_type', [3, 5, 6])
+                    ->whereHas(
+                        'details',
+                        function ($q) {
+                            $q->where('container_status', 0);
+                        },
+                        '>',
+                        0
+                    )->with(['details' => function ($query) {
+                        $query->where('container_status', 0)->with('metas');
+                    }])->with(['meta', 'child'])
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
             } elseif ($sent == 3) {
                 $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('transactionDetail', function ($q) {
                     $q->where('container_status', 0);
@@ -54,6 +64,139 @@ class SupplyChainController extends Controller
                 }, '>', 0)->with(['transactionDetail' => function ($query) {
                     $query->where('container_status', 0);
                 }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+            } elseif ($sent == 13) {
+                $transactions = Transaction::where('is_parent', 0)
+                    ->whereHas('log', function ($q) {
+                        $q->whereIn('action', ['sent', 'received'])
+                            ->whereIn('type', ['sent_to_yemen', 'received_by_yemen', 'milling_coffee', 'sent_to_mill']);
+                    })->whereHas(
+                        'transactionDetail',
+                        function ($q) {
+                            $q->where('container_status', 0);
+                        },
+                        '>',
+                        0
+                    )->with(['transactionDetail' => function ($query) {
+                        $query->where('container_status', 0);
+                    }])->with('meta', 'child')
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
+            } elseif ($sent == 17) {
+                $transactions = Transaction::where('is_parent', 0)->where('transaction_type', 1)
+                    // ->whereHas('log', function ($q) {
+                    //     $q->whereIn('action', ['sent', 'received'])
+                    //         ->whereIn('type', ['received_by_mill', 'sent_to_mill', 'sent_to_market', 'sent_to_sorting']);
+                    // })
+                    ->whereIn('sent_to', [15, 17])
+                    ->whereHas(
+                        'details',
+                        function ($q) {
+                            $q->where('container_status', 0);
+                        },
+                        '>',
+                        0
+                    )->with(['details' => function ($query) {
+                        $query->where('container_status', 0)->with('metas');
+                    }])->with(['meta', 'child'])
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
+            } elseif ($sent == 22) {
+                $transactions = Transaction::selectRaw('transactions.*')->where('is_parent', 0)
+                    ->where('sent_to', 21)
+                    ->orWhere(function ($query) {
+                        $query->whereIn('sent_to', [22])
+                            ->where('transaction_type', 1);
+                    })
+                    ->whereHas(
+                        'details',
+                        function ($q) {
+                            $q->where('container_status', 0);
+                        },
+                        '>',
+                        0
+                    )->with(['details' => function ($query) {
+                        $query->where('container_status', 0)->with('metas');
+                    }])->with(['meta', 'child'])
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
+            } elseif ($sent == 33) {
+                $transactions = Transaction::where('is_parent', 0)
+                    // ->whereHas('log', function ($q) {
+                    //     $q->whereIn('action', ['sent'])
+                    //         ->whereIn(
+                    //             'type',
+                    //             [
+                    //                 'sent_to_po_packaging'
+                    //             ]
+                    //         );
+                    // })
+                    ->whereIn('sent_to', [31, 33, 34, 36])
+                    ->whereHas(
+                        'details',
+                        function ($q) {
+                            $q->where('container_status', 0);
+                        },
+                        '>',
+                        0
+                    )->with(['details' => function ($query) {
+                        $query->where('container_status', 0)->with('metas');
+                    }])->with(['meta', 'child'])
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
+            } elseif ($sent == 39) {
+                $transactions = Transaction::where('is_parent', 0)
+                    // ->whereHas('log', function ($q) {
+                    //     $q->whereIn('action', ['sent'])
+                    //         ->whereIn(
+                    //             'type',
+                    //             [
+                    //                 'sent_to_po_packaging'
+                    //             ]
+                    //         );
+                    // })
+                    ->whereIn('sent_to', [36, 39])
+                    ->whereHas(
+                        'details',
+                        function ($q) {
+                            $q->where('container_status', 0);
+                        },
+                        '>',
+                        0
+                    )->with(['details' => function ($query) {
+                        $query->where('container_status', 0)->with('metas');
+                    }])->with(['meta', 'child'])
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
+            } elseif ($sent == 43) {
+                $transactions = Transaction::where('is_parent', 0)
+                    ->whereIn('sent_to', [41, 43, 472, 473])
+                    ->whereHas(
+                        'details',
+                        function ($q) {
+                            $q->where('container_status', 0);
+                        },
+                        '>',
+                        0
+                    )->with(['details' => function ($query) {
+                        $query->where('container_status', 0)->with('metas');
+                    }])->with(['meta', 'child'])
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
+            } elseif ($sent == 474) {
+                $transactions = Transaction::where('is_parent', 0)
+                    ->whereIn('sent_to', [473, 474])
+                    ->whereHas(
+                        'details',
+                        function ($q) {
+                            $q->where('container_status', 0);
+                        },
+                        '>',
+                        0
+                    )->with(['details' => function ($query) {
+                        $query->where('container_status', 0)->with('metas');
+                    }])->with(['meta', 'child'])
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
             } else {
                 $transactions = Transaction::with(['details' => function ($query) {
                     $query->where('container_status', 0);
