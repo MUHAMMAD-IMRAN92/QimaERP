@@ -385,7 +385,7 @@
                                 datasets: [{
                                     pointRadius: 4,
                                     fill: false,
-                                    tension: 0.010,
+                                    tension: 0.5,
 
                                     backgroundColor: "black",
                                     borderColor: "gray",
@@ -400,7 +400,7 @@
                                     yAxes: [{
 
                                         ticks: {
-                                            min: 1,
+                                            min: 0,
                                             max: 10000
                                         }
                                     }],
