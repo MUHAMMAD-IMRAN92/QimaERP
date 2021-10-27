@@ -9,7 +9,7 @@ class SupplyChainController extends Controller
 {
     public function supplyChain()
     {
-        $sentTo = ['Coffe Buyer' => 2, 'Coffee Buyer Manager' => 3, 'Special processing' =>  7, 'Coffee drying' => 10, 'Yemen operative' => 13, 'Mill operative' => 17,   'Coffee Sorting' => 22, 'Yemen Pack Coffe' => 24, 'Yemen Pack Operative ' => 33, 'Yemen Local Market' => 193, 'Yemen Sales Operative' => 197, 'Shipping' => 39, 'Dispatch ' => 41, 'Uk Warehouse' => 43, 'China Warehouse' => 474];
+        $sentTo = ['Coffe Buyer' => 2, 'Coffee Buyer Manager' => 3, 'Center Manager' => 4, 'Special processing' =>  7, 'Coffee drying' => 10, 'Yemen operative' => 13, 'Mill operative' => 17,   'Coffee Sorting' => 22, 'Yemen Pack Coffe' => 24, 'Yemen Pack Operative ' => 33, 'Yemen Local Market' => 193, 'Yemen Sales Operative' => 197, 'Shipping' => 39, 'Dispatch ' => 41, 'Uk Warehouse' => 43, 'China Warehouse' => 474];
         $weightLabel = [];
         $managerName = [];
         foreach ($sentTo as $key => $sent) {
@@ -27,6 +27,17 @@ class SupplyChainController extends Controller
                 }, '>', 0)->with(['transactionDetail' => function ($query) {
                     $query->where('container_status', 0);
                 }])->with('log')->orderBy('transaction_id', 'desc')->get();
+            } elseif ($sent == 4) {
+                $transactions = Transaction::where('is_parent', 0)
+                    ->where('transaction_status', 'sent')
+                    ->whereHas('transactionLog', function ($q) {
+                        $q->where('action', 'sent')
+                            ->where('type', 'center');
+                    })->whereHas('transactionDetail', function ($q) {
+                        $q->where('container_status', 0);
+                    }, '>', 0)->with(['transactionDetail' => function ($query) {
+                        $query->where('container_status', 0);
+                    }])->with('log')->orderBy('transaction_id', 'desc')->get();
             } elseif ($sent == 10) {
                 $transactions = Transaction::where('is_parent', 0)->whereHas('log', function ($q) {
                     $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
