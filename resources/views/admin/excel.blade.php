@@ -7,7 +7,6 @@
     <title>Document</title>
 </head>
 <body>
-    imran
     <table>
         <thead>
             <tr>
@@ -31,10 +30,26 @@
             <td>{{$arr[1]}}</td>
             <td>{{$arr[2]}}</td>
             <td>{{$arr[3]}}</td>
-        </tr>
-           
+            <td>
+                @foreach($arr[4] as $inv)
+                @if ($inv == null)
+                <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                        style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;" alt=""></td>
+            @else
+                <td>
+                    <a href="{{ Storage::disk('s3')->url('images/' . $inv) }}" target="_blank">
+                    <img   class="famerimg"
+                        style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
+                        src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td></a>
+            @endif
+                @endforeach
+            </td>
+        </tr>           
             @endforeach
         </tbody>
+       
     </table>
+    <br>
+     Total Weight : <span>{{$total_weight}}</span>
 </body>
 </html>
