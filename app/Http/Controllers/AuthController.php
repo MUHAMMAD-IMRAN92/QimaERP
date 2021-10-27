@@ -158,28 +158,43 @@ class AuthController extends Controller
         }
         $now = Carbon::now();
         $currentYear = $now->year;
-        $collection = Transaction::all();
-        $transaction = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
-        // $grouped = $collection->groupBy('for');
-        $grouped = $transaction->groupBy(function ($item) {
-            return $item->created_at->format('m');
-        });
         $createdAt = [];
 
         $quantity = [];
+        $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        foreach ($monthsArr as $month) {
 
+            $monthName = date("F", mktime(0, 0, 0, $month, 10));
+            $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
 
-        foreach ($grouped as $key => $trans) {
             $weight = 0;
-            foreach ($trans as $tran) {
-                $weight += $tran->details->sum('container_weight');
+            foreach ($transactions as $key => $trans) {
+                $weight += $trans->details->sum('container_weight');
             }
-            $monthNum = $key;
-            $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
-
-            array_push($quantity, $weight);
             array_push($createdAt, $monthName);
+            array_push($quantity, $weight);
         }
+        // $grouped = $collection->groupBy('for');
+        // $grouped = $transaction->groupBy(function ($item) {
+        //     return $item->created_at->format('m');
+        // });
+        // $createdAt = [];
+
+        // $quantity = [];
+
+
+        // foreach ($grouped as $key => $trans) {
+        //     $weight = 0;
+        //     foreach ($trans as $tran) {
+        //         $weight += $tran->details->sum('container_weight');
+        //     }
+        //     $monthNum = $key;
+
+        //     $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
+
+        //     array_push($quantity, $weight);
+        //     array_push($createdAt, $monthName);
+        // }
         $today = Carbon::today()->toDateString();
         $stocks = [];
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
