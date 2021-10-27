@@ -251,5 +251,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('/support', 'AuthController@support');
         Route::get('/view_support/{id}', 'AuthController@viewSupport');
+
+        Route::get('/supplyChain', 'SupplyChainCOntroller@supplyChain');
     });
 });
