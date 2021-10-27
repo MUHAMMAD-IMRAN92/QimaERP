@@ -32,6 +32,7 @@
         .blacklink .hover:hover {
             cursor: pointer;
         }
+
     </style>
 
     <script>
@@ -55,8 +56,14 @@
                 });
             });
             $('#today').on('click', function() {
-                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
-                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -71,8 +78,14 @@
                 });
             });
             $('#yesterday').on('click', function() {
-                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
-                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -87,8 +100,14 @@
                 });
             });
             $('#weekToDate').on('click', function() {
-                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
-                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -103,8 +122,14 @@
                 });
             });
             $('#monthToDate').on('click', function() {
-                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
-                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -119,8 +144,14 @@
                 });
             });
             $('#lastmonth').on('click', function() {
-                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
-                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -135,8 +166,14 @@
                 });
             });
             $('#yearToDate').on('click', function() {
-                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
-                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -151,8 +188,14 @@
                 });
             });
             $('#currentyear').on('click', function() {
-                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
-                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -167,8 +210,14 @@
                 });
             });
             $('#lastyear').on('click', function() {
-                $('.blacklink .hover').css({'font-weight':'normal', 'text-decoration':'none'});
-                $(this).css({'font-weight':'bold', 'text-decoration':'underline'});
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/dashboardByDays') }}",
                     type: "GET",
@@ -279,7 +328,8 @@
                 <span class="ml-md-2 hover" id="lastyear"> 2020
                     SEASON</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover " style="font-weight: bold; text-decoration: underline;"> <a href="{{ url('/admin/dashboard') }}">ALL
+                <span class="ml-md-2 hover " style="font-weight: bold; text-decoration: underline;"> <a
+                        href="{{ url('/admin/dashboard') }}">ALL
                         TIME</a></span>
             </div>
             <hr class="ml-md-2">
@@ -329,17 +379,16 @@
                         var xValues = @json($createdAt);
                         var yValues = @json($quantity);
                         new Chart("myChart", {
-                            type: "bar",
+                            type: "line",
                             data: {
                                 labels: xValues,
                                 datasets: [{
-                                    pointRadius: 1,
+                                    pointRadius: 4,
                                     fill: false,
-                                    lineTension: 0,
-                                    // backgroundColor: "rgba(0,0,255,0.2)",
-                                    backgroundColor: "purple",
-                                    borderColor: "purple",
-                                    // borderColor: "rgba(0,0,255,0.1)",
+                                    tension: 0.010,
+
+                                    backgroundColor: "black",
+                                    borderColor: "gray",
                                     data: yValues
                                 }]
                             },
@@ -379,11 +428,11 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                    <tr>
-                                        <th style="width: 10px">Sr#</th>
-                                        <th>Farmer Name</th>
-                                    </tr>
-                                </thead> -->
+                                            <tr>
+                                                <th style="width: 10px">Sr#</th>
+                                                <th>Farmer Name</th>
+                                            </tr>
+                                        </thead> -->
                                 <tbody>
                                     @if (count($farmers) == 0)
                                         @php
@@ -393,9 +442,10 @@
                                                 <!-- <td>{{ $loop->iteration }}</td> -->
 
                                                 <td class="d-flex align-items-center px-0">
-                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
+                                                        width="50">
                                                     <span class="ml-3">
-                                                    {{ $farmer['farmer_name'] }}
+                                                        {{ $farmer['farmer_name'] }}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -408,9 +458,10 @@
                                             <!-- <td>{{ $loop->iteration }}</td> -->
 
                                             <td class="d-flex align-items-center px-0">
-                                                <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                                                <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
+                                                    width="50">
                                                 <span class="ml-3">
-                                                {{ $farmer['farmer_name'] }}
+                                                    {{ $farmer['farmer_name'] }}
                                                 </span>
                                             </td>
 
@@ -436,12 +487,12 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                    <tr style="white-space:nowrap">
-                                        <th style="width: 10px">Sr#</th>
+                                            <tr style="white-space:nowrap">
+                                                <th style="width: 10px">Sr#</th>
 
-                                        <th>Region Name</th>
-                                    </tr>
-                                </thead> -->
+                                                <th>Region Name</th>
+                                            </tr>
+                                        </thead> -->
                                 <tbody>
                                     {{-- @if (count($regions) == 0)
                                     @php
@@ -463,9 +514,10 @@
                                             <!-- <td>{{ $loop->iteration }}</td> -->
 
                                             <td class="d-flex align-items-center px-0">
-                                                <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                                                <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
+                                                    width="50">
                                                 <span class="ml-3">
-                                                {{ $region['region_title'] }}
+                                                    {{ $region['region_title'] }}
                                                 </span>
                                             </td>
                                         </tr>
@@ -488,25 +540,25 @@
                         <!-- /.card-header -->
                         <input type="date" id="specialCoffee" name="endDate" class="form-control border-0">
                         <div class="card-body d-flex flex-column" id="ajaxspecialCoffee">
-                        <div class="row">
+                            <div class="row">
                                 <div class="text-center text-uppercase col-6 px-1">
-                                  <h6><b>Today</b></h6>
+                                    <h6><b>Today</b></h6>
                                 </div>
                                 <div class="text-center text-uppercase col-6 px-1">
-                                <h6><b>End Date</b></h6>
+                                    <h6><b>End Date</b></h6>
                                 </div>
                             </div>
                             @foreach ($stock as $key => $s)
                                 <div class="row mb-md-2 flex-1">
                                     <div class="col-md-6 data-tabs px-1">
                                         <div class="h-100 bg-dark-blue text-uppercase mb-2">
-                                        <h4 class="ml-1">{{ $s['today'] }}</h4>
+                                            <h4 class="ml-1">{{ $s['today'] }}</h4>
                                             <p class="ml-1 mb-0">{{ $s['wareHouse'] }}</p>
                                         </div>
                                     </div>
                                     <div class="col-md-6 data-tabs px-1">
                                         <div class="h-100 bg-dark-blue text-uppercase mb-2">
-                                        <h4 class="ml-1">{{ $s['end'] }}</h4>
+                                            <h4 class="ml-1">{{ $s['end'] }}</h4>
                                             <p class="ml-1 mb-0">{{ $s['wareHouse'] }}</p>
                                         </div>
                                     </div>
@@ -531,10 +583,10 @@
 
                             <div class="row">
                                 <div class="text-center text-uppercase col-6 px-1">
-                                  <h6><b>Today</b></h6>
+                                    <h6><b>Today</b></h6>
                                 </div>
                                 <div class="text-center text-uppercase col-6 px-1">
-                                <h6><b>End Date</b></h6>
+                                    <h6><b>End Date</b></h6>
                                 </div>
                             </div>
                             @foreach ($nonspecialstock as $key => $s)
