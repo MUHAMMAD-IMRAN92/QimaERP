@@ -21,12 +21,26 @@ class SupplyChainController extends Controller
                 }])->where('sent_to', $sent)->where('transaction_type', 5)->where('is_parent', 0)->whereHas('details', function ($q) {
                     $q->where('container_status', 0);
                 })->get();
+            } elseif ($sent == 3) {
+                $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'sent')->whereHas('transactionDetail', function ($q) {
+                    $q->where('container_status', 0);
+                }, '>', 0)->with(['transactionDetail' => function ($query) {
+                    $query->where('container_status', 0);
+                }])->with('log')->orderBy('transaction_id', 'desc')->get();
+            } elseif ($sent == 10) {
+                $transactions = Transaction::where('is_parent', 0)->whereHas('log', function ($q) {
+                    $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
+                })->whereHas('transactionDetail', function ($q) {
+                    $q->where('container_status', 0);
+                }, '>', 0)
+                    //->doesntHave('isReference')
+                    ->with(['transactionDetail' => function ($query) {
+                        $query->where('container_status', 0);
+                    }])->with('meta')->orderBy('transaction_id', 'desc')->get();
             } else {
                 $transactions = Transaction::with(['details' => function ($query) {
-                    $query->where('container_status', 0)->with('metas');
-                }])->where('sent_to', $sent)->where('is_parent', 0)->whereHas('details', function ($q) {
-                    $q->where('container_status', 0);
-                })->get();
+                    $query->where('container_status', 0);
+                }])->where('sent_to', $sent)->where('is_parent', 0)->get();
             }
 
             $weight = 0;
