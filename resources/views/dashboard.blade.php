@@ -428,11 +428,11 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                            <tr>
-                                                <th style="width: 10px">Sr#</th>
-                                                <th>Farmer Name</th>
-                                            </tr>
-                                        </thead> -->
+                                                                                        <tr>
+                                                                                            <th style="width: 10px">Sr#</th>
+                                                                                            <th>Farmer Name</th>
+                                                                                        </tr>
+                                                                                    </thead> -->
                                 <tbody>
                                     @if (count($farmers) == 0)
                                         @php
@@ -487,12 +487,12 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                            <tr style="white-space:nowrap">
-                                                <th style="width: 10px">Sr#</th>
+                                                                                        <tr style="white-space:nowrap">
+                                                                                            <th style="width: 10px">Sr#</th>
 
-                                                <th>Region Name</th>
-                                            </tr>
-                                        </thead> -->
+                                                                                            <th>Region Name</th>
+                                                                                        </tr>
+                                                                                    </thead> -->
                                 <tbody>
                                     {{-- @if (count($regions) == 0)
                                     @php
@@ -629,15 +629,19 @@
                             "DarkOrange",
                         ];
                         new Chart("4rd", {
-                            type: "horizontalBar",
+                            type: "line",
                             data: {
                                 labels: xValues,
                                 datasets: [{
+                                    pointRadius: 3,
+                                    // backgroundColor: "#e755ba",
+                                    pointBackgroundColor: "white",
+                                    pointBorderColor: "black",
                                     fill: false,
-                                    lineTension: 0,
-                                    backgroundColor: "rgba(0,0,255,1.0)",
-                                    borderColor: "rgba(0,0,255,0.1)",
-                                    backgroundColor: barColors,
+                                    lineTension: 0.3,
+                                    borderWidth: 1,
+                                    // lineColor: "black",
+                                    borderColor: "black",
                                     data: yValues
                                 }]
                             },
@@ -647,47 +651,41 @@
                                 },
                                 scales: {
                                     yAxes: [{
-                                        ticks: {
-                                            min: 6,
-                                            max: 16
-                                        }
+                                        ticks: {}
                                     }],
                                 }
                             }
                         });
                     </script>
                 </div>
-                <div class="col-md-6 ">
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
                     <center>Region Wise</center>
                     <canvas id="3rd" class="ml-md-2" style="width:100%; height:300px;"></canvas>
 
                     <script>
                         var xValues = @json($regionName);
                         var yValues = @json($regionQuantity);
-                        var barColors = ["red", "green", "blue", "orange", "brown", "yellow", "purple", "black", "DeepPink", "DarkOrange",
-                            "LimeGreen",
-                            "Cyan", "orange",
-                            "yellow", "blue", "brown", "black", "blue",
-                            "LimeGreen",
-                            "Cyan", "orange",
-                            "yellow", "blue", "brown", "black", "blue",
-                            "LimeGreen",
-                            "Cyan", "orange",
-                            "yellow", "blue", "brown", "black", "blue",
-                            "LimeGreen",
-                            "Cyan", "orange",
-                            "yellow", "blue", "brown", "black", "blue"
-                        ];
+
                         new Chart("3rd", {
-                            type: "horizontalBar",
+                            type: "line",
                             data: {
                                 labels: xValues,
                                 datasets: [{
+                                    pointRadius: 3,
+                                    // backgroundColor: "#e755ba",
+                                    pointBackgroundColor: "white",
+                                    pointBorderColor: "black",
                                     fill: false,
-                                    lineTension: 0,
-                                    backgroundColor: "rgba(0,0,255,1.0)",
-                                    borderColor: "rgba(0,0,255,0.1)",
-                                    backgroundColor: barColors,
+                                    lineTension: 0.3,
+                                    borderWidth: 1,
+                                    // lineColor: "black",
+                                    borderColor: "black",
+                                    //  backgroundColor: 'black',
                                     data: yValues
                                 }]
                             },
@@ -697,10 +695,7 @@
                                 },
                                 scales: {
                                     yAxes: [{
-                                        ticks: {
-                                            min: 6,
-                                            max: 16
-                                        }
+
                                     }],
                                 }
                             }
@@ -708,6 +703,8 @@
                     </script>
                 </div>
             </div>
+
+
 
         </div>
         <!-- /.content-header -->
