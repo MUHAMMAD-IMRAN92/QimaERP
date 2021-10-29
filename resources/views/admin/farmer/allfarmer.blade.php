@@ -286,7 +286,7 @@
                             <!-- /.card-header -->
                             <div class="table-responsive text-uppercase letter-spacing-2" id="famerstable">
 
-                                <table class="table table-borderless border-0 custom-table" id="myTable" style="font-size:13px;">
+                                <table class="table table-borderless border-0 custom-table text-center" id="myTable" style="font-size:13px;">
                                 <thead>
                                         <tr align="center">
                                             <th class="border-0"></th>

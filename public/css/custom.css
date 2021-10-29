@@ -55,7 +55,7 @@
 }
 .text-heading{
     letter-spacing: 3px;
-    font-size: 4.5rem !important;
+    font-size: 3.5rem !important;
     color: #DCDCDC !important;
     }
     .bg-dark-blue {
@@ -172,36 +172,40 @@
 .btn-dark:hover{
     color: #212529;
 }
+.custom-table{
+    border-spacing: 0;
+}
 .custom-table thead th, .custom-table thead td, .custom-table tbody td{
     vertical-align: middle;
     min-width: 70px;
     letter-spacing: 2px;
 }
-#famerstable .dataTables_length{
-    float: unset;
+#famerstable .dataTables_length,.governors_table .dataTables_length{
+    float: unset !important;
     width: 100%;
 }
 
-#famerstable .dataTables_filter{
+#famerstable .dataTables_filter, .governors_table .dataTables_filter{
     width: 100%;
-    text-align: left;
+    text-align: left !important;
     border-bottom: 1px solid rgba(0,0,0,.1);
     margin: 0;
     border-top: 1px solid rgba(0,0,0,.1);
-    float: unset;
+    float: unset !important;
     padding-bottom: 0.7rem !important;
     padding-top: 0.7rem !important;
     margin-top: 0.8rem !important;
     margin-bottom: 0.8rem !important;
 }
-#famerstable .dataTables_filter label{
+#famerstable .dataTables_filter label, .governors_table .dataTables_filter label{
     margin-bottom: 0;
 }
-#famerstable .dataTables_filter label input{
+#famerstable .dataTables_filter label input, .governors_table .dataTables_filter label input{
     border: 1px solid rgba(0,0,0,.7);
     outline: 0;
 }
-#famerstable .dataTables_length select, #famerstable .dataTables_filter input{
+#famerstable .dataTables_length select, #famerstable .dataTables_filter input,
+.governors_table .dataTables_length select, .governors_table .dataTables_filter input{
     margin-left: 0.3rem !important;
     margin-right: 0.3rem !important;
 }
@@ -215,4 +219,19 @@
 .table_headers{
     margin-bottom: -10px;
     margin-top: 10px;
+}
+.btn-color-darkRed, .add-button{
+    color: #B23552 !important;
+}
+
+.table-bordered-custom td, .table-bordered-custom th{
+    border: 1px solid #343a40!important;
+    border-right: 0 !important;
+}
+
+.table-bordered-custom td:last-child , .table-bordered-custom th:last-child {
+    border-right: 1px solid #343a40!important;
+}
+.table-bordered-custom td{
+    border-top: 0 !important;
 }
