@@ -105,7 +105,7 @@ class SupplyChainController extends Controller
             'weightLabel' => $weightLabel,
             'managerName' => $managerName,
             'weightToday' => $weightToday,
-            'barLabel' => 'today'
+            'barLabel' => 'Today'
         ]);
     }
     public function supplyChainDateFilter(Request $request)
@@ -793,7 +793,7 @@ class SupplyChainController extends Controller
                 'weightLabel' => $weightLabel,
                 'managerName' => $managerName,
                 'weightToday' => $weightToday,
-                'barLabel' => 'Week TO Date'
+                'barLabel' => 'Week To Date'
             ]);
         } elseif ($date == 'monthToDate') {
 
