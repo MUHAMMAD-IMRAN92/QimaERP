@@ -433,7 +433,7 @@
                     var yValues = @json($regionQuantity);
 
                     new Chart("myChart", {
-                        type: "bar",
+                        type: "line",
                         data: {
                             labels: xValues,
                             datasets: [{
