@@ -398,7 +398,7 @@
                 <p>Villages </p>
             </div>
             <div class="col-sm-1 color bg-Green p-2 content-box">
-                <h3>{{ App\Farmer::count() }}</h3>
+                <h4>{{ App\Farmer::count() }}</h4>
 
                 <p>Farmers </p>
             </div>

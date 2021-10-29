@@ -100,6 +100,7 @@
     .data-tabs div{
         padding: 0.5rem !important;
         color: #fff;
+        margin: 1px;
     }
     .data-tabs div p, .card-custom-description{
         font-size: 14px;
