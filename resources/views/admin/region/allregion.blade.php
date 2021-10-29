@@ -484,7 +484,7 @@
                                             <th>Region / </th>
                                             <th>Villages / </th>
                                             <th>Quantity /</th>
-                                            <th>Values /</th>
+                                            <th>Value /</th>
                                             <th>Farmers /</th>
                                         </tr>
                                     </thead>
