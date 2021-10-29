@@ -253,5 +253,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/view_support/{id}', 'AuthController@viewSupport');
 
         Route::get('/supplyChain', 'SupplyChainController@supplyChain');
+        Route::get('supplyChain/{date}', 'SupplyChainController@supplyChainDays');
+        Route::get('supplyChainDate', 'SupplyChainController@supplyChainDateFilter');
     });
 });

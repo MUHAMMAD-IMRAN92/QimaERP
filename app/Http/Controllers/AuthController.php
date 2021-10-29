@@ -99,7 +99,15 @@ class AuthController extends Controller
         }
         $farmerByWeight = $farmerWeight->sortBy('weight')->reverse()->values();
         $farmer = $farmerByWeight->take(5)->pluck('farmerId');
-        $farmers = Farmer::whereIn('farmer_id', $farmer)->get();
+        $farmers = collect();
+        foreach ($farmer as $f) {
+            $farmer = Farmer::find($f);
+            if ($farmer) {
+                $farmers->push($farmer);
+            }
+        }
+        // return $farmers;
+        // return  $farmers = Farmer::whereIn('farmer_id', $farmer)->get();
 
         // foreach ($transactions as $transaction) {
         //     $ids->push([
