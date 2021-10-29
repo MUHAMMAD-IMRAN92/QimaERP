@@ -182,7 +182,7 @@
                 <div class="row mb-2">
 
                     <div class="col-sm-6 pl-0">
-                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">COFFE BUYERS
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">COFFEE BUYERS
                             {{-- <a href="{{ URL::to('') }}/admin/add_farmer" class="btn btn-add rounded-circle">
                             <i class="fas fa-user-plus add-client-icon"></i>
                             </a> --}}
@@ -192,11 +192,11 @@
                     <div class="col-sm-6 d-flex justify-content-end align-items-end">
                         <ol class="breadcrumb float-sm-right">
                         <a href="{{ url('admin/adduser') }}" class="btn btn-add rounded-circle p-0">
-                        <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase">Add Coffee Buyer</button>
+                        <button class="btn btn-color-darkRed btn-dark bg-transparent border-0 add-button text-uppercase">Add Coffee Buyer</button>
                         </a>
-                        <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase p-0">&nbsp;|</button>
+                        <button class="btn btn-color-darkRed btn-dark bg-transparent border-0 add-button text-uppercase p-0">&nbsp;|</button>
                         <a href="{{ url('admin/adduser') }}" class="btn btn-add rounded-circle p-0">
-                            <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase">Add Coffee Buyer Manger</button>
+                            <button class="btn btn-color-darkRed btn-dark bg-transparent border-0 add-button text-uppercase">Add Coffee Buying Manager</button>
                         </a>
                         </ol>
                     </div>
@@ -320,7 +320,7 @@
                                                 <tr>
                                                     <th colspan="12" class="border-0 px-0 text-left">
                                                         <div class="text-uppercase pl-0">
-                                                            Coffee Buyer Manger
+                                                            Coffee Buying Managers
                                                         </div>
                                                     </th>
                                                 </tr>
@@ -355,7 +355,7 @@
                                                 <tr>
                                                     <th colspan="12" class="border-0 px-0">
                                                         <div class="text-uppercase pl-0 font-weight-lighter table_headers">
-                                                            Special
+                                                            Specialty
                                                         </div>
                                                     </th>
                                                 </tr>
@@ -379,7 +379,7 @@
                                                 <tr>
                                                     <th colspan="12" class="border-0 px-0">
                                                         <div class="text-uppercase pl-0 font-weight-lighter table_headers">
-                                                            Non Special
+                                                            Non Specialty
                                                         </div>
                                                     </th>
                                                 </tr>
@@ -435,7 +435,7 @@
                                                 <tr>
                                                     <th colspan="12" class="border-0 px-0 text-left">
                                                         <div class="text-uppercase pl-0">
-                                                            Coffee Buyer
+                                                            Coffee Buyers
                                                         </div>
                                                     </th>
                                                 </tr>
@@ -470,7 +470,7 @@
                                                 <tr>
                                                     <th colspan="12" class="border-0 px-0">
                                                         <div class="text-uppercase pl-0 font-weight-lighter table_headers">
-                                                            Special
+                                                            Specialty
                                                         </div>
                                                     </th>
                                                 </tr>
@@ -494,7 +494,7 @@
                                                 <tr>
                                                     <th colspan="12" class="border-0 px-0">
                                                         <div class="text-uppercase pl-0 font-weight-lighter table_headers">
-                                                            Non Special
+                                                            Non Specialty
                                                         </div>
                                                     </th>
                                                 </tr>

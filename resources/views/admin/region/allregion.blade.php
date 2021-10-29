@@ -521,6 +521,51 @@
                     </script>
                 </div>
             </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div>
+
+                        <!-- /.card -->
+
+                        <div class="card">
+                            <!-- /.card-header -->
+                            <div class="">
+
+                                <table class="table table-bordered region-table-custom">
+                                    <thead>
+                                        <tr class="blacklink letter-spacing-1 text-uppercase">
+
+                                            <th>Governorate / </th>
+                                            <th>Region / </th>
+                                            <th>Villages / </th>
+                                            <th>Quantity /</th>
+                                            <th>Value /</th>
+                                            <th>Farmers /</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($governorates as $governorate)
+                                            <tr>
+
+                                                <td>{{ $governorate->governerate_title }}</td>
+                                                <td>
+                                                    @foreach ($governorate->regions as $region)
+                                                        {{ $region->region_title }} <br>
+                                                    @endforeach
+                                                </td>
+                                                <td>
+                                                    @if ($governorate->villages)
+
+                                                        @foreach ($governorate->villages as $village)
+                                                            {{ $village->village_title }} <br>
+                                                        @endforeach
+
+                                                    @endif
+                                                </td>
 
             <!-- Main content -->
             <section class="content">
