@@ -3,6 +3,12 @@
 @section('content')
      <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+    @if (session()->has('msg'))
+    <div class="alert alert-success" role="alert">
+        <b>{{ Session::get('msg') }}</b>
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+@endif
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">

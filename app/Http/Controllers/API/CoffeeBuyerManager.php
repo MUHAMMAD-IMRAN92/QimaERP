@@ -223,6 +223,7 @@ class CoffeeBuyerManager extends Controller
     function sentTransactions(Request $request)
     {
         //::validation
+        \Log::info($request->all());
         $validator = Validator::make($request->all(), [
             'transactions' => 'required',
         ]);
@@ -251,10 +252,16 @@ class CoffeeBuyerManager extends Controller
                         array_push($sentCoffeeArray, $sentTransaction->transactions->transaction_id);
                     }
                 } else {
-                    DB::beginTransaction();
+                    
                     try {
                         $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
-                        if ($alreadyExistTransaction) {
+                        // adding because we get same reference id and transaction id
+                        $same_check = 0;
+                        if ($sentTransaction->transactions->reference_id == $sentTransaction->transactions->transaction_id) {
+                            $same_check = 1;
+                        }
+                        \Log::info("SAME CHECK - " . $sentTransaction->transactions->reference_id . " - " . $sentTransaction->transactions->session_no . " - " . $sentTransaction->transactions->transaction_id . " " . $same_check);
+                        if ($alreadyExistTransaction && $same_check == 0) {
                             $sentTransaction->transactions->already_sent = true;
                             $sentTransaction->transactions->created_at =  toSqlDT($sentTransaction->transactions->created_at);
                             $sentTransaction->transactions->local_created_at = toSqlDT($sentTransaction->transactions->local_created_at);
@@ -265,6 +272,8 @@ class CoffeeBuyerManager extends Controller
                             }
                             array_push($alreadySentCoffee, $sentTransaction);
                         } else {
+                            DB::beginTransaction();
+                            \Log::info("GOT IT - " . $sentTransaction->transactions->reference_id . " - " . $sentTransaction->transactions->session_no . " - " . $sentTransaction->transactions->transaction_id . " " . $same_check);
                             $transaction = Transaction::create([
                                 'batch_number' => $sentTransaction->transactions->batch_number,
                                 'is_parent' => $sentTransaction->transactions->is_parent,
@@ -284,6 +293,7 @@ class CoffeeBuyerManager extends Controller
                                 'local_updated_at' => toSqlDT($sentTransaction->transactions->local_updated_at)
 
                             ]);
+                            \Log::info("New Transaction Obj - " . $transaction->transaction_id . " - " . $transaction);
 
                             $transactionLog = TransactionLog::create([
                                 'transaction_id' => $transaction->transaction_id,
@@ -295,10 +305,11 @@ class CoffeeBuyerManager extends Controller
                                 'local_created_at' =>  toSqlDT($sentTransaction->transactions->local_created_at),
                                 'type' => 'center',
                             ]);
+                            \Log::info("New TransactionLog Obj - " .  $transactionLog);
 
                             $transactionContainers = $sentTransaction->transactions_detail;
                             foreach ($transactionContainers as $key => $transactionContainer) {
-                                TransactionDetail::create([
+                                $details =    TransactionDetail::create([
                                     'transaction_id' => $transaction->transaction_id,
                                     'container_number' => $transactionContainer->container_number,
                                     'created_by' => $sentTransaction->transactions->created_by,
@@ -309,8 +320,11 @@ class CoffeeBuyerManager extends Controller
                                     'reference_id' => 0,
                                 ]);
                             }
+                            \Log::info("New Details Obj - " .  $details);
+
                             array_push($sentCoffeeArray, $transaction->transaction_id);
                             DB::commit();
+                            \Log::info("DB committed Here!");
                         }
                     } catch (Throwable $th) {
                         DB::rollback();

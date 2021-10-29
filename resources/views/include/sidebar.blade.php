@@ -162,7 +162,15 @@
                         </a>
                     </li>
 
-
+                    <li class="nav-item">
+                        <a href="{{ URL::to('') }}/admin/supplyChain"
+                            class="nav-link  {{ Request::is('admin/supplyChain') ? 'active' : '' }} ">
+                            <!-- <i class="nav-icon fa fa-life-ring"></i> -->
+                            <p>
+                                Supply Chain
+                            </p>
+                        </a>
+                    </li>
 
                 @else
 
@@ -396,6 +404,7 @@
                             </p>
                         </a>
                     </li>
+                  
                 @else
 
                     @endhasrole
