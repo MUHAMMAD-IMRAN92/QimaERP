@@ -897,8 +897,8 @@ class SupplyChainController extends Controller
         } elseif ($date == 'yearToDate') {
 
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
-            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
+            $end = Carbon::tomorrow()->toDateString();
+            $start = $now->startOfYear();
 
 
             foreach ($sentTo as $key => $sent) {
