@@ -63,8 +63,22 @@ class AuthController extends Controller
             }
             array_push($govName, $govern->governerate_title);
             array_push($govQuantity, round($weight, 2));
-            $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "%$govCode%")->count();
-            $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount]);
+            $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+            $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+            $govRegionQty = collect();
+            foreach ($govRegion as $r) {
+                $regionCode = $r->region_code;
+                $regweight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+                    $regweight +=  $transaction->details->sum('container_weight');
+                }
+                $govRegionQty->push([
+                    'regionTitle' => $r->region_title,
+                    'weight' =>  round($regweight, 2)
+                ]);
+            }
+            $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
         }
         $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
         $govQuantityRegion = $govQuantityReg->take(5);
@@ -81,13 +95,13 @@ class AuthController extends Controller
             array_push($regionName, $region->region_title);
             array_push($regionQuantity, $weight);
             $regionWeight->push([
-                'regionId' => $region->region_id,
+                'region_title' => $region->region_title,
                 'weight' =>  round($weight, 2)
             ]);
         }
         $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
-        $regions = $regionsByWeight->take(5)->pluck('regionId');
-        $regions = Region::whereIn('region_id', $regions)->get();
+        $regions = $regionsByWeight->take(5);
+        // $regions = Region::whereIn('region_id', $regions)->get();
 
 
         $farmers = Farmer::all();
@@ -99,19 +113,19 @@ class AuthController extends Controller
                 $weight +=  $transaction->details->sum('container_weight');
             }
             $farmerWeight->push([
-                'farmerId' => $farmer->farmer_id,
+                'farmer_name' => $farmer->farmer_name,
                 'weight' => round($weight, 2)
             ]);
         }
         $farmerByWeight = $farmerWeight->sortBy('weight')->reverse()->values();
-        $farmer = $farmerByWeight->take(5)->pluck('farmerId');
-        $farmers = collect();
-        foreach ($farmer as $f) {
-            $farmer = Farmer::find($f);
-            if ($farmer) {
-                $farmers->push($farmer);
-            }
-        }
+        $farmers = $farmerByWeight->take(5);
+        // $farmers = collect();
+        // foreach ($farmer as $f) {
+        //     $farmer = Farmer::find($f);
+        //     if ($farmer) {
+        //         $farmers->push($farmer);
+        //     }
+        // }
         // return $farmers;
         // return  $farmers = Farmer::whereIn('farmer_id', $farmer)->get();
 
