@@ -53,6 +53,7 @@ class AuthController extends Controller
         $regionQuantity = [];
         $govName = [];
         $govQuantity = [];
+        $govQuantityRegion = collect();
         foreach ($governorate as $govern) {
             $govCode = $govern->governerate_code;
             $weight = 0;
@@ -62,7 +63,12 @@ class AuthController extends Controller
             }
             array_push($govName, $govern->governerate_title);
             array_push($govQuantity, round($weight, 2));
+            $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "%$govCode%")->count();
+            $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount]);
         }
+        $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+        $govQuantityRegion = $govQuantityReg->take(5);
+
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
@@ -293,6 +299,7 @@ class AuthController extends Controller
             'govQuantity' => $govQuantity,
             'stock' => $stocks,
             'nonspecialstock' => $nonspecialstocks,
+            'govQuantityRegion' => $govQuantityRegion
         ]);
     }
     public function dashboardByDate(Request $request)
