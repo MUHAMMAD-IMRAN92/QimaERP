@@ -11,7 +11,7 @@ class SupplyChainController extends Controller
 {
     public function supplyChain()
     {
-        $sentTo = ['Coffe Buyer' => 2, 'On Drying Beds' => 10, 'Special processing' => 7, 'Ready To Be Milled' => 14, 'Milled' => 21, 'Export Green' => 0, 'Cascara' => 0, 'Local Coffee' => 0, 'In Transit' => 0, 'London' => 0, 'China Recieved' => 0];
+        $sentTo = ['Cherry Bought' => 2, 'On Drying Beds' => 10, 'Special Process' => 7, 'Ready To Be Milled' => 14, 'Milled' => 21, 'Export Green' => 0, 'Cascara' => 0, 'Local Coffee' => 0, 'In Transit' => 0, 'London' => 0, 'China Recieved' => 0];
         $weightLabel = [];
         $managerName = [];
         $carbon = Carbon::now();
