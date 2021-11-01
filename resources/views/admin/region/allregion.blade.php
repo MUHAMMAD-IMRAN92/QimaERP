@@ -334,7 +334,7 @@
             <span class="ml-md-2 hover" id="lastyear"> 2020
                 SEASON</a></span>
             &nbsp |
-            <span class="ml-md-2" style="font-weight: bold; text-decoration: underline;"> <a href="{{ url('/admin/allregion') }}">ALL
+            <span class="ml-md-2 hover" style="font-weight: bold; text-decoration: underline;"> <a href="{{ url('/admin/allregion') }}">ALL
                     TIME</a></span>
         </div>
         <hr class="ml-md-2">
