@@ -335,35 +335,64 @@
             <hr class="ml-md-2">
             <div class="col-lg-11 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
                 <div class="col-sm-1 color bg-darkPurple p-2 content-box">
-                    <h4>{{ $governorate->count() }}</h4>
-                    <p>Governorate</p>
+                    <h4>{{ $totalWeight }}</h4>
+                    <p>KG CHERRY BOUGHT </p>
                 </div>
                 <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                    <h4>{{ $totalPrice }}</h4>
+                    <p>YER COFFEE Purchased</p>
+                </div>
+                <div class="col-sm-1 color bg-darkRed p-2 content-box">
+                    <h4>-</h4>
+
+                    <p>YER
+                        ACCOUNT
+                        PAYABLE </p>
+                </div>
+                <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                    <h4>-</h4>
+                    <p>YER SETTELED</p>
+                </div>
+                {{-- <div class="col-sm-1 color bg-darkGreen p-2 content-box">
                     <h4>{{ App\Region::count() }}</h4>
 
                     <p>Regions</p>
-                </div>
-                <div class="col-sm-1 color bg-darkRed p-2 content-box">
-                    <h4>{{ $villages->count() }}</h4>
-
-                    <p>Villages </p>
-                </div>
-                <div class="col-sm-1 color bg-mildGreen p-2 content-box">
+                </div> --}}
+                <div class="col-sm-1 color bg-lightBrown p-2 content-box">
                     <h4>{{ App\Farmer::count() }}</h4>
 
                     <p>Farmers </p>
                 </div>
-                <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                {{-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                    <h4>{{ $governorate->count() }}</h4>
+                    <p>Governorate</p>
+                </div> --}}
+                {{-- <div class="col-sm-1 color bg-lightBrown p-2 content-box">
                     <h4>{{ $totalWeight }}</h4>
                     <p>Total Coffee </p>
+                </div> --}}
+                <div class="col-sm-1 color bg-lightGreen p-2 content-box">
+                    <h4>-</h4>
+                    <p>KG SPECIALTY
+                        COFFEE EXPORT
+                        READY IN YEMEN</p>
                 </div>
                 <div class="col-sm-1 color bg-lightGreen p-2 content-box">
-                    <h4>{{ $totalPrice }}</h4>
-                    <p>Yer Coffee Purchased</p>
+                    <h4>-</h4>
+                    <p>KG COMMERCIAL
+                        GREEN COFFEE
+                        EXPORT READY</p>
                 </div>
-                <div class="col-sm-1 color bg-brightGreen p-2 content-box"></div>
-                <div class="col-sm-1 color bg-Green p-2 content-box"></div>
-                <div class="col-sm-1 color bg-lighterGreen p-2 content-box"></div>
+                <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                    <h4>-</h4>
+                    <p>YER YEMEN
+                        SALES</p>
+                </div>
+                <div class="col-sm-1 color bg-lightGreen p-2 content-box">
+                    <h4>-</h4>
+                    <p>USD SALES</p>
+                </div>
+
             </div>
             <div class="row ml-2 text-uppercase mb-2">
                 <strong>
@@ -428,11 +457,11 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                                                                        <tr>
-                                                                                            <th style="width: 10px">Sr#</th>
-                                                                                            <th>Farmer Name</th>
-                                                                                        </tr>
-                                                                                    </thead> -->
+                                                                                                                                                                                                                                                                                                                                                                        <tr>
+                                                                                                                                                                                                                                                                                                                                                                            <th style="width: 10px">Sr#</th>
+                                                                                                                                                                                                                                                                                                                                                                            <th>Farmer Name</th>
+                                                                                                                                                                                                                                                                                                                                                                        </tr>
+                                                                                                                                                                                                                                                                                                                                                                    </thead> -->
                                 <tbody>
                                     @if (count($farmers) == 0)
                                         @php
@@ -487,12 +516,12 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                                                                        <tr style="white-space:nowrap">
-                                                                                            <th style="width: 10px">Sr#</th>
+                                                                                                                                                                                                                                                                                                                                                                        <tr style="white-space:nowrap">
+                                                                                                                                                                                                                                                                                                                                                                            <th style="width: 10px">Sr#</th>
 
-                                                                                            <th>Region Name</th>
-                                                                                        </tr>
-                                                                                    </thead> -->
+                                                                                                                                                                                                                                                                                                                                                                            <th>Region Name</th>
+                                                                                                                                                                                                                                                                                                                                                                        </tr>
+                                                                                                                                                                                                                                                                                                                                                                    </thead> -->
                                 <tbody>
                                     {{-- @if (count($regions) == 0)
                                     @php
@@ -618,7 +647,7 @@
             <hr class="col-">
             <div class="row">
 
-                <div class="col-md-6 ">
+                <div class="col-md-5 ">
                     <center>Governorate Wise</center>
                     <canvas id="4rd" class="ml-md-2" style="width:100%; height:300px;"></canvas>
 
@@ -658,12 +687,45 @@
                         });
                     </script>
                 </div>
-                <div class="col-md-6">
-                    
+                <div class="col-md-7">
+                    <h4 class='ml-2' style="font-size: 10px">OVERVIEW OF COFFEE BOUGHT BY GOVERNORATE</h4>
+                    <div class="row">
+
+                        <div class="col-sm-6">
+
+                            <table style="font-size: 12px ; border:1px solid  black">
+                                <tr style="font-size: 10px ; border:1px solid  black">
+                                    <td style="font-size: 10px ; border:1px solid  black">GOVERNORATE</td>
+                                    <td style="font-size: 10px ; border:1px solid  black">QUANTITY</td>
+                                    <td style="font-size: 10px ; border:1px solid  black">FARMERS</td>
+
+                                </tr>
+                                <tbody style="font-size: 10px ; border:1px solid  black">
+                                    @foreach ($govQuantityRegion as $gov)
+                                        <tr style="font-size: 10px ; border:1px solid  black">
+                                            <td style="font-size: 10px ; border:1px solid  black">{{ $gov['title'] }}
+                                            </td>
+                                            <td style="font-size: 10px ; border:1px solid  black">
+                                                {{ $gov['weight'] }}
+                                            </td>
+                                            <td style="font-size: 10px ; border:1px solid  black">
+                                                {{ $gov['farmerCount'] }}</td>
+
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-6">
+
+                           
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <center>Region Wise</center>
                     <canvas id="3rd" class="ml-md-2" style="width:100%; height:300px;"></canvas>
 
