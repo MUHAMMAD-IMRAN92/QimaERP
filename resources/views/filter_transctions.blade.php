@@ -55,7 +55,7 @@
                     <p>Regions</p>
                 </div> --}}
 <div class="col-sm-1 color bg-lightBrown p-2 content-box">
-    <h4>{{ App\Farmer::count() }}</h4>
+    <h4>{{ $farmers->count() }}</h4>
 
     <p>Farmers </p>
 </div>
