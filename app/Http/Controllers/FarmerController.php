@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Farmer;
+use Illuminate\Support\Str;
 use App\Region;
 use App\Village;
 use App\FileSystem;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Stringable;
 
 class FarmerController extends Controller
 {
@@ -742,11 +744,11 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
-            $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
-            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->where('created_at', $date)
-                ->first()['created_at'];
-            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->where('created_at', $date)
-                ->latest()->first()['created_at'];
+            $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
+
+            $farmer->price = Village::where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
                 ->where('created_at', $date)
                 ->where('sent_to', 2)
@@ -765,13 +767,13 @@ class FarmerController extends Controller
             $yesterday = Carbon::yesterday();
             $farmer = Farmer::find($id);
 
-            $farmerCode = $farmer->farmer_code;
 
-            $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
-            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->where('created_at', $yesterday)
-                ->first()['created_at'];
-            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->where('created_at', $yesterday)
-                ->latest()->first()['created_at'];
+            $farmerCode = $farmer->farmer_code;
+            $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
+
+            $farmer->price = Village::where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
                 ->where('created_at', $yesterday)
                 ->where('sent_to', 2)
@@ -792,14 +794,13 @@ class FarmerController extends Controller
             $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
 
             $farmer = Farmer::find($id);
-
             $farmerCode = $farmer->farmer_code;
+            $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
-            $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
-            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $end])
-                ->first()['created_at'];
-            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $end])
-                ->latest()->first()['created_at'];
+
+            $farmer->price = Village::where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
                 ->whereBetween('created_at', [$start, $end])
                 ->where('sent_to', 2)
@@ -820,13 +821,12 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+            $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
-            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $date])
-                ->first()['created_at'];
-            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $date])
-                ->latest()->first()['created_at'];
+            $farmer->price = Village::where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
                 ->whereBetween('created_at', [$start, $date])
                 ->where('sent_to', 2)
@@ -849,13 +849,12 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+            $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
-            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
-                ->first()['created_at'];
-            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
-                ->latest()->first()['created_at'];
+            $farmer->price = Village::where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
                 ->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
                 ->where('sent_to', 2)
@@ -876,13 +875,12 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+            $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
-            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $date])
-                ->first()['created_at'];
-            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$start, $date])
-                ->latest()->first()['created_at'];
+            $farmer->price = Village::where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
                 ->whereBetween('created_at', [$start, $date])
                 ->where('sent_to', 2)
@@ -903,13 +901,12 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+            $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
-            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereYear('created_at', $year)
-                ->first()['created_at'];
-            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereYear('created_at', $year)
-                ->latest()->first()['created_at'];
+            $farmer->price = Village::where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
                 ->whereYear('created_at', $year)
                 ->where('sent_to', 2)
@@ -931,13 +928,12 @@ class FarmerController extends Controller
             $farmer = Farmer::find($id);
 
             $farmerCode = $farmer->farmer_code;
+            $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
-            $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereYear('created_at', $year)
-                ->first()['created_at'];
-            $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereYear('created_at', $year)
-                ->latest()->first()['created_at'];
+            $farmer->price = Village::where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->first_purchase = $farmer->getfirstTransaction();
+            $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
                 ->whereYear('created_at', $year)
                 ->where('sent_to', 2)

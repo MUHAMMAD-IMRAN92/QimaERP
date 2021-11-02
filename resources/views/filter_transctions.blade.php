@@ -68,7 +68,7 @@
                     <p>Total Coffee </p>
                 </div> --}}
 <div class="col-sm-1 color bg-lightGreen p-2 content-box">
-    <h4>-</h4>
+    <h4>{{ $readyForExport }}</h4>
     <p>KG SPECIALTY
         COFFEE EXPORT
         READY IN YEMEN</p>
