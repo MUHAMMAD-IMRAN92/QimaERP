@@ -38,14 +38,22 @@
 
     #farmerTable {
         border-collapse: separate;
-        border-spacing: 3px;
+        border-spacing: 0px;
     }
 
     #farmerTable tr td {
         padding: unset !important;
-        padding-right: 40px !important;
+        padding: 0 20px !important;
     }
-
+    #farmerTable tr td:first-child{
+    border-right: 1px solid rgba(0,0,0,.1);
+    }
+    #farmerTable tr:first-child td{
+    padding-top: 1rem !important;
+    }
+    #farmerTable tr:last-child td{
+    padding-bottom: 1rem !important;
+    }
     .txt-size {
         font-size: 12px;
     }
@@ -71,12 +79,7 @@
         margin-left: 5px;
     }
 
-    .village_profile_table td {
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 18px;
 
-    }
 </style>
 <script>
     $(document).ready(function() {
@@ -313,73 +316,63 @@
             <span class="ml-2"> <a href="">OVERRIDE REWARD</a></span>
 
         </div>
-        <hr>
+        <hr class="ml-2 mb-0">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 my-3">
                 @if ($village->picture_id == null)
-                <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}" style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;" alt=""></td>
+                <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}" style="width: 300px ; height:300px; border-radius:50%; " alt=""></td>
                 @else
-                <td> <img class="famerimg" style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;" src="{{ asset('public/storage/images/' . $village->image) }}" alt=""></td>
+                <td> <img class="famerimg" style="width: 300px ; height:300px; border-radius:50%; " src="{{ asset('public/storage/images/' . $village->image) }}" alt=""></td>
                 @endif
 
             </div>
             <div class="col-md-8">
-                <table class="table table-borderless w-auto village_profile_table" id="farmerTable">
+                <table class="table table-borderless w-auto village_profile_table mb-0" id="farmerTable">
 
                     <tbody>
                         <tr>
                             <td colspan=""> <strong>Village</strong> </td>
                             <td colspan="4">{{ $village->village_title }}</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
                         <tr>
                             <td colspan=""><strong>Region</strong></td>
                             <td colspan="4">{{ $village->region }}</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
 
                         <tr>
                             <td colspan=""><strong>GOVERNORATE</strong></td>
                             <td colspan="4">{{ $village->governrate }}</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
                         <tr>
                             <td colspan=""><strong>ALTITUDE</strong></td>
                             <td colspan="4">pending</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
                         <tr>
                             <td colspan=""><strong>VILLAGE INFORMATION</strong></td>
                             <td colspan="4">pending</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
                         <tr>
                             <td colspan=""><strong>REGIONS INFORMATION</strong></td>
                             <td colspan="4">pending</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
                         <tr>
                             <td colspan=""><strong>GOVERNORATE INFORMATION
                                 </strong></td>
                             <td colspan="4">pending</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
                         <tr>
                             <td colspan=""><strong>NUMBER OF FARMERS
                                 </strong></td>
                             <td colspan="4">{{ count($village->farmers) }}</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
                         <tr>
                             <td colspan=""><strong>PRICE PER KG</strong></td>
                             <td colspan="4">{{ $village->price_per_kg }}</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
                         <tr>
                             <td colspan=""><strong>REWARD PER KG</strong></td>
                             <td colspan="4">pending</td>
-                            <td colspan="4"></td>
-                        </tr>
+                         </tr>
 
 
 
@@ -388,7 +381,7 @@
             </div>
         </div>
 
-        <hr class="ml-md-2">
+        <hr class="ml-md-2 mt-0">
         <div class="row ml-2 text-uppercase mb-2">
             <strong>
                 <b>Photo Attached</b>
@@ -454,32 +447,32 @@
             <span class="ml-2 hover" style="font-weight: bold; text-decoration: underline;"> <a href="{{ route('village.profile', $village) }}">ALL
                     TIME</a></span>
         </div>
-        <hr>
+        <hr class="ml-2">
 
         <div class="ml-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transaction">
-            <div class="col-sm-1 color bg-darkPurple">
+            <div class="col-sm-1 color bg-darkPurple mr-1">
                 <h4>{{ $village->first_purchase }}</h4>
                 <p>First Purchade</p>
             </div>
-            <div class="col-sm-1 color bg-Green">
+            <div class="col-sm-1 color bg-Green mr-1">
                 <h4>{{ $village->last_purchase }} </h4>
 
                 <p>Last Purchase</p>
             </div>
-            <div class="col-sm-1 color bg-darkPurple">
+            <div class="col-sm-1 color bg-darkPurple mr-1">
                 <h4>{{ $village->price }}</h4>
 
                 <p>yer total coffee purchased </p>
             </div>
-            <div class="col-sm-1 color bg-mildGreen">
+            <div class="col-sm-1 color bg-mildGreen mr-1">
                 <h4>{{ $village->quantity }}</h4>
 
                 <p>Quantity</p>
             </div>
-            <div class="col-sm-1 color bg-darkRed"></div>
-            <div class="col-sm-1 color bg-Green"></div>
-            <div class="col-sm-1 color bg-lightBrown"></div>
-            <div class="col-sm-1 color bg-lightGreen"></div>
+            <div class="col-sm-1 color bg-darkRed mr-1"></div>
+            <div class="col-sm-1 color bg-Green mr-1"></div>
+            <div class="col-sm-1 color bg-lightBrown mr-1"></div>
+            <div class="col-sm-1 color bg-lightGreen mr-1"></div>
 
 
         </div>
