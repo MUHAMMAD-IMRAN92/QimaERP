@@ -61,8 +61,7 @@
                                         @php
                                             $gov = $governore->governerate_code;
                                             $totalweight = App\TransactionDetail::whereHas('transaction', function ($q) use ($gov) {
-                                                $q->where('is_parent', 0)
-                                                    ->where('sent_to', 2)
+                                                $q->where('sent_to', 2)
                                                     ->where('batch_number', 'NOT LIKE', '%000%')
                                                     ->Where('batch_number', 'LIKE', "$gov%");
                                             })->sum('container_weight');
@@ -111,8 +110,7 @@
                                             @php
                                                 $region = $row->region_code;
                                                 $totalweight = App\TransactionDetail::whereHas('transaction', function ($q) use ($region) {
-                                                    $q->where('is_parent', 0)
-                                                        ->Where('batch_number', 'LIKE', "$region%")
+                                                    $q->Where('batch_number', 'LIKE', "$region%")
                                                         ->where('sent_to', 2)
                                                         ->where('batch_number', 'NOT LIKE', '%000%');
                                                 })->sum('container_weight');

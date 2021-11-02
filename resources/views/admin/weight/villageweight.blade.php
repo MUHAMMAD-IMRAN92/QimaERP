@@ -48,8 +48,7 @@
                                         @php
                                             $row = $region->region_code;
                                             $totalweight = App\TransactionDetail::whereHas('transaction', function ($q) use ($row) {
-                                                $q->where('is_parent', 0)
-                                                    ->where('sent_to', 2)
+                                                $q->where('sent_to', 2)
                                                     ->where('batch_number', 'NOT LIKE', '%000%')
                                                     ->Where('batch_number', 'LIKE', "$row%");
                                             })->sum('container_weight');
@@ -108,8 +107,7 @@
                                             @php
                                                 $village = $row->village_code;
                                                 $totalweight = App\TransactionDetail::whereHas('transaction', function ($q) use ($village) {
-                                                    $q->where('is_parent', 0)
-                                                        ->where('sent_to', 2)
+                                                    $q->where('sent_to', 2)
                                                         ->where('batch_number', 'NOT LIKE', '%000%')
                                                         ->Where('batch_number', 'LIKE', "$village%");
                                                 })->sum('container_weight');

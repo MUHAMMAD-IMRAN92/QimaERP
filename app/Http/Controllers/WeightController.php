@@ -29,7 +29,7 @@ class WeightController extends Controller
 		// 	})->sum('container_weight');
 		//       dd($totalweight);
 
-		$data['transaction'] = Transaction::where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('transactionDetail')->get();
+		$data['transaction'] = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
 
 		// $data['transaction']=Transaction::where('is_parent', '0')->get();
 		return view('admin.weight.governorweight', $data);
