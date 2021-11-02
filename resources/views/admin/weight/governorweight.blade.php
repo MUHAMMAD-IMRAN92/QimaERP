@@ -58,8 +58,7 @@
                                             @php
                                                 $gov = $row->governerate_code;
                                                 $totalweight = App\TransactionDetail::whereHas('transaction', function ($q) use ($gov) {
-                                                    $q->where('is_parent', 0)
-                                                        ->where('sent_to', 2)
+                                                    $q->where('sent_to', 2)
                                                         ->where('batch_number', 'NOT LIKE', '%000%')
                                                         ->Where('batch_number', 'LIKE', "$gov%");
                                                 })->sum('container_weight');
