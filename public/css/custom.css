@@ -100,6 +100,7 @@
     .data-tabs div{
         padding: 0.5rem !important;
         color: #fff;
+        margin: 1px;
     }
     .data-tabs div p, .card-custom-description{
         font-size: 14px;
@@ -220,7 +221,7 @@
     margin-bottom: -10px;
     margin-top: 10px;
 }
-.btn-color-darkRed, .add-button{
+.btn-color-darkRed, .add-button, .btn-color-darkRed a{
     color: #B23552 !important;
 }
 
