@@ -12,7 +12,7 @@
     <p>Villages </p>
 </div>
 <div class="col-sm-1 color bg-Green p-2 content-box">
-    <h3>{{ count($farmers) }}</h3>
+    <h4>{{ count($farmers) }}</h4>
     <p>Farmers </p>
 </div>
 <div class="col-sm-1 color bg-darkRed p-2 content-box">

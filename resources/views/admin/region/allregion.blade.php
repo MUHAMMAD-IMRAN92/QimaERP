@@ -369,35 +369,34 @@
                 </form>
             </div>
 
-            <div class="row ml-2 blacklink letter-spacing-1">
-                <span class="hover" id="today"> TODAY</span> &nbsp |
-                <span class="ml-md-2 hover" id="yesterday"> YESTERDAY</span>
-                &nbsp |
-                <span class="ml-md-2 hover" id="weekToDate"> WEEK TO DATE
-                    </a></span>
-                &nbsp |
-                <span class="ml-md-2 hover" id="monthToDate"> MONTH
-                    TO
-                    DATE</a></span>
-                &nbsp |
-                <span class="ml-md-2 hover" id="lastmonth"> LAST
-                    MONTH</a></span>
-                &nbsp |
-                <span class="ml-2 hover" id="yearToDate"> YEAR TO
-                    DATE</a></span>
-                &nbsp |
-                <span class="ml-md-2 hover" id="currentyear"> 2021
-                    SEASON</a></span>
-                &nbsp |
-                <span class="ml-md-2 hover" id="lastyear"> 2020
-                    SEASON</a></span>
-                &nbsp |
-                <span class="ml-md-2" style="font-weight: bold; text-decoration: underline;"> <a
-                        href="{{ url('/admin/allregion') }}">ALL
-                        TIME</a></span>
-            </div>
-            <hr class="ml-md-2">
-            <div class="row ml-2 text-uppercase mb-2">
+        <div class="row ml-2 blacklink letter-spacing-1">
+            <span class="hover" id="today"> TODAY</span> &nbsp |
+            <span class="ml-md-2 hover" id="yesterday"> YESTERDAY</span>
+            &nbsp |
+            <span class="ml-md-2 hover" id="weekToDate"> WEEK TO DATE
+                </a></span>
+            &nbsp |
+            <span class="ml-md-2 hover" id="monthToDate"> MONTH
+                TO
+                DATE</a></span>
+            &nbsp |
+            <span class="ml-md-2 hover" id="lastmonth"> LAST
+                MONTH</a></span>
+            &nbsp |
+            <span class="ml-2 hover" id="yearToDate"> YEAR TO
+                DATE</a></span>
+            &nbsp |
+            <span class="ml-md-2 hover" id="currentyear"> 2021
+                SEASON</a></span>
+            &nbsp |
+            <span class="ml-md-2 hover" id="lastyear"> 2020
+                SEASON</a></span>
+            &nbsp |
+            <span class="ml-md-2 hover" style="font-weight: bold; text-decoration: underline;"> <a href="{{ url('/admin/allregion') }}">ALL
+                    TIME</a></span>
+        </div>
+        <hr class="ml-md-2">
+        <div class="row ml-2 text-uppercase mb-2">
                 <strong>
                     <b>Region Filter</b>
                 </strong>
@@ -454,10 +453,10 @@
                 <div class="col-sm-1 color bg-darkGreen p-2 content-box">
                     <h4>{{ count($villages) }}</h4>
 
-                    <p>Villages </p>
-                </div>
-                <div class="col-sm-1 color bg-Green p-2 content-box">
-                    <h3>{{ App\Farmer::count() }}</h3>
+                <p>Villages </p>
+            </div>
+            <div class="col-sm-1 color bg-Green p-2 content-box">
+                <h4>{{ App\Farmer::count() }}</h4>
 
                     <p>Farmers </p>
                 </div>
