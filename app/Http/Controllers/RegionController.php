@@ -140,6 +140,10 @@ class RegionController extends Controller
             array_push($regionName, $region->region_title);
             array_push($regionQuantity, $weight);
         }
+        $yemenExport = TransactionDetail::whereHas('transaction', function ($q) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39);
+        })->sum('container_weight');
         return view('admin.region.allregion', [
             'governorates' =>   $governorates,
             'regions' => $regions,
@@ -149,6 +153,7 @@ class RegionController extends Controller
             'totalPrice' => $totalPrice,
             'regionName' => $regionName,
             'regionQuantity' => $regionQuantity,
+            'readyForExport' => $yemenExport,
             // 'chartTransactions' =>  $chartTransactions
 
         ]);
@@ -277,14 +282,18 @@ class RegionController extends Controller
             $totalPrice += $weight * $price;
             $totalWeight += $weight;
         }
-
+        $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($request) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39)->whereBetween('created_at', [$request->from, $request->to]);
+        })->sum('container_weight');
         return view('admin.region.views.filter_transctions', [
             'governorates' =>   $governorates,
             'regions' => $regions,
             'villages' => $villages,
             'farmers' => $farmers,
             'total_coffee' => $totalWeight,
-            'totalPrice' => $totalPrice
+            'totalPrice' => $totalPrice,
+            'readyForExport' => $yemenExport,
 
         ]);
     }
@@ -332,7 +341,10 @@ class RegionController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereDate('created_at',  $date);
+            })->sum('container_weight');
 
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
@@ -340,7 +352,8 @@ class RegionController extends Controller
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ]);
         } elseif ($date == 'yesterday') {
@@ -383,14 +396,18 @@ class RegionController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($yesterday) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereDate('created_at',  $yesterday);
+            })->sum('container_weight');
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ]);
         } elseif ($date == 'lastmonth') {
@@ -438,14 +455,18 @@ class RegionController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($lastMonth,  $year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year);
+            })->sum('container_weight');
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ]);
         } elseif ($date == 'currentyear') {
@@ -493,14 +514,18 @@ class RegionController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereYear('created_at', $year);
+            })->sum('container_weight');
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ]);
         } elseif ($date == 'lastyear') {
@@ -548,14 +573,18 @@ class RegionController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereYear('created_at', $year);
+            })->sum('container_weight');
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ]);
         } elseif ($date == 'weekToDate') {
@@ -606,14 +635,18 @@ class RegionController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $end) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $end]);
+            })->sum('container_weight');
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ]);
         } elseif ($date == 'monthToDate') {
@@ -660,14 +693,18 @@ class RegionController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
+            })->sum('container_weight');
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ]);
         } elseif ($date == 'yearToDate') {
@@ -715,14 +752,18 @@ class RegionController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
+            })->sum('container_weight');
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ]);
         }
