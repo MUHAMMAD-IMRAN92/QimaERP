@@ -1,27 +1,30 @@
-<div class="col-sm-1 color bg-danger">
-    <h3 style="font-size: 16px !important">{{ $farmer->first_purchase }}</h3>
+<div class="col-sm-1 color bg-darkPurple mr-1">
+    <h4>{{ $farmer->first_purchase }}</h4>
     <p>First Purchade</p>
 </div>
-<div class="col-sm-1 color bg-primary">
-    <h3 style="font-size: 16px !important">{{ $farmer->last_purchase }}</h3>
+<div class="col-sm-1 color bg-darkPurple mr-1">
+
+    <h4>{{ $farmer->last_purchase }}</h4>
 
     <p>Last Purchase</p>
 </div>
-<div class="col-sm-1 color bg-warning">
+<div class="col-sm-1 color bg-Green mr-1">
     @if (!$farmer->price_per_kg)
-        <h3 style="font-size: 16px !important">{{ number_format($farmer->price * $farmer->quantity) }}
-        </h3>
+    <h4>{{ number_format($farmer->price * $farmer->quantity) }}
+    </h4>
     @else
-        <h3 style="font-size: 16px !important">
-            {{ number_format($farmer->price_per_kg * $farmer->quantity) }}
-        </h3>
+    <h4>
+        {{ number_format($farmer->price_per_kg * $farmer->quantity) }}
+    </h4>
     @endif
 
     <p>yer total coffee purchased </p>
 </div>
-<div class="col-sm-1 color bg-info">
-    <h3 style="font-size: 16px !important">{{ $farmer->quantity }}</h3>
+<div class="col-sm-1 color bg-Green mr-1">
+    <h4>{{ $farmer->quantity }}</h4>
 
     <p>Quantity</p>
 </div>
-
+<div class="col-sm-1 color bg-Green mr-1"></div>
+<div class="col-sm-1 color bg-Green mr-1"></div>
+<div class="col-sm-1 color bg-darkRed mr-1"></div>
