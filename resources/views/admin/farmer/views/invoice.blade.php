@@ -1,7 +1,5 @@
 <style>
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-    }
+
 
     #myImg {
         border-radius: 5px;
@@ -124,14 +122,17 @@
         @php
             $i++;
         @endphp
+<div class="col-sm-1 color p-0 ml-0">
+
         @if ($inv == null)
-            <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
-                    style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;" alt=""></td>
+             <img style="max-width: 100%; height: 100%;" class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                     alt="">
         @else
-            <td><img onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>" class="famerimg"
-                    style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
-                    src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img"></td>
+            <img style="max-width: 100%; height: 100%;" onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>" class="famerimg"
+                    src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img">
         @endif
+</div>
+
     @endforeach
     <!-- The Modal -->
     <div id="myModal" class="modal">
