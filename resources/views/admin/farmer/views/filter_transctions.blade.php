@@ -36,7 +36,7 @@
 </div>
 <div class="col-sm-1 color bg-darkRed mr-1">
     <h4>-</h4>
-    <p>YYER
+    <p>YER
         ACCOUNT
         PAYABLE</p>
 </div>
