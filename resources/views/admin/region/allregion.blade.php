@@ -369,34 +369,35 @@
                 </form>
             </div>
 
-        <div class="row ml-2 blacklink letter-spacing-1">
-            <span class="hover" id="today"> TODAY</span> &nbsp |
-            <span class="ml-md-2 hover" id="yesterday"> YESTERDAY</span>
-            &nbsp |
-            <span class="ml-md-2 hover" id="weekToDate"> WEEK TO DATE
-                </a></span>
-            &nbsp |
-            <span class="ml-md-2 hover" id="monthToDate"> MONTH
-                TO
-                DATE</a></span>
-            &nbsp |
-            <span class="ml-md-2 hover" id="lastmonth"> LAST
-                MONTH</a></span>
-            &nbsp |
-            <span class="ml-2 hover" id="yearToDate"> YEAR TO
-                DATE</a></span>
-            &nbsp |
-            <span class="ml-md-2 hover" id="currentyear"> 2021
-                SEASON</a></span>
-            &nbsp |
-            <span class="ml-md-2 hover" id="lastyear"> 2020
-                SEASON</a></span>
-            &nbsp |
-            <span class="ml-md-2 hover" style="font-weight: bold; text-decoration: underline;"> <a href="{{ url('/admin/allregion') }}">ALL
-                    TIME</a></span>
-        </div>
-        <hr class="ml-md-2">
-        <div class="row ml-2 text-uppercase mb-2">
+            <div class="row ml-2 blacklink letter-spacing-1">
+                <span class="hover" id="today"> TODAY</span> &nbsp |
+                <span class="ml-md-2 hover" id="yesterday"> YESTERDAY</span>
+                &nbsp |
+                <span class="ml-md-2 hover" id="weekToDate"> WEEK TO DATE
+                    </a></span>
+                &nbsp |
+                <span class="ml-md-2 hover" id="monthToDate"> MONTH
+                    TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-md-2 hover" id="lastmonth"> LAST
+                    MONTH</a></span>
+                &nbsp |
+                <span class="ml-2 hover" id="yearToDate"> YEAR TO
+                    DATE</a></span>
+                &nbsp |
+                <span class="ml-md-2 hover" id="currentyear"> 2021
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-md-2 hover" id="lastyear"> 2020
+                    SEASON</a></span>
+                &nbsp |
+                <span class="ml-md-2 hover" style="font-weight: bold; text-decoration: underline;"> <a
+                        href="{{ url('/admin/allregion') }}">ALL
+                        TIME</a></span>
+            </div>
+            <hr class="ml-md-2">
+            <div class="row ml-2 text-uppercase mb-2">
                 <strong>
                     <b>Region Filter</b>
                 </strong>
@@ -440,41 +441,67 @@
 
             </div>
             <hr>
-            <div class="col-lg-12 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
+
+            <div class="col-lg-11 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
                 <div class="col-sm-1 color bg-darkPurple p-2 content-box">
-                    <h4>{{ count($governorates) }}</h4>
-                    <p>Governorate</p>
-                </div>
-                <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                    <h4>{{ count($regions) }}</h4>
-
-                    <p>Regions</p>
-                </div>
-                <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                    <h4>{{ count($villages) }}</h4>
-
-                <p>Villages </p>
-            </div>
-            <div class="col-sm-1 color bg-Green p-2 content-box">
-                <h4>{{ App\Farmer::count() }}</h4>
-
-                    <p>Farmers </p>
-                </div>
-                <div class="col-sm-1 color bg-darkRed p-2 content-box">
                     <h4>{{ $total_coffee }}</h4>
-                    <p>Quantity </p>
+                    <p>KG CHERRY BOUGHT </p>
                 </div>
                 <div class="col-sm-1 color bg-darkGreen p-2 content-box">
                     <h4>{{ $totalPrice }}</h4>
-                    <p>yer coffee bought </p>
+                    <p>YER COFFEE Purchased</p>
                 </div>
-                <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                <div class="col-sm-1 color bg-darkRed p-2 content-box">
+                    <h4>-</h4>
 
+                    <p>YER
+                        ACCOUNT
+                        PAYABLE </p>
                 </div>
-                <div class="col-sm-1 color bg-darkPurple p-2 content-box"></div>
-                <div class="col-sm-1 color bg-darkPurple p-2 content-box"></div>
-                <div class="col-sm-1 color bg-darkPurple p-2 content-box"></div>
-                <div class="col-sm-1 color bg-lightGreen p-2 content-box"></div>
+                <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                    <h4>-</h4>
+                    <p>YER SETTELED</p>
+                </div>
+                {{-- <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                    <h4>{{ App\Region::count() }}</h4>
+
+                    <p>Regions</p>
+                </div> --}}
+                <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                    <h4>{{ App\Farmer::count() }}</h4>
+
+                    <p>Farmers </p>
+                </div>
+                {{-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                    <h4>{{ $governorate->count() }}</h4>
+                    <p>Governorate</p>
+                </div> --}}
+                {{-- <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                    <h4>{{ $totalWeight }}</h4>
+                    <p>Total Coffee </p>
+                </div> --}}
+                <div class="col-sm-1 color bg-lightGreen p-2 content-box">
+                    <h4>{{ $readyForExport }}</h4>
+                    <p>KG SPECIALTY
+                        COFFEE EXPORT
+                        READY IN YEMEN</p>
+                </div>
+                <div class="col-sm-1 color bg-lightGreen p-2 content-box">
+                    <h4>-</h4>
+                    <p>KG COMMERCIAL
+                        GREEN COFFEE
+                        EXPORT READY</p>
+                </div>
+                <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                    <h4>-</h4>
+                    <p>YER YEMEN
+                        SALES</p>
+                </div>
+                <div class="col-sm-1 color bg-lightGreen p-2 content-box">
+                    <h4>-</h4>
+                    <p>USD SALES</p>
+                </div>
+
             </div>
             <hr>
             <div class="row ml-2 text-uppercase mb-2">
