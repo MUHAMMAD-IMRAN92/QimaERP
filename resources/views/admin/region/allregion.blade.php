@@ -347,7 +347,7 @@
                             <ol class="breadcrumb float-sm-right">
                                 <a href="{{ url('admin/addnewregion') }}" class="btn btn-add rounded-circle">
                                     <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase">Add
-                                        Region</button>
+                                        Regions</button>
                                 </a>
                             </ol>
                         </div>
