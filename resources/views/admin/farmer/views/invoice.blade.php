@@ -1,6 +1,4 @@
 <style>
-
-
     #myImg {
         border-radius: 5px;
         cursor: pointer;
@@ -122,16 +120,16 @@
         @php
             $i++;
         @endphp
-<div class="col-sm-1 color p-0 ml-0">
+        <div class="col-sm-1 color p-0 ml-0">
 
-        @if ($inv == null)
-             <img style="max-width: 100%; height: 100%;" class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
-                     alt="">
-        @else
-            <img style="max-width: 100%; height: 100%;" onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>" class="famerimg"
-                    src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img">
-        @endif
-</div>
+            @if ($inv == null)
+                <img style="max-width: 100%; height: 100%;" class="famerimg"
+                    src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" alt="">
+            @else
+                <img style="max-width: 100%; height: 100%;" onclick="showModal('image_<?= $i ?>')" id="image_<?= $i ?>"
+                    class="famerimg" src="{{ Storage::disk('s3')->url('images/' . $inv) }}" alt="no img">
+            @endif
+        </div>
 
     @endforeach
     <!-- The Modal -->
