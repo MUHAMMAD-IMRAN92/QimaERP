@@ -464,7 +464,7 @@
             </div>
             <hr class="ml-md-2">
             <div class="row">
-                <div class="col-md-3 vl">
+                {{-- <div class="col-md-3 vl">
                     <div class="card shadow-none">
                         <div class="text-uppercase px-3 h5">
                             <strong>
@@ -522,6 +522,65 @@
                         <!-- /.card-body -->
 
                     </div>
+                </div> --}}
+                <div class="col-md-3 vl">
+                    <div class="card shadow-none">
+                        <div class="text-uppercase px-3 h5">
+                            <strong>
+                                <b>Buyers</b>
+                            </strong>
+                            <p class="mb-0 card-custom-description">KG CHERRY<br>BOUGHT</p>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body pt-0">
+                            <table class="table table-borderless">
+                                <!-- <thead>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th style="width: 10px">Sr#</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th>Farmer Name</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </thead> -->
+                                <tbody>
+                                    {{-- @if (count($topBuyer) == 0)
+                                        @php
+                                        $loop = 5 - count($farmers); @endphp
+                                        @foreach (App\User::all()->take(5) as $farmer)
+                                            <tr style="white-space:nowrap">
+                                                <!-- <td>{{ $loop->iteration }}</td> -->
+
+                                                <td class="d-flex align-items-center px-0">
+                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
+                                                        width="50">
+                                                    <span class="ml-3">
+                                                        {{ $farmer['farmer_name'] }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif --}}
+                                    @foreach ($topBuyer as $buyer)
+
+                                        <tr>
+
+                                            <!-- <td>{{ $loop->iteration }}</td> -->
+
+                                            <td class="d-flex align-items-center px-0">
+                                                <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
+                                                    width="50">
+                                                <span class="ml-3">
+                                                    <b>{{ $buyer['name'] . '-' . $buyer['weight'] }}</b>
+                                                </span>
+                                            </td>
+
+                                        </tr>
+
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+
+                    </div>
                 </div>
                 <div class="col-md-3 vl">
                     <div class="card shadow-none">
@@ -535,12 +594,12 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <tr style="white-space:nowrap">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th style="width: 10px">Sr#</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <tr style="white-space:nowrap">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th style="width: 10px">Sr#</th>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th>Region Name</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </thead> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th>Region Name</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </thead> -->
                                 <tbody>
                                     {{-- @if (count($regions) == 0)
                                     @php

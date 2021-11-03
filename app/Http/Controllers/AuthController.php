@@ -321,6 +321,22 @@ class AuthController extends Controller
             array_push($yemenExportGraphDay, $x);
             array_push($yemenExportGraphWeight,  $weight);
         }
+        $buyerArray = collect();
+        $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get()->groupBy('created_by');
+
+        foreach ($buyerTransactions  as $key => $transactions) {
+            $weight = 0;
+            foreach ($transactions  as  $transaction) {
+                $weight +=   $transaction->details->sum('container_weight');
+            }
+            $buyer = User::find($key);
+            if ($buyer) {
+                $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+            }
+            $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+        }
+        $sorted =   $buyerArray->sortBy('weight');
+        $topBuyer = $sorted->reverse()->values()->take(5);
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),
@@ -339,7 +355,8 @@ class AuthController extends Controller
             'govQuantityRegion' => $govQuantityRegion,
             'readyForExport' => $yemenExport,
             'yemenSalesDay' => $yemenExportGraphDay,
-            'yemenSalesCoffee' => $yemenExportGraphWeight
+            'yemenSalesCoffee' => $yemenExportGraphWeight,
+            'topBuyer' => $topBuyer
         ]);
     }
     public function dashboardByDate(Request $request)
