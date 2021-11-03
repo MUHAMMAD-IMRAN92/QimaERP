@@ -476,11 +476,11 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th style="width: 10px">Sr#</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th>Farmer Name</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </thead> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th style="width: 10px">Sr#</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th>Farmer Name</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </thead> -->
                                 <tbody>
                                     @if (count($farmers) == 0)
                                         @php
@@ -509,7 +509,7 @@
                                                 <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
                                                     width="50">
                                                 <span class="ml-3">
-                                                    {{ $farmer['farmer_name'] . '-' . $farmer['weight'] }}
+                                                  <b>{{ $farmer['farmer_name'] . '-' . $farmer['weight'] }}</b>  
                                                 </span>
                                             </td>
 
@@ -535,12 +535,12 @@
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
                                 <!-- <thead>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <tr style="white-space:nowrap">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th style="width: 10px">Sr#</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <tr style="white-space:nowrap">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th style="width: 10px">Sr#</th>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th>Region Name</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </thead> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <th>Region Name</th>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </thead> -->
                                 <tbody>
                                     {{-- @if (count($regions) == 0)
                                     @php
@@ -565,7 +565,7 @@
                                                 <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
                                                     width="50">
                                                 <span class="ml-3">
-                                                    {{ $region['region_title'] . '-' . $region['weight'] }}
+                                                    <b> {{ $region['region_title'] . '-' . $region['weight'] }}</b>
                                                 </span>
                                             </td>
                                         </tr>
@@ -707,7 +707,7 @@
                     </script>
                 </div>
                 <div class="col-md-7">
-                    <h3 class='ml-2' style="font-size: 10px">OVERVIEW OF COFFEE BOUGHT BY GOVERNORATE</h3>
+                    <h6 class='ml-2 mt-2'>OVERVIEW OF COFFEE BOUGHT BY GOVERNORATE</h6>
                     <div class="row">
 
                         <div class="col-sm-12">
@@ -788,6 +788,49 @@
                                 scales: {
                                     yAxes: [{
 
+                                    }],
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+                <div class="col-md-7">
+                    <center>Yemen Sales</center>
+                    <canvas id="6rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
+
+                    <script>
+                        var xValues = @json($yemenSalesDay);
+                        var yValues = @json($yemenSalesCoffee);
+
+                        new Chart("6rd", {
+                            type: "line",
+                            data: {
+                                labels: xValues,
+                                datasets: [{
+                                    pointRadius: 3,
+                                    // backgroundColor: "#e755ba",
+                                    pointBackgroundColor: "white",
+                                    pointBorderColor: "black",
+                                    fill: false,
+                                    lineTension: 0.3,
+                                    borderWidth: 1,
+                                    // lineColor: "black",
+                                    borderColor: "black",
+                                    //  backgroundColor: 'black',
+                                    data: yValues
+                                }]
+                            },
+                            options: {
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+
+                                        ticks: {
+                                            min: 0,
+                                            max: 10000
+                                        }
                                     }],
                                 }
                             }

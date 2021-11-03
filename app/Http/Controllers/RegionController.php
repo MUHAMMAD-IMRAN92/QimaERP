@@ -94,48 +94,39 @@ class RegionController extends Controller
         $governorates = $governorates->map(function ($governorate) {
             $governorateCode = $governorate->governerate_code;
             $governorate->regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
-            if ($governorate->regions) {
-                foreach ($governorate->regions as $region) {
-                    $regionCode = $region->region_code;
-                    $governorate->villages = Village::where('village_code', 'LIKE', $regionCode . '%')->get();
-                    foreach ($governorate->villages as $village) {
-                        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $village->village_code . '%')->where('sent_to', 2)->get();
-                        $weight = 0;
-                        foreach ($transactions as $transaction) {
-                            $weight += $transaction->details->sum('container_weight');
-                            $village->weight =   $weight;
+            $governorate->villages = Village::where('village_code', 'LIKE', $governorateCode . '%')->get();
+            foreach ($governorate->villages as $village) {
+                $villageCode = $village->village_code;
+                $village->farmers = Farmer::where('farmer_code', 'LIKE', $villageCode . '%')->count();
+                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->get();
 
-                            $farmer_code = Str::beforeLast($transaction->batch_number, '-');
-
-                            $farmerPrice = Farmer::where('farmer_code', $farmer_code)->first();
-                            if ($farmerPrice) {
-                                $farmerPrice = $farmerPrice->price_per_kg;
-                            }
-                            if (!$farmerPrice) {
-                                $village_code = Str::beforeLast($farmer_code, '-');
-                                $village->price  = Village::where('village_code',  $village_code)->first();
-                                if ($village->price) {
-                                    $village->price =  $village->price->price_per_kg;
-                                }
-                            } else {
-                                $village->price = Farmer::where('farmer_code', $farmer_code)->first();
-                                if ($village->price) {
-                                    $village->price =  $village->price->price_per_kg;
-                                }
-                            }
-                            $farmers = Farmer::where('farmer_code', 'LIKE',  $village->village_code . '%')->get();
-                            $village->farmers = count($farmers);
-                            return $governorate;
-                        }
-                        return  $governorate;
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                    $farmer_code = Str::beforeLast($transaction->batch_number, '-');
+                    $farmerPrice = Farmer::where('farmer_code', $farmer_code)->first();
+                    if ($farmerPrice) {
+                        $farmerPrice = $farmerPrice->price_per_kg;
                     }
-                    return $governorate;
+                    if (!$farmerPrice) {
+                        $village_code = Str::beforeLast($farmer_code, '-');
+                        $village->price  = Village::where('village_code',  $village_code)->first();
+                        if ($village->price) {
+                            $village->price =  $village->price->price_per_kg;
+                        }
+                    } else {
+                        $village->price = Farmer::where('farmer_code', $farmer_code)->first();
+                        if ($village->price) {
+                            $village->price =  $village->price->price_per_kg;
+                        }
+                    }
                 }
+                $village->weight = round($weight, 2);
             }
-
 
             return $governorate;
         });
+
         $regionName = [];
         $regionQuantity = [];
         foreach ($regions as $region) {
