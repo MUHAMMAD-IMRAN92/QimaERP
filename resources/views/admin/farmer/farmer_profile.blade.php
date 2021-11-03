@@ -66,6 +66,11 @@
             cursor: pointer;
         }
 
+        #idimage:hover {
+            width: 700px !important;
+            height: 500px !important;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
@@ -573,11 +578,15 @@
                             style="max-width: 100%; height: 100%;" alt="" id="idimage">
 
                     @else
-                        <img class="famerimg" style="max-width: 100%; height: 100%;"
+                        <img class="famerimg" style="width: 100%; height: 100%;"
                             src="{{ Storage::disk('s3')->url('images/' . $farmer->cnicImage) }}" alt="no img"
                             id="idimage">
                     @endif
-
+                    <div id="myModal" class="modal">
+                        <span class="close">&times;</span>
+                        <img class="modal-content" id="img01">
+                        <div id="caption"></div>
+                    </div>
                 </div>
             </div>
             <hr class="ml-2">
