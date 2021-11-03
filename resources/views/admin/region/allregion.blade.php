@@ -339,7 +339,7 @@
                     <div class="row mb-2">
 
                         <div class="col-sm-6 pl-0">
-                            <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Region
+                            <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Regions
 
                             </h1>
                         </div>
@@ -347,7 +347,7 @@
                             <ol class="breadcrumb float-sm-right">
                                 <a href="{{ url('admin/addnewregion') }}" class="btn btn-add rounded-circle">
                                     <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase">Add
-                                        Regions</button>
+                                        Region</button>
                                 </a>
                             </ol>
                         </div>
