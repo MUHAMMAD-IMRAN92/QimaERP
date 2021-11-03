@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\API\UkWareHouse;
+use App\Order;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\VarDumper\Cloner\Data;
 
@@ -304,7 +305,22 @@ class AuthController extends Controller
                 ->where('sent_to', 39);
         })->sum('container_weight');
 
+        $yemenExportGraphDay = [];
+        $yemenExportGraphWeight = [];
+        $now = Carbon::now();
+        $yearMonth =  $now->year . '-' . $now->month;
 
+
+        for ($x = 01; $x <= 31; $x++) {
+            $order = Order::where('created_at', "$yearMonth-$x")->where('status', 5)->with('details')->get();
+            if ($order->count() > 0) {
+                $weight =  $order->details->sum('weight');
+            } else {
+                $weight = 0;
+            }
+            array_push($yemenExportGraphDay, $x);
+            array_push($yemenExportGraphWeight,  $weight);
+        }
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),
@@ -322,6 +338,8 @@ class AuthController extends Controller
             'nonspecialstock' => $nonspecialstocks,
             'govQuantityRegion' => $govQuantityRegion,
             'readyForExport' => $yemenExport,
+            'yemenSalesDay' => $yemenExportGraphDay,
+            'yemenSalesCoffee' => $yemenExportGraphWeight
         ]);
     }
     public function dashboardByDate(Request $request)
