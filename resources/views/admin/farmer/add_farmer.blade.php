@@ -105,7 +105,7 @@
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary" id="submit-btn-ofform">Submit</button>
+                                    <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1" id="submit-btn-ofform">Submit</button>
                                 </div>
                             </form>
                         </div>

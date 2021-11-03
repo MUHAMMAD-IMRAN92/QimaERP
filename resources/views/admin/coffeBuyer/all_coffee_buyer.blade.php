@@ -220,7 +220,7 @@
 
         <br>
         <div class="row ml-2 blacklink letter-spacing-1">
-            <span class=""> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">TODAY</a></span> &nbsp
+            <span class="hover"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'today')) }}">TODAY</a></span> &nbsp
             |
             <span class="ml-md-2 hover"> <a href="{{ url('admin/coffeeBuyerByDate/' . ($date = 'yesterday')) }}">
                     YESTERDAY</a></span>
