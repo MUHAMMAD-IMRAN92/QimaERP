@@ -37,6 +37,7 @@ class AuthController extends Controller
 
     public function dashboard()
     {
+
         $governorate = Governerate::all();
         $villages = Village::all();
         $regionWeight = collect();
@@ -52,6 +53,7 @@ class AuthController extends Controller
         $regionQuantity = [];
         $govName = [];
         $govQuantity = [];
+        $govQuantityRegion = collect();
         foreach ($governorate as $govern) {
             $govCode = $govern->governerate_code;
             $weight = 0;
@@ -60,8 +62,27 @@ class AuthController extends Controller
                 $weight +=  $transaction->details->sum('container_weight');
             }
             array_push($govName, $govern->governerate_title);
-            array_push($govQuantity, $weight);
+            array_push($govQuantity, round($weight, 2));
+            $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+            $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+            $govRegionQty = collect();
+            foreach ($govRegion as $r) {
+                $regionCode = $r->region_code;
+                $regweight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+                    $regweight +=  $transaction->details->sum('container_weight');
+                }
+                $govRegionQty->push([
+                    'regionTitle' => $r->region_title,
+                    'weight' =>  round($regweight, 2)
+                ]);
+            }
+            $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
         }
+        $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+        $govQuantityRegion = $govQuantityReg->take(5);
+
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
@@ -74,14 +95,13 @@ class AuthController extends Controller
             array_push($regionName, $region->region_title);
             array_push($regionQuantity, $weight);
             $regionWeight->push([
-                'regionId' => $region->region_id,
-                'weight' =>  $weight
+                'region_title' => $region->region_title,
+                'weight' =>  round($weight, 2)
             ]);
         }
-        // return $regionWeight;
         $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
-        $regions = $regionsByWeight->take(5)->pluck('regionId');
-        $regions = Region::whereIn('region_id', $regions)->get();
+        $regions = $regionsByWeight->take(5);
+        // $regions = Region::whereIn('region_id', $regions)->get();
 
 
         $farmers = Farmer::all();
@@ -93,13 +113,21 @@ class AuthController extends Controller
                 $weight +=  $transaction->details->sum('container_weight');
             }
             $farmerWeight->push([
-                'farmerId' => $farmer->farmer_id,
-                'weight' =>  $weight
+                'farmer_name' => $farmer->farmer_name,
+                'weight' => round($weight, 2)
             ]);
         }
         $farmerByWeight = $farmerWeight->sortBy('weight')->reverse()->values();
-        $farmer = $farmerByWeight->take(5)->pluck('farmerId');
-        $farmers = Farmer::whereIn('farmer_id', $farmer)->get();
+        $farmers = $farmerByWeight->take(5);
+        // $farmers = collect();
+        // foreach ($farmer as $f) {
+        //     $farmer = Farmer::find($f);
+        //     if ($farmer) {
+        //         $farmers->push($farmer);
+        //     }
+        // }
+        // return $farmers;
+        // return  $farmers = Farmer::whereIn('farmer_id', $farmer)->get();
 
         // foreach ($transactions as $transaction) {
         //     $ids->push([
@@ -158,29 +186,43 @@ class AuthController extends Controller
         }
         $now = Carbon::now();
         $currentYear = $now->year;
-        $collection = Transaction::all();
-
-        $transaction = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->with('details')->get();
-        // $grouped = $collection->groupBy('for');
-        $grouped = $transaction->groupBy(function ($item) {
-            return $item->created_at->format('m');
-        });
         $createdAt = [];
 
         $quantity = [];
+        $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        foreach ($monthsArr as $month) {
 
+            $monthName = date("F", mktime(0, 0, 0, $month, 10));
+            $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
 
-        foreach ($grouped as $key => $trans) {
             $weight = 0;
-            foreach ($trans as $tran) {
-                $weight += $tran->details->sum('container_weight');
+            foreach ($transactions as $key => $trans) {
+                $weight += $trans->details->sum('container_weight');
             }
-            $monthNum = $key;
-            $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
-
-            array_push($quantity, $weight);
             array_push($createdAt, $monthName);
+            array_push($quantity, $weight);
         }
+        // $grouped = $collection->groupBy('for');
+        // $grouped = $transaction->groupBy(function ($item) {
+        //     return $item->created_at->format('m');
+        // });
+        // $createdAt = [];
+
+        // $quantity = [];
+
+
+        // foreach ($grouped as $key => $trans) {
+        //     $weight = 0;
+        //     foreach ($trans as $tran) {
+        //         $weight += $tran->details->sum('container_weight');
+        //     }
+        //     $monthNum = $key;
+
+        //     $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
+
+        //     array_push($quantity, $weight);
+        //     array_push($createdAt, $monthName);
+        // }
         $today = Carbon::today()->toDateString();
         $stocks = [];
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
@@ -256,6 +298,13 @@ class AuthController extends Controller
             $weight += $transaction->details->sum('container_weight');
         }
         array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+
+        $yemenExport = TransactionDetail::whereHas('transaction', function ($q) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39);
+        })->sum('container_weight');
+
+
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),
@@ -271,6 +320,8 @@ class AuthController extends Controller
             'govQuantity' => $govQuantity,
             'stock' => $stocks,
             'nonspecialstock' => $nonspecialstocks,
+            'govQuantityRegion' => $govQuantityRegion,
+            'readyForExport' => $yemenExport,
         ]);
     }
     public function dashboardByDate(Request $request)
@@ -310,14 +361,18 @@ class AuthController extends Controller
             $totalPrice += $weight * $price;
             $totalWeight += $weight;
         }
-
+        $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($request) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39)->whereBetween('created_at', [$request->from, $request->to]);
+        })->sum('container_weight');
         return view('filter_transctions', [
             'governorates' =>   $governorates,
             'regions' => $regions,
             'villages' => $villages,
             'farmers' => $farmers,
             'total_coffee' => $totalWeight,
-            'totalPrice' => $totalPrice
+            'totalPrice' => $totalPrice,
+            'readyForExport' => $yemenExport,
 
         ]);
     }
@@ -365,7 +420,10 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereDate('created_at',  $date);
+            })->sum('container_weight');
 
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
@@ -373,8 +431,8 @@ class AuthController extends Controller
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
-
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
             ])->render();
         } elseif ($date == 'yesterday') {
             $now = Carbon::now();
@@ -417,14 +475,18 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($yesterday) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereDate('created_at',  $yesterday);
+            })->sum('container_weight');
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ])->render();
         } elseif ($date == 'lastmonth') {
@@ -472,6 +534,10 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($lastMonth,  $year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year);
+            })->sum('container_weight');
 
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
@@ -479,7 +545,8 @@ class AuthController extends Controller
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ])->render();
         } elseif ($date == 'currentyear') {
@@ -528,14 +595,18 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereYear('created_at', $year);
+            })->sum('container_weight');
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ])->render();
         } elseif ($date == 'lastyear') {
@@ -584,14 +655,18 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereYear('created_at', $year);
+            })->sum('container_weight');
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ])->render();
         } elseif ($date == 'weekToDate') {
@@ -642,14 +717,18 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $end) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $end]);
+            })->sum('container_weight');
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ])->render();
         } elseif ($date == 'monthToDate') {
@@ -697,14 +776,18 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
+            })->sum('container_weight');
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ])->render();
         } elseif ($date == 'yearToDate') {
@@ -751,14 +834,18 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
-
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
+            })->sum('container_weight');
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
 
             ])->render();
         }

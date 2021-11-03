@@ -99,7 +99,6 @@ class CoffeeDryingController extends Controller
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
 
-        DB::beginTransaction();
 
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
@@ -567,9 +566,7 @@ class CoffeeDryingController extends Controller
                     }
                 }
             }
-            DB::commit();
         } catch (Exception $e) {
-            DB::rollback();
 
             Log::channel('error')->error('Coffee Drying Exception', [
                 'message' => $e->getMessage(),
