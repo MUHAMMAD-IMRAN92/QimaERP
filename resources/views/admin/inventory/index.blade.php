@@ -66,6 +66,41 @@
     .top-margin-set {
         margin-top: 10px;
     }
+    .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0.5em;
+            width: 240px;
+        }
+
+        .small-box>.inner {
+            background-color: white;
+            color: black;
+        }
+
+        .color {
+
+            width: 200px;
+            height: 80px fit-content;
+            margin-left: 2px;
+        }
+
+        .set-width {
+
+            width: 90px;
+            height: 70px fit-content;
+            background-color: purple !important;
+        }
+
+        a {
+
+            color: rgb(0, 0, 0);
+            background-color: transparent;
+            text-decoration: none;
+
+        }
+
+        .blacklink .hover:hover {
+            cursor: pointer;
+        }
 </style>
 <script>
     $(document).ready(function() {
@@ -100,7 +135,7 @@
                 <b>Date Filter</b>
             </strong>
         </div>
-        <div class="row ml-2 mb-2">
+        <div class="row ml-2">
             <form action="" method="POST" id="data-form">
                 <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="from">From</label>
                 <input class="mr-3" type="date" name="" id="from">
@@ -108,7 +143,7 @@
                 <input class="mr-3" type="date" name="" id="to">
             </form>
         </div>
-
+        <br>
         <div class="row ml-2 blacklink letter-spacing-1">
             <span class="hover" id="today"> TODAY</span> &nbsp |
             <span class="ml-md-2 hover" id="yesterday"> YESTERDAY</span>
