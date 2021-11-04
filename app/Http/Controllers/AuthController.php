@@ -312,7 +312,7 @@ class AuthController extends Controller
 
 
         for ($x = 01; $x <= 31; $x++) {
-            $order = Order::where('created_at', "$yearMonth-$x")->where('status', 5)->with('details')->get();
+            $order = Order::whereDate('created_at', "$yearMonth-$x")->where('status', 5)->with('details')->get();
             if ($order->count() > 0) {
                 $weight =  $order->details->sum('weight');
             } else {
@@ -460,6 +460,23 @@ class AuthController extends Controller
                     ->where('sent_to', 39)->whereDate('created_at',  $date);
             })->sum('container_weight');
 
+            $now = Carbon::now();
+            $currentYear = $now->year;
+            $createdAt = [];
+
+            $quantity = [];
+            // $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            // foreach ($monthsArr as $month) {
+
+            // $monthName = date("F", mktime(0, 0, 0, $month, 10));
+            $transactions = Transaction::where('sent_to', 2)->whereDate('created_at',  $date)->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                // $weight += $transaction->details->sum('container_weight');
+                array_push($createdAt, $transaction->created_at->format('i:s'));
+                array_push($quantity, $transaction->details->sum('container_weight'));
+            }
+            // }
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -468,6 +485,8 @@ class AuthController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
             ])->render();
         } elseif ($date == 'yesterday') {
             $now = Carbon::now();
@@ -514,6 +533,23 @@ class AuthController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereDate('created_at',  $yesterday);
             })->sum('container_weight');
+            $now = Carbon::now();
+            $currentYear = $now->year;
+            $createdAt = [];
+
+            $quantity = [];
+            // $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            // foreach ($monthsArr as $month) {
+
+            // $monthName = date("F", mktime(0, 0, 0, $month, 10));
+            $transactions = Transaction::where('sent_to', 2)->whereDate('created_at',  $yesterday)->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                // $weight += $transaction->details->sum('container_weight');
+                array_push($createdAt, $transaction->created_at->format('i:s'));
+                array_push($quantity, $transaction->details->sum('container_weight'));
+            }
+            // }
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -522,6 +558,8 @@ class AuthController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
 
             ])->render();
         } elseif ($date == 'lastmonth') {
@@ -573,7 +611,19 @@ class AuthController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year);
             })->sum('container_weight');
+            $yearMonth =  $year . '-' . $lastMonth;
+            $createdAt = [];
+            $quantity = [];
+            for ($x = 01; $x <= 31; $x++) {
 
+                $transactions = Transaction::where('sent_to', 2)->whereDate('created_at', "$yearMonth-$x")->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                array_push($createdAt, $x);
+                array_push($quantity,  $weight);
+            }
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -582,6 +632,8 @@ class AuthController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
 
             ])->render();
         } elseif ($date == 'currentyear') {
@@ -634,6 +686,24 @@ class AuthController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereYear('created_at', $year);
             })->sum('container_weight');
+            $now = Carbon::now();
+            $currentYear = $now->year;
+            $createdAt = [];
+
+            $quantity = [];
+            $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            foreach ($monthsArr as $month) {
+
+                $monthName = date("F", mktime(0, 0, 0, $month, 10));
+                $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+
+                $weight = 0;
+                foreach ($transactions as $key => $trans) {
+                    $weight += $trans->details->sum('container_weight');
+                }
+                array_push($createdAt, $monthName);
+                array_push($quantity, $weight);
+            }
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -642,6 +712,8 @@ class AuthController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
 
             ])->render();
         } elseif ($date == 'lastyear') {
@@ -694,6 +766,24 @@ class AuthController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereYear('created_at', $year);
             })->sum('container_weight');
+            // $now = Carbon::now();
+            // $currentYear = $now->year;
+            $createdAt = [];
+
+            $quantity = [];
+            $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            foreach ($monthsArr as $month) {
+
+                $monthName = date("F", mktime(0, 0, 0, $month, 10));
+                $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $year)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+
+                $weight = 0;
+                foreach ($transactions as $key => $trans) {
+                    $weight += $trans->details->sum('container_weight');
+                }
+                array_push($createdAt, $monthName);
+                array_push($quantity, $weight);
+            }
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -702,6 +792,8 @@ class AuthController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
 
             ])->render();
         } elseif ($date == 'weekToDate') {
@@ -756,6 +848,20 @@ class AuthController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereBetween('created_at', [$start, $end]);
             })->sum('container_weight');
+            $createdAt = [];
+            $quantity = [];
+            for ($i = 0; $i <= 6; $i++) {
+                $date = date('Y-m-d', strtotime("+$i day", strtotime($start)));
+                $transactions = Transaction::where('sent_to', 2)->whereDate('created_at',  $date)->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                array_push($createdAt, $date);
+                array_push($quantity,  $weight);
+            }
+
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -764,7 +870,8 @@ class AuthController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
-
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
             ])->render();
         } elseif ($date == 'monthToDate') {
 
@@ -815,6 +922,20 @@ class AuthController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
             })->sum('container_weight');
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $createdAt = [];
+            $quantity = [];
+            for ($x = 01; $x <= 31; $x++) {
+
+                $transactions = Transaction::where('sent_to', 2)->whereDate('created_at', "$yearMonth-$x")->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                array_push($createdAt, $x);
+                array_push($quantity,  $weight);
+            }
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -823,6 +944,8 @@ class AuthController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
 
             ])->render();
         } elseif ($date == 'yearToDate') {
@@ -873,6 +996,24 @@ class AuthController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
             })->sum('container_weight');
+            $now = Carbon::now();
+            $currentYear = $now->year;
+            $createdAt = [];
+
+            $quantity = [];
+            $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            foreach ($monthsArr as $month) {
+
+                $monthName = date("F", mktime(0, 0, 0, $month, 10));
+                $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+
+                $weight = 0;
+                foreach ($transactions as $key => $trans) {
+                    $weight += $trans->details->sum('container_weight');
+                }
+                array_push($createdAt, $monthName);
+                array_push($quantity, $weight);
+            }
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -881,6 +1022,8 @@ class AuthController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
 
             ])->render();
         }
