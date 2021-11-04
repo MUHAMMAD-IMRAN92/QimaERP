@@ -378,7 +378,14 @@ class AuthController extends Controller
 
         $totalWeight = 0;
         $totalPrice = 0;
+        $farmerArray = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmerArray->push($farmer->farmer_code);
+            }
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -416,7 +423,7 @@ class AuthController extends Controller
             'farmers' => $farmers,
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice,
-            'readyForExport' => $yemenExport,
+            'readyForExport' => $yemenExport,  'farmerCount' => $farmerArray->count(),
 
         ]);
     }
