@@ -255,5 +255,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/supplyChain', 'SupplyChainController@supplyChain');
         Route::get('supplyChain/{date}', 'SupplyChainController@supplyChainDays');
         Route::get('supplyChainDate', 'SupplyChainController@supplyChainDateFilter');
+
+        Route::get('report', 'ReportController@index');
+        Route::post('report/generate', 'ReportController@generateReport');
     });
 });

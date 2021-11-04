@@ -109,7 +109,7 @@
                                                 $totalweight = App\TransactionDetail::whereHas('transaction', function ($q) use ($village) {
                                                     $q->where('sent_to', 2)
                                                         ->where('batch_number', 'NOT LIKE', '%000%')
-                                                        ->Where('batch_number', 'LIKE', "$village%");
+                                                        ->Where('batch_number', 'LIKE', "$village-%");
                                                 })->sum('container_weight');
                                             @endphp
                                             <tr>

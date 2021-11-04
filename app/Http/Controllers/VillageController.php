@@ -160,15 +160,15 @@ class VillageController extends Controller
     {
         $village = $village->gov_region();
         $villageCode = $village->village_code;
-        $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+        $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
         if ($village->first_purchase) {
             $village->first_purchase = $village->first_purchase['created_at'];
         }
-        $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+        $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
         if ($village->last_purchase) {
             $village->last_purchase = $village->last_purchase['created_at'];
         }
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->get();
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->get();
         $quantity = 0;
         foreach ($transactions as $transaction) {
             $quantity += $transaction->details->sum('container_weight');
@@ -211,15 +211,15 @@ class VillageController extends Controller
         $village = Village::find($id);
 
         $villageCode = $village->village_code;
-        $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+        $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
         if ($village->first_purchase) {
             $village->first_purchase = $village->first_purchase->created_at;
         }
-        $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first()['created_at'];
+        $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first()['created_at'];
         if ($village->last_purchase) {
             $village->last_purchase = $village->last_purchase->created_at;
         }
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$request->from, $request->to])->get();
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$request->from, $request->to])->get();
         $quantity = 0;
         foreach ($transactions as $transaction) {
             $quantity += $transaction->details->sum('container_weight');
@@ -260,15 +260,15 @@ class VillageController extends Controller
 
             $village = Village::find($id);
             $villageCode = $village->village_code;
-            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
                 $village->first_purchase = $village->first_purchase->created_at;
             }
-            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->where('created_at', $date)->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->where('created_at', $date)->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -306,16 +306,16 @@ class VillageController extends Controller
             $village = Village::find($id);
 
             $villageCode = $village->village_code;
-            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
                 $village->first_purchase = $village->first_purchase->created_at;
             }
-            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
 
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->where('created_at', $yesterday)->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->where('created_at', $yesterday)->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -354,16 +354,16 @@ class VillageController extends Controller
             $village = Village::find($id);
 
             $villageCode = $village->village_code;
-            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
                 $village->first_purchase = $village->first_purchase->created_at;
             }
-            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
 
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $end])->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $end])->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -402,16 +402,16 @@ class VillageController extends Controller
             $village = Village::find($id);
 
             $villageCode = $village->village_code;
-            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
                 $village->first_purchase = $village->first_purchase->created_at;
             }
-            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
 
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -450,16 +450,16 @@ class VillageController extends Controller
             $village = Village::find($id);
 
             $villageCode = $village->village_code;
-            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
                 $village->first_purchase = $village->first_purchase->created_at;
             }
-            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
 
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -497,16 +497,16 @@ class VillageController extends Controller
             $village = Village::find($id);
 
             $villageCode = $village->village_code;
-            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
                 $village->first_purchase = $village->first_purchase->created_at;
             }
-            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
 
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -544,16 +544,16 @@ class VillageController extends Controller
             $village = Village::find($id);
 
             $villageCode = $village->village_code;
-            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
                 $village->first_purchase = $village->first_purchase->created_at;
             }
-            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
 
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereYear('created_at', $year)->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereYear('created_at', $year)->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -592,16 +592,16 @@ class VillageController extends Controller
             $village = Village::find($id);
 
             $villageCode = $village->village_code;
-            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->first();
+            $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
                 $village->first_purchase = $village->first_purchase->created_at;
             }
-            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '%')->latest()->first();
+            $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first();
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
 
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereYear('created_at', $year)->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereYear('created_at', $year)->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');

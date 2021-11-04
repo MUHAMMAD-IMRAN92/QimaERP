@@ -52,7 +52,7 @@ class WeightController extends Controller
 	public function villageweightcode($id)
 	{
 		$data['village'] = Village::find($id);
-		$data['farmer'] = Farmer::where('farmer_code', 'LIKE', $data['village']->village_code . '%')->get();
+		$data['farmer'] = Farmer::where('farmer_code', 'LIKE', $data['village']->village_code . '-' . '%')->get();
 		return view('admin.weight.farmerweight', $data);
 	}
 }

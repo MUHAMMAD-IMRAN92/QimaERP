@@ -63,7 +63,14 @@ class RegionController extends Controller
         $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
         $totalWeight = 0;
         $totalPrice = 0;
+        $farmerArray = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmerArray->push($farmer->farmer_code);
+            }
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -154,6 +161,7 @@ class RegionController extends Controller
             'regionName' => $regionName,
             'regionQuantity' => $regionQuantity,
             'readyForExport' => $yemenExport,
+            'farmerCount' => $farmerArray->count(),
             // 'chartTransactions' =>  $chartTransactions
 
         ]);
@@ -255,7 +263,14 @@ class RegionController extends Controller
 
         $totalWeight = 0;
         $totalPrice = 0;
+        $farmerArray = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmerArray->push($farmer->farmer_code);
+            }
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -293,7 +308,7 @@ class RegionController extends Controller
             'farmers' => $farmers,
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice,
-            'readyForExport' => $yemenExport,
+            'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
 
         ]);
     }
@@ -312,8 +327,15 @@ class RegionController extends Controller
 
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -353,7 +375,7 @@ class RegionController extends Controller
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport,
+                'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
 
             ]);
         } elseif ($date == 'yesterday') {
@@ -367,9 +389,16 @@ class RegionController extends Controller
             $transactions  = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $yesterday)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -407,7 +436,7 @@ class RegionController extends Controller
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport,
+                'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
 
             ]);
         } elseif ($date == 'lastmonth') {
@@ -425,9 +454,16 @@ class RegionController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -466,7 +502,7 @@ class RegionController extends Controller
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport,
+                'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
 
             ]);
         } elseif ($date == 'currentyear') {
@@ -485,9 +521,16 @@ class RegionController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -526,7 +569,7 @@ class RegionController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
-
+                'farmerCount' => $farmerArray->count(),
             ]);
         } elseif ($date == 'lastyear') {
 
@@ -544,9 +587,16 @@ class RegionController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -584,7 +634,7 @@ class RegionController extends Controller
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport,
+                'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
 
             ]);
         } elseif ($date == 'weekToDate') {
@@ -605,9 +655,16 @@ class RegionController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $end])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -646,7 +703,7 @@ class RegionController extends Controller
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport,
+                'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
 
             ]);
         } elseif ($date == 'monthToDate') {
@@ -664,9 +721,16 @@ class RegionController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -704,7 +768,7 @@ class RegionController extends Controller
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport,
+                'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
 
             ]);
         } elseif ($date == 'yearToDate') {
@@ -723,9 +787,16 @@ class RegionController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -763,7 +834,7 @@ class RegionController extends Controller
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport,
+                'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
 
             ]);
         }
@@ -781,7 +852,15 @@ class RegionController extends Controller
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $governorateCode . '%')->where('sent_to', 2)->get();
         $total_coffee = 0;
         $totalPrice = 0;
+        $farmerArray = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmerArray->push($farmer->farmer_code);
+            }
+
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -808,9 +887,14 @@ class RegionController extends Controller
             $totalPrice += $weight * $price;
             $total_coffee += $weight;
         }
+        $readyForExport = TransactionDetail::whereHas('transaction', function ($q) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39);
+        })->sum('container_weight');
 
+        $farmerCount = $farmerArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('governorates',  'regions', 'villages', 'farmers',  'total_coffee', 'totalPrice'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('governorates',  'regions', 'villages', 'farmers',  'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport'))->render(),
             'regions' => $regions
         ]);
     }
@@ -829,7 +913,15 @@ class RegionController extends Controller
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $regionCode . '%')->where('sent_to', 2)->get();
         $total_coffee = 0;
         $totalPrice = 0;
+        $farmerArray  = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmerArray->push($farmer->farmer_code);
+            }
+
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -855,9 +947,14 @@ class RegionController extends Controller
             $totalPrice += $weight * $price;
             $total_coffee += $weight;
         }
+        $readyForExport = TransactionDetail::whereHas('transaction', function ($q) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39);
+        })->sum('container_weight');
 
+        $farmerCount = $farmerArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'readyForExport', 'farmerCount'))->render(),
             'villages' => $villages
         ]);
     }
@@ -875,7 +972,14 @@ class RegionController extends Controller
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '%')->where('sent_to', 2)->get();
         $total_coffee = 0;
         $totalPrice = 0;
+        $farmerArray = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmerArray->push($farmer->farmer_code);
+            }
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -901,9 +1005,14 @@ class RegionController extends Controller
             $totalPrice += $weight * $price;
             $total_coffee += $weight;
         }
+        $readyForExport = TransactionDetail::whereHas('transaction', function ($q) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39);
+        })->sum('container_weight');
 
+        $farmerCount = $farmerArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport'))->render(),
 
         ]);
     }
