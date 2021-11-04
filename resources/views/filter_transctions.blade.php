@@ -22,7 +22,7 @@
     </div>
 
     <div class="col-sm-1 color bg-lightBrown p-2 content-box">
-        <h4>{{ $farmers->count() }}</h4>
+        <h4>{{ $farmerCount }}</h4>
 
         <p>Farmers </p>
     </div>

@@ -160,7 +160,15 @@ class AuthController extends Controller
         $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
         $totalWeight = 0;
         $totalPrice = 0;
+        $farmerArray = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmerArray->push($farmer->farmer_code);
+            }
+
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -356,7 +364,8 @@ class AuthController extends Controller
             'readyForExport' => $yemenExport,
             'yemenSalesDay' => $yemenExportGraphDay,
             'yemenSalesCoffee' => $yemenExportGraphWeight,
-            'topBuyer' => $topBuyer
+            'topBuyer' => $topBuyer,
+            'farmerCount' => $farmerArray->count(),
         ]);
     }
     public function dashboardByDate(Request $request)
@@ -426,8 +435,15 @@ class AuthController extends Controller
 
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -487,6 +503,7 @@ class AuthController extends Controller
                 'readyForExport' => $yemenExport,
                 'quantity' => $quantity,
                 'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
             ])->render();
         } elseif ($date == 'yesterday') {
             $now = Carbon::now();
@@ -499,9 +516,16 @@ class AuthController extends Controller
             $transactions  = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $yesterday)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -559,7 +583,7 @@ class AuthController extends Controller
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
                 'quantity' => $quantity,
-                'createdAt' => $createdAt,
+                'createdAt' => $createdAt, 'farmerCount' => $farmerArray->count(),
 
             ])->render();
         } elseif ($date == 'lastmonth') {
@@ -577,9 +601,16 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -633,8 +664,7 @@ class AuthController extends Controller
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
                 'quantity' => $quantity,
-                'createdAt' => $createdAt,
-
+                'createdAt' => $createdAt, 'farmerCount' => $farmerArray->count(),
             ])->render();
         } elseif ($date == 'currentyear') {
 
@@ -652,9 +682,16 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -713,7 +750,7 @@ class AuthController extends Controller
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
                 'quantity' => $quantity,
-                'createdAt' => $createdAt,
+                'createdAt' => $createdAt, 'farmerCount' => $farmerArray->count(),
 
             ])->render();
         } elseif ($date == 'lastyear') {
@@ -732,9 +769,16 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -793,7 +837,7 @@ class AuthController extends Controller
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
                 'quantity' => $quantity,
-                'createdAt' => $createdAt,
+                'createdAt' => $createdAt, 'farmerCount' => $farmerArray->count(),
 
             ])->render();
         } elseif ($date == 'weekToDate') {
@@ -814,9 +858,16 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $end])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -871,7 +922,7 @@ class AuthController extends Controller
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
                 'quantity' => $quantity,
-                'createdAt' => $createdAt,
+                'createdAt' => $createdAt, 'farmerCount' => $farmerArray->count(),
             ])->render();
         } elseif ($date == 'monthToDate') {
 
@@ -888,9 +939,16 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -945,7 +1003,7 @@ class AuthController extends Controller
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
                 'quantity' => $quantity,
-                'createdAt' => $createdAt,
+                'createdAt' => $createdAt, 'farmerCount' => $farmerArray->count(),
 
             ])->render();
         } elseif ($date == 'yearToDate') {
@@ -962,9 +1020,16 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+
+                        $farmerArray->push($farmer->farmer_code);
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -1023,7 +1088,7 @@ class AuthController extends Controller
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
                 'quantity' => $quantity,
-                'createdAt' => $createdAt,
+                'createdAt' => $createdAt, 'farmerCount' => $farmerArray->count(),
 
             ])->render();
         }
