@@ -116,7 +116,7 @@
     .data-tabs div{
         flex: 1;
         flex-wrap: wrap;
-        max-width: 134px;
+        min-width: 134px;
         min-height: 100px;
         padding: 0.5rem !important;
         padding-bottom: 20px !important;
@@ -244,4 +244,8 @@
     letter-spacing: 2px;
     font-size: 18px;
 
+}
+.color-white, .color-white:hover{
+    color: white !important;
+    background-color: #295D3A !important;
 }

@@ -283,7 +283,7 @@
                         TIME</a></span>
             </div>
             <hr class="ml-md-2">
-            <div class="col-lg-11 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
+            <div class="col-lg-12 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
                 <div class="col-sm-1 color bg-darkPurple p-2 content-box">
                     <h4>{{ $governorate->count() }}</h4>
                     <p>Governorate</p>
