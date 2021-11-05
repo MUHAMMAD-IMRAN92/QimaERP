@@ -1529,7 +1529,8 @@ class CoffeeBuyerController extends Controller
             ]
         );
     }
-    public function upload(Request $request)
+    public
+    function upload(Request $request)
     {
 
 
@@ -1549,5 +1550,26 @@ class CoffeeBuyerController extends Controller
 
         $buyer = User::find($request->user_id);
         return redirect()->route('coffeBuyer.profile', $buyer)->with('msg',);
+    }
+    public function reciepts($id)
+    {
+        $transactions = Transaction::where('sent_to', 2)->where('created_by', $id)->get();
+        $transactions->map(function ($transaction) {
+
+            $transaction->invoice = $transaction->invoices();
+            return $transaction;
+        });
+        //   $transactions;
+        $invoices = [];
+        foreach ($transactions as $transaction) {
+            foreach ($transaction->invoice as $inv) {
+
+                array_push($invoices, $inv->user_file_name);
+            }
+        }
+
+        return  view('admin.coffeBuyer.views.invoices', [
+            'invoices' => $invoices,
+        ]);
     }
 }

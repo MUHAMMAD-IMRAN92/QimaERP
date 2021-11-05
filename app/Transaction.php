@@ -261,4 +261,9 @@ class Transaction extends Model
 
         return $transaction;
     }
+    public function invoices()
+    {
+        $invId =   TransactionInvoice::where('transaction_id', $this->transaction_id)->get('invoice_id');
+        return  FileSystem::whereIn('file_id', $invId)->get('user_file_name');
+    }
 }
