@@ -347,6 +347,7 @@ class AuthController extends Controller
         }
         $sorted =   $buyerArray->sortBy('weight');
         $topBuyer = $sorted->reverse()->values()->take(5);
+        // return $govFarmersCount;
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),

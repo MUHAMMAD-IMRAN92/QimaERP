@@ -114,7 +114,7 @@ class Farmer extends Model
     public function quntity()
     {
         $farmerCode = $this->farmer_code;
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode-%")
             ->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')
             ->get();
         if ($transactions) {
