@@ -7,6 +7,10 @@
             width: 240px;
         }
 
+        .input-height {
+            height: 70%;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
@@ -56,14 +60,21 @@
                             <div class="card-body">
                                 <form action="{{ url('admin/report/generate') }}" method="POST">
                                     @csrf
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Select Date</label>
-                                        <input type="date" name="date" class="form-control" id="exampleInputEmail1"
-                                            aria-describedby="emailHelp">
 
+                                    <div class="row">
+
+                                        <div class="col-6"> <label for="exampleInputEmail1">From</label>
+                                            <input type="date" name="from" class="form-control input-height" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp">
+                                        </div>
+                                        <div class="col-6"> <label for="exampleInputEmail1">To</label>
+                                            <input type="date" name="to" class="form-control input-height" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp">
+                                        </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary  mt-4"
+                                        style="margin-left:47%">Submit</button>
                                 </form>
 
                             </div>
