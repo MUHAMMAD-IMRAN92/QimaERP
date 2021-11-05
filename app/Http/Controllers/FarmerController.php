@@ -45,6 +45,7 @@ class FarmerController extends Controller
             return $farmer;
         });
 
+        // return $farmers;
         return view('admin.farmer.allfarmer', [
             'farmers' => $farmers,
             'governorates' => $governorates,
@@ -346,9 +347,20 @@ class FarmerController extends Controller
     }
     public function filterByDate(Request $request)
     {
-        $farmers = Farmer::whereBetween('created_at', [$request->from, $request->to])
-            ->get();
-        $farmers = $farmers->map(function ($farmer) {
+
+        $farmers = collect();
+        $transactions = Transaction::with('details')->whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+        foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmers->push($farmer);
+            }
+        }
+        // $farmers = Farmer::whereBetween('created_at', [$request->from, $request->to])
+        //     ->get();
+        $farmers = $farmers->map(function ($farmer) use ($request) {
             $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
             $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
@@ -356,7 +368,12 @@ class FarmerController extends Controller
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
 
-            $farmer->quantity = $farmer->quntity();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity = $weight;
             $farmer->price = $farmer->price()->price_per_kg;
 
             return $farmer;
@@ -375,9 +392,19 @@ class FarmerController extends Controller
         $govRegions = $regions->filter(function ($region) use ($governorateCode) {
             return explode('-', $region->region_code)[0] == $governorateCode;
         })->values();
-        $farmers = Farmer::where('farmer_code', 'LIKE',   $governorateCode . '%')->get();
+        // $farmers = Farmer::where('farmer_code', 'LIKE',   $governorateCode . '%')->get();
 
-        $farmers = $farmers->map(function ($farmer) {
+        $farmers = collect();
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $governorateCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+        foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+
+                $farmers->push($farmer);
+            }
+        }
+        $farmers = $farmers->map(function ($farmer) use ($governorateCode) {
             $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
             $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
@@ -385,7 +412,13 @@ class FarmerController extends Controller
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
 
-            $farmer->quantity = $farmer->quntity();
+            // $farmer->quantity = $farmer->quntity();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $governorateCode . '%')->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity =   $weight;
             $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
             return $farmer;
@@ -405,9 +438,18 @@ class FarmerController extends Controller
         $villages = $villages->filter(function ($village) use ($region_Code) {
             return explode('-', $village->village_code)[1] == $region_Code;
         })->values();
-        $farmers = Farmer::where('farmer_code', 'LIKE', $regionCode . '%')->get();
+        // $farmers = Farmer::where('farmer_code', 'LIKE', $regionCode . '%')->get();
+        $farmers = collect();
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $regionCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+        foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
 
-        $farmers = $farmers->map(function ($farmer) {
+                $farmers->push($farmer);
+            }
+        }
+        $farmers = $farmers->map(function ($farmer) use ($regionCode) {
             $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
             $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
@@ -415,7 +457,13 @@ class FarmerController extends Controller
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
 
-            $farmer->quantity = $farmer->quntity();
+            // $farmer->quantity = $farmer->quntity();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $regionCode . '%')->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity =   $weight;
             $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
             return $farmer;
@@ -430,10 +478,19 @@ class FarmerController extends Controller
         $id = $request->from;
         $villageCode = Village::where('village_id', $id)->first()->village_code;
 
-        $farmers = Farmer::where('village_code', $villageCode)->get();
+        // $farmers = Farmer::where('village_code', $villageCode)->get();
+        $farmers = collect();
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+        foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            if ($farmer) {
 
+                $farmers->push($farmer);
+            }
+        }
 
-        $farmers = $farmers->map(function ($farmer) {
+        $farmers = $farmers->map(function ($farmer) use ($villageCode) {
             $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
             $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
@@ -441,7 +498,13 @@ class FarmerController extends Controller
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
 
-            $farmer->quantity = $farmer->quntity();
+            // $farmer->quantity = $farmer->quntity();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $villageCode . '%')->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            $farmer->quantity =   $weight;
             $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
             return $farmer;
@@ -455,13 +518,22 @@ class FarmerController extends Controller
         if ($date == 'today') {
             $date = Carbon::today()->toDateString();
 
-            $farmers = Farmer::whereDate('created_at',  $date)->get();
+            // $farmers = Farmer::whereDate('created_at',  $date)->get();
+            $farmers = collect();
+            $transactions = Transaction::with('details')->whereDate('created_at',  $date)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            foreach ($transactions as $transaction) {
+                $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                if ($farmer) {
 
+                    $farmers->push($farmer);
+                }
+            }
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
 
-            $farmers = $farmers->map(function ($farmer) {
+            $farmers = $farmers->map(function ($farmer) use ($date) {
                 $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
                 $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
@@ -469,7 +541,13 @@ class FarmerController extends Controller
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
 
-                $farmer->quantity = $farmer->quntity();
+                // $farmer->quantity = $farmer->quntity();
+                $transactions = Transaction::with('details')->whereDate('created_at',  $date)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                $farmer->quantity =   $weight;
                 $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
                 return $farmer;
@@ -487,12 +565,22 @@ class FarmerController extends Controller
             $now = Carbon::now();
             $yesterday = Carbon::yesterday();
 
-            $farmers = Farmer::whereDate('created_at', $yesterday)->get();
+            // $farmers = Farmer::whereDate('created_at', $yesterday)->get();
+            $farmers = collect();
+            $transactions = Transaction::with('details')->whereDate('created_at',  $yesterday)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            foreach ($transactions as $transaction) {
+                $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                if ($farmer) {
+
+                    $farmers->push($farmer);
+                }
+            }
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
 
-            $farmers = $farmers->map(function ($farmer) {
+            $farmers = $farmers->map(function ($farmer) use ($yesterday) {
                 $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
                 $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
@@ -500,7 +588,13 @@ class FarmerController extends Controller
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
 
-                $farmer->quantity = $farmer->quntity();
+                // $farmer->quantity = $farmer->quntity();
+                $transactions = Transaction::with('details')->whereDate('created_at',  $yesterday)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                $farmer->quantity =   $weight;
                 $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
                 return $farmer;
@@ -519,13 +613,22 @@ class FarmerController extends Controller
             $lastMonth =  $date->subMonth()->format('m');
             $year = $date->year;
 
-            $farmers = Farmer::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            // $farmers = Farmer::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            $farmers = collect();
+            $transactions = Transaction::with('details')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            foreach ($transactions as $transaction) {
+                $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                if ($farmer) {
 
+                    $farmers->push($farmer);
+                }
+            }
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
 
-            $farmers = $farmers->map(function ($farmer) {
+            $farmers = $farmers->map(function ($farmer) use ($lastMonth, $year) {
                 $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
                 $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
@@ -533,7 +636,13 @@ class FarmerController extends Controller
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
 
-                $farmer->quantity = $farmer->quntity();
+                // $farmer->quantity = $farmer->quntity();
+                $transactions = Transaction::with('details')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                $farmer->quantity =   $weight;
                 $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
                 return $farmer;
@@ -552,13 +661,22 @@ class FarmerController extends Controller
 
             $year = $date->year;
 
-            $farmers = Farmer::whereYear('created_at', $year)->get();
+            // $farmers = Farmer::whereYear('created_at', $year)->get();
+            $farmers = collect();
+            $transactions = Transaction::with('details')->whereYear('created_at', $year)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            foreach ($transactions as $transaction) {
+                $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                if ($farmer) {
 
+                    $farmers->push($farmer);
+                }
+            }
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
 
-            $farmers = $farmers->map(function ($farmer) {
+            $farmers = $farmers->map(function ($farmer) use ($year) {
                 $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
                 $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
@@ -566,7 +684,13 @@ class FarmerController extends Controller
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
 
-                $farmer->quantity = $farmer->quntity();
+                // $farmer->quantity = $farmer->quntity();
+                $transactions = Transaction::with('details')->whereYear('created_at', $year)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                $farmer->quantity =   $weight;
                 $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
                 return $farmer;
@@ -585,13 +709,22 @@ class FarmerController extends Controller
 
             $year = $date->year - 1;
 
-            $farmers = Farmer::whereYear('created_at', $year)->get();
+            // $farmers = Farmer::whereYear('created_at', $year)->get();
+            $farmers = collect();
+            $transactions = Transaction::with('details')->whereYear('created_at', $year)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            foreach ($transactions as $transaction) {
+                $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                if ($farmer) {
 
+                    $farmers->push($farmer);
+                }
+            }
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
 
-            $farmers = $farmers->map(function ($farmer) {
+            $farmers = $farmers->map(function ($farmer) use ($year) {
                 $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
                 $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
@@ -599,7 +732,13 @@ class FarmerController extends Controller
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
 
-                $farmer->quantity = $farmer->quntity();
+                // $farmer->quantity = $farmer->quntity();
+                $transactions = Transaction::with('details')->whereYear('created_at', $year)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                $farmer->quantity =   $weight;
                 $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
                 return $farmer;
@@ -619,13 +758,21 @@ class FarmerController extends Controller
 
 
 
-            $farmers = Farmer::whereBetween('created_at', [$start, $end])->get();
-
+            // $farmers = Farmer::whereBetween('created_at', [$start, $end])->get();
+            $farmers = collect();
+            $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $end])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            foreach ($transactions as $transaction) {
+                $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                if ($farmer) {
+                    $farmers->push($farmer);
+                }
+            }
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
 
-            $farmers = $farmers->map(function ($farmer) {
+            $farmers = $farmers->map(function ($farmer) use ($start, $end) {
                 $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
                 $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
@@ -633,7 +780,13 @@ class FarmerController extends Controller
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
 
-                $farmer->quantity = $farmer->quntity();
+                // $farmer->quantity = $farmer->quntity();
+                $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $end])->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                $farmer->quantity =   $weight;
                 $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
                 return $farmer;
@@ -651,13 +804,21 @@ class FarmerController extends Controller
             $date = Carbon::tomorrow()->toDateString();
             $start = $now->firstOfMonth();
 
-            $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
-
+            // $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
+            $farmers = collect();
+            $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            foreach ($transactions as $transaction) {
+                $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                if ($farmer) {
+                    $farmers->push($farmer);
+                }
+            }
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
 
-            $farmers = $farmers->map(function ($farmer) {
+            $farmers = $farmers->map(function ($farmer) use ($start, $date) {
                 $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
                 $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
@@ -665,7 +826,13 @@ class FarmerController extends Controller
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
 
-                $farmer->quantity = $farmer->quntity();
+                // $farmer->quantity = $farmer->quntity();
+                $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $date])->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                $farmer->quantity =   $weight;
                 $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
                 return $farmer;
@@ -683,13 +850,21 @@ class FarmerController extends Controller
             $date = Carbon::tomorrow()->toDateString();
             $start = $now->startOfYear();
 
-            $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
-
+            // $farmers = Farmer::whereBetween('created_at', [$start, $date])->get();
+            $farmers = collect();
+            $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+            foreach ($transactions as $transaction) {
+                $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                if ($farmer) {
+                    $farmers->push($farmer);
+                }
+            }
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
 
-            $farmers = $farmers->map(function ($farmer) {
+            $farmers = $farmers->map(function ($farmer) use ($start, $date) {
                 $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
                 $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
                 $farmer->image = $farmer->getImage();
@@ -697,7 +872,13 @@ class FarmerController extends Controller
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
 
-                $farmer->quantity = $farmer->quntity();
+                // $farmer->quantity = $farmer->quntity();
+                $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $date])->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                $farmer->quantity =   $weight;
                 $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
 
                 return $farmer;
