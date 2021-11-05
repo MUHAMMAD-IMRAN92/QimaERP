@@ -74,6 +74,14 @@
             width: 100%;
         }
 
+        #reciepts:hover {
+            cursor: pointer;
+        }
+
+        /* #reciepts-hover:hover b{
+                                                                                    cursor: pointer;
+                                                                                } */
+
     </style>
 
     <script>
@@ -274,14 +282,15 @@
                     }
                 });
             });
-        });
-        $('#reciepts').on('click', function() {
-            $.ajax({
-                // url: "{{ url('admin/coffeeBuyer/reciepts/' . $buyer->user_id) }}",
-                type: "GET",
-                success: function(data) {
-                    console.log(data);
-                }
+            $('#reciepts').on('click', function() {
+                $.ajax({
+                    url: "{{ url('admin/coffeeBuyer/reciepts/' . $buyer->user_id) }}",
+                    type: "GET",
+                    success: function(data) {
+                        $('#transactionInv').html(data);
+                        console.log(data);
+                    }
+                });
             });
         });
     </script>
@@ -442,9 +451,9 @@
                     </strong>
                 </span>
                 <span class="ml-3 font-weight-bold">|</span>
-                <span class="row ml-2 text-uppercase mb-2 hover-2" id="reciepts">
-                    <strong>
-                        <b>RECIEPTS</b>
+                <span class="row ml-2 text-uppercase mb-2 hover-2">
+                    <strong id="reciepts-hover">
+                        <b id="reciepts">RECIEPTS</b>
                     </strong>
                 </span>
                 <span class="ml-3 font-weight-bold">|</span>
@@ -461,7 +470,7 @@
                 </span>
 
             </div>
-            <div class="ml-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transaction">
+            {{-- <div class="ml-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactionInv">
                 <div class="col-sm-1 color bg-darkPurple mr-1">
                     <h4>{{ App\Village::count() }}</h4>
                     <p>Villages</p>
@@ -478,6 +487,17 @@
                 </div>
 
 
+            </div> --}}
+            <div class="row ml-2" id="transactionInv">
+                <div class="col-sm-1 color p-0 ml-0">
+                    <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                        style="max-width: 100%; height: 100%;" alt="" id="idimage">
+                    <div id="myModal" class="modal">
+                        <span class="close">&times;</span>
+                        <img class="modal-content" id="img01">
+                        <div id="caption"></div>
+                    </div>
+                </div>
             </div>
             <hr class="ml-2">
             <div class="row ml-2 text-uppercase mb-2">

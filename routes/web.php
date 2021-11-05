@@ -108,6 +108,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('filterByvillage', 'CoffeeBuyerController@filterByvillage');
         Route::get('assignVillages/{user}', 'CoffeeBuyerController@assignVillages');
         Route::post('assignVillages', 'CoffeeBuyerController@upload');
+        Route::get('coffeeBuyer/reciepts/{id}', 'CoffeeBuyerController@reciepts');
 
 
         //BatchNumber Controller
