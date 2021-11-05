@@ -364,7 +364,8 @@
                                                                         alt=""></td>
                                                             @endif
                                                             <td class="border border-dark border-top-0">
-                                                                {{ $coffeeBuyerManger->first_name }}</td>
+                                                                {{ $coffeeBuyerManger->first_name . ' ' . $coffeeBuyerManger->last_name }}
+                                                            </td>
                                                             <td class="border border-dark border-left-0 border-top-0">
                                                                 {{ $coffeeBuyerManger->first_purchase }}</td>
                                                             <td class="border border-dark border-left-0 border-top-0">
@@ -509,7 +510,8 @@
                                                                         alt=""></td>
                                                             @endif
                                                             <td class="border border-dark border-top-0">
-                                                                {{ $coffeeBuyer->first_name }}</td>
+                                                                {{ $coffeeBuyer->first_name . ' ' . $coffeeBuyer->last_name }}
+                                                            </td>
                                                             <td class="border border-dark border-left-0 border-top-0">
                                                                 {{ $coffeeBuyer->first_purchase }}</td>
                                                             <td class="border border-dark border-left-0 border-top-0">
