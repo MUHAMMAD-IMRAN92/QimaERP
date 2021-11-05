@@ -18,7 +18,7 @@ class ReportController extends Controller
     public function generateReport(Request $request)
     {
 
-        $transactions = Transaction::with('details')->where('sent_to', 2)->whereDate('created_at', $request->date)->where('batch_number', 'NOT LIKE', '%000%')->get()->groupBy('created_by');
+        $transactions = Transaction::with('details')->where('sent_to', 2)->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->get()->groupBy('created_by');
         $name = "public/reports/" . uniqid(rand(), true)  . ".csv";
         $file = fopen($name, "w");
 
