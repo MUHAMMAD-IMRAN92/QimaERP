@@ -74,10 +74,12 @@ class AuthController extends Controller
                 foreach ($transactions as $transaction) {
                     $regweight +=  $transaction->details->sum('container_weight');
                 }
-                $govRegionQty->push([
-                    'regionTitle' => $r->region_title,
-                    'weight' =>  round($regweight, 2)
-                ]);
+                if ($regweight > 0) {
+                    $govRegionQty->push([
+                        'regionTitle' => $r->region_title,
+                        'weight' =>  round($regweight, 2)
+                    ]);
+                }
             }
             $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
         }
