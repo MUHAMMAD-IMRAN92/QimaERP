@@ -301,6 +301,19 @@ class RegionController extends Controller
             $q->where('is_parent', 0)
                 ->where('sent_to', 39)->whereBetween('created_at', [$request->from, $request->to]);
         })->sum('container_weight');
+        $regionName = [];
+        $regionQuantity = [];
+        foreach ($regions as $region) {
+            $regionCode = $region->region_code;
+            $weight = 0;
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
+
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            array_push($regionName, $region->region_title);
+            array_push($regionQuantity, $weight);
+        }
         return view('admin.region.views.filter_transctions', [
             'governorates' =>   $governorates,
             'regions' => $regions,
@@ -309,6 +322,8 @@ class RegionController extends Controller
             'total_coffee' => $totalWeight,
             'totalPrice' => $totalPrice,
             'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
+            'regionName' => $regionName,
+            'regionQuantity' => $regionQuantity,
 
         ]);
     }
@@ -322,7 +337,7 @@ class RegionController extends Controller
             $farmers = Farmer::whereDate('created_at',  $date)->get();
             $villages = Village::whereDate('created_at',  $date)->get();
             $governorates = Governerate::whereDate('created_at',  $date)->get();
-            $regions = Region::whereDate('created_at',  $date)->get();
+            $regions = Region::all();
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $date)->get();
 
             $totalWeight = 0;
@@ -367,7 +382,19 @@ class RegionController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereDate('created_at',  $date);
             })->sum('container_weight');
+            $regionName = [];
+            $regionQuantity = [];
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereDate('created_at',  $date)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
 
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+            }
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -375,7 +402,10 @@ class RegionController extends Controller
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
+                'readyForExport' => $yemenExport,
+                'farmerCount' => $farmerArray->count(),
+                'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ]);
         } elseif ($date == 'yesterday') {
@@ -385,7 +415,7 @@ class RegionController extends Controller
             $farmers = Farmer::whereDate('created_at',  $yesterday)->get();
             $villages = Village::whereDate('created_at',  $yesterday)->get();
             $governorates = Governerate::whereDate('created_at',  $yesterday)->get();
-            $regions = Region::whereDate('created_at',  $yesterday)->get();
+            $regions = Region::all();
             $transactions  = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $yesterday)->get();
             $totalWeight = 0;
             $totalPrice = 0;
@@ -429,6 +459,19 @@ class RegionController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereDate('created_at',  $yesterday);
             })->sum('container_weight');
+            $regionName = [];
+            $regionQuantity = [];
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereDate('created_at',  $yesterday)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+            }
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -437,6 +480,8 @@ class RegionController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
+                'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ]);
         } elseif ($date == 'lastmonth') {
@@ -450,7 +495,7 @@ class RegionController extends Controller
 
             $villages = Village::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $governorates = Governerate::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
-            $regions = Region::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+            $regions = Region::all();
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
@@ -495,6 +540,19 @@ class RegionController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year);
             })->sum('container_weight');
+            $regionName = [];
+            $regionQuantity = [];
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+            }
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -503,7 +561,8 @@ class RegionController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
-
+                'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
             ]);
         } elseif ($date == 'currentyear') {
 
@@ -517,7 +576,7 @@ class RegionController extends Controller
 
             $villages = Village::whereYear('created_at', $year)->get();
             $governorates = Governerate::whereYear('created_at', $year)->get();
-            $regions = Region::whereYear('created_at', $year)->get();
+            $regions = Region::all();
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
@@ -561,6 +620,19 @@ class RegionController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereYear('created_at', $year);
             })->sum('container_weight');
+            $regionName = [];
+            $regionQuantity = [];
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereYear('created_at', $year)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+            }
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -570,6 +642,8 @@ class RegionController extends Controller
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport,
                 'farmerCount' => $farmerArray->count(),
+                'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
             ]);
         } elseif ($date == 'lastyear') {
 
@@ -583,7 +657,7 @@ class RegionController extends Controller
 
             $villages = Village::whereYear('created_at', $year)->get();
             $governorates = Governerate::whereYear('created_at', $year)->get();
-            $regions = Region::whereYear('created_at', $year)->get();
+            $regions = Region::all();
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
@@ -627,6 +701,19 @@ class RegionController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereYear('created_at', $year);
             })->sum('container_weight');
+            $regionName = [];
+            $regionQuantity = [];
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereYear('created_at', $year)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+            }
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -635,6 +722,8 @@ class RegionController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
+                'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ]);
         } elseif ($date == 'weekToDate') {
@@ -651,7 +740,7 @@ class RegionController extends Controller
 
             $villages = Village::whereBetween('created_at', [$start, $end])->get();
             $governorates = Governerate::whereBetween('created_at', [$start, $end])->get();
-            $regions = Region::whereBetween('created_at', [$start, $end])->get();
+            $regions = Region::all();
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $end])->get();
             $totalWeight = 0;
             $totalPrice = 0;
@@ -696,6 +785,19 @@ class RegionController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereBetween('created_at', [$start, $end]);
             })->sum('container_weight');
+            $regionName = [];
+            $regionQuantity = [];
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereBetween('created_at', [$start, $end])->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+            }
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -704,6 +806,8 @@ class RegionController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
+                'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ]);
         } elseif ($date == 'monthToDate') {
@@ -717,7 +821,7 @@ class RegionController extends Controller
 
             $villages = Village::whereBetween('created_at', [$start, $date])->get();
             $governorates = Governerate::whereBetween('created_at', [$start, $date])->get();
-            $regions = Region::whereBetween('created_at', [$start, $date])->get();
+            $regions = Region::all();
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
@@ -761,6 +865,19 @@ class RegionController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
             })->sum('container_weight');
+            $regionName = [];
+            $regionQuantity = [];
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereBetween('created_at', [$start, $date])->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+            }
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -769,6 +886,8 @@ class RegionController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
+                'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ]);
         } elseif ($date == 'yearToDate') {
@@ -783,7 +902,7 @@ class RegionController extends Controller
 
             $villages = Village::whereBetween('created_at', [$start, $date])->get();
             $governorates = Governerate::whereBetween('created_at', [$start, $date])->get();
-            $regions = Region::whereBetween('created_at', [$start, $date])->get();
+            $regions = Region::all();
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
@@ -827,6 +946,19 @@ class RegionController extends Controller
                 $q->where('is_parent', 0)
                     ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
             })->sum('container_weight');
+            $regionName = [];
+            $regionQuantity = [];
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereBetween('created_at', [$start, $date])->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+            }
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -835,7 +967,8 @@ class RegionController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
-
+                'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
             ]);
         }
     }
@@ -891,10 +1024,22 @@ class RegionController extends Controller
             $q->where('is_parent', 0)
                 ->where('sent_to', 39);
         })->sum('container_weight');
+        $regionName = [];
+        $regionQuantity = [];
+        foreach ($regions as $region) {
+            $regionCode = $region->region_code;
+            $weight = 0;
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
 
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            array_push($regionName, $region->region_title);
+            array_push($regionQuantity, $weight);
+        }
         $farmerCount = $farmerArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('governorates',  'regions', 'villages', 'farmers',  'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('regionQuantity', 'regionName', 'governorates',  'regions', 'villages', 'farmers',  'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport'))->render(),
             'regions' => $regions
         ]);
     }
@@ -951,10 +1096,22 @@ class RegionController extends Controller
             $q->where('is_parent', 0)
                 ->where('sent_to', 39);
         })->sum('container_weight');
+        $regionName = [];
+        $regionQuantity = [];
+        foreach ($regions as $region) {
+            $regionCode = $region->region_code;
+            $weight = 0;
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
 
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            array_push($regionName, $region->region_title);
+            array_push($regionQuantity, $weight);
+        }
         $farmerCount = $farmerArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'readyForExport', 'farmerCount'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('regionQuantity', 'regionName', 'governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'readyForExport', 'farmerCount'))->render(),
             'villages' => $villages
         ]);
     }
@@ -1009,10 +1166,22 @@ class RegionController extends Controller
             $q->where('is_parent', 0)
                 ->where('sent_to', 39);
         })->sum('container_weight');
+        $regionName = [];
+        $regionQuantity = [];
+        foreach ($regions as $region) {
+            $regionCode = $region->region_code;
+            $weight = 0;
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
 
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            array_push($regionName, $region->region_title);
+            array_push($regionQuantity, $weight);
+        }
         $farmerCount = $farmerArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('regionQuantity', 'regionName', 'governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport'))->render(),
 
         ]);
     }
