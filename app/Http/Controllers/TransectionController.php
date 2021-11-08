@@ -7,6 +7,7 @@ use App\FileSystem;
 use App\Transaction;
 use App\TransactionDetail;
 use App\TransactionInvoice;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -17,8 +18,11 @@ class TransectionController extends Controller
         // $data['transaction'] = Transaction::where('is_parent', '0')->get();
         // return view('admin.transaction.alltransection', $data);
         $transaction = Transaction::where('sent_to', 2)->distinct('batch_number')->get();
+        $newTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get()->take(50);
+
         return view('admin.transaction.alltransection', [
-            'transaction' => $transaction
+            'transaction' => $transaction,
+            'newTransactions' => $newTransactions
         ]);
     }
     public function detail(Request $request, $id)
@@ -77,7 +81,7 @@ class TransectionController extends Controller
 
             if ($parentId != 0) {
                 $transactionparentId = Transaction::find($parentId);
-                if ($transactionparentId->batch_number !=  $batchNumber) {  
+                if ($transactionparentId->batch_number !=  $batchNumber) {
                     $transactionsparentId = Transaction::where('batch_number', $transactionparentId->batch_number)->with('details', 'meta')->orderBy('transaction_id', 'desc')->get();
                     // $data['transactionparentId'] = $transactionsparentId;
                     foreach ($transactionsparentId as $transParent) {
@@ -167,5 +171,14 @@ class TransectionController extends Controller
         );
         //:: return json
         return json_encode($data);
+    }
+    public function transactionByDate(Request $request)
+    {
+        $date = Carbon::today()->toDateString();
+        $newTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$request->from, $request->to])->get();
+
+        return view('admin.transaction.alltransection', [
+            'newTransactions' => $newTransactions
+        ]);
     }
 }

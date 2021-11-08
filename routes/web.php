@@ -140,6 +140,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('transactiondetail/{id}', 'TransectionController@detail')->middleware('auth');
         Route::get('gettransection', 'TransectionController@getTransectionAjax');
         Route::get('rawTransactions/{id}', 'TransectionController@detail');
+        Route::get('transactionsByDays/{date}', 'TransectionController@detail');
+
+
 
         //Container Controller
         Route::get('addcontainer', 'ContainerController@addcontainer')->middleware('auth');

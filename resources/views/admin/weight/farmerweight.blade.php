@@ -108,7 +108,7 @@
                                                     // $q->Where('batch_number', 'LIKE', "$farmer%");
                                                     $q->where('sent_to', 2)
                                                         ->where('batch_number', 'NOT LIKE', '%000%')
-                                                        ->Where('batch_number', 'LIKE', "$farmer%");
+                                                        ->Where('batch_number', 'LIKE', "$farmer-%");
                                                 })->sum('container_weight');
                                             @endphp
                                             <tr>
