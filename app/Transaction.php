@@ -5,6 +5,7 @@ namespace App;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Transaction extends Model
 {
@@ -265,5 +266,14 @@ class Transaction extends Model
     {
         $invId =   TransactionInvoice::where('transaction_id', $this->transaction_id)->get('invoice_id');
         return  FileSystem::whereIn('file_id', $invId)->get('user_file_name');
+    }
+    protected $appends = ['FarmerName'];
+    public function getFarmerNameAttribute()
+    {
+        $farmer_code  =  Str::beforeLast($this->batch_number,'-');
+        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+        if ($farmer) {
+            return $farmer->farmer_name;
+        }
     }
 }
