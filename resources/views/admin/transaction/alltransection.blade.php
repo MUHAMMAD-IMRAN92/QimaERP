@@ -20,14 +20,14 @@
 
                 $.ajax({
 
-                    url: "{{ url('admin/dashboardByDate') }}",
+                    url: "{{ url('admin/transactionByDate') }}",
                     type: "GET",
                     data: {
                         'from': from,
                         'to': to
                     },
                     success: function(data) {
-                        $('#transactions').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -42,14 +42,14 @@
                     'text-decoration': 'underline'
                 });
                 $.ajax({
-                    url: "{{ url('admin/dashboardByDays') }}",
+                    url: "{{ url('admin/transactionByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'today'
                     },
                     success: function(data) {
 
-                        $('#transactionsGraph').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -64,14 +64,14 @@
                     'text-decoration': 'underline'
                 });
                 $.ajax({
-                    url: "{{ url('admin/dashboardByDays') }}",
+                    url: "{{ url('admin/transactionByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'yesterday'
                     },
                     success: function(data) {
 
-                        $('#transactionsGraph').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -86,14 +86,14 @@
                     'text-decoration': 'underline'
                 });
                 $.ajax({
-                    url: "{{ url('admin/dashboardByDays') }}",
+                    url: "{{ url('admin/transactionByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'weekToDate'
                     },
                     success: function(data) {
 
-                        $('#transactionsGraph').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -108,14 +108,14 @@
                     'text-decoration': 'underline'
                 });
                 $.ajax({
-                    url: "{{ url('admin/dashboardByDays') }}",
+                    url: "{{ url('admin/transactionByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'monthToDate'
                     },
                     success: function(data) {
 
-                        $('#transactionsGraph').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -130,14 +130,14 @@
                     'text-decoration': 'underline'
                 });
                 $.ajax({
-                    url: "{{ url('admin/dashboardByDays') }}",
+                    url: "{{ url('admin/transactionByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'lastmonth'
                     },
                     success: function(data) {
 
-                        $('#transactionsGraph').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -152,14 +152,14 @@
                     'text-decoration': 'underline'
                 });
                 $.ajax({
-                    url: "{{ url('admin/dashboardByDays') }}",
+                    url: "{{ url('admin/transactionByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'yearToDate'
                     },
                     success: function(data) {
 
-                        $('#transactionsGraph').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -174,14 +174,14 @@
                     'text-decoration': 'underline'
                 });
                 $.ajax({
-                    url: "{{ url('admin/dashboardByDays') }}",
+                    url: "{{ url('admin/transactionByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'currentyear'
                     },
                     success: function(data) {
 
-                        $('#transactionsGraph').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -196,14 +196,14 @@
                     'text-decoration': 'underline'
                 });
                 $.ajax({
-                    url: "{{ url('admin/dashboardByDays') }}",
+                    url: "{{ url('admin/transactionByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'lastyear'
                     },
                     success: function(data) {
 
-                        $('#transactionsGraph').html(data);
+                        $('#transactionsRecord').html(data);
                         console.log(data);
                     }
                 });
@@ -309,7 +309,7 @@
                         TIME</a></span>
             </div>
             <hr class="ml-md-2">
-            <div>
+            <div id="transactionsRecord">
                 <div class="row ml-2 text-uppercase mb-2">
                     <strong>
                         <b>COFFEE PURCHASE TRANSACTIONS</b>
