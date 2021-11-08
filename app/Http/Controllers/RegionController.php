@@ -1026,7 +1026,8 @@ class RegionController extends Controller
         })->sum('container_weight');
         $regionName = [];
         $regionQuantity = [];
-        foreach ($regions as $region) {
+        $regionsAll = Region::all();
+        foreach ($regionsAll as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
             $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'LIKE', $governorateCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
