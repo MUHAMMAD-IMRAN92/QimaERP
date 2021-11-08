@@ -1029,7 +1029,7 @@ class RegionController extends Controller
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'LIKE', $governorateCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
 
                 $weight +=  $transaction->details->sum('container_weight');
@@ -1099,9 +1099,9 @@ class RegionController extends Controller
         $regionName = [];
         $regionQuantity = [];
         foreach ($regions as $region) {
-            $regionCode = $region->region_code;
+            $region_code = $region->region_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $region_code . '%')->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
 
                 $weight +=  $transaction->details->sum('container_weight');
@@ -1171,7 +1171,7 @@ class RegionController extends Controller
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $villageCode . '%')->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
 
                 $weight +=  $transaction->details->sum('container_weight');

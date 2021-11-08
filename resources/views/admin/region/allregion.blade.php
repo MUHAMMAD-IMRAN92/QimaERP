@@ -142,7 +142,7 @@
 
                     },
                     success: function(data) {
-                        $('#transactions').html(data.view);
+                        $('#transactionGraph').html(data.view);
                         console.log(data);
                     }
                 });
