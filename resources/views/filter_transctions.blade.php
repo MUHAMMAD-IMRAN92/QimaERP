@@ -198,7 +198,7 @@
                         @if ($topBuyer->count() == 0)
 
                             <td>
-                                <center> <b>No Coffee Bought</b> </center>
+                                <center> <b class="mt-5">No Coffee Bought</b> </center>
                             </td>
                         @endif
                         @foreach ($topBuyer as $buyer)
@@ -261,7 +261,7 @@
                         @if ($regions->count() == 0)
 
                             <td>
-                                <center> <b>No Coffee Bought</b> </center>
+                                <center> <b class="mt-5">No Coffee Bought</b> </center>
                             </td>
                         @endif
                         @foreach ($regions as $region)
