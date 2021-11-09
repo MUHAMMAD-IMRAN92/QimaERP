@@ -377,7 +377,12 @@ class CoffeeDryingController extends Controller
                                     'reference_id' => $receivedTransaction->transaction->reference_id,
                                 ]);
 
-                                TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                                $transactionToBeUpdated =   TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->get();
+                                foreach ($transactionToBeUpdated as $trans) {
+                                    $trans->update([
+                                        'container_status' => 1,
+                                    ]);
+                                }
                             }
 
                             $transactionMeta = $receivedTransaction->transactionMeta;
