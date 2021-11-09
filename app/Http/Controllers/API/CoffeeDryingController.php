@@ -99,7 +99,6 @@ class CoffeeDryingController extends Controller
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
 
-        DB::beginTransaction();
 
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
@@ -111,6 +110,15 @@ class CoffeeDryingController extends Controller
                         $updateCoffees->is_in_process = $receivedTransaction->transaction->is_in_process;
                         $updateCoffees->local_updated_at = toSqlDT($receivedTransaction->transaction->local_updated_at);
                         $updateCoffees->update();
+                        $transactionMeta = $receivedTransaction->transactionMeta;
+                        MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
+                        foreach ($transactionMeta as $key => $transactionMe) {
+                            MetaTransation::create([
+                                'transaction_id' => $receivedTransaction->transaction->transaction_id,
+                                'key' => $transactionMe->key,
+                                'value' => $transactionMe->value,
+                            ]);
+                        }
                     }
                 } else {
 
@@ -567,9 +575,7 @@ class CoffeeDryingController extends Controller
                     }
                 }
             }
-            DB::commit();
         } catch (Exception $e) {
-            DB::rollback();
 
             Log::channel('error')->error('Coffee Drying Exception', [
                 'message' => $e->getMessage(),
@@ -670,7 +676,14 @@ class CoffeeDryingController extends Controller
                     $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)
                         ->where('container_number', $transactionsInformation->transactionDetails->container_number)
                         ->first();
-
+                    MetaTransation::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)->delete();
+                    // foreach ($transactionMeta as $key => $transactionMe) {
+                    //     MetaTransation::create([
+                    //         'transaction_id' => $transactionsInformation->transactionDetails->transaction_id,
+                    //         'key' => $transactionMe->key,
+                    //         'value' => $transactionMe->value,
+                    //     ]);
+                    // }
                     $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
                     $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
                     $alreadyExistTransactionDetail->save();

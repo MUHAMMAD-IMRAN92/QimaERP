@@ -386,8 +386,15 @@ class CoffeeBuyer extends Controller
                 }
 
                 //::add parent batch
-                $removeLocalId = explode("-", $batch_numbers->batch->batch->batch_number);
+                $batch = 'SAN-HAR-SAN-HAR-58-1796-1T';
+                $removeLocalId = explode("-",   $batch);
 
+                $removeLocalId = explode("-", $batch_numbers->batch->batch->batch_number);
+                if ($batch_numbers->batch->batch->batch_number == "SAN-HAR-SAN-HAR-58-1796-1T") {
+                    array_shift($removeLocalId);
+                    array_shift($removeLocalId);
+                    // array_pop($removeLocalId);
+                }
                 //::remove last index of array
                 $newLastBID = 1;
                 $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
@@ -395,6 +402,7 @@ class CoffeeBuyer extends Controller
                     $newLastBID = ($lastBatchNumber->batch_id + 1);
                 }
                 array_pop($removeLocalId);
+                Log::info(implode("-", $removeLocalId));
                 $checkMixed = 0;
                 if ($removeLocalId[3] == '000') {
                     $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
@@ -563,7 +571,7 @@ class CoffeeBuyer extends Controller
                         $farmerSeason = $child_batch->season_no;
                         if ($farmerSeason > $mixSeason) {
                             $mixSeason = $farmerSeason;
-                        } 
+                        }
                     }
                     $parentBatch->update([
                         'season_no' =>  $mixSeason,

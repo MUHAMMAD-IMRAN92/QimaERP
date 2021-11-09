@@ -33,7 +33,7 @@
                             <td class="border border-dark border-top-0">{{ $coffeeBuyerManger->first_name }}</td>
                             <td class="border border-dark border-left-0 border-top-0">{{ $coffeeBuyerManger->first_purchase }}</td>
                             <td class="border border-dark border-left-0 border-top-0">{{ $coffeeBuyerManger->last_purchase }}</td>
-                            <td class="border border-dark border-left-0 border-top-0">lahore</td>
+                            <td class="border border-dark border-left-0 border-top-0">-</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -142,7 +142,7 @@
                             <td class="border border-dark border-top-0">{{ $coffeeBuyer->first_name }}</td>
                             <td class="border border-dark border-left-0 border-top-0">{{ $coffeeBuyer->first_purchase }}</td>
                             <td class="border border-dark border-left-0 border-top-0">{{ $coffeeBuyer->last_purchase }}</td>
-                            <td class="border border-dark border-left-0 border-top-0">lahore</td>
+                            <td class="border border-dark border-left-0 border-top-0">-</td>
                         </tr>
                         @endforeach
                     </tbody>

@@ -88,15 +88,13 @@
             </div> -->
             <div class="user-panel d-flex flex-column">
                 <div class=" text-center mt-5">
-                <img style="width: auto; max-width: 100%;" src="{{ URL::to('') }}/public/dist/img/qima_logo.png"
-                                alt="User Image">
+                    <img style="width: auto; max-width: 100%;" src="{{ URL::to('') }}/public/dist/img/qima_logo.png"
+                        alt="User Image">
                 </div>
                 <div class="notification-icons d-flex  mt-5 mb-5 justify-content-center">
-                    <img style="width: auto;" src="{{ URL::to('') }}/public/dist/img/message.png"
-                                    alt="User Image">
+                    <img style="width: auto;" src="{{ URL::to('') }}/public/dist/img/message.png" alt="User Image">
                     <div class="vl-sidebar mx-4"></div>
-                    <img style="width: auto;" src="{{ URL::to('') }}/public/dist/img/flag_1.png"
-                                    alt="User Image">
+                    <img style="width: auto;" src="{{ URL::to('') }}/public/dist/img/flag_1.png" alt="User Image">
                 </div>
             </div>
             <!-- Sidebar Menu -->
@@ -106,65 +104,73 @@
                     <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                     @hasrole('Super Admin')
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/dashboard"
-                            class="nav-link {{ Request::is('admin/dashboard') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
-                            <p>
-                                Dashboard
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item active">
-                        <a href="{{ URL::to('') }}/admin/allgovernor"
-                            class="nav-link {{ Request::is('admin/allgovernor') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-user-alt"></i> -->
-                            <p>
-                                Governorates
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allregion"
-                            class="nav-link {{ Request::is('admin/allregion') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-globe"></i> -->
-                            <p>
-                                Regions
-                            </p>
-                        </a>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/dashboard"
+                                class="nav-link {{ Request::is('admin/dashboard') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-tachometer-alt"></i> -->
+                                <p>
+                                    Dashboard
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="{{ URL::to('') }}/admin/allgovernor"
+                                class="nav-link {{ Request::is('admin/allgovernor') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-user-alt"></i> -->
+                                <p>
+                                    Governorates
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/allregion"
+                                class="nav-link {{ Request::is('admin/allregion') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-globe"></i> -->
+                                <p>
+                                    Regions
+                                </p>
+                            </a>
 
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allfarmer"
-                            class="nav-link {{ Request::is('admin/allfarmer') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-tractor"></i> -->
-                            <p>
-                                Farmers
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allcoffeebuyer"
-                            class="nav-link  {{ Request::is('admin/allcoffeebuyer') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-user"></i> -->
-                            <p>
-                                Coffee Buyers
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url('admin/inventory') }}"
-                            class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-pallet"></i> -->
-                            <p>
-                                Inventory
-                            </p>
-                        </a>
-                    </li>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/allfarmer"
+                                class="nav-link {{ Request::is('admin/allfarmer') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-tractor"></i> -->
+                                <p>
+                                    Farmers
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/allcoffeebuyer"
+                                class="nav-link  {{ Request::is('admin/allcoffeebuyer') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-user"></i> -->
+                                <p>
+                                    Coffee Buyers
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('admin/inventory') }}"
+                                class="nav-link {{ Request::is('admin/inventory') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-pallet"></i> -->
+                                <p>
+                                    Inventory
+                                </p>
+                            </a>
+                        </li>
 
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/supplyChain"
+                                class="nav-link  {{ Request::is('admin/supplyChain') ? 'active' : '' }} ">
+                                <!-- <i class="nav-icon fa fa-life-ring"></i> -->
+                                <p>
+                                    Supply Chain
+                                </p>
+                            </a>
+                        </li>
 
-
-                @else
+                    @else
 
                     @endhasrole
 
@@ -181,222 +187,231 @@
 
 
                     @hasrole('Super Admin')
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allbatchnumber"
-                            class="nav-link  {{ Request::is('admin/allbatchnumber') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-sort-numeric-up-alt"></i> -->
-                            <p>
-                                Batch Numbers
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ Request::is('admin/allcenter') ? 'menu-open' : '' }}">
-                        <a href="{{ URL::to('') }}/admin/allcenter" class="nav-link ">
-                            <!-- <i class="nav-icon fab fa-centercode"></i> -->
-                            <p>
-                                Center
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview pl-2 nav-dropdown">
-                            <li class="nav-item">
-                                <a href="{{ url('admin/allcenter') }}"
-                                    class="nav-link  {{ Request::is('admin/allcenter') ? 'active' : '' }}">
-                                    <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
-                                    <p>All Center</p>
-                                </a>
-                            </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/allbatchnumber"
+                                class="nav-link  {{ Request::is('admin/allbatchnumber') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-sort-numeric-up-alt"></i> -->
+                                <p>
+                                    Batch Numbers
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item {{ Request::is('admin/allcenter') ? 'menu-open' : '' }}">
+                            <a href="{{ URL::to('') }}/admin/allcenter" class="nav-link ">
+                                <!-- <i class="nav-icon fab fa-centercode"></i> -->
+                                <p>
+                                    Center
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview pl-2 nav-dropdown">
+                                <li class="nav-item">
+                                    <a href="{{ url('admin/allcenter') }}"
+                                        class="nav-link  {{ Request::is('admin/allcenter') ? 'active' : '' }}">
+                                        <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
+                                        <p>All Center</p>
+                                    </a>
+                                </li>
 
-                        </ul>
-                    </li>
-                    <li class="nav-item {{ Request::is('admin/orders/*') ? 'menu-open' : '' }}">
-                        <a href="" class="nav-link ">
-                            <!-- <i class="nav-icon fas fa-box"></i> -->
-                            <p>
-                                Orders
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview pl-2 nav-dropdown">
-                            <li class="nav-item">
-                                <a href="{{ url('admin/orders/create') }}"
-                                    class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
-                                    <!-- <i class="nav-icon fas fa-address-book"></i> -->
-                                    <p>
-                                        Create Order
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('admin/orders') }}"
-                                    class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
-                                    <!-- <i class="nav-icon fas fa-address-book"></i> -->
-                                    <p>
-                                        All Orders
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/shipping"
-                            class="nav-link  {{ Request::is('admin/shipping') ? 'active' : '' }} ">
-                            <!-- <i class="fas fa-shipping-fast"> </i> &nbsp; -->
-                            <p>
-                                Shipping
-                            </p>
-                        </a>
-                    </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item {{ Request::is('admin/orders/*') ? 'menu-open' : '' }}">
+                            <a href="" class="nav-link ">
+                                <!-- <i class="nav-icon fas fa-box"></i> -->
+                                <p>
+                                    Orders
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview pl-2 nav-dropdown">
+                                <li class="nav-item">
+                                    <a href="{{ url('admin/orders/create') }}"
+                                        class="nav-link {{ Request::is('admin/orders/create') ? 'active' : '' }}">
+                                        <!-- <i class="nav-icon fas fa-address-book"></i> -->
+                                        <p>
+                                            Create Order
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('admin/orders') }}"
+                                        class="nav-link {{ Request::is('admin/orders') ? 'active' : '' }}">
+                                        <!-- <i class="nav-icon fas fa-address-book"></i> -->
+                                        <p>
+                                            All Orders
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/shipping"
+                                class="nav-link  {{ Request::is('admin/shipping') ? 'active' : '' }} ">
+                                <!-- <i class="fas fa-shipping-fast"> </i> &nbsp; -->
+                                <p>
+                                    Shipping
+                                </p>
+                            </a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/system_definition"
-                            class="nav-link {{ Request::is('admin/system_definition') ? 'active' : '' }}">
-                            <!-- <i class=" nav-icon fab fa-linode"></i> -->
-                            <p>
-                                System Definition
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/environments"
-                            class="nav-link  {{ Request::is('admin/environments') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-globe"></i> -->
-                            <p>
-                                Environments
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/allcontainer"
-                            class="nav-link  {{ Request::is('admin/allcontainer') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-shopping-basket"></i> -->
-                            <p>
-                                Containers
-                            </p>
-                        </a>
-                    </li>
-
-
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/milling_coffee"
-                            class="nav-link {{ Request::is('admin/milling_coffee') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-tree"> </i> -->
-                            <p>
-                                Milling
-                            </p>
-                        </a>
-                    </li>
-
-                    <li class="nav-item {{ Request::is('admin/packaging/*') ? 'menu-open' : '' }}">
-                        <a href="" class="nav-link ">
-                            <!-- <i class="nav-icon fas fa-box"></i> -->
-                            <p>
-                                Packaging Coffee
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview pl-2 nav-dropdown">
-                            <li class="nav-item">
-                                <a href="{{ url('admin/packaging/mixing') }}"
-                                    class="nav-link {{ Request::is('admin/packaging/mixing') ? 'active' : '' }}">
-                                    <!-- <i class="fas fa-mortar-pestle nav-icon"></i> -->
-                                    <p>
-                                        Mixing
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('admin/packaging/approval') }}"
-                                    class="nav-link {{ Request::is('admin/packaging/approval') ? 'active' : '' }}">
-                                    <!-- <i class="nav-icon fas fa-stamp"></i> -->
-                                    <p>
-                                        Packaging Approval
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item {{ Request::is('admin/uk_warehouse/*') ? 'menu-open' : '' }}">
-                        <a href="" class="nav-link ">
-                            <!-- <i class="nav-icon fas fa-box"></i> -->
-                            <p>
-                                UK WareHouse
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-
-                        </a>
-                        <ul class="nav nav-treeview pl-2 nav-dropdown">
-                            <li class="nav-item">
-                                <a href="{{ url('admin/uk_warehouse/index') }}"
-                                    class="nav-link {{ Request::is('admin/uk_warehouse/index') ? 'active' : '' }}">
-                                    <!-- <i class="nav-icon fas fa-dollar-sign"></i> -->
-                                    <p>
-                                        Set Prices
-                                    </p>
-                                </a>
-                            </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/system_definition"
+                                class="nav-link {{ Request::is('admin/system_definition') ? 'active' : '' }}">
+                                <!-- <i class=" nav-icon fab fa-linode"></i> -->
+                                <p>
+                                    System Definition
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/environments"
+                                class="nav-link  {{ Request::is('admin/environments') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-globe"></i> -->
+                                <p>
+                                    Environments
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/allcontainer"
+                                class="nav-link  {{ Request::is('admin/allcontainer') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-shopping-basket"></i> -->
+                                <p>
+                                    Containers
+                                </p>
+                            </a>
+                        </li>
 
 
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/governorweight"
-                            class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
-                            <!-- <i class="nav-icon fas fa-weight"></i> -->
-                            <p>
-                                Total Weights
-                            </p>
-                        </a>
-                    </li>
-                    <li
-                        class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
-                        <a href="{{ url('admin/allusers') }}" class="nav-link">
-                            <!-- <i class="nav-icon fas fa-user"></i> -->
-                            <p>
-                                Users Settings
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview pl-2 nav-dropdown">
-                            <li class="nav-item">
-                                <a href="{{ url('admin/allusers') }}"
-                                    class="nav-link {{ Request::is('admin/allusers') ? 'active' : '' }}">
-                                    <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
-                                    <p>
-                                        Users
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('admin/roles') }}"
-                                    class="nav-link {{ Request::is('admin/roles') ? 'active' : '' }}">
-                                    <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
-                                    <p>
-                                        Roles
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/alltransection"
-                            class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
-                            <!-- <i class="nav-icon fas fa-exchange-alt"></i> -->
-                            <p>
-                                Transactions
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ URL::to('') }}/admin/support"
-                            class="nav-link  {{ Request::is('admin/support') ? 'active' : '' }} ">
-                            <!-- <i class="nav-icon fa fa-life-ring"></i> -->
-                            <p>
-                                Support Quries
-                            </p>
-                        </a>
-                    </li>
-                @else
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/milling_coffee"
+                                class="nav-link {{ Request::is('admin/milling_coffee') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-tree"> </i> -->
+                                <p>
+                                    Milling
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item {{ Request::is('admin/packaging/*') ? 'menu-open' : '' }}">
+                            <a href="" class="nav-link ">
+                                <!-- <i class="nav-icon fas fa-box"></i> -->
+                                <p>
+                                    Packaging Coffee
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview pl-2 nav-dropdown">
+                                <li class="nav-item">
+                                    <a href="{{ url('admin/packaging/mixing') }}"
+                                        class="nav-link {{ Request::is('admin/packaging/mixing') ? 'active' : '' }}">
+                                        <!-- <i class="fas fa-mortar-pestle nav-icon"></i> -->
+                                        <p>
+                                            Mixing
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('admin/packaging/approval') }}"
+                                        class="nav-link {{ Request::is('admin/packaging/approval') ? 'active' : '' }}">
+                                        <!-- <i class="nav-icon fas fa-stamp"></i> -->
+                                        <p>
+                                            Packaging Approval
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item {{ Request::is('admin/uk_warehouse/*') ? 'menu-open' : '' }}">
+                            <a href="" class="nav-link ">
+                                <!-- <i class="nav-icon fas fa-box"></i> -->
+                                <p>
+                                    UK WareHouse
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+
+                            </a>
+                            <ul class="nav nav-treeview pl-2 nav-dropdown">
+                                <li class="nav-item">
+                                    <a href="{{ url('admin/uk_warehouse/index') }}"
+                                        class="nav-link {{ Request::is('admin/uk_warehouse/index') ? 'active' : '' }}">
+                                        <!-- <i class="nav-icon fas fa-dollar-sign"></i> -->
+                                        <p>
+                                            Set Prices
+                                        </p>
+                                    </a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/governorweight"
+                                class="nav-link {{ Request::is('admin/governorweight') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-weight"></i> -->
+                                <p>
+                                    Total Weights
+                                </p>
+                            </a>
+                        </li>
+                        <li
+                            class="nav-item has-treeview {{ Request::is('admin/allusers') || Request::is('admin/roles') ? 'menu-open' : '' }}">
+                            <a href="{{ url('admin/allusers') }}" class="nav-link">
+                                <!-- <i class="nav-icon fas fa-user"></i> -->
+                                <p>
+                                    Users Settings
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview pl-2 nav-dropdown">
+                                <li class="nav-item">
+                                    <a href="{{ url('admin/allusers') }}"
+                                        class="nav-link {{ Request::is('admin/allusers') ? 'active' : '' }}">
+                                        <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
+                                        <p>
+                                            Users
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('admin/roles') }}"
+                                        class="nav-link {{ Request::is('admin/roles') ? 'active' : '' }}">
+                                        <!-- <i class="fas fa-long-arrow-alt-right nav-icon"></i> -->
+                                        <p>
+                                            Roles
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/alltransection"
+                                class="nav-link  {{ Request::is('admin/alltransection') ? 'active' : '' }} ">
+                                <!-- <i class="nav-icon fas fa-exchange-alt"></i> -->
+                                <p>
+                                    Transactions
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/support"
+                                class="nav-link  {{ Request::is('admin/support') ? 'active' : '' }} ">
+                                <!-- <i class="nav-icon fa fa-life-ring"></i> -->
+                                <p>
+                                    Support Quries
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/report"
+                                class="nav-link  {{ Request::is('admin/report') ? 'active' : '' }} ">
+                                <!-- <i class="nav-icon fa fa-life-ring"></i> -->
+                                <p>
+                                    Generate Report
+                                </p>
+                            </a>
+                        </li>
+                    @else
 
                     @endhasrole
 
@@ -408,12 +423,12 @@
         </div>
         <!-- /.sidebar -->
     </aside>
-<script>
-    $(document).ready(function() {
-      $('.menu-icon').on('click', function() {
-          console.log('hello');
-          $(".notification-icons").toggleClass("invisible");
-          $(".nav-sidebar .nav-item").toggleClass("border-0");
-    });
-});
-</script>
+    <script>
+        $(document).ready(function() {
+            $('.menu-icon').on('click', function() {
+                console.log('hello');
+                $(".notification-icons").toggleClass("invisible");
+                $(".nav-sidebar .nav-item").toggleClass("border-0");
+            });
+        });
+    </script>

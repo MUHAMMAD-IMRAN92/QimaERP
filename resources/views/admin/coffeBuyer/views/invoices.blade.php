@@ -40,6 +40,9 @@
         width: 80%;
         max-width: 700px;
     }
+    .pad-5{
+        padding: 5px;
+    }
 
     /* Caption of Modal Image */
     #caption {
@@ -120,7 +123,7 @@
         @php
             $i++;
         @endphp
-        <div class="col-sm-1 color p-0 ml-0">
+        <div class="col-sm-1 color ml-0 pad-5">
 
             @if ($inv == null)
                 <img style="max-width: 100%; height: 100%;" class="famerimg"

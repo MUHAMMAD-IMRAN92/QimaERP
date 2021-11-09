@@ -108,6 +108,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('filterByvillage', 'CoffeeBuyerController@filterByvillage');
         Route::get('assignVillages/{user}', 'CoffeeBuyerController@assignVillages');
         Route::post('assignVillages', 'CoffeeBuyerController@upload');
+        Route::get('coffeeBuyer/reciepts/{id}', 'CoffeeBuyerController@reciepts');
 
 
         //BatchNumber Controller
@@ -139,6 +140,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('transactiondetail/{id}', 'TransectionController@detail')->middleware('auth');
         Route::get('gettransection', 'TransectionController@getTransectionAjax');
         Route::get('rawTransactions/{id}', 'TransectionController@detail');
+        Route::get('transactionByDays', 'TransectionController@transactionByDays');
+        Route::get('transactionByDate', 'TransectionController@transactionByDate');
+
+
 
         //Container Controller
         Route::get('addcontainer', 'ContainerController@addcontainer')->middleware('auth');
@@ -251,5 +256,12 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('/support', 'AuthController@support');
         Route::get('/view_support/{id}', 'AuthController@viewSupport');
+
+        Route::get('/supplyChain', 'SupplyChainController@supplyChain');
+        Route::get('supplyChain/{date}', 'SupplyChainController@supplyChainDays');
+        Route::get('supplyChainDate', 'SupplyChainController@supplyChainDateFilter');
+
+        Route::get('report', 'ReportController@index');
+        Route::post('report/generate', 'ReportController@generateReport');
     });
 });
