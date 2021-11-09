@@ -685,7 +685,7 @@ class CoffeeDryingController extends Controller
                     //     ]);
                     // }
                     $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
-                    $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
+                    $alreadyExistTransactionDetail->container_status = 1;
                     $alreadyExistTransactionDetail->save();
                 }
                 if (!in_array($transactionsInformation->transactionDetails->transaction_id, $transationsIdArray)) {
