@@ -498,7 +498,7 @@ class AuthController extends Controller
 
             $weight =  $order->details->sum('weight');
 
-            array_push($yemenExportGraphDay, $or->created_at);
+            array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
             array_push($yemenExportGraphWeight,  $weight);
         }
 
@@ -760,7 +760,7 @@ class AuthController extends Controller
 
                 $weight =  $order->details->sum('weight');
 
-                array_push($yemenExportGraphDay, $or->created_at);
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
                 array_push($yemenExportGraphWeight,  $weight);
             }
 
@@ -1017,7 +1017,7 @@ class AuthController extends Controller
 
                 $weight =  $order->details->sum('weight');
 
-                array_push($yemenExportGraphDay, $or->created_at);
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
                 array_push($yemenExportGraphWeight,  $weight);
             }
 
@@ -1539,7 +1539,7 @@ class AuthController extends Controller
 
                 $weight =  $order->details->sum('weight');
 
-                array_push($yemenExportGraphDay, $or->created_at);
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
                 array_push($yemenExportGraphWeight,  $weight);
             }
 
@@ -1803,7 +1803,7 @@ class AuthController extends Controller
 
                 $weight =  $order->details->sum('weight');
 
-                array_push($yemenExportGraphDay, $or->created_at);
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
                 array_push($yemenExportGraphWeight,  $weight);
             }
 
@@ -2065,7 +2065,7 @@ class AuthController extends Controller
 
                 $weight =  $order->details->sum('weight');
 
-                array_push($yemenExportGraphDay, $or->created_at);
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
                 array_push($yemenExportGraphWeight,  $weight);
             }
 
@@ -2325,7 +2325,7 @@ class AuthController extends Controller
 
                 $weight =  $order->details->sum('weight');
 
-                array_push($yemenExportGraphDay, $or->created_at);
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
                 array_push($yemenExportGraphWeight,  $weight);
             }
 
@@ -2588,7 +2588,7 @@ class AuthController extends Controller
 
                 $weight =  $order->details->sum('weight');
 
-                array_push($yemenExportGraphDay, $or->created_at);
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
                 array_push($yemenExportGraphWeight,  $weight);
             }
 
