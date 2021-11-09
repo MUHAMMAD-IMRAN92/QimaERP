@@ -676,7 +676,14 @@ class CoffeeDryingController extends Controller
                     $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)
                         ->where('container_number', $transactionsInformation->transactionDetails->container_number)
                         ->first();
-
+                    MetaTransation::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)->delete();
+                    // foreach ($transactionMeta as $key => $transactionMe) {
+                    //     MetaTransation::create([
+                    //         'transaction_id' => $transactionsInformation->transactionDetails->transaction_id,
+                    //         'key' => $transactionMe->key,
+                    //         'value' => $transactionMe->value,
+                    //     ]);
+                    // }
                     $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
                     $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
                     $alreadyExistTransactionDetail->save();
