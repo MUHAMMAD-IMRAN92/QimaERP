@@ -110,6 +110,15 @@ class CoffeeDryingController extends Controller
                         $updateCoffees->is_in_process = $receivedTransaction->transaction->is_in_process;
                         $updateCoffees->local_updated_at = toSqlDT($receivedTransaction->transaction->local_updated_at);
                         $updateCoffees->update();
+                        $transactionMeta = $receivedTransaction->transactionMeta;
+                        MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
+                        foreach ($transactionMeta as $key => $transactionMe) {
+                            MetaTransation::create([
+                                'transaction_id' => $receivedTransaction->transaction->transaction_id,
+                                'key' => $transactionMe->key,
+                                'value' => $transactionMe->value,
+                            ]);
+                        }
                     }
                 } else {
 
