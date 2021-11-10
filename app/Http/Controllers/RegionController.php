@@ -105,7 +105,7 @@ class RegionController extends Controller
             foreach ($governorate->villages as $village) {
                 $villageCode = $village->village_code;
                 $village->farmers = Farmer::where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->get();
+                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to' , 2)->get();
 
                 $weight = 0;
                 foreach ($transactions as $transaction) {
@@ -492,7 +492,7 @@ class RegionController extends Controller
                 foreach ($governorate->villages as $village) {
                     $villageCode = $village->village_code;
                     $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $date)->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereDate('created_at', $date)->get();
 
                     $weight = 0;
                     foreach ($transactions as $transaction) {
@@ -520,6 +520,7 @@ class RegionController extends Controller
 
                 return $governorate;
             });
+
             return view('admin.region.views.filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
@@ -631,7 +632,7 @@ class RegionController extends Controller
                 foreach ($governorate->villages as $village) {
                     $villageCode = $village->village_code;
                     $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $yesterday)->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $yesterday)->get();
 
                     $weight = 0;
                     foreach ($transactions as $transaction) {
@@ -774,7 +775,7 @@ class RegionController extends Controller
                 foreach ($governorate->villages as $village) {
                     $villageCode = $village->village_code;
                     $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
 
                     $weight = 0;
                     foreach ($transactions as $transaction) {
@@ -916,7 +917,7 @@ class RegionController extends Controller
                 foreach ($governorate->villages as $village) {
                     $villageCode = $village->village_code;
                     $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
 
                     $weight = 0;
                     foreach ($transactions as $transaction) {
@@ -952,18 +953,6 @@ class RegionController extends Controller
                 'total_coffee' => $totalWeight,
                 'totalPrice' => $totalPrice,
                 'readyForExport' => $yemenExport, 'farmerCount' => $farmerArray->count(),
-                'regionName' => $regionName,
-                'regionQuantity' => $regionQuantity,
-            ]);
-            return view('admin.region.views.filter_transctions', [
-                'governorates' =>   $governorates,
-                'regions' => $regions,
-                'villages' => $villages,
-                'farmers' => $farmers,
-                'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice,
-                'readyForExport' => $yemenExport,
-                'farmerCount' => $farmerArray->count(),
                 'regionName' => $regionName,
                 'regionQuantity' => $regionQuantity,
             ]);
@@ -1070,7 +1059,7 @@ class RegionController extends Controller
                 foreach ($governorate->villages as $village) {
                     $villageCode = $village->village_code;
                     $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
 
                     $weight = 0;
                     foreach ($transactions as $transaction) {
@@ -1216,7 +1205,7 @@ class RegionController extends Controller
                 foreach ($governorate->villages as $village) {
                     $villageCode = $village->village_code;
                     $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $end])->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $end])->get();
 
                     $weight = 0;
                     foreach ($transactions as $transaction) {
@@ -1358,7 +1347,7 @@ class RegionController extends Controller
                 foreach ($governorate->villages as $village) {
                     $villageCode = $village->village_code;
                     $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
 
                     $weight = 0;
                     foreach ($transactions as $transaction) {
@@ -1501,7 +1490,7 @@ class RegionController extends Controller
                 foreach ($governorate->villages as $village) {
                     $villageCode = $village->village_code;
                     $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
 
                     $weight = 0;
                     foreach ($transactions as $transaction) {
@@ -1644,7 +1633,7 @@ class RegionController extends Controller
             foreach ($governorate->villages as $village) {
                 $villageCode = $village->village_code;
                 $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE',  $governorateCode . '%')->get();
+                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE',  $governorateCode . '%')->get();
 
                 $weight = 0;
                 foreach ($transactions as $transaction) {
@@ -1779,7 +1768,7 @@ class RegionController extends Controller
             foreach ($governorate->villages as $village) {
                 $villageCode = $village->village_code;
                 $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE',  $regionCode . '%')->get();
+                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'LIKE',  $regionCode . '%')->get();
 
                 $weight = 0;
                 foreach ($transactions as $transaction) {
@@ -1912,7 +1901,7 @@ class RegionController extends Controller
             foreach ($governorate->villages as $village) {
                 $villageCode = $village->village_code;
                 $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->get();
+                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
 
                 $weight = 0;
                 foreach ($transactions as $transaction) {
