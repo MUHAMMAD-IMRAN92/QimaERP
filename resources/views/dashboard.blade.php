@@ -456,11 +456,11 @@
 
                                             ticks: {
                                                 min: 0,
-                                                max: 10000
+                                                // max: 10000
                                             }
                                         }],
                                         xAxes: [{
-                                            barPercentage: 0.4
+                                            barPercentage: 0.3
                                         }]
                                     }
 
@@ -910,7 +910,7 @@
 
                                             ticks: {
                                                 min: 0,
-                                                max: 10000
+                                                // max: 10000
                                             }
                                         }],
                                     }
