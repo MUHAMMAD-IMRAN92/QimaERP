@@ -173,8 +173,9 @@ class AuthController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
-
-                $farmerArray->push($farmer->farmer_code);
+                if (!$farmerArray->contains($farmer->farmer_code)) {
+                    $farmerArray->push($farmer->farmer_code);
+                }
             }
 
             $weight = $transaction->details->sum('container_weight');
@@ -392,8 +393,9 @@ class AuthController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
-
-                $farmerArray->push($farmer->farmer_code);
+                if (!$farmerArray->contains($farmer->farmer_code)) {
+                    $farmerArray->push($farmer->farmer_code);
+                }
             }
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
@@ -661,8 +663,9 @@ class AuthController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -925,8 +928,9 @@ class AuthController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -1192,8 +1196,9 @@ class AuthController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -1457,8 +1462,9 @@ class AuthController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -1727,8 +1733,9 @@ class AuthController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -1999,8 +2006,9 @@ class AuthController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -2264,8 +2272,9 @@ class AuthController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -2529,8 +2538,9 @@ class AuthController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -2618,7 +2628,7 @@ class AuthController extends Controller
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount =$farmerToBeCount->count();
+                $govFarmersCount = $farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
