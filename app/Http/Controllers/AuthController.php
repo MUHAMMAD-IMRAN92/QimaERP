@@ -428,7 +428,7 @@ class AuthController extends Controller
         foreach ($monthsArr as $month) {
 
             $monthName = date("F", mktime(0, 0, 0, $month, 10));
-            $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+            $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereBetween('created_at', [$request->from, $request->to])->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
 
             $weight = 0;
             foreach ($transactions as $key => $trans) {

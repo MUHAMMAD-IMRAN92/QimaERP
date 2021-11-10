@@ -56,7 +56,7 @@
                         'to': to
                     },
                     success: function(data) {
-                        $('#transactions').html(data);
+                        $('#transactionGraph').html(data);
                         console.log(data);
                     }
                 });
@@ -551,93 +551,93 @@
                         </script>
                     </div>
                 </div>
-            </div>
-            <br>
-            <!-- Main content -->
-            <section class="content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div>
 
-                            <!-- /.card -->
+                <br>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div>
 
-                            <div class="card">
-                                <!-- /.card-header -->
-                                <div class="">
+                                <!-- /.card -->
 
-                                    <table class="table table-bordered region-table-custom">
-                                        <thead>
-                                            <tr class="blacklink letter-spacing-1 text-uppercase">
+                                <div class="card">
+                                    <!-- /.card-header -->
+                                    <div class="">
 
-                                                <th>Governorate / </th>
-                                                <th>Region / </th>
-                                                <th>Villages / </th>
-                                                <th>Quantity /</th>
-                                                <th>Value /</th>
-                                                <th>Farmers /</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($governorates as $governorate)
-                                                <tr>
+                                        <table class="table table-bordered region-table-custom">
+                                            <thead>
+                                                <tr class="blacklink letter-spacing-1 text-uppercase">
 
-                                                    <td>{{ $governorate->governerate_title }}</td>
-                                                    <td>
-                                                        @foreach ($governorate->regions as $region)
-                                                            {{ $region->region_title }} <br>
-                                                        @endforeach
-                                                    </td>
-                                                    <td>
-                                                        @if ($governorate->villages)
-
-                                                            @foreach ($governorate->villages as $village)
-                                                                {{ $village->village_title }} <br>
-                                                            @endforeach
-
-                                                        @endif
-                                                    </td>
-
-                                                    <td>
-                                                        @if ($governorate->villages)
-
-                                                            @foreach ($governorate->villages as $village)
-                                                                {{ $village->weight }} <br>
-                                                            @endforeach
-                                                        @endif
-                                                    </td>
-
-                                                    <td>
-                                                        @if ($governorate->villages)
-
-                                                            @foreach ($governorate->villages as $village)
-                                                                {{ $village->weight * $village->price }} <br>
-                                                            @endforeach
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($governorate->villages)
-
-                                                            @foreach ($governorate->villages as $village)
-                                                                {{ $village->farmers }} <br>
-                                                            @endforeach
-                                                        @endif
-                                                    </td>
+                                                    <th>Governorate / </th>
+                                                    <th>Region / </th>
+                                                    <th>Villages / </th>
+                                                    <th>Quantity /</th>
+                                                    <th>Value /</th>
+                                                    <th>Farmers /</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($governorates as $governorate)
+                                                    <tr>
+
+                                                        <td>{{ $governorate->governerate_title }}</td>
+                                                        <td>
+                                                            @foreach ($governorate->regions as $region)
+                                                                {{ $region->region_title }} <br>
+                                                            @endforeach
+                                                        </td>
+                                                        <td>
+                                                            @if ($governorate->villages)
+
+                                                                @foreach ($governorate->villages as $village)
+                                                                    {{ $village->village_title }} <br>
+                                                                @endforeach
+
+                                                            @endif
+                                                        </td>
+
+                                                        <td>
+                                                            @if ($governorate->villages)
+
+                                                                @foreach ($governorate->villages as $village)
+                                                                    {{ $village->weight }} <br>
+                                                                @endforeach
+                                                            @endif
+                                                        </td>
+
+                                                        <td>
+                                                            @if ($governorate->villages)
+
+                                                                @foreach ($governorate->villages as $village)
+                                                                    {{ $village->weight * $village->price }} <br>
+                                                                @endforeach
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($governorate->villages)
+
+                                                                @foreach ($governorate->villages as $village)
+                                                                    {{ $village->farmers }} <br>
+                                                                @endforeach
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.card-body -->
                                 </div>
-                                <!-- /.card-body -->
+                                <!-- /.card -->
                             </div>
-                            <!-- /.card -->
+                            <!-- /.col -->
                         </div>
-                        <!-- /.col -->
+                        <!-- /.row -->
                     </div>
-                    <!-- /.row -->
-                </div>
-                <!-- /.container-fluid -->
-            </section>
-            <!-- /.content -->
+                    <!-- /.container-fluid -->
+                </section>
+            </div><!-- /.content -->
         </div>
     </div>
     <!-- /.content-wrapper -->
