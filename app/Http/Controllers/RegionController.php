@@ -105,7 +105,7 @@ class RegionController extends Controller
             foreach ($governorate->villages as $village) {
                 $villageCode = $village->village_code;
                 $village->farmers = Farmer::where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to' , 2)->get();
+                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->get();
 
                 $weight = 0;
                 foreach ($transactions as $transaction) {
@@ -348,7 +348,7 @@ class RegionController extends Controller
             foreach ($governorate->villages as $village) {
                 $villageCode = $village->village_code;
                 $village->farmers = Farmer::whereIn('farmer_code', $farmerCodes)->where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$request->from, $request->to])->get();
+                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$request->from, $request->to])->get();
 
                 $weight = 0;
                 foreach ($transactions as $transaction) {

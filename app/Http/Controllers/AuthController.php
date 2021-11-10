@@ -58,13 +58,19 @@ class AuthController extends Controller
         foreach ($governorate as $govern) {
             $govCode = $govern->governerate_code;
             $weight = 0;
+            $farmerToBeCount = collect();
             $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
             }
             array_push($govName, $govern->governerate_title);
             array_push($govQuantity, round($weight, 2));
-            $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+            $govFarmersCount = $farmerToBeCount->count();
             $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
             $govRegionQty = collect();
             foreach ($govRegion as $r) {
@@ -461,13 +467,20 @@ class AuthController extends Controller
         foreach ($governorate as $govern) {
             $govCode = $govern->governerate_code;
             $weight = 0;
+
             $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $farmerToBeCount = collect();
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
             }
             array_push($govName, $govern->governerate_title);
             array_push($govQuantity, round($weight, 2));
-            $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+            $govFarmersCount = $farmerToBeCount->count();
             $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
             $govRegionQty = collect();
             foreach ($govRegion as $r) {
@@ -724,12 +737,18 @@ class AuthController extends Controller
                 $govCode = $govern->governerate_code;
                 $weight = 0;
                 $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereDate('created_at',  $date)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+                $govFarmersCount = $farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
@@ -981,12 +1000,18 @@ class AuthController extends Controller
                 $govCode = $govern->governerate_code;
                 $weight = 0;
                 $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereDate('created_at',  $yesterday)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+                $govFarmersCount = $farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
@@ -1239,12 +1264,18 @@ class AuthController extends Controller
                 $govCode = $govern->governerate_code;
                 $weight = 0;
                 $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+                $govFarmersCount = $farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
@@ -1503,12 +1534,18 @@ class AuthController extends Controller
                 $govCode = $govern->governerate_code;
                 $weight = 0;
                 $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+                $govFarmersCount = $farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
@@ -1767,12 +1804,18 @@ class AuthController extends Controller
                 $govCode = $govern->governerate_code;
                 $weight = 0;
                 $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+                $govFarmersCount = $farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
@@ -2029,12 +2072,18 @@ class AuthController extends Controller
                 $govCode = $govern->governerate_code;
                 $weight = 0;
                 $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereBetween('created_at', [$start, $end])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+                $govFarmersCount = $farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
@@ -2289,12 +2338,18 @@ class AuthController extends Controller
                 $govCode = $govern->governerate_code;
                 $weight = 0;
                 $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereBetween('created_at', [$start, $date])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+                $govFarmersCount = $farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
@@ -2552,12 +2607,18 @@ class AuthController extends Controller
                 $govCode = $govern->governerate_code;
                 $weight = 0;
                 $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereBetween('created_at', [$start, $date])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
                 }
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
-                $govFarmersCount = Farmer::where('farmer_code', "LIKE",   "$govCode%")->count();
+                $govFarmersCount =$farmerToBeCount->count();
                 $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
