@@ -1637,7 +1637,7 @@ class RegionController extends Controller
             }
         }
         $governorates = Governerate::whereIn('governerate_code',  $govCodes)->get();
-        $governorates = $governorates->map(function ($governorate) use ($regionCodes,   $villageCode, $farmerCodes,) {
+        $governorates = $governorates->map(function ($governorate) use ($regionCodes,   $villageCode, $farmerCodes) {
             $governorateCode = $governorate->governerate_code;
             $governorate->regions = Region::whereIn('region_code', $regionCodes)->where('region_code', 'LIKE', $governorateCode . '%')->get();
             $governorate->villages = Village::whereIn('village_code', $villageCode)->where('village_code', 'LIKE', $governorateCode . '%')->get();
