@@ -542,7 +542,7 @@
                                         yAxes: [{
                                             ticks: {
                                                 min: 0,
-                                                max: 8000
+                                                // max: 8000
                                             }
                                         }],
                                     }
