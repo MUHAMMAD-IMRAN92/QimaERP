@@ -354,7 +354,7 @@ class FarmerController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
-                if ($farmers->contains($farmer)) {
+                if (!$farmers->contains($farmer)) {
                     $farmers->push($farmer);
                 }
             }
@@ -401,7 +401,7 @@ class FarmerController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
-                if ($farmers->contains($farmer)) {
+                if (!$farmers->contains($farmer)) {
                     $farmers->push($farmer);
                 }
             }
@@ -446,11 +446,11 @@ class FarmerController extends Controller
         foreach ($transactions as $transaction) {
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
-             if ($farmer) {
-                    if ($farmers->contains($farmer)) {
-                        $farmers->push($farmer);
-                    }
+            if ($farmer) {
+                if (!$farmers->contains($farmer)) {
+                    $farmers->push($farmer);
                 }
+            }
         }
         $farmers = $farmers->map(function ($farmer) use ($regionCode) {
             $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
@@ -529,11 +529,12 @@ class FarmerController extends Controller
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
                 $farmer = Farmer::where('farmer_code', $batch_number)->first();
                 if ($farmer) {
-                    if ($farmers->contains($farmer)) {
+                    if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
                     }
                 }
             }
+       
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();
@@ -576,8 +577,8 @@ class FarmerController extends Controller
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
                 $farmer = Farmer::where('farmer_code', $batch_number)->first();
-                 if ($farmer) {
-                    if ($farmers->contains($farmer)) {
+                if ($farmer) {
+                    if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
                     }
                 }
@@ -625,8 +626,8 @@ class FarmerController extends Controller
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
                 $farmer = Farmer::where('farmer_code', $batch_number)->first();
-                 if ($farmer) {
-                    if ($farmers->contains($farmer)) {
+                if ($farmer) {
+                    if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
                     }
                 }
@@ -674,8 +675,8 @@ class FarmerController extends Controller
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
                 $farmer = Farmer::where('farmer_code', $batch_number)->first();
-                 if ($farmer) {
-                    if ($farmers->contains($farmer)) {
+                if ($farmer) {
+                    if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
                     }
                 }
@@ -723,8 +724,8 @@ class FarmerController extends Controller
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
                 $farmer = Farmer::where('farmer_code', $batch_number)->first();
-                 if ($farmer) {
-                    if ($farmers->contains($farmer)) {
+                if ($farmer) {
+                    if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
                     }
                 }
@@ -774,7 +775,9 @@ class FarmerController extends Controller
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
                 $farmer = Farmer::where('farmer_code', $batch_number)->first();
                 if ($farmer) {
-                    $farmers->push($farmer);
+                    if (!$farmers->contains($farmer)) {
+                        $farmers->push($farmer);
+                    }
                 }
             }
             $governorates = Governerate::all();
@@ -820,7 +823,9 @@ class FarmerController extends Controller
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
                 $farmer = Farmer::where('farmer_code', $batch_number)->first();
                 if ($farmer) {
-                    $farmers->push($farmer);
+                    if (!$farmers->contains($farmer)) {
+                        $farmers->push($farmer);
+                    }
                 }
             }
             $governorates = Governerate::all();
@@ -866,7 +871,9 @@ class FarmerController extends Controller
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
                 $farmer = Farmer::where('farmer_code', $batch_number)->first();
                 if ($farmer) {
-                    $farmers->push($farmer);
+                    if (!$farmers->contains($farmer)) {
+                        $farmers->push($farmer);
+                    }
                 }
             }
             $governorates = Governerate::all();
