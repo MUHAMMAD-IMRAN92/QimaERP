@@ -747,9 +747,7 @@ class CoffeeBuyer extends Controller
             DB::commit();
         } catch (Throwable $th) {
             DB::rollback();
-            return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
-                'line' => $th->getLine()
-            ]), 499);
+            return Response::json(array('status' => 'error', 'message' => $th->getMessage() . ' ' . $th->getLine(), 'data' => 0), 499);
         }
         $dataArray = array();
         $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesArray)->with('childBatchNumber.latestTransation.transactionDetail')->with('latestTransation.transactionDetail')->get();
@@ -826,11 +824,7 @@ class CoffeeBuyer extends Controller
             $sessiondata = $session->server_session_id + 1;
         }
 
-        return response()->json([
-            'status' => "error",
-            "message" => "Invalid argument supplied for foreach()",
-            "data" => "line:226"
-        ]);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $sessiondata);
         //        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
         //        return sendSuccess('Coffee was added Successfully', $currentBatch);
     }
