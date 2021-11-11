@@ -268,8 +268,10 @@ class RegionController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
+                if (!$farmerArray->contains($farmer->farmer_code)) {
 
-                $farmerArray->push($farmer->farmer_code);
+                    $farmerArray->push($farmer->farmer_code);
+                }
             }
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
@@ -411,8 +413,10 @@ class RegionController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+        
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -552,8 +556,10 @@ class RegionController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+        
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -694,8 +700,10 @@ class RegionController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+        
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -837,8 +845,10 @@ class RegionController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+        
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -979,8 +989,10 @@ class RegionController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+        
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -1124,8 +1136,10 @@ class RegionController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+        
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -1267,8 +1281,10 @@ class RegionController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+        
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -1410,8 +1426,10 @@ class RegionController extends Controller
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
-
-                        $farmerArray->push($farmer->farmer_code);
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+        
+                            $farmerArray->push($farmer->farmer_code);
+                        }
                     }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
@@ -1549,8 +1567,10 @@ class RegionController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
+                if (!$farmerArray->contains($farmer->farmer_code)) {
 
-                $farmerArray->push($farmer->farmer_code);
+                    $farmerArray->push($farmer->farmer_code);
+                }
             }
 
             $weight = $transaction->details->sum('container_weight');
@@ -1687,8 +1707,10 @@ class RegionController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
+                if (!$farmerArray->contains($farmer->farmer_code)) {
 
-                $farmerArray->push($farmer->farmer_code);
+                    $farmerArray->push($farmer->farmer_code);
+                }
             }
 
             $weight = $transaction->details->sum('container_weight');
@@ -1821,8 +1843,10 @@ class RegionController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
+                if (!$farmerArray->contains($farmer->farmer_code)) {
 
-                $farmerArray->push($farmer->farmer_code);
+                    $farmerArray->push($farmer->farmer_code);
+                }
             }
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
