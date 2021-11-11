@@ -826,7 +826,11 @@ class CoffeeBuyer extends Controller
             $sessiondata = $session->server_session_id + 1;
         }
 
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_COFFEE"), $sessiondata);
+        return response()->json([
+            'status' => "error",
+            "message" => "Invalid argument supplied for foreach()",
+            "data" => "line:226"
+        ]);
         //        $currentBatch = BatchNumber::where('batch_id', $parentBatch->batch_id)->with('childBatchNumber.transaction.transactionDetail')->with('transaction.transactionDetail')->first();
         //        return sendSuccess('Coffee was added Successfully', $currentBatch);
     }
