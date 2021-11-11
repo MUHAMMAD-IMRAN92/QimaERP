@@ -158,7 +158,14 @@ class VillageController extends Controller
             $updatevillage->village_title_ar = $request->village_title_ar;
             $updatevillage->price_per_kg = $request->price_per_kg;
             $updatevillage->village_code = $request->code . '-' . $request->village_code;
-
+            // return  $request->all();
+            if ($request->hasFile('village_image')) {
+                $file = $request->village_image;
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $path = $request->file('village_image')->storeAs('images', $file_name, 's3');
+                Storage::disk('s3')->setVisibility($path, 'public');
+                $updatevillage->image =   $file_name;
+            }
             // dd($updatevillage);
             $updatevillage->update();
             return back()->with('msg', 'Village Update Successfully!');

@@ -44,7 +44,8 @@
                                     </div> --}}
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form role="form" method="POST" action="{{ URL::to('') }}/admin/updatevillage">
+                            <form role="form" method="POST" action="{{ URL::to('') }}/admin/updatevillage"
+                                enctype="multipart/form-data">
                                 {{-- @if ($errors->any())                    
                                     <div class="alert alert-danger">
                                                                  <ul>
@@ -103,6 +104,15 @@
                                                 value="{{ $village->price_per_kg }}" name="price_per_kg"
                                                 placeholder="Price Per Kg" @error('farmer_nicn') is-invalid @enderror>
                                             @error('price_per_kg')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Add Image </label>
+                                            <br>
+                                            <input type="file" id="price_per_kg" value="" name="village_image"
+                                                placeholder="Price Per Kg" @error('village_image') is-invalid @enderror>
+                                            @error('village_image')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
