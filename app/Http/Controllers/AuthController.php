@@ -712,7 +712,7 @@ class AuthController extends Controller
             $weight = 0;
             foreach ($transactions as $transaction) {
                 // $weight += $transaction->details->sum('container_weight');
-                array_push($createdAt, $transaction->created_at->format('i:s'));
+                array_push($createdAt, $transaction->created_at->format('H:i:s'));
                 array_push($quantity, $transaction->details->sum('container_weight'));
             }
             $buyerArray = collect();
@@ -976,7 +976,7 @@ class AuthController extends Controller
             $weight = 0;
             foreach ($transactions as $transaction) {
                 // $weight += $transaction->details->sum('container_weight');
-                array_push($createdAt, $transaction->created_at->format('i:s'));
+                array_push($createdAt, $transaction->created_at->format('H:i:s'));
                 array_push($quantity, $transaction->details->sum('container_weight'));
             }
             $buyerArray = collect();
