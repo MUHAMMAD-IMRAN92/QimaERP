@@ -28,11 +28,16 @@ class LogRoute
         //     'seprator' => 'done Here'
         // ];
         // \Log::info($log);
+
         $log = new Logs();
         $log->method =  $request->getMethod();
         $log->url = Str::afterLast($request->getUri(), '/');
         $log->request = json_encode($request->all());
         $log->response =  $response->getContent();
+        if ($request->header('Build-Number')) {
+            // dd($request->header('Build-Number'));
+            $log->build_no = $request->header('Build-Number');
+        }
         $log->save();
 
         return $response;
