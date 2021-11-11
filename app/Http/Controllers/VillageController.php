@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Farmer;
+use App\FileSystem;
 use App\Region;
 use App\Village;
 use App\Transaction;
@@ -10,6 +11,7 @@ use Facade\FlareClient\Stacktrace\Frame;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class VillageController extends Controller
@@ -95,8 +97,14 @@ class VillageController extends Controller
         $village->village_title_ar = $request->village_title_ar;
         $village->created_by = Auth::user()->user_id;
         $village->price_per_kg = $request->price_per_kg;
-
+        if ($request->hasFile('village_image')) {
+            $file = $request->village_image;
+            $file_name = time() . '.' . $file->getClientOriginalExtension();
+            $path = $request->file('village_image')->storeAs('images', $file_name, 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+        }
         $village->local_code = '';
+        $village->image =  $file_name;
         // dd($village->village_id);
         $village->save();
         return redirect('admin/allvillage');
