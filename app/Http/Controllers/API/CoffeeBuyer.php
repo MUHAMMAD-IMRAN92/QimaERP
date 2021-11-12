@@ -747,9 +747,7 @@ class CoffeeBuyer extends Controller
             DB::commit();
         } catch (Throwable $th) {
             DB::rollback();
-            return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
-                'line' => $th->getLine()
-            ]), 499);
+            return Response::json(array('status' => 'error', 'message' => $th->getMessage() . ' ' . $th->getLine(), 'data' => 0), 499);
         }
         $dataArray = array();
         $currentBatchesData = BatchNumber::whereIn('batch_id', $batchesArray)->with('childBatchNumber.latestTransation.transactionDetail')->with('latestTransation.transactionDetail')->get();
