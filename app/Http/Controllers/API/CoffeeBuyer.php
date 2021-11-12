@@ -225,7 +225,7 @@ class CoffeeBuyer extends Controller
             'batch_number' => 'required',
         ]);
 
-        \Log::info($request);
+
 
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
@@ -245,7 +245,7 @@ class CoffeeBuyer extends Controller
         }
 
         $batches_numbers = json_decode(str_replace('&quot;', '"', $request->input('batch_number')));
-
+        \Log::info($request);
         // foreach($batches_numbers as $batch){
         //     return response()->json([
         //         'local_updated_at_raw' => $batch->batch->transactions[0]->transactions->local_updated_at,
