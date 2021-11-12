@@ -36,7 +36,11 @@ class LogRoute
         $log->response =  $response->getContent();
         if ($request->header('Build-Number')) {
             // dd($request->header('Build-Number'));
-            $log->build_no = $request->header('Build-Number');
+            $device = '';
+            if ($request->header('Device')) {
+                $device = $request->header('Device');
+            }
+            $log->build_no = $request->header('Build-Number') . ' : ' . $device;
         }
         $log->save();
 
