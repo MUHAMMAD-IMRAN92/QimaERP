@@ -35,9 +35,15 @@ class DevTestController extends Controller
         //     'msg' => 'Hello Dev, how is your day?',
         //     'live_test' => true
         // ]);
-        $code = ['SAN', 'IBB'];
-
-        $governerate = Governerate::whereIn('governerate_code', $code)->get();
-        return $governerate;
+        // $oldfarmerCode = 'SAN-HAR-133-1790';
+        // $code = checkBatchNumber($oldfarmerCode);
+        // dd($code);
+        $batchNumber = BatchNumber::get();
+        foreach ($batchNumber as $b) {
+            $tran = Transaction::where('batch_number', $b->batch_number)->first();
+            if (!$tran) {
+                $b->delete();
+            }
+        }
     }
 }

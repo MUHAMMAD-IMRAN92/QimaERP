@@ -316,3 +316,20 @@ function mixFarmes($id)
         mixFarmes($id);
     }
 }
+
+function checkBatchNumber($farmerCode)
+{
+    // return $farmerCode;
+    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+    
+    if ($farmer) {
+        $batchArr = explode('-', $farmerCode);
+        $lastnumber =  array_pop($batchArr);
+        $newNumber = $lastnumber + 1;
+        $newFarmerCode =  array_shift($batchArr) . '-' .  array_shift($batchArr) . '-' .  array_shift($batchArr) . '-' . $newNumber;
+     return   checkBatchNumber($newFarmerCode);
+    } else {
+        
+        return $farmerCode;exit;
+    }
+}
