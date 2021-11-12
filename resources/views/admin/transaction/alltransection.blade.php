@@ -366,9 +366,9 @@
                 </strong>
             </div>
             <p class="ml-2 letter-spacing-1 btn-color-darkRed">Pending</p>
-            <hr class="ml-md-2">
+            {{-- <hr class="ml-md-2"> --}}
             <!-- Main content -->
-            <section class="content">
+            {{-- <section class="content">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
@@ -417,7 +417,7 @@
                     <!-- /.row -->
                 </div>
                 <!-- /.container-fluid -->
-            </section>
+            </section> --}}
             <!-- /.content -->
         </div>
     </div>

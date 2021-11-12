@@ -78,9 +78,22 @@
             cursor: pointer;
         }
 
+        #buyeridcardbtn:hover {
+            cursor: pointer;
+        }
+
+        #buyeridcard {
+            display: none;
+        }
+
+        .hoverSize:hover {
+            width: 500px !important;
+
+        }
+
         /* #reciepts-hover:hover b{
-                                                                                    cursor: pointer;
-                                                                                } */
+                                                                                                                                                                                                                cursor: pointer;
+                                                                                                                                                                                                            } */
 
     </style>
 
@@ -292,6 +305,20 @@
                     }
                 });
             });
+            $('#buyeridcard').on('click', function() {
+                $.ajax({
+                    url: "{{ url('admin/coffeeBuyer/idcard/' . $buyer->user_id) }}",
+                    type: "GET",
+                    success: function(data) {
+                        $('#transactionInv').html(data);
+                        console.log(data);
+                    }
+                });
+            });
+            $('#buyeridcardbtn').on('click', function() {
+                var html = $('#buyeridcard').html();
+                $('#transactionInv').html(html);
+            });
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
@@ -333,12 +360,12 @@
             <hr class="ml-2 mb-0">
             <div class="row">
                 <div class="col-md-4 my-3">
-                    @if ($buyer->image == null)
+                    @if ($buyer->profile_image == null)
                         <img class="famerimg ml-4" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                             style="width: 200px ; height:200px; border-radius:50%;" alt="">
                     @else
                         <img class="famerimg ml-4" style="width:  200px ; height: 200px; border-radius:50%;"
-                            src="{{ Storage::disk('s3')->url('images/' . $buyer->image) }}" alt=" no img">
+                            src="{{ Storage::disk('s3')->url('images/' . $buyer->profile_image) }}" alt=" no img">
                     @endif
 
                 </div>
@@ -445,7 +472,7 @@
             </div>
             <hr class="ml-2">
             <div class="row ml-2 blacklink mb-2">
-                <span class="row ml-2 text-uppercase mb-2 hover-2" id="">
+                <span class="row ml-2 text-uppercase mb-2 hover-2" id="buyeridcardbtn">
                     <strong>
                         <b>ID DOCUMENTS</b>
                     </strong>
@@ -490,8 +517,20 @@
             </div> --}}
             <div class="row ml-2" id="transactionInv">
                 <div class="col-sm-1 color p-0 ml-0">
-                    <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
-                        style="max-width: 100%; height: 100%;" alt="" id="idimage">
+                    <div id="idcard">
+
+
+                        @if ($buyer->idcard_image == null)
+                            <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                                style="width: 100%; height: 100%;" alt="" id="idimage">
+
+
+                        @else
+                            <img class="famerimg hoverSize"
+                                src="{{ Storage::disk('s3')->url('images/' . $buyer->idcard_image) }}"
+                                style="width: 100%; height: 100%;" alt="" id="idimage">
+                        @endif
+                    </div>
                     <div id="myModal" class="modal">
                         <span class="close">&times;</span>
                         <img class="modal-content" id="img01">
@@ -516,7 +555,7 @@
                                         <img src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                                             id="region_farmer">
                                     @else
-                                        <img src=" {{ Storage::disk('s3')->url('images/' . $farmer['picture_id']) }}"
+                                        <img src=" {{ Storage::disk('s3')->url('images/' . $farmer['image']) }}"
                                             id="region_farmer">
                                     @endif
 
@@ -548,7 +587,7 @@
                                         <img src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                                             id="region_farmer">
                                     @else
-                                        <img src=" {{ Storage::disk('s3')->url('images/' . $farmer['picture_id']) }}"
+                                        <img src=" {{ Storage::disk('s3')->url('images/' . $village['image']) }}"
                                             id="region_farmer">
                                     @endif
 
@@ -608,6 +647,25 @@
                     </div>
                 </div>
             @endforeach
+            <div id="buyeridcard">
+                <div class="col-sm-1 color p-0 ml-0">
+                    @if ($buyer->idcard_image == null)
+                        <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                            style="max-width: 100%; height: 100%;" alt="">
+
+
+                    @else
+                        <img class="famerimg hoverSize"
+                            src="{{ Storage::disk('s3')->url('images/' . $buyer->idcard_image) }}"
+                            style="width: 100%; height: 100%;" alt="" id="idimage">
+                    @endif
+                    <div id="myModal" class="modal">
+                        <span class="close">&times;</span>
+                        <img class="modal-content" id="img01">
+                        <div id="caption"></div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Main content -->
