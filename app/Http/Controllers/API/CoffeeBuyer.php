@@ -168,8 +168,9 @@ class CoffeeBuyer extends Controller
                 $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
                 $village = Village::where('village_code', 'like', "%$farmer->farmer_village%")->first();
                 //::create new
+                $farmerCode =   $village->village_code . '-' . $currentFarmerCode;
                 $alreadyFarmer = Farmer::create([
-                    'farmer_code' => $village->village_code . '-' . $currentFarmerCode,
+                    'farmer_code' => checkBatchNumber($farmerCode),
                     'farmer_name' => $farmer->farmer_name,
                     'village_code' => $farmer->farmer_village,
                     'picture_id' => $profileImageId,
@@ -261,7 +262,7 @@ class CoffeeBuyer extends Controller
         $sessiondata = CoffeeSession::max('server_session_id') ?? 0;
         DB::beginTransaction();
         try {
-            if(is_array($batches_numbers)){
+            if (is_array($batches_numbers)) {
                 foreach ($batches_numbers as $key => $batch_numbers) {
                     //::insert child batches id
                     $childBatchNumberArray = array();
