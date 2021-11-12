@@ -168,9 +168,9 @@ class CoffeeBuyer extends Controller
                 $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
                 $village = Village::where('village_code', 'like', "%$farmer->farmer_village%")->first();
                 //::create new
-                $farmerCode =   $village->village_code . '-' . $currentFarmerCode;
+                $checkfarmerCode =   $village->village_code . '-' . $currentFarmerCode;
                 $alreadyFarmer = Farmer::create([
-                    'farmer_code' => checkBatchNumber($farmerCode),
+                    'farmer_code' => checkBatchNumber($checkfarmerCode),
                     'farmer_name' => $farmer->farmer_name,
                     'village_code' => $farmer->farmer_village,
                     'picture_id' => $profileImageId,
