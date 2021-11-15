@@ -359,17 +359,17 @@
             <div id="transactionsGraph">
 
 
-                <div class="col-lg-11 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
-                    <div class="col-sm-1 color bg-darkPurple p-2 content-box">
-                        <h4>{{ $totalWeight }}</h4>
-                        <p>KG CHERRY BOUGHT </p>
-                    </div>
-                    <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                        <h4>{{ $totalPrice }}</h4>
-                        <p>YER COFFEE PURCHASED</p>
-                    </div>
-                    <div class="col-sm-1 color bg-darkRed p-2 content-box">
-                        <h4>-</h4>
+            <div class="col-lg-12 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
+                <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                    <h4>{{ $totalWeight }}</h4>
+                    <p>KG CHERRY BOUGHT </p>
+                </div>
+                <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                    <h4>{{ $totalPrice }}</h4>
+                    <p>YER COFFEE PURCHASED</p>
+                </div>
+                <div class="col-sm-1 color bg-darkRed p-2 content-box">
+                    <h4>-</h4>
 
                         <p>YER
                             ACCOUNT
@@ -419,56 +419,50 @@
                         <p>USD SALES</p>
                     </div>
 
-                </div>
-                <div class="row ml-2 text-uppercase mb-2">
-                    <strong>
-                        <b>QUANTITY CHERRY BOUGHT</b>
-                    </strong>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <canvas id="myChart" style="width:100%;max-height:500px"></canvas>
+</div>
+<div class="row ml-2 text-uppercase mb-2">
+    <strong>
+        <b>QUANTITY CHERRY BOUGHT</b>
+    </strong>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <canvas id="myChart" style="width:100%;max-height:500px"></canvas>
 
-                        <script>
-                            console.log(@json($quantity));
-                            var xValues = @json($createdAt);
-                            var yValues = @json($quantity);
-                            new Chart("myChart", {
-                                type: "line",
-                                data: {
-                                    labels: xValues,
-                                    datasets: [{
-                                        pointRadius: 4,
-                                        fill: false,
-                                        tension: 0.5,
+        <script>
+            console.log(@json($quantity));
+            var xValues = @json($createdAt);
+            var yValues = @json($quantity);
+            new Chart("myChart", {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        pointRadius: 4,
+                        fill: false,
+                        tension: 0.5,
 
-                                        backgroundColor: "black",
-                                        borderColor: "gray",
-                                        data: yValues
-                                    }]
-                                },
-                                options: {
-                                    legend: {
-                                        display: false
-                                    },
-                                    scales: {
-                                        yAxes: [{
+                        backgroundColor: "black",
+                        borderColor: "gray",
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
 
-                                            ticks: {
-                                                min: 0,
-                                                // max: 10000
-                                            }
-                                        }],
-                                        xAxes: [{
-                                            barPercentage: 0.3
-                                        }]
-                                    }
-
-                                }
-                            });
-                        </script>
-                    </div>
-                </div>
+                            ticks: {
+                                min: 0,
+                                max: 10000
+                            }
+                        }],
+                        xAxes: [{
+                            barPercentage: 0.4
+                        }]
+                    }
 
                 <hr class="ml-md-2">
                 <div class="row">
@@ -835,88 +829,10 @@
 
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <center>Region Wise</center>
-                        <canvas id="3rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
-
-                        <script>
-                            var xValues = @json($regionName);
-                            var yValues = @json($regionQuantity);
-
-                            new Chart("3rd", {
-                                type: "line",
-                                data: {
-                                    labels: xValues,
-                                    datasets: [{
-                                        pointRadius: 3,
-                                        // backgroundColor: "#e755ba",
-                                        pointBackgroundColor: "white",
-                                        pointBorderColor: "black",
-                                        fill: false,
-                                        lineTension: 0.3,
-                                        borderWidth: 1,
-                                        // lineColor: "black",
-                                        borderColor: "black",
-                                        //  backgroundColor: 'black',
-                                        data: yValues
-                                    }]
-                                },
-                                options: {
-                                    legend: {
-                                        display: false
-                                    },
-                                    scales: {
-                                        yAxes: [{
-
-                                        }],
-                                    }
-                                }
-                            });
-                        </script>
-                    </div>
-                    <div class="col-md-7">
-                        <center>Yemen Sales</center>
-                        <canvas id="6rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
-
-                        <script>
-                            var xValues = @json($yemenSalesDay);
-                            var yValues = @json($yemenSalesCoffee);
-
-                            new Chart("6rd", {
-                                type: "line",
-                                data: {
-                                    labels: xValues,
-                                    datasets: [{
-                                        pointRadius: 3,
-                                        // backgroundColor: "#e755ba",
-                                        pointBackgroundColor: "white",
-                                        pointBorderColor: "black",
-                                        fill: false,
-                                        lineTension: 0.3,
-                                        borderWidth: 1,
-                                        // lineColor: "black",
-                                        borderColor: "black",
-                                        //  backgroundColor: 'black',
-                                        data: yValues
-                                    }]
-                                },
-                                options: {
-                                    legend: {
-                                        display: false
-                                    },
-                                    scales: {
-                                        yAxes: [{
-
-                                            ticks: {
-                                                min: 0,
-                                                // max: 10000
-                                            }
-                                        }],
-                                    }
-                                }
-                            });
-                        </script>
+                <div class="col-md-6 data-tabs px-1">
+                    <div class="h-100 bg-dark-blue text-uppercase mb-2">
+                        <h4 class="ml-1">{{ $s['end'] }}</h4>
+                        <p class="ml-1 mb-0">{{ $s['wareHouse'] }}</p>
                     </div>
                 </div>
 
@@ -925,6 +841,45 @@
         </div>
         <!-- /.content-header -->
 
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-md-5">
+        <div class="row ml-2 text-uppercase mb-5">
+            <strong>
+                <b>Region Wise</b>
+            </strong>
+        </div>
+        <canvas id="3rd" class="ml-md-2 pt-4" style="width:100%; height:200px;"></canvas>
+
+        <script>
+            var xValues = @json($regionName);
+            var yValues = @json($regionQuantity);
+
+            new Chart("3rd", {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        pointRadius: 3,
+                        // backgroundColor: "#e755ba",
+                        pointBackgroundColor: "white",
+                        pointBorderColor: "black",
+                        fill: false,
+                        lineTension: 0.3,
+                        borderWidth: 1,
+                        // lineColor: "black",
+                        borderColor: "black",
+                        //  backgroundColor: 'black',
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
 
     </div>
 @endsection

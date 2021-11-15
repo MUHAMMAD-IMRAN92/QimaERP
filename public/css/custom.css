@@ -103,6 +103,7 @@
         margin: 1px;
         max-width: 134px;
     }
+
     .data-tabs div p, .card-custom-description{
         font-size: 14px;
         letter-spacing: 1px;
@@ -116,11 +117,8 @@
     .data-tabs div{
         flex: 1;
         flex-wrap: wrap;
-        max-width: 134px;
-        min-height: 100px;
         padding: 0.5rem !important;
         padding-bottom: 20px !important;
-
     }
     .data-tabs div h3{
         font-size: 1.5rem;
