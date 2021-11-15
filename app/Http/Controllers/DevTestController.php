@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use App\FileSystem;
+use App\Governerate;
 use App\TransactionInvoice;
 use Illuminate\Support\Carbon;
 
@@ -34,5 +35,8 @@ class DevTestController extends Controller
             'msg' => 'Hello Dev, how is your day?',
             'live_test' => true
         ]);
+        // $oldfarmerCode = 'SAN-HAR-133-1790';
+        // $code = checkBatchNumber($oldfarmerCode);
+        // dd($code);}
     }
 }

@@ -1,6 +1,6 @@
 <div class="col-sm-1 color bg-darkPurple mr-1">
     <h4>{{ $farmer->first_purchase }}</h4>
-    <p>First Purchade</p>
+    <p>First Purchase</p>
 </div>
 <div class="col-sm-1 color bg-darkPurple mr-1">
 

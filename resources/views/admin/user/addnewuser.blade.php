@@ -42,7 +42,7 @@
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form role="form" method="POST" action="{{URL::to('/admin/storeuser')}}">
+                            <form role="form" method="POST" action="{{URL::to('/admin/storeuser')}}" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <div class="card-body col-md-6 text-uppercase letter-spacing-1">
                                     <div class="form-group">
@@ -95,7 +95,34 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <div class="row">
 
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="customFile">User Image</label>
+                                                <div class="">
+                                                    <input type="file" class="" name="profile_picture" id="customFile"
+                                                        @error('profile_picture') is-invalid @enderror>
+                                                    @error('profile_picture')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="customFile">User Id Card Image</label>
+                                                <div class="">
+                                                    <input type="file" class="" name="idcard_picture" id="customFile"
+                                                        @error('idcard_picture') is-invalid @enderror>
+                                                    @error('idcard_picture')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 </div>
                                 <!-- /.card-body -->
