@@ -38,18 +38,27 @@
         }
 
         .background {
-            background-color: green;
+            background-color: #5E9770;
             margin: 0 0.5px;
-
             height: 40px;
+            position: relative;
+        }
+
+        .background:hover {
+            background-color: #295D3A;
         }
 
         .hover-text {
             visibility: hidden;
-            background-color: rgb(223, 208, 208);
-            height: 40px;
+            background-color: white;
             width: max-content;
             font-size: 12px;
+            padding: 2px 5px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 999;
+            left: 5px;
         }
 
         .background:hover .hover-text {
@@ -357,9 +366,7 @@
             </div>
             <hr class="ml-md-2">
             <div id="transactionsGraph">
-
-
-                <div class="col-lg-11 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
+                <div class="col-lg-12 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
                     <div class="col-sm-1 color bg-darkPurple p-2 content-box">
                         <h4>{{ $totalWeight }}</h4>
                         <p>KG CHERRY BOUGHT </p>
@@ -379,24 +386,23 @@
                         <h4>-</h4>
                         <p>YER SETTELED</p>
                     </div>
-                    {{-- <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                    <h4>{{ App\Region::count() }}</h4>
-
-                    <p>Regions</p>
-                </div> --}}
+                    <!-- <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                            <h4>{{ App\Region::count() }}</h4>
+                             <p>Regions</p>
+                    </div>  -->
                     <div class="col-sm-1 color bg-lightBrown p-2 content-box">
                         <h4>{{ $farmerCount }}</h4>
 
                         <p>Farmers </p>
                     </div>
-                    {{-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
-                    <h4>{{ $governorate->count() }}</h4>
-                    <p>Governorate</p>
-                </div> --}}
-                    {{-- <div class="col-sm-1 color bg-lightBrown p-2 content-box">
-                    <h4>{{ $totalWeight }}</h4>
-                    <p>Total Coffee </p>
-                </div> --}}
+                    <!-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                        <h4>{{ $governorate->count() }}</h4>
+                        <p>Governorate</p>
+                    </div>
+                    <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                        <h4>{{ $totalWeight }}</h4>
+                        <p>Total Coffee </p>
+                    </div> -->
                     <div class="col-sm-1 color bg-lightGreen p-2 content-box">
                         <h4>{{ $readyForExport }}</h4>
                         <p>KG SPECIALTY
@@ -456,11 +462,11 @@
 
                                             ticks: {
                                                 min: 0,
-                                                // max: 10000
+                                                max: 10000
                                             }
                                         }],
                                         xAxes: [{
-                                            barPercentage: 0.3
+                                            barPercentage: 0.4
                                         }]
                                     }
 
@@ -483,54 +489,47 @@
                         <!-- /.card-header -->
                         <div class="card-body pt-0">
                             <table class="table table-borderless">
-                                <!-- <thead>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th style="width: 10px">Sr#</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th>Farmer Name</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </thead> -->
+                                <!-- <thead>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </thead> -->
                                 <tbody>
                                     @if (count($farmers) == 0)
-                                        @php
-                                        $loop = 5 - count($farmers); @endphp
-                                        @foreach (App\Farmer::all()->take(5) as $farmer)
-                                            <tr style="white-space:nowrap">
-                                                <!-- <td>{{ $loop->iteration }}</td> -->
+                                    @php
+                                    $loop = 5 - count($farmers); @endphp
+                                    @foreach (App\Farmer::all()->take(5) as $farmer)
+                                    <tr style="white-space:nowrap">
+                                        <!-- <td>{{ $loop->iteration }}</td> -->
 
-                                                <td class="d-flex align-items-center px-0">
-                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
-                                                        width="50">
-                                                    <span class="ml-3">
-                                                        {{ $farmer['farmer_name'] }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
-                                    @foreach ($farmers as $farmer)
+                <td class="d-flex align-items-center px-0">
+                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                    <span class="ml-3">
+                        {{ $farmer['farmer_name'] }}
+                    </span>
+                </td>
+                </tr>
+                @endforeach
+                @endif
+                @foreach ($farmers as $farmer)
 
-                                        <tr>
+                <tr>
 
-                                            <!-- <td>{{ $loop->iteration }}</td> -->
+                    <!-- <td>{{ $loop->iteration }}</td> -->
 
-                                            <td class="d-flex align-items-center px-0">
-                                                <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
-                                                    width="50">
-                                                <span class="ml-3">
-                                                    <b>{{ $farmer['farmer_name'] . '-' . $farmer['weight'] }}</b>
-                                                </span>
-                                            </td>
+                    <td class="d-flex align-items-center px-0">
+                        <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                        <span class="ml-3">
+                            <b>{{ $farmer['farmer_name'] . '-' . $farmer['weight'] }}</b>
+                        </span>
+                    </td>
 
-                                        </tr>
+                </tr>
 
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.card-body -->
+                @endforeach
+                </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
 
-                    </div>
-                </div> --}}
+        </div>
+    </div> --}}
                     <div class="col-md-3 vl">
                         <div class="card shadow-none">
                             <div class="text-uppercase px-3 h5">
@@ -542,12 +541,6 @@
                             <!-- /.card-header -->
                             <div class="card-body pt-0">
                                 <table class="table table-borderless">
-                                    <!-- <thead>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th style="width: 10px">Sr#</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th>Farmer Name</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </thead> -->
                                     <tbody>
                                         {{-- @if (count($topBuyer) == 0)
                                         @php
@@ -556,16 +549,15 @@
                                             <tr style="white-space:nowrap">
                                                 <!-- <td>{{ $loop->iteration }}</td> -->
 
-                                                <td class="d-flex align-items-center px-0">
-                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
-                                                        width="50">
-                                                    <span class="ml-3">
-                                                        {{ $farmer['farmer_name'] }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif --}}
+                        <td class="d-flex align-items-center px-0">
+                            <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                            <span class="ml-3">
+                                {{ $farmer['farmer_name'] }}
+                            </span>
+                        </td>
+                        </tr>
+                        @endforeach
+                        @endif --}}
                                         @if ($topBuyer->count() == 0)
 
                                             <td class="d-flex align-items-center px-0">
@@ -607,13 +599,6 @@
                             <!-- /.card-header -->
                             <div class="card-body pt-0">
                                 <table class="table table-borderless">
-                                    <!-- <thead>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <tr style="white-space:nowrap">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th style="width: 10px">Sr#</th>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <th>Region Name</th>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </tr>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </thead> -->
                                     <tbody>
                                         {{-- @if (count($regions) == 0)
                                     @php
@@ -621,15 +606,15 @@
                                     @foreach (App\Region::all()->take(5) as $region)
                                         <tr style="white-space:nowrap">
                                             <!-- <td>{{ $loop->iteration }}</td> -->
-                                            <td class="d-flex align-items-center px-0">
-                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
-                                                    <span class="ml-3">
-                                                    {{ $region->region_title }}
-                                                    </span>
-                                                </td>
-                                        </tr>
-                                    @endforeach
-                                @endif --}}
+                        <td class="d-flex align-items-center px-0">
+                            <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                            <span class="ml-3">
+                                {{ $region->region_title }}
+                            </span>
+                        </td>
+                        </tr>
+                        @endforeach
+                        @endif --}}
                                         @foreach ($regions as $region)
                                             <tr style="white-space:nowrap">
                                                 <!-- <td>{{ $loop->iteration }}</td> -->
@@ -660,7 +645,7 @@
                             </div>
                             <!-- /.card-header -->
                             <input type="date" id="specialCoffee" name="endDate" class="form-control border-0">
-                            <div class="card-body d-flex flex-column" id="ajaxspecialCoffee">
+                            <div class="card-body d-flex flex-column dashboard-card-body" id="ajaxspecialCoffee">
                                 <div class="row">
                                     <div class="text-center text-uppercase col-6 px-1">
                                         <h6><b>Today</b></h6>
@@ -700,7 +685,7 @@
                             </div>
                             <!-- /.card-header -->
                             <input type="date" id="nonspecialCoffee" name="endDate" class="form-control border-0">
-                            <div class="card-body d-flex flex-column" id="ajaxnonspecialCoffee">
+                            <div class="card-body d-flex flex-column dashboard-card-body" id="ajaxnonspecialCoffee">
 
                                 <div class="row">
                                     <div class="text-center text-uppercase col-6 px-1">
@@ -727,12 +712,8 @@
                                         </div>
                                     </div>
                                 @endforeach
-
-
-
                             </div>
                             <!-- /.card-body -->
-
                         </div>
                     </div>
                 </div>
@@ -740,7 +721,19 @@
                 <div class="row">
 
                     <div class="col-md-5 ">
-                        <center>Governorate Wise</center>
+                        <div class="row ml-2 text-uppercase mb-2">
+                            <strong>
+                                <b>Governorate Wise</b>
+                            </strong>
+                            <div class="bg-lightGreen text-uppercase mb-2 ml-4 py-2 px-2"
+                                style="color: white;min-width: 125px;">
+                                <div>
+                                    <h4 class="mb-0">-</h4>
+                                    <span class="mb-0 font-weight-normal letter-spacing-1" style="font-size: 12px;">Usd
+                                        Sales</span>
+                                </div>
+                            </div>
+                        </div>
                         <canvas id="4rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
 
                         <script>
@@ -780,30 +773,35 @@
                         </script>
                     </div>
                     <div class="col-md-7">
-                        <h6 class='ml-2 mt-2'>OVERVIEW OF COFFEE BOUGHT BY GOVERNORATE</h6>
-                        <div class="row">
+                        <div class="row text-uppercase mb-2">
+                            <strong>
+                                <b>OVERVIEW OF COFFEE BOUGHT BY GOVERNORATE</b>
+                            </strong>
+                        </div>
+                        <div class="row mt-3">
 
                             <div class="col-sm-12">
 
-                                <table style=" height:200px; width: 100%; font-size: 12px ;">
-                                    <tr align="center"
-                                        style="border-bottom: 1px solid black; border-right: 1px solid black">
-                                        <td align="center" style="border-right: 1px solid black;">GOVERNORATE</td>
-                                        <td align="center" style=" border-right: 1px solid black">QUANTITY</td>
-                                        <td align="center" style=" border-right: 1px solid black">FARMERS</td>
-                                        <td></td>
+                                <table class="letter-spaciing-2 text-uppercase table-borderless custom-table-dashboard"
+                                    style=" height:200px;">
+                                    <tr align="center">
+                                        <th align="center">GOVERNORATE</th>
+                                        <th align="center">QUANTITY</th>
+                                        <th align="center">FARMERS</th>
+                                        <th></th>
                                     </tr>
                                     <tbody>
                                         @foreach ($govQuantityRegion as $gov)
-                                            <tr style="border-right: 1px solid black">
-                                                <td align="center" style="border-right: 1px solid black">
+                                            <tr>
+                                                <td align="center">
                                                     {{ $gov['title'] }}
                                                 </td>
-                                                <td align="center" style="border-right: 1px solid black">
+                                                <td align="center">
                                                     {{ $gov['weight'] . 'KGs' }}
                                                 </td>
-                                                <td align="center" style="border-right: 1px solid black">
-                                                    {{ $gov['farmerCount'] }}</td>
+                                                <td align="center">
+                                                    {{ $gov['farmerCount'] }}
+                                                </td>
                                                 <td>
                                                     @foreach ($gov['region']->reverse() as $r)
                                                         @php
@@ -835,10 +833,14 @@
 
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-4">
                     <div class="col-md-5">
-                        <center>Region Wise</center>
-                        <canvas id="3rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
+                        <div class="row ml-2 text-uppercase mb-5">
+                            <strong>
+                                <b>Region Wise</b>
+                            </strong>
+                        </div>
+                        <canvas id="3rd" class="ml-md-2 pt-4" style="width:100%; height:200px;"></canvas>
 
                         <script>
                             var xValues = @json($regionName);
@@ -876,7 +878,19 @@
                         </script>
                     </div>
                     <div class="col-md-7">
-                        <center>Yemen Sales</center>
+                        <div class="row ml-2 text-uppercase mb-3">
+                            <strong>
+                                <b>Yemen sales</b>
+                            </strong>
+                            <div class="bg-Green text-uppercase mb-2 ml-4 py-2 px-2"
+                                style="color: white;min-width: 125px;">
+                                <div>
+                                    <h4 class="mb-0">-</h4>
+                                    <span class="mb-0 font-weight-normal letter-spacing-1" style="font-size: 12px;">yer
+                                        yemen sales</span>
+                                </div>
+                            </div>
+                        </div>
                         <canvas id="6rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
 
                         <script>
@@ -910,7 +924,7 @@
 
                                             ticks: {
                                                 min: 0,
-                                                // max: 10000
+                                                max: 10000
                                             }
                                         }],
                                     }
@@ -919,12 +933,8 @@
                         </script>
                     </div>
                 </div>
-
-
             </div>
         </div>
         <!-- /.content-header -->
-
-
     </div>
 @endsection
