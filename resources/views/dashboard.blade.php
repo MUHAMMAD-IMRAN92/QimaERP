@@ -366,7 +366,7 @@
         <div id="transactionsGraph">
 
 
-            <div class="col-lg-11 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
+            <div class="col-lg-12 ml-md-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transactions">
                 <div class="col-sm-1 color bg-darkPurple p-2 content-box">
                     <h4>{{ $totalWeight }}</h4>
                     <p>KG CHERRY BOUGHT </p>
@@ -853,7 +853,7 @@
                 <b>Region Wise</b>
             </strong>
         </div>
-        <canvas id="3rd" class="ml-md-2 pt-3" style="width:100%; height:200px;"></canvas>
+        <canvas id="3rd" class="ml-md-2 pt-4" style="width:100%; height:200px;"></canvas>
 
         <script>
             var xValues = @json($regionName);

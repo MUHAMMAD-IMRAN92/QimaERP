@@ -117,11 +117,8 @@
     .data-tabs div{
         flex: 1;
         flex-wrap: wrap;
-        min-width: 134px;
-        min-height: 100px;
         padding: 0.5rem !important;
         padding-bottom: 20px !important;
-        margin-right: 5px;
     }
     .data-tabs div h3{
         font-size: 1.5rem;
