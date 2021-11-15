@@ -110,8 +110,8 @@ class CoffeeDryingController extends Controller
                         $updateCoffees->is_in_process = $receivedTransaction->transaction->is_in_process;
                         $updateCoffees->local_updated_at = toSqlDT($receivedTransaction->transaction->local_updated_at);
                         $updateCoffees->update();
-                        $transactionMeta = $receivedTransaction->transactionMeta;
                         MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
+                        $transactionMeta = $receivedTransaction->transactionMeta;
                         foreach ($transactionMeta as $key => $transactionMe) {
                             MetaTransation::create([
                                 'transaction_id' => $receivedTransaction->transaction->transaction_id,
@@ -377,7 +377,7 @@ class CoffeeDryingController extends Controller
                                     'reference_id' => $receivedTransaction->transaction->reference_id,
                                 ]);
 
-                                TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                                $transactionToBeUpdated =   TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
                             }
 
                             $transactionMeta = $receivedTransaction->transactionMeta;
@@ -661,33 +661,26 @@ class CoffeeDryingController extends Controller
         foreach ($receivedMeta as $key => $transactionsInformation) {
 
             if ($transactionsInformation->transactionDetails) {
-                if ($transactionsInformation->transactionDetails->is_local == TRUE) {
-                    TransactionDetail::create([
-                        'transaction_id' => $transactionsInformation->transactionDetails->transaction_id,
-                        'container_number' => $transactionsInformation->transactionDetails->container_number,
-                        'created_by' => $userId,
-                        'is_local' => FALSE,
-                        'container_weight' => $transactionsInformation->transactionDetails->container_weight,
-                        'weight_unit' => 'kg',
-                        'center_id' => $transactionsInformation->transactionDetails->center_id,
-                        'reference_id' => $transactionsInformation->transactionDetails->reference_id,
-                    ]);
-                } else {
+                // if ($transactionsInformation->transactionDetails->is_local == TRUE) {
+                //     TransactionDetail::create([
+                //         'transaction_id' => $transactionsInformation->transactionDetails->transaction_id,
+                //         'container_number' => $transactionsInformation->transactionDetails->container_number,
+                //         'created_by' => $userId,
+                //         'is_local' => FALSE,
+                //         'container_weight' => $transactionsInformation->transactionDetails->container_weight,
+                //         'weight_unit' => 'kg',
+                //         'center_id' => $transactionsInformation->transactionDetails->center_id,
+                //         'reference_id' => $transactionsInformation->transactionDetails->reference_id,
+                //     ]);
+                // } else {
                     $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)
                         ->where('container_number', $transactionsInformation->transactionDetails->container_number)
                         ->first();
-                    MetaTransation::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)->delete();
-                    // foreach ($transactionMeta as $key => $transactionMe) {
-                    //     MetaTransation::create([
-                    //         'transaction_id' => $transactionsInformation->transactionDetails->transaction_id,
-                    //         'key' => $transactionMe->key,
-                    //         'value' => $transactionMe->value,
-                    //     ]);
-                    // }
+
                     $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
                     $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
                     $alreadyExistTransactionDetail->save();
-                }
+                // }
                 if (!in_array($transactionsInformation->transactionDetails->transaction_id, $transationsIdArray)) {
                     array_push($transationsIdArray, $transactionsInformation->transactionDetails->transaction_id);
                 }

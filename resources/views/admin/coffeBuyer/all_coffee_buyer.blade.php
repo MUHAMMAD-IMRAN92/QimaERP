@@ -353,14 +353,14 @@
                                                     @foreach ($coffeeBuyerMangers as $coffeeBuyerManger)
                                                         <tr>
 
-                                                            @if ($coffeeBuyerManger->picture_id == null)
+                                                            @if ($coffeeBuyerManger->profile_image == null)
                                                                 <td class="border-0"> <img class="famerimg mr-2"
                                                                         src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                                                                         alt="">
                                                                 </td>
                                                             @else
                                                                 <td class="border-0"> <img class="famerimg mr-2"
-                                                                        src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyerManger->image) }}"
+                                                                        src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyerManger->profile_image) }}"
                                                                         alt=""></td>
                                                             @endif
                                                             <td class="border border-dark border-top-0">
@@ -499,14 +499,14 @@
                                                     @foreach ($coffeeBuyers as $coffeeBuyer)
                                                         <tr>
 
-                                                            @if ($coffeeBuyer->picture_id == null)
+                                                            @if ($coffeeBuyer->profile_image == null)
                                                                 <td class="border-0"> <img class="famerimg"
                                                                         src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                                                                         alt="">
                                                                 </td>
                                                             @else
                                                                 <td class="border-0"> <img class="famerimg"
-                                                                        src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyer->image) }}"
+                                                                        src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyer->profile_image) }}"
                                                                         alt=""></td>
                                                             @endif
                                                             <td class="border border-dark border-top-0">

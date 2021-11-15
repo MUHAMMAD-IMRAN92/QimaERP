@@ -317,13 +317,13 @@
             <hr>
             <div class="row">
                 <div class="col-md-4">
-                    @if ($village->picture_id == null)
-                        <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
+                    @if ($village->image == null)
+                        <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/dumy.png') }}"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;" alt=""></td>
                     @else
                         <td> <img class="famerimg"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;"
-                                src="{{ asset('public/storage/images/' . $village->image) }}" alt=""></td>
+                                src="{{ Storage::disk('s3')->url('images/' . $village->image) }}" alt=""></td>
                     @endif
 
                 </div>
@@ -401,25 +401,17 @@
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger p-0 ml-0">
                     <!-- <h3>{{ App\Village::count() }}</h3>
-                                <p>Villages</p> -->
+                                                    <p>Villages</p> -->
+                    @if ($village->image != null)
+                        <img style="max-width: 100%; height: 100%;"
+                            src="{{ Storage::disk('s3')->url('images/' . $village->image) }}" alt="">
+                  
+                    @else
                     <img style="max-width: 100%; height: 100%;"
-                        src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                        alt="">
+                    src="{{ Storage::disk('s3')->url('images/dumy.png') }}" alt="">
+                    @endif
                 </div>
-                <div class="col-sm-1 color bg-primary p-0 ml-2">
-                    <!-- <h3>{{ App\Farmer::count() }}</h3>
-                                <p>Farmers</p> -->
-                    <img style="max-width: 100%; height: 100%;"
-                        src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                        alt="">
-                </div>
-                <div class="col-sm-1 color bg-warning p-0 ml-2">
-                    <!-- <h3>{{ App\User::count() }}</h3>
-                                <p>User </p> -->
-                    <img style="max-width: 100%; height: 100%;"
-                        src="https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                        alt="">
-                </div>
+
 
 
             </div>
