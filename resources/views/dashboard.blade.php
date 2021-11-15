@@ -848,12 +848,12 @@
 </div>
 <div class="row mt-4">
     <div class="col-md-5">
-        <div class="row ml-2 text-uppercase mb-4">
+        <div class="row ml-2 text-uppercase mb-5">
             <strong>
                 <b>Region Wise</b>
             </strong>
         </div>
-        <canvas id="3rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
+        <canvas id="3rd" class="ml-md-2 pt-3" style="width:100%; height:200px;"></canvas>
 
         <script>
             var xValues = @json($regionName);
