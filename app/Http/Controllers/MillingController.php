@@ -250,4 +250,38 @@ class MillingController extends Controller
             return redirect('admin/milling_coffee');
         }
     }
+    public function newmillingCoffee()
+    {
+        $data = array();
+        $allTransactions = array();
+        $transactions = Transaction::where('is_parent', 0)
+
+            ->whereHas('log', function ($q) {
+                $q->where('action', 'received')->where('type', 'received_by_yemen');
+            })->whereHas('transactionDetail', function ($q) {
+                $q->where('container_status', 0);
+            }, '>', 0)->with(['transactionDetail' => function ($query) {
+                $query->where('container_status', 0);
+            }])->orderBy('transaction_id', 'desc')->get();
+
+
+
+        foreach ($transactions as $key => $tran) {
+
+            $childTransaction = array();
+            $tran->makeHidden('log');
+            $removeLocalId = explode("-", $tran->batch_number);
+            if ($removeLocalId[3] == '000') {
+                $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                if ($FindParentTransactions) {
+                    $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                }
+            }
+            $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+            array_push($allTransactions, $transaction);
+        }
+        $data['transactions'] = $allTransactions;
+        // return $data;
+        return view('admin.milling.newindex', $data);
+    }
 }

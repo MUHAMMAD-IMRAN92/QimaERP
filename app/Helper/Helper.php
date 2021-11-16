@@ -1,7 +1,10 @@
 <?php
 
 use App\Lot;
+use App\Governerate;
+use App\Region;
 use App\Farmer;
+use App\Village;
 use Carbon\Carbon;
 use App\Transaction;
 use Illuminate\Support\Str;
@@ -321,15 +324,48 @@ function checkBatchNumber($farmerCode)
 {
     // return $farmerCode;
     $farmer = Farmer::where('farmer_code', $farmerCode)->first();
-    
+
     if ($farmer) {
         $batchArr = explode('-', $farmerCode);
         $lastnumber =  array_pop($batchArr);
         $newNumber = $lastnumber + 1;
         $newFarmerCode =  array_shift($batchArr) . '-' .  array_shift($batchArr) . '-' .  array_shift($batchArr) . '-' . $newNumber;
-     return   checkBatchNumber($newFarmerCode);
+        return   checkBatchNumber($newFarmerCode);
     } else {
-        
-        return $farmerCode;exit;
+
+        return $farmerCode;
+        exit;
+    }
+}
+function getGov($code)
+{
+    $govCode = Str::before($code, '-');
+    $governrate = Governerate::where('governerate_code', $govCode)->first();
+    if ($governrate) {
+        return $governrate->governerate_title;
+    }
+}
+function getRegion($code)
+{
+    $regCode = explode('-', $code)[0] . '-' . explode('-', $code)[1];
+    $region = Region::where('region_code', $regCode)->first();
+    if ($region) {
+        return $region->region_title;
+    }
+}
+function getVillage($code)
+{
+    $villageCode = explode('-', $code)[0] . '-' . explode('-', $code)[1] . '-' . explode('-', $code)[2];
+    $village = Village::where('village_code', $villageCode)->first();
+    if ($village) {
+        return $village->village_title;
+    }
+}
+function getFarmer($code)
+{
+    $farmerCode = explode('-', $code)[0] . '-' . explode('-', $code)[1] . '-' . explode('-', $code)[2] . '-' . explode('-', $code)[3];
+    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+    if ($farmer) {
+        return $farmer->farmer_name;
     }
 }
