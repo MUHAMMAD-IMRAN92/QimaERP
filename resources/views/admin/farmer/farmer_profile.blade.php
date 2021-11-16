@@ -575,7 +575,7 @@
                     @if ($farmer->cnicImage == null)
 
                         <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
-                            style="max-width: 100%; height: 100%;" alt="" id="idimage">
+                            style="max-width: 100%; height: 100%;" alt="" >
 
                     @else
                         <img class="famerimg" style="width: 100%; height: 100%;"

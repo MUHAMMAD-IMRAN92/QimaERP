@@ -212,6 +212,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('get_milling_sessions', 'MillingController@getMillingSessionAjax');
         Route::get('milling_coffee/{id}', 'MillingController@milling')->middleware('auth');
         Route::post('milling_coffee', 'MillingController@millingCoffee')->middleware('auth');
+        Route::get('new_milling_coffee', 'MillingController@newmillingCoffee')->middleware('auth');
 
         //packaging & export
         Route::get('/packaging/mixing', 'ExportMixingController@get')->name('mixing.index');
