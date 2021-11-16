@@ -369,3 +369,19 @@ function getFarmer($code)
         return $farmer->farmer_name;
     }
 }
+function farmerPricePerKg($code)
+{
+    $farmerCode = explode('-', $code)[0] . '-' . explode('-', $code)[1] . '-' . explode('-', $code)[2] . '-' . explode('-', $code)[3];
+    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+    if ($farmer) {
+        if ($farmer->price_per_kg != null) {
+            return $farmer->price_per_kg;
+        } else {
+            $villageCode = explode('-', $code)[0] . '-' . explode('-', $code)[1] . '-' . explode('-', $code)[2];
+            $village = Village::where('village_code', $villageCode)->first();
+            if ($village) {
+                return $village->price_per_kg;
+            }
+        }
+    }
+}
