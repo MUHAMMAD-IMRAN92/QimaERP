@@ -76,9 +76,10 @@
 
                                     <div class="form-group">
                                         <label for="village_title_ar">Village Title (Arabic)</label>
-                                        <input type="text" id="village_title" class="form-control" id="village_title_ar"
-                                            name="village_title_ar" placeholder="Village Title (Arabic)"
-                                            @error('village_title_ar') is-invalid @enderror>
+                                        <input type="text" id="village_title_ar" class="form-control"
+                                            id="village_title_ar" name="village_title_ar"
+                                            placeholder="Village Title (Arabic)" @error('village_title_ar') is-invalid
+                                            @enderror>
                                         @error('village_title_ar')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -92,6 +93,32 @@
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
+                                    <div class="form-group">
+                                        <label for="price_per_kg">Altitude </label>
+                                        <input type="number" id="altitude" class="form-control" value="" name="altitude"
+                                            placeholder="Altitude" @error('altitude') is-invalid @enderror>
+                                        @error('altitude')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price_per_kg">Reward Per Kg </label>
+                                        <input type="number" id="reward" class="form-control" value="" name="reward"
+                                            placeholder="Reward Per KG" @error('reward') is-invalid @enderror>
+                                        @error('reward')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price_per_kg">Description </label>
+                                        <textarea type="text" id="description" class="form-control" value=""
+                                            name="description" placeholder="Village Information" @error('description')
+                                            is-invalid @enderror> </textarea>
+                                        @error('description')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
                                     <div class="row">
 
                                         <div class="col-md-6">
@@ -107,7 +134,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="price_per_kg">Attach Images : </label>  You Can Select
+                                                <label for="price_per_kg">Attach Images : </label> You Can Select
                                                 Multiple
                                                 <br>
                                                 <input type="file" id="" value="" name="images[]" multiple placeholder=""
