@@ -50,25 +50,27 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Farmer Name</label>
-                                        <input type="text" id="farmer_name" class="form-control" id="exampleInputPassword1"
-                                            value="" name="farmer_name" placeholder="Last Name" @error('farmer_name')
-                                            is-invalid @enderror>
+                                        <input type="text" id="farmer_name" class="form-control"
+                                            id="exampleInputPassword1" value="" name="farmer_name" placeholder="Last Name"
+                                            @error('farmer_name') is-invalid @enderror>
                                         @error('farmer_name')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">CNIC</label>
-                                        <input type="text" id="farmer_nicn" class="form-control" value="" name="farmer_nicn"
-                                            placeholder="Farmer CNIC" @error('farmer_nicn') is-invalid @enderror>
+                                        <input type="text" id="farmer_nicn" class="form-control" value=""
+                                            name="farmer_nicn" placeholder="Farmer CNIC" @error('farmer_nicn') is-invalid
+                                            @enderror>
                                         @error('farmer_nicn')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Price Per Kg </label>
-                                        <input type="number" id="price_per_kg" class="form-control" value="" name="price_per_kg"
-                                            placeholder="Price Per Kg" @error('price_per_kg') is-invalid @enderror>
+                                        <input type="number" id="price_per_kg" class="form-control" value=""
+                                            name="price_per_kg" placeholder="Price Per Kg" @error('price_per_kg') is-invalid
+                                            @enderror>
                                         @error('price_per_kg')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -80,8 +82,8 @@
                                             <div class="form-group">
                                                 <label for="customFile">Farmer Image</label>
                                                 <div class="">
-                                                    <input type="file" class="" name="profile_picture" id="customFile"
-                                                        @error('profile_picture') is-invalid @enderror>
+                                                    <input type="file" class="" name="profile_picture"
+                                                        id="customFile" @error('profile_picture') is-invalid @enderror>
                                                     @error('profile_picture')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -93,8 +95,8 @@
                                             <div class="form-group">
                                                 <label for="customFile">Farmer Id Card Image</label>
                                                 <div class="">
-                                                    <input type="file" class="" name="idcard_picture" id="customFile"
-                                                        @error('idcard_picture') is-invalid @enderror>
+                                                    <input type="file" class="" name="idcard_picture"
+                                                        id="customFile" @error('idcard_picture') is-invalid @enderror>
                                                     @error('idcard_picture')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -105,7 +107,8 @@
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1" id="submit-btn-ofform">Submit</button>
+                                    <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1"
+                                        id="submit-btn-ofform">Submit</button>
                                 </div>
                             </form>
                         </div>

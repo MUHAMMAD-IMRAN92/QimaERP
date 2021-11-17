@@ -59,11 +59,11 @@ class AuthController extends Controller
             $govCode = $govern->governerate_code;
             $weight = 0;
             $farmerToBeCount = collect();
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '-%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
                 $farmerCode = Str::beforeLast($transaction->batch_number, '-');
-                $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode-%")->first();
                 if (!$farmerToBeCount->contains($farmer)) {
                     $farmerToBeCount->push($farmer);
                 }
@@ -71,12 +71,12 @@ class AuthController extends Controller
             array_push($govName, $govern->governerate_title);
             array_push($govQuantity, round($weight, 2));
             $govFarmersCount = $farmerToBeCount->count();
-            $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+            $govRegion  = Region::where('region_code', 'LIKE', "$govCode-%")->get();
             $govRegionQty = collect();
             foreach ($govRegion as $r) {
                 $regionCode = $r->region_code;
                 $regweight = 0;
-                $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '-%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
                 foreach ($transactions as $transaction) {
                     $regweight +=  $transaction->details->sum('container_weight');
                 }
@@ -95,7 +95,7 @@ class AuthController extends Controller
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '-%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
 
 
@@ -117,7 +117,7 @@ class AuthController extends Controller
         foreach ($farmers as $farmer) {
             $farmerCode = $farmer->farmer_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $farmerCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $farmerCode . '-%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
             }
@@ -246,7 +246,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('is_parent', 0)
             ->where('created_at', $today)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -259,7 +259,7 @@ class AuthController extends Controller
             ->where('is_parent', 0)
             ->where('created_at', $today)
 
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -272,7 +272,7 @@ class AuthController extends Controller
             ->where('created_at', $today)
             ->where('is_parent', 0)
 
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -284,7 +284,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 2)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -296,7 +296,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -308,7 +308,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -522,7 +522,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('is_parent', 0)
             ->where('created_at', $today)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -535,7 +535,7 @@ class AuthController extends Controller
             ->where('is_parent', 0)
             ->where('created_at', $today)
 
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -548,7 +548,7 @@ class AuthController extends Controller
             ->where('created_at', $today)
             ->where('is_parent', 0)
 
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -560,7 +560,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -572,7 +572,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -584,7 +584,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -791,7 +791,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -804,7 +804,7 @@ class AuthController extends Controller
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -817,7 +817,7 @@ class AuthController extends Controller
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -829,7 +829,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -841,7 +841,7 @@ class AuthController extends Controller
             $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -853,7 +853,7 @@ class AuthController extends Controller
             $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1003,7 +1003,7 @@ class AuthController extends Controller
             foreach ($governorate as $govern) {
                 $govCode = $govern->governerate_code;
                 $weight = 0;
-                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereDate('created_at',  $yesterday)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '-%')->whereDate('created_at',  $yesterday)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
                 $farmerToBeCount = collect();
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
@@ -1021,7 +1021,7 @@ class AuthController extends Controller
                 foreach ($govRegion as $r) {
                     $regionCode = $r->region_code;
                     $regweight = 0;
-                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereDate('created_at',  $yesterday)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '-%')->whereDate('created_at',  $yesterday)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
                     foreach ($transactions as $transaction) {
                         $regweight +=  $transaction->details->sum('container_weight');
                     }
@@ -1055,7 +1055,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1068,7 +1068,7 @@ class AuthController extends Controller
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1081,7 +1081,7 @@ class AuthController extends Controller
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1093,7 +1093,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1105,7 +1105,7 @@ class AuthController extends Controller
             $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1117,7 +1117,7 @@ class AuthController extends Controller
             $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1320,7 +1320,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1333,7 +1333,7 @@ class AuthController extends Controller
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1346,7 +1346,7 @@ class AuthController extends Controller
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1358,7 +1358,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1370,7 +1370,7 @@ class AuthController extends Controller
             $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1382,7 +1382,7 @@ class AuthController extends Controller
             $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1591,7 +1591,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1604,7 +1604,7 @@ class AuthController extends Controller
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1617,7 +1617,7 @@ class AuthController extends Controller
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1629,7 +1629,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1641,7 +1641,7 @@ class AuthController extends Controller
             $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1653,7 +1653,7 @@ class AuthController extends Controller
             $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1862,7 +1862,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1875,7 +1875,7 @@ class AuthController extends Controller
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1888,7 +1888,7 @@ class AuthController extends Controller
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1900,7 +1900,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1912,7 +1912,7 @@ class AuthController extends Controller
             $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -1924,7 +1924,7 @@ class AuthController extends Controller
             $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2131,7 +2131,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2144,7 +2144,7 @@ class AuthController extends Controller
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2157,7 +2157,7 @@ class AuthController extends Controller
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2169,7 +2169,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2181,7 +2181,7 @@ class AuthController extends Controller
             $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2193,7 +2193,7 @@ class AuthController extends Controller
             $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2398,7 +2398,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2411,7 +2411,7 @@ class AuthController extends Controller
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2424,7 +2424,7 @@ class AuthController extends Controller
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2436,7 +2436,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2448,7 +2448,7 @@ class AuthController extends Controller
             $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2460,7 +2460,7 @@ class AuthController extends Controller
             $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2668,7 +2668,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2681,7 +2681,7 @@ class AuthController extends Controller
                 ->where('is_parent', 0)
                 ->where('created_at', $today)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2694,7 +2694,7 @@ class AuthController extends Controller
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
 
-                ->where('is_special', 1)
+                // ->where('is_special', 1)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2706,7 +2706,7 @@ class AuthController extends Controller
             $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2718,7 +2718,7 @@ class AuthController extends Controller
             $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2730,7 +2730,7 @@ class AuthController extends Controller
             $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
                 ->where('created_at', $today)
                 ->where('is_parent', 0)
-                ->where('is_special', 0)
+                ->where('is_special', 02)
                 ->with('meta')
                 ->get();
             $weight = 0;
@@ -2817,7 +2817,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at',  $today)
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -2827,7 +2827,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -2838,7 +2838,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->where('is_parent', 0)
             ->where('created_at', $today)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -2848,7 +2848,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -2859,7 +2859,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -2869,7 +2869,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -2892,7 +2892,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at',  $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -2902,7 +2902,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -2913,7 +2913,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->where('is_parent', 0)
             ->where('created_at', $today)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -2923,7 +2923,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -2934,7 +2934,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
             ->where('is_special', 0)
-            ->where('is_parent', 0)
+            ->where('is_parent', 02)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -2944,7 +2944,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;

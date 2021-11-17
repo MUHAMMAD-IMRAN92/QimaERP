@@ -92,16 +92,34 @@
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div class="form-group">
-                                        <label for="price_per_kg">Add Image </label>
-                                        <br>
-                                        <input type="file" id="price_per_kg" value=""
-                                            name="village_image" placeholder="Price Per Kg" @error('village_image')
-                                            is-invalid @enderror>
-                                        @error('village_image')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="price_per_kg">Profile Image </label>
+                                                <br>
+                                                <input type="file" id="" value="" name="village_image" placeholder=""
+                                                    @error('village_image') is-invalid @enderror>
+                                                @error('village_image')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="price_per_kg">Attach Images : </label>  You Can Select
+                                                Multiple
+                                                <br>
+                                                <input type="file" id="" value="" name="images[]" multiple placeholder=""
+                                                    @error('village_image') is-invalid @enderror>
+                                                @error('village_image')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
                                     </div>
+
+
                                 </div>
                                 <!-- /.card-body -->
 
