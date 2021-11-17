@@ -7,12 +7,14 @@ use App\FileSystem;
 use App\Region;
 use App\Village;
 use App\Transaction;
+use App\User;
 use Facade\FlareClient\Stacktrace\Frame;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class VillageController extends Controller
 {
@@ -214,9 +216,16 @@ class VillageController extends Controller
         }
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->get();
         $quantity = 0;
+        $farmerToBeCount = collect();
         foreach ($transactions as $transaction) {
+            $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+            $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+            if (!$farmerToBeCount->contains($farmer)) {
+                $farmerToBeCount->push($farmer);
+            }
             $quantity += $transaction->details->sum('container_weight');
         }
+        $village->farmerCount = $farmerToBeCount->count();
         $village->quantity = $quantity;
         $price = 0;
         foreach ($transactions as $transaction) {
@@ -255,17 +264,31 @@ class VillageController extends Controller
         $village = Village::find($id);
 
         $villageCode = $village->village_code;
-        $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
-        if ($village->first_purchase) {
-            $village->first_purchase = $village->first_purchase->created_at;
-        }
-        $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first()['created_at'];
-        if ($village->last_purchase) {
-            $village->last_purchase = $village->last_purchase->created_at;
-        }
+        // $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
+        // if ($village->first_purchase) {
+        //     $village->first_purchase = $village->first_purchase->created_at;
+        // }
+        // $village->last_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->latest()->first()['created_at'];
+        // if ($village->last_purchase) {
+        //     $village->last_purchase = $village->last_purchase->created_at;
+        // }
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$request->from, $request->to])->get();
         $quantity = 0;
+        $farmerToBeCount = collect();
+        $farmerId = collect();
+        $createdBys = collect();
         foreach ($transactions as $transaction) {
+            $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+            $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+            if (!$farmerToBeCount->contains($farmer)) {
+                $farmerToBeCount->push($farmer);
+            }
+            if (!$farmerId->contains($farmer->farmer_id)) {
+                $farmerId->push($farmer->farmer_id);
+            }
+            if (!$createdBys->contains($transaction->created_by)) {
+                $createdBys->push($transaction->created_by);
+            }
             $quantity += $transaction->details->sum('container_weight');
         }
         $village->quantity = $quantity;
@@ -290,7 +313,9 @@ class VillageController extends Controller
             }
         }
         $village->price = $price;
-
+        $village->farmerCount = $farmerToBeCount->count();
+        $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+        $village->newusers = User::whereIn('user_id', $createdBys)->get();
         return   view('admin.village.views.filter_transctions', [
             'village' =>  $village,
         ])->render();
@@ -315,9 +340,27 @@ class VillageController extends Controller
             }
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereDate('created_at', $date)->get();
             $quantity = 0;
+            $farmerToBeCount = collect();
+            $farmerId = collect();
+            $createdBys = collect();
             foreach ($transactions as $transaction) {
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+                if (!$farmerId->contains($farmer->farmer_id)) {
+                    $farmerId->push($farmer->farmer_id);
+                }
+                if (!$createdBys->contains($transaction->created_by)) {
+                    $createdBys->push($transaction->created_by);
+                }
+
+
                 $quantity += $transaction->details->sum('container_weight');
             }
+            // dd($farmerToBeCount);
             $village->quantity = $quantity;
             $price = 0;
             foreach ($transactions as $transaction) {
@@ -340,7 +383,9 @@ class VillageController extends Controller
                 }
             }
             $village->price = $price;
-
+            $village->farmerCount = $farmerToBeCount->count();
+            $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+            $village->newusers = User::whereIn('user_id', $createdBys)->get();
             return   view('admin.village.views.filter_transctions', [
                 'village' =>  $village,
             ])->render();
@@ -362,7 +407,24 @@ class VillageController extends Controller
 
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereDate('created_at', $yesterday)->get();
             $quantity = 0;
+            $farmerToBeCount = collect();
+            $farmerId = collect();
+            $createdBys = collect();
             foreach ($transactions as $transaction) {
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+                if (!$farmerId->contains($farmer->farmer_id)) {
+                    $farmerId->push($farmer->farmer_id);
+                }
+                if (!$createdBys->contains($transaction->created_by)) {
+                    $createdBys->push($transaction->created_by);
+                }
+
+
                 $quantity += $transaction->details->sum('container_weight');
             }
             $village->quantity = $quantity;
@@ -387,6 +449,9 @@ class VillageController extends Controller
                 }
             }
             $village->price = $price;
+            $village->farmerCount = $farmerToBeCount->count();
+            $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+            $village->newusers = User::whereIn('user_id', $createdBys)->get();
 
             return   view('admin.village.views.filter_transctions', [
                 'village' =>  $village,
@@ -411,7 +476,24 @@ class VillageController extends Controller
 
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $end])->get();
             $quantity = 0;
+            $farmerToBeCount = collect();
+            $farmerId = collect();
+            $createdBys = collect();
             foreach ($transactions as $transaction) {
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+                if (!$farmerId->contains($farmer->farmer_id)) {
+                    $farmerId->push($farmer->farmer_id);
+                }
+                if (!$createdBys->contains($transaction->created_by)) {
+                    $createdBys->push($transaction->created_by);
+                }
+
+
                 $quantity += $transaction->details->sum('container_weight');
             }
             $village->quantity = $quantity;
@@ -436,6 +518,9 @@ class VillageController extends Controller
                 }
             }
             $village->price = $price;
+            $village->farmerCount = $farmerToBeCount->count();
+            $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+            $village->newusers = User::whereIn('user_id', $createdBys)->get();
 
             return   view('admin.village.views.filter_transctions', [
                 'village' =>  $village,
@@ -460,7 +545,24 @@ class VillageController extends Controller
 
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
             $quantity = 0;
+            $farmerToBeCount = collect();
+            $farmerId = collect();
+            $createdBys = collect();
             foreach ($transactions as $transaction) {
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+                if (!$farmerId->contains($farmer->farmer_id)) {
+                    $farmerId->push($farmer->farmer_id);
+                }
+                if (!$createdBys->contains($transaction->created_by)) {
+                    $createdBys->push($transaction->created_by);
+                }
+
+
                 $quantity += $transaction->details->sum('container_weight');
             }
             $village->quantity = $quantity;
@@ -485,6 +587,9 @@ class VillageController extends Controller
                 }
             }
             $village->price = $price;
+            $village->farmerCount = $farmerToBeCount->count();
+            $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+            $village->newusers = User::whereIn('user_id', $createdBys)->get();
 
             return   view('admin.village.views.filter_transctions', [
                 'village' =>  $village,
@@ -509,7 +614,24 @@ class VillageController extends Controller
 
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $quantity = 0;
+            $farmerToBeCount = collect();
+            $farmerId = collect();
+            $createdBys = collect();
             foreach ($transactions as $transaction) {
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+                if (!$farmerId->contains($farmer->farmer_id)) {
+                    $farmerId->push($farmer->farmer_id);
+                }
+                if (!$createdBys->contains($transaction->created_by)) {
+                    $createdBys->push($transaction->created_by);
+                }
+
+
                 $quantity += $transaction->details->sum('container_weight');
             }
             $village->quantity = $quantity;
@@ -534,6 +656,9 @@ class VillageController extends Controller
                 }
             }
             $village->price = $price;
+            $village->farmerCount = $farmerToBeCount->count();
+            $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+            $village->newusers = User::whereIn('user_id', $createdBys)->get();
 
             return   view('admin.village.views.filter_transctions', [
                 'village' =>  $village,
@@ -557,7 +682,24 @@ class VillageController extends Controller
 
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereBetween('created_at', [$start, $date])->get();
             $quantity = 0;
+            $farmerToBeCount = collect();
+            $farmerId = collect();
+            $createdBys = collect();
             foreach ($transactions as $transaction) {
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+                if (!$farmerId->contains($farmer->farmer_id)) {
+                    $farmerId->push($farmer->farmer_id);
+                }
+                if (!$createdBys->contains($transaction->created_by)) {
+                    $createdBys->push($transaction->created_by);
+                }
+
+
                 $quantity += $transaction->details->sum('container_weight');
             }
             $village->quantity = $quantity;
@@ -582,6 +724,9 @@ class VillageController extends Controller
                 }
             }
             $village->price = $price;
+            $village->farmerCount = $farmerToBeCount->count();
+            $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+            $village->newusers = User::whereIn('user_id', $createdBys)->get();
 
             return   view('admin.village.views.filter_transctions', [
                 'village' =>  $village,
@@ -605,7 +750,24 @@ class VillageController extends Controller
 
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereYear('created_at', $year)->get();
             $quantity = 0;
+            $farmerToBeCount = collect();
+            $farmerId = collect();
+            $createdBys = collect();
             foreach ($transactions as $transaction) {
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+                if (!$farmerId->contains($farmer->farmer_id)) {
+                    $farmerId->push($farmer->farmer_id);
+                }
+                if (!$createdBys->contains($transaction->created_by)) {
+                    $createdBys->push($transaction->created_by);
+                }
+
+
                 $quantity += $transaction->details->sum('container_weight');
             }
             $village->quantity = $quantity;
@@ -630,6 +792,9 @@ class VillageController extends Controller
                 }
             }
             $village->price = $price;
+            $village->farmerCount = $farmerToBeCount->count();
+            $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+            $village->newusers = User::whereIn('user_id', $createdBys)->get();
 
             return   view('admin.village.views.filter_transctions', [
                 'village' =>  $village,
@@ -654,7 +819,24 @@ class VillageController extends Controller
 
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereYear('created_at', $year)->get();
             $quantity = 0;
+            $farmerToBeCount = collect();
+            $farmerId = collect();
+            $createdBys = collect();
             foreach ($transactions as $transaction) {
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+                if (!$farmerId->contains($farmer->farmer_id)) {
+                    $farmerId->push($farmer->farmer_id);
+                }
+                if (!$createdBys->contains($transaction->created_by)) {
+                    $createdBys->push($transaction->created_by);
+                }
+
+
                 $quantity += $transaction->details->sum('container_weight');
             }
             $village->quantity = $quantity;
@@ -679,6 +861,9 @@ class VillageController extends Controller
                 }
             }
             $village->price = $price;
+            $village->farmerCount = $farmerToBeCount->count();
+            $village->newfarmers = Farmer::with('file')->whereIn('farmer_id', $farmerId)->get();
+            $village->newusers = User::whereIn('user_id', $createdBys)->get();
 
             return   view('admin.village.views.filter_transctions', [
                 'village' =>  $village,
