@@ -1,24 +1,61 @@
-<div class="col-sm-1 color bg-darkPurple mr-1">
-    <h4>{{ $village->first_purchase }}</h4>
-    <p>First Purchade</p>
-</div>
-<div class="col-sm-1 color bg-Green mr-1">
-    <h4>{{ $village->last_purchase }}</h4>
-
-    <p>Last Purchase</p>
-</div>
-<div class="col-sm-1 color bg-darkPurple mr-1">
-    <h4>{{ $village->price }}</h4>
-
-
-    <p>yer total coffee purchased </p>
-</div>
-<div class="col-sm-1 color bg-mildGreen mr-1">
+<div class="col-sm-1 color bg-darkPurple">
     <h4>{{ $village->quantity }}</h4>
-
-    <p>Quantity</p>
+    <p>KG CHERRY
+        BOUGHT</p>
 </div>
-<div class="col-sm-1 color bg-darkRed mr-1"></div>
-<div class="col-sm-1 color bg-Green mr-1"></div>
-<div class="col-sm-1 color bg-lightBrown mr-1"></div>
-<div class="col-sm-1 color bg-lightGreen mr-1"></div>
+<div class="col-sm-1 color bg-Green">
+    <h4>{{ $village->price }} </h4>
+
+    <p>YER TOTAL
+        SPCIAILTY COFFEE
+        PURCHASED</p>
+</div>
+<div class="col-sm-1 color bg-darkPurple">
+    <h4>-</h4>
+
+    <p>KG DRY COFFEE
+        BOUGHT </p>
+</div>
+<div class="col-sm-1 color bg-mildGreen">
+    <h4>-</h4>
+
+    <p>YER TOTAL
+        COMMERCIAL
+        COFFEE
+        PURCHASED</p>
+</div>
+<div class="col-sm-1 color bg-darkRed">
+    <h4>-</h4>
+
+    <p>YER
+        ACCOUNT
+        PAYABLE</p>
+</div>
+<div class="col-sm-1 color bg-Green">
+    <h4>-</h4>
+
+    <p>YER SETTELED</p>
+</div>
+<div class="col-sm-1 color bg-lightBrown">
+    <h4>{{ $village->farmers->count() }}</h4>
+
+    <p>
+        TOTAL NUMBER
+        OF FARMERS
+        COFFEE BOUGHT
+        FROM
+
+    </p>
+</div>
+<div class="col-sm-1 color bg-lightGreen">
+    @if ($village->farmers->count() > 0)
+
+        <h4>{{ $village->quantity / $village->farmers->count() }}</h4>
+    @else
+        <h4>0</h4>
+    @endif
+
+    <p>KG CHERRY
+        AVERAGE PER
+        FARMER</p>
+</div>

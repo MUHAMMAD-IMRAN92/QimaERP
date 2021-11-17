@@ -212,7 +212,7 @@ class VillageController extends Controller
         if ($village->last_purchase) {
             $village->last_purchase = $village->last_purchase['created_at'];
         }
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->get();
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->get();
         $quantity = 0;
         foreach ($transactions as $transaction) {
             $quantity += $transaction->details->sum('container_weight');
@@ -303,6 +303,7 @@ class VillageController extends Controller
             $date = Carbon::today()->toDateString();
 
             $village = Village::find($id);
+            $village = $village->gov_region();
             $villageCode = $village->village_code;
             $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
@@ -312,7 +313,7 @@ class VillageController extends Controller
             if ($village->last_purchase) {
                 $village->last_purchase = $village->last_purchase->created_at;
             }
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->where('created_at', $date)->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereDate('created_at', $date)->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -348,7 +349,7 @@ class VillageController extends Controller
             $yesterday = Carbon::yesterday();
 
             $village = Village::find($id);
-
+            $village = $village->gov_region();
             $villageCode = $village->village_code;
             $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
             if ($village->first_purchase) {
@@ -359,7 +360,7 @@ class VillageController extends Controller
                 $village->last_purchase = $village->last_purchase->created_at;
             }
 
-            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->where('created_at', $yesterday)->get();
+            $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $villageCode . '-' . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->whereDate('created_at', $yesterday)->get();
             $quantity = 0;
             foreach ($transactions as $transaction) {
                 $quantity += $transaction->details->sum('container_weight');
@@ -392,10 +393,11 @@ class VillageController extends Controller
             ])->render();
         } elseif ($request->date == 'weekToDate') {
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY);
-            $end = $now->endOfWeek(Carbon::SATURDAY);
+            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
 
             $village = Village::find($id);
+            $village = $village->gov_region();
 
             $villageCode = $village->village_code;
             $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
@@ -442,8 +444,9 @@ class VillageController extends Controller
             $now = Carbon::now();
             $date = Carbon::tomorrow()->toDateString();
             $start = $now->firstOfMonth();
-            $farmer = Farmer::find($id);
+            // $farmer = Farmer::find($id);
             $village = Village::find($id);
+            $village = $village->gov_region();
 
             $villageCode = $village->village_code;
             $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
@@ -492,6 +495,7 @@ class VillageController extends Controller
             $lastMonth =  $date->subMonth()->format('m');
             $year = $date->year;
             $village = Village::find($id);
+            $village = $village->gov_region();
 
             $villageCode = $village->village_code;
             $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
@@ -539,6 +543,7 @@ class VillageController extends Controller
             $date = Carbon::tomorrow()->toDateString();
             $start = $now->startOfYear();
             $village = Village::find($id);
+            $village = $village->gov_region();
 
             $villageCode = $village->village_code;
             $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
@@ -586,6 +591,7 @@ class VillageController extends Controller
 
             $year = $date->year;
             $village = Village::find($id);
+            $village = $village->gov_region();
 
             $villageCode = $village->village_code;
             $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();
@@ -634,6 +640,7 @@ class VillageController extends Controller
 
             $year = $date->year - 1;
             $village = Village::find($id);
+            $village = $village->gov_region();
 
             $villageCode = $village->village_code;
             $village->first_purchase =  Transaction::where('batch_number', 'LIKE', $villageCode . '-' . '%')->first();

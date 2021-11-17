@@ -509,7 +509,7 @@
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger p-0 ml-0" style="display: flex; grid-gap: 8px;">
                     <!-- <h3>{{ App\Village::count() }}</h3>
-                                                                                                                                                                                                                                                        <p>Villages</p> -->
+                                                                                                                                                                                                                                                                                                                                                                            <p>Villages</p> -->
                     @if ($village->attach_images != null)
                         @php
                             $attachImages = explode('|', $village->attach_images);
@@ -579,28 +579,66 @@
 
             <div class="ml-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transaction">
                 <div class="col-sm-1 color bg-darkPurple">
-                    <h4>{{ $village->first_purchase }}</h4>
-                    <p>First Purchade</p>
+                    <h4>{{ $village->quantity }}</h4>
+                    <p>KG CHERRY
+                        BOUGHT</p>
                 </div>
                 <div class="col-sm-1 color bg-Green">
-                    <h4>{{ $village->last_purchase }} </h4>
+                    <h4>{{ $village->price }} </h4>
 
-                    <p>Last Purchase</p>
+                    <p>YER TOTAL
+                        SPCIAILTY COFFEE
+                        PURCHASED</p>
                 </div>
                 <div class="col-sm-1 color bg-darkPurple">
-                    <h4>{{ $village->price }}</h4>
+                    <h4>-</h4>
 
-                    <p>yer total coffee purchased </p>
+                    <p>KG DRY COFFEE
+                        BOUGHT </p>
                 </div>
                 <div class="col-sm-1 color bg-mildGreen">
-                    <h4>{{ $village->quantity }}</h4>
+                    <h4>-</h4>
 
-                    <p>Quantity</p>
+                    <p>YER TOTAL
+                        COMMERCIAL
+                        COFFEE
+                        PURCHASED</p>
                 </div>
-                <div class="col-sm-1 color bg-darkRed"></div>
-                <div class="col-sm-1 color bg-Green"></div>
-                <div class="col-sm-1 color bg-lightBrown"></div>
-                <div class="col-sm-1 color bg-lightGreen"></div>
+                <div class="col-sm-1 color bg-darkRed">
+                    <h4>-</h4>
+
+                    <p>YER
+                        ACCOUNT
+                        PAYABLE</p>
+                </div>
+                <div class="col-sm-1 color bg-Green">
+                    <h4>-</h4>
+
+                    <p>YER SETTELED</p>
+                </div>
+                <div class="col-sm-1 color bg-lightBrown">
+                    <h4>{{ $village->farmers->count() }}</h4>
+
+                    <p>
+                        TOTAL NUMBER
+                        OF FARMERS
+                        COFFEE BOUGHT
+                        FROM
+
+                    </p>
+                </div>
+                <div class="col-sm-1 color bg-lightGreen">
+                    @if ($village->farmers->count() > 0)
+                        <h4>{{ $village->quantity / $village->farmers->count() }}</h4>
+
+
+                    @else
+                        <h4>0</h4>
+                    @endif
+                    <p>KG CHERRY
+                        AVERAGE PER
+                        FARMER</p>
+                </div>
 
 
             </div>

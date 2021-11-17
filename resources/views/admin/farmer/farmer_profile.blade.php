@@ -575,7 +575,7 @@
                     @if ($farmer->cnicImage == null)
 
                         <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
-                            style="max-width: 100%; height: 100%;" alt="" >
+                            style="max-width: 100%; height: 100%;" alt="">
 
                     @else
                         <img class="famerimg" style="width: 100%; height: 100%;"
@@ -610,12 +610,14 @@
                     <div class="col-4">
                         <ol class=" breadcrumb  txt-size">
                             <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} /{{ $farmer->farmer_name }} /
+                                {{ $transaction->created_at }} /{{ $farmer->farmer_name }}
+                                /{{ App\User::find($transaction->created_by)->first_name . '' . App\User::find($transaction->created_by)->last_name }}/
                                 {{ $farmer->governerate_title }} /
                                 {{ $farmer->region_title }} /
                                 @php
                                     echo floatval($transaction->details->sum('container_weight'));
                                 @endphp
+                                /{{ number_format(round($transaction->details->sum('container_weight') * farmerPricePerKg($transaction->batch_number), 2)) }}
                             </li>
                         </ol>
                     </div>
