@@ -228,7 +228,9 @@ class RegionController extends Controller
         }
         $region = new Region;
         $region->region_code = $request->governerate_code . '-' . $request->region_code;
+
         $region->region_title = $request->region_title;
+        $region->description = $request->description;
         $region->center_id = $request->center_id;
         $region->local_code = '';
         $region->is_local = 0;
@@ -244,6 +246,10 @@ class RegionController extends Controller
         $data['center'] = Center::all();
         $data['region'] = Region::find($id);
         return view('admin.region.editregion', $data);
+    }
+    public function update(Request $request)
+    {
+        return $request->all();
     }
 
     public function delete($id)
@@ -414,7 +420,7 @@ class RegionController extends Controller
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
-        
+
                             $farmerArray->push($farmer->farmer_code);
                         }
                     }
@@ -557,7 +563,7 @@ class RegionController extends Controller
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
-        
+
                             $farmerArray->push($farmer->farmer_code);
                         }
                     }
@@ -701,7 +707,7 @@ class RegionController extends Controller
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
-        
+
                             $farmerArray->push($farmer->farmer_code);
                         }
                     }
@@ -846,7 +852,7 @@ class RegionController extends Controller
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
-        
+
                             $farmerArray->push($farmer->farmer_code);
                         }
                     }
@@ -990,7 +996,7 @@ class RegionController extends Controller
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
-        
+
                             $farmerArray->push($farmer->farmer_code);
                         }
                     }
@@ -1137,7 +1143,7 @@ class RegionController extends Controller
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
-        
+
                             $farmerArray->push($farmer->farmer_code);
                         }
                     }
@@ -1282,7 +1288,7 @@ class RegionController extends Controller
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
-        
+
                             $farmerArray->push($farmer->farmer_code);
                         }
                     }
@@ -1427,7 +1433,7 @@ class RegionController extends Controller
                     $farmer = Farmer::where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
-        
+
                             $farmerArray->push($farmer->farmer_code);
                         }
                     }

@@ -467,13 +467,13 @@
                             </tr>
                             <tr>
                                 <td colspan=""><strong>REGIONS INFORMATION</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ regDescrption($village->region) }}</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>GOVERNORATE INFORMATION
                                     </strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ govDescrption($village->governrate) }}</td>
                                 <td colspan="4"></td>
                             </tr>
                             <tr>
@@ -509,7 +509,7 @@
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger p-0 ml-0" style="display: flex; grid-gap: 8px;">
                     <!-- <h3>{{ App\Village::count() }}</h3>
-                                                                                                                                                                                                                                        <p>Villages</p> -->
+                                                                                                                                                                                                                                                        <p>Villages</p> -->
                     @if ($village->attach_images != null)
                         @php
                             $attachImages = explode('|', $village->attach_images);

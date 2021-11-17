@@ -385,3 +385,13 @@ function farmerPricePerKg($code)
         }
     }
 }
+function regDescrption($govName)
+{
+    $region = Region::where('region_title', $govName)->first();
+    return $region->description;
+}
+function govDescrption($regName)
+{
+    $gov = Governerate::where('governerate_title', $regName)->first();
+    return $gov->description;
+}
