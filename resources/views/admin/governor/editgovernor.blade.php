@@ -51,7 +51,7 @@
                                         <label for="exampleInputEmail1">Code</label>
                                         <input type="text" class="form-control" id="exampleInputEmail1"
                                             name="governerate_code" value="{{ $governor->governerate_code }}"
-                                            placeholder="Enter Code">
+                                            placeholder="Enter Code" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Title</label>
