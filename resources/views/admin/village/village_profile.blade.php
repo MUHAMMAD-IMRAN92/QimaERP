@@ -405,7 +405,7 @@
                     @if ($village->image != null)
                         <img style="max-width: 100%; height: 100%;"
                             src="{{ Storage::disk('s3')->url('images/' . $village->image) }}" alt="">
-                  
+
                     @else
                     <img style="max-width: 100%; height: 100%;"
                     src="{{ Storage::disk('s3')->url('images/dumy.png') }}" alt="">
@@ -462,7 +462,7 @@
             <div class="ml-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transaction">
                 <div class="col-sm-1 color bg-darkPurple">
                     <h4>{{ $village->first_purchase }}</h4>
-                    <p>First Purchade</p>
+                    <p>First Purchase</p>
                 </div>
                 <div class="col-sm-1 color bg-Green">
                     <h4>{{ $village->last_purchase }} </h4>
