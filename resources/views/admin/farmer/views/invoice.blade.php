@@ -120,7 +120,7 @@
         @php
             $i++;
         @endphp
-        <div class="col-sm-1 color p-0 ml-0">
+        <div class="col-sm-1 color p-0 ml-1">
 
             @if ($inv == null)
                 <img style="max-width: 100%; height: 100%;" class="famerimg"
