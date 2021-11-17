@@ -99,12 +99,23 @@ class VillageController extends Controller
         $village->price_per_kg = $request->price_per_kg;
         if ($request->hasFile('village_image')) {
             $file = $request->village_image;
-            $file_name = time() . '.' . $file->getClientOriginalExtension();
-            $path = $request->file('village_image')->storeAs('images', $file_name, 's3');
+            $profile_image = time() . '.' . $file->getClientOriginalExtension();
+            $path = $request->file('village_image')->storeAs('images', $profile_image, 's3');
             Storage::disk('s3')->setVisibility($path, 'public');
         }
+        if ($request->hasFile('images')) {
+            $images = [];
+            foreach ($request->images as $img) {
+                $file = $img;
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $path = $img->storeAs('images', $file_name, 's3');
+                Storage::disk('s3')->setVisibility($path, 'public');
+                array_push($images, $file_name);
+            }
+            $village->attach_images =  implode('|', $images);
+        }
         $village->local_code = '';
-        $village->image =  $file_name;
+        $village->image =  $profile_image;
         // dd($village->village_id);
         $village->save();
         return redirect('admin/allvillage');
@@ -165,6 +176,18 @@ class VillageController extends Controller
                 $path = $request->file('village_image')->storeAs('images', $file_name, 's3');
                 Storage::disk('s3')->setVisibility($path, 'public');
                 $updatevillage->image =   $file_name;
+            }
+            if ($request->hasFile('images')) {
+                $images = [];
+                foreach ($request->images as $img) {
+                    $file = $img;
+                    $file_name = time() . '.' . $file->getClientOriginalExtension();
+                    $path = $img->storeAs('images', $file_name, 's3');
+                    Storage::disk('s3')->setVisibility($path, 'public');
+                    array_push($images, $file_name);
+                }
+                // return  $images;
+                $updatevillage->attach_images =  implode('|', $images);
             }
             // dd($updatevillage);
             $updatevillage->update();
