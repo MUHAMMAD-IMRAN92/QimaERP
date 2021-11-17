@@ -107,6 +107,33 @@
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Altitude </label>
+                                            <input type="number" id="altitude" class="form-control"
+                                                value="{{ $village->altitude }}" name="altitude" placeholder="Altitude"
+                                                @error('altitude') is-invalid @enderror>
+                                            @error('altitude')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Reward Per Kg </label>
+                                            <input type="number" id="reward" class="form-control" name="reward"
+                                                value="{{ $village->reward_per_kg }}" placeholder="Reward Per KG"
+                                                @error('reward') is-invalid @enderror>
+                                            @error('reward')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Description </label>
+                                            <textarea type="text" id="description" class="form-control" value=""
+                                                name="description" placeholder="Village Information" @error('description')
+                                                is-invalid @enderror>{{ $village->description }} </textarea>
+                                            @error('description')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                         <div class="row">
 
                                             <div class="col-md-6">
