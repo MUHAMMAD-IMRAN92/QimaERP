@@ -25,13 +25,13 @@
                     <tbody>
                         @foreach ($coffeeBuyerMangers as $coffeeBuyerManger)
                             <tr>
-                                @if ($coffeeBuyerManger->picture_id == null)
+                                @if ($coffeeBuyerManger->profile_image == null)
                                     <td class="border-0"> <img class="famerimg"
-                                            src="{{ torage::disk('s3')->url('images/' . 'dumy.png') }}" alt="">
+                                            src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" alt="">
                                     </td>
                                 @else
                                     <td class="border-0"> <img class="famerimg"
-                                            src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyerManger->image) }}"
+                                            src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyerManger->profile_image) }}"
                                             alt=""></td>
                                 @endif
                                 <td class="border border-dark border-top-0">{{ $coffeeBuyerManger->first_name }}</td>
@@ -151,13 +151,14 @@
                         @foreach ($coffeeBuyers as $coffeeBuyer)
                             <tr>
 
-                                @if ($coffeeBuyer->picture_id == null)
+                                @if ($coffeeBuyer->profile_image == null)
                                     <td class="border-0"> <img class="famerimg"
-                                            src="{{ asset('public/images/farmericon.png') }}" alt="">
+                                            src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" alt="">
                                     </td>
                                 @else
                                     <td class="border-0"> <img class="famerimg"
-                                            src="{{ asset('public/storage/images/' . $coffeeBuyer->image) }}" alt="">
+                                            src="{{ Storage::disk('s3')->url('images/' . $coffeeBuyer->profile_image) }}"
+                                            alt="">
                                     </td>
                                 @endif
                                 <td class="border border-dark border-top-0">{{ $coffeeBuyer->first_name }}</td>
