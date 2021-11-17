@@ -102,6 +102,7 @@ class VillageController extends Controller
             $profile_image = time() . '.' . $file->getClientOriginalExtension();
             $path = $request->file('village_image')->storeAs('images', $profile_image, 's3');
             Storage::disk('s3')->setVisibility($path, 'public');
+            $village->image =  $profile_image;
         }
         if ($request->hasFile('images')) {
             $images = [];
@@ -115,7 +116,9 @@ class VillageController extends Controller
             $village->attach_images =  implode('|', $images);
         }
         $village->local_code = '';
-        $village->image =  $profile_image;
+        $village->altitude = $request->altitude;
+        $village->reward_per_kg =   $request->reward;
+        $village->description  = $request->description;
         // dd($village->village_id);
         $village->save();
         return redirect('admin/allvillage');
@@ -189,6 +192,9 @@ class VillageController extends Controller
                 // return  $images;
                 $updatevillage->attach_images =  implode('|', $images);
             }
+            $updatevillage->altitude = $request->altitude;
+            $updatevillage->reward_per_kg =   $request->reward;
+            $updatevillage->description  = $request->description;
             // dd($updatevillage);
             $updatevillage->update();
             return back()->with('msg', 'Village Update Successfully!');
