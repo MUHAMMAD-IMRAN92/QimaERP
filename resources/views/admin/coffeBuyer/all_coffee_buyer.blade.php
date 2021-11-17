@@ -493,6 +493,8 @@
                                                             Last Purchase</th>
                                                         <th class="border border-dark border-left-0 font-weight-lighter">
                                                             City</th>
+                                                        <th class="border border-dark border-left-0 font-weight-lighter">
+                                                            Manager</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -518,6 +520,8 @@
                                                                 {{ $coffeeBuyer->last_purchase }}</td>
                                                             <td class="border border-dark border-left-0 border-top-0">
                                                                 -</td>
+                                                            <td class="border border-dark border-left-0 border-top-0">
+                                                                AHMAD ABDUALLAH </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
