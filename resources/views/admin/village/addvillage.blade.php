@@ -148,7 +148,13 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <!-- /.card-body -->
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.card -->
 
                                 </div>
                                 <!-- /.card-body -->
