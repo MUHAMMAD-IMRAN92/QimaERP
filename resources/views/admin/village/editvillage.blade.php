@@ -1,16 +1,15 @@
 @extends('layouts.default')
 @section('title', 'All Village')
 @section('content')
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-    <div class="mx-lg-5">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
         <div class="row">
             <div class="col-md-12">
                 @if (Session::has('msg'))
-                <div class="alert alert-success" role="alert">
-                    <b>{{ Session::get('msg') }}</b>
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                </div>
+                    <div class="alert alert-success" role="alert">
+                        <b>{{ Session::get('msg') }}</b>
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
                 @endif
             </div>
         </div>
@@ -19,7 +18,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Edit Village</h1>
+                        <h1>Edit Village</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -41,7 +40,7 @@
                         <div class="card card-primary">
 
                             {{-- <div class="card-header">
-                                    <h3 class="card-title">Edit</h3>
+                                    <h3 class="card-title">Edit</h3>                    
                                     </div> --}}
                             <!-- /.card-header -->
                             <!-- form start -->
@@ -109,13 +108,55 @@
                                             @enderror
                                         </div>
                                         <div class="form-group">
-                                            <label for="price_per_kg">Add Image </label>
-                                            <br>
-                                            <input type="file" id="price_per_kg" value="" name="village_image"
-                                                placeholder="Price Per Kg" @error('village_image') is-invalid @enderror>
-                                            @error('village_image')
+                                            <label for="price_per_kg">Altitude </label>
+                                            <input type="number" id="altitude" class="form-control"
+                                                value="{{ $village->altitude }}" name="altitude" placeholder="Altitude"
+                                                @error('altitude') is-invalid @enderror>
+                                            @error('altitude')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Reward Per Kg </label>
+                                            <input type="number" id="reward" class="form-control" name="reward"
+                                                value="{{ $village->reward_per_kg }}" placeholder="Reward Per KG"
+                                                @error('reward') is-invalid @enderror>
+                                            @error('reward')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Description </label>
+                                            <textarea type="text" id="description" class="form-control" value=""
+                                                name="description" placeholder="Village Information" @error('description')
+                                                is-invalid @enderror>{{ $village->description }} </textarea>
+                                            @error('description')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="">Profile Image </label>
+                                                    <br>
+                                                    <input type="file" id="" value="" name="village_image" placeholder=""
+                                                        @error('village_image') is-invalid @enderror>
+                                                    @error('village_image')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="">Attach Images : </label> You Can Select
+                                                    Multiple
+                                                    <br>
+                                                    <input type="file" id="" value="" name="images[]" multiple
+                                                        placeholder="" @error('images') is-invalid @enderror>
+
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="card-body col-md-6" style=" margin-top:1em !important;">
@@ -146,88 +187,31 @@
 
 
 
-                                    <input type="hidden" id="village_title" class="form-control" id="hiddenfield" name="code" placeholder="Title" value="{{ Str::beforeLast($village->village_code, '-') }}">
 
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1"> Code</label>
-                                    <input type="text" id="village_title" class="form-control" id="exampleInputPassword1" name="village_code" placeholder="Title" value="{{ Str::afterLast($village->village_code, '-') }}" {{ count($transaction) > 0 ? 'readonly' : '' }}>
+                                <!-- /.card-body -->
 
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Village Title (English)</label>
-                                    <input type="text" id="village_title" value="{{ $village->village_title }}" class="form-control" id="exampleInputPassword1" name="village_title" placeholder="Village Title (English)" @error('village_title') is-invalid @enderror>
-                                    @error('village_title')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Village Title (Arabic)</label>
-                                    <input type="text" id="village_title" value="{{ $village->village_title_ar }}" class="form-control" id="exampleInputPassword1" name="village_title_ar" placeholder="Village Title (Arabic)" @error('village_title_ar') is-invalid @enderror>
-                                    @error('village_title_ar')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Price Per Kg </label>
-                                    <input type="number" id="price_per_kg" class="form-control" value="{{ $village->price_per_kg }}" name="price_per_kg" placeholder="Price Per Kg" @error('farmer_nicn') is-invalid @enderror>
-                                    @error('price_per_kg')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="card-body col-md-6" style=" margin-top:1em !important;">
-                                <caption>
-                                    <h4 class="text-uppercase letter-spacing-1">Farmers</h4>
-                                </caption>
-                                <div class="table-responsive text-uppercase letter-spacing-1 governors_table">
-                                    <table class="table table-bordered table-stripeds">
-                                        <thead>
-                                            <th>Sr#</th>
-                                            <th>Farmer Name</th>
-                                            <th>Farmer Code</th>
-                                        </thead>
-                                        @foreach ($farmers as $farmer)
-                                        <tr>
-                                            <td>
-                                                {{ $loop->iteration }}
-                                            </td>
-                                            <td>
-                                                {{ $farmer->farmer_name }}
-                                            </td>
-                                            <td>
-                                                {{ $farmer->farmer_code }}
-                                            </td>
-
-                                        </tr>
-                                        @endforeach
-                                    </table>
-                                </div>
-                            </div>
+                            </form>
                         </div>
-                        <!-- /.card-body -->
+                        <!-- /.card -->
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1">Submit</button>
-                        </div>
-                        </form>
+
                     </div>
-                    <!-- /.card -->
 
+                    <!-- /.card -->
 
                 </div>
 
-                <!-- /.card -->
-
             </div>
-
+            <!-- /.row -->
+    </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
     </div>
-    <!-- /.row -->
-</div><!-- /.container-fluid -->
-</div>
-</section>
-<!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
+    <!-- /.content-wrapper -->
 
 @endsection
