@@ -419,7 +419,8 @@
                 <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}"> SET
                         PRICE
                     </a></span> &nbsp |
-                <span class="ml-2"> <a href="">SET REWARD</a></span>
+                <span class="ml-2"> <a href="{{ url('admin/editvillage/' . $village->village_id) }}">SET
+                        REWARD</a></span>
 
             </div>
             <hr>
@@ -509,7 +510,7 @@
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger p-0 ml-0" style="display: flex; grid-gap: 8px;">
                     <!-- <h3>{{ App\Village::count() }}</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                        <p>Villages</p> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                            <p>Villages</p> -->
                     @if ($village->attach_images != null)
                         @php
                             $attachImages = explode('|', $village->attach_images);
