@@ -100,7 +100,7 @@
                     {
                         "mRender": function(data, type, row) {
                             var session = '-';
-                            if (typeof row.latest_transation !== 'undefined' || typeof row
+                            if (typeof row.latest_transation !== 'undefined' && typeof row
                                 .latest_transation.session_no !== 'undefined') {
                                 session = row.latest_transation.session_no
                             }
