@@ -3,40 +3,42 @@
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Add Village</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Add Village</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+        <div class="mx-lg-5">
 
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <!-- left column -->
-                    <div class="col-md-12">
-                        <!-- general form elements -->
-                        <div class="card card-primary">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Add Village</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active">Add Village</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
 
-                            <div class="card-header">
-                                <h3 class="card-title">Add</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <!-- form start -->
-                            <form role="form" method="POST" action="{{ URL::to('') }}/admin/addvillage"
-                                enctype="multipart/form-data">
-                                {{-- @if ($errors->any())
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <!-- left column -->
+                        <div class="col-md-12">
+                            <!-- general form elements -->
+                            <div class="card card-primary">
+
+                                <div class="card-header">
+                                    <h3 class="card-title text-uppercase letter-spacing-2">Add</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <!-- form start -->
+                                <form role="form" method="POST" action="{{ URL::to('') }}/admin/addvillage"
+                                    enctype="multipart/form-data">
+                                    {{-- @if ($errors->any())
                   <div class="alert alert-danger">
                       <ul>
                           @foreach ($errors->all() as $error)
@@ -49,30 +51,31 @@
                                                 </ul>
                                             </div>
                                             @endif --}}
-                                {{ csrf_field() }}
-                                <div class="card-body col-md-6">
-                                    <div class="form-group">
-                                        <label for="country_name">All Region</label>
-                                        <select class="form-control input-add-inception" name="region_code"
-                                            @error('region_code') is-invalid @enderror>
-                                            @foreach ($region as $row)
-                                                <option value="{{ $row->region_code }}">{{ $row->region_code }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('region_code')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exampleInputPassword1">Village Title (English)</label>
-                                        <input type="text" id="village_title" class="form-control"
-                                            id="exampleInputPassword1" name="village_title"
-                                            placeholder="Village Title (English)" @error('village_title') is-invalid
-                                            @enderror>
-                                        @error('village_title')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+                                    {{ csrf_field() }}
+                                    <div class="card-body col-md-6 text-uppercase letter-spacing-1">
+                                        <div class="form-group">
+                                            <label for="country_name">All Region</label>
+                                            <select class="form-control input-add-inception" name="region_code"
+                                                @error('region_code') is-invalid @enderror>
+                                                @foreach ($region as $row)
+                                                    <option value="{{ $row->region_code }}">{{ $row->region_code }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('region_code')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Village Title (English)</label>
+                                            <input type="text" id="village_title" class="form-control"
+                                                id="exampleInputPassword1" name="village_title"
+                                                placeholder="Village Title (English)" @error('village_title') is-invalid
+                                                @enderror>
+                                            @error('village_title')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
 
                                     <div class="form-group">
                                         <label for="village_title_ar">Village Title (Arabic)</label>
@@ -150,21 +153,13 @@
                                 </div>
                                 <!-- /.card-body -->
 
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                            </form>
                         </div>
                         <!-- /.card -->
 
-
                     </div>
-                    <!-- /.card -->
 
                 </div>
-
-            </div>
-            <!-- /.row -->
+        </div> <!-- /.row -->
     </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
