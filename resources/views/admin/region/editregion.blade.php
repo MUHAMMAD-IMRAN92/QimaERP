@@ -34,7 +34,8 @@
               </div> --}}
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form role="form" method="POST" action="{{ url('admin/regionupdate' . $region->region_id) }}">
+                            <form role="form" method="POST"
+                                action="{{ url('admin/regionupdate/' . $region->region_id) }}">
                                 @if ($errors->any())
                                     <div class="alert alert-danger">
                                         <ul>
@@ -70,10 +71,10 @@
                                             value="{{ $region->region_title }}" name="region_title" placeholder="Title">
                                     </div>
                                     <div class="form-group">
-                                        <label for="description">Description </label>
+                                        <label for="description">Region Information </label>
                                         <textarea type="text" id="description" class="form-control" value=""
                                             name="description" placeholder="Village Information" @error('description')
-                                            is-invalid @enderror> </textarea>
+                                            is-invalid @enderror>{{ $region->description }} </textarea>
                                         @error('description')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
