@@ -446,7 +446,7 @@
                                     datasets: [{
                                         pointRadius: 4,
                                         fill: false,
-                                        tension: 0.5,
+                                        tension: 0.4,
 
                                         backgroundColor: "black",
                                         borderColor: "gray",
@@ -462,7 +462,7 @@
 
                                             ticks: {
                                                 min: 0,
-                                                max: 10000
+                                                // max: 10000
                                             }
                                         }],
                                         xAxes: [{
@@ -805,7 +805,7 @@
                                                 <td>
                                                     @foreach ($gov['region']->reverse() as $r)
                                                         @php
-                                                            $width = $r['weight'] / 10;
+                                                            $width = $r['weight'] / 50;
                                                             // echo $width;
                                                         @endphp
                                                         {{-- <p>{{ $r['regionTitle']}}</p> --}}
@@ -924,7 +924,7 @@
 
                                             ticks: {
                                                 min: 0,
-                                                max: 10000
+                                                // max: 10000
                                             }
                                         }],
                                     }

@@ -333,9 +333,10 @@
                     @endphp
                     <p class="ml-2 letter-spacing-1 btn-color-darkRed">{{ $newTransaction->created_at }}/
                         {{ $name }}
-                        /
+                        /{{ getFarmer($newTransaction->batch_number) }}/
                         {{ $regionName }}/
-                        {{ round($newTransaction->details->sum('container_weight'), 2) }} </p>
+                        {{ round($newTransaction->details->sum('container_weight'), 2) }}/{{ number_format(round(farmerPricePerKg($newTransaction->batch_number) * $newTransaction->details->sum('container_weight'), 2)) }}
+                    </p>
                 @endforeach
             </div>
             <hr class="ml-md-2">

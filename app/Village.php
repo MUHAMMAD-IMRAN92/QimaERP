@@ -21,12 +21,13 @@ class Village extends Model
         $gov_code = explode('-', $village_code)[0];
         $governerate = Governerate::where('governerate_code',  $gov_code)->first()['governerate_title'];
         $farmers = Farmer::with('file')->where('farmer_code', 'LIKE', $village_code . '%')->get();
-        $createdBys = Transaction::where('batch_number', 'LIKE', $village_code . '%')->get(['created_by']);
-        $role = Role::with(['users' => function ($query) use ($createdBys) {
-            $query->whereIn('user_id', $createdBys->toArray());
-        }, 'users.file'])->where('name', 'Coffee Buyer')->first();
+        $createdBys = Transaction::where('batch_number', 'LIKE', $village_code . '%')->where('sent_to', 2)->pluck('created_by');
+        // $role = Role::with(['users' => function ($query) use ($createdBys) {
+        //     $query->whereIn('user_id', $createdBys->toArray());
+        // }, 'users.file'])->where('name', 'Coffee Buyer')->first();
+        $users = User::whereIn('user_id', $createdBys)->get();
 
-        $this->buyers = $role->users;
+        $this->buyers = $users;
         $this->region = $region;
         $this->governrate =  $governerate;
         $this->farmers = $farmers;

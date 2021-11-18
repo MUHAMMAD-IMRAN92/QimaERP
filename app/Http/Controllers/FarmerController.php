@@ -534,7 +534,7 @@ class FarmerController extends Controller
                     }
                 }
             }
-       
+
             $governorates = Governerate::all();
             $regions = Region::all();
             $villages = Village::all();

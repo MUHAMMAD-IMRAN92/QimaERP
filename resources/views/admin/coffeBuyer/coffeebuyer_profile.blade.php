@@ -385,7 +385,7 @@
                         </tr> --}}
                             <tr>
                                 <td colspan=""><strong>City </strong></td>
-                                <td colspan="4">lahore</td>
+                                <td colspan="4">-</td>
 
                             </tr>
                             <tr>
