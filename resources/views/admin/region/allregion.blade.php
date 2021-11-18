@@ -575,6 +575,7 @@
                                                     <th>Quantity /</th>
                                                     <th>Value /</th>
                                                     <th>Farmers /</th>
+                                                    <th>Action </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -621,6 +622,11 @@
                                                                     {{ $village->farmers }} <br>
                                                                 @endforeach
                                                             @endif
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ url('admin/editregion', $region->region_id) }}"><i
+                                                                    style="font-size:24px"
+                                                                    class="fa">&#xf044;</i></a>
                                                         </td>
                                                     </tr>
                                                 @endforeach

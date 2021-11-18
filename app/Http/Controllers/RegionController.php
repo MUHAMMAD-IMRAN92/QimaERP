@@ -247,9 +247,15 @@ class RegionController extends Controller
         $data['region'] = Region::find($id);
         return view('admin.region.editregion', $data);
     }
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        return $request->all();
+        $region = Region::find($id);
+        $region->region_code = $request->region_code;
+        $region->region_title = $request->region_title;
+        $region->description = $request->description;
+        $region->center_id = $request->center_id;
+        $region->update();
+        return redirect()->to('admin/allregion')->with('message', 'Region Updated Succesfully');
     }
 
     public function delete($id)
