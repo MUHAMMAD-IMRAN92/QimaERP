@@ -71,7 +71,7 @@
                                             @enderror
                                         </div>
                                         <div class="form-group">
-                                            <label for="price_per_kg">Description </label>
+                                            <label for="price_per_kg">Governerate Information </label>
                                             <textarea type="text" id="description" class="form-control" value=""
                                                 name="description" placeholder="Village Information" @error('description')
                                                 is-invalid @enderror> </textarea>

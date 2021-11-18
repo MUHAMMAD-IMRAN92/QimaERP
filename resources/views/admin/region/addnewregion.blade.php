@@ -95,7 +95,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="description">Description </label>
+                                        <label for="description">Region Information </label>
                                         <textarea type="text" id="description" class="form-control" value=""
                                             name="description" placeholder="Village Information" @error('description')
                                             is-invalid @enderror> </textarea>
