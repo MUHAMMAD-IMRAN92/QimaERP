@@ -47,7 +47,7 @@ class BatchNumberController extends Controller
                 $column = 'batch_number';
             }
         }
-        $members = $members->where('is_parent', '0')->with('latestTransation')->skip($start)->take($length)->orderBy($column, $orderby)->get();
+        $members = $members->where('is_parent', '0')->whereHas('latestTransation')->with('latestTransation')->skip($start)->take($length)->orderBy($column, $orderby)->get();
         $data = array(
             'draw' => $draw,
             'recordsTotal' => $total_members,
