@@ -353,7 +353,8 @@
                 <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}"> OVERRIDE
                         PRICE
                     </a></span> &nbsp |
-                <span class="ml-2"> <a href="#">OVERRIDE REWARD</a></span> &nbsp |
+                <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">OVERRIDE
+                        REWARD</a></span> &nbsp |
                 <span class="ml-2"> <a href="#">ADD PREMIUM</a></span>&nbsp |
                 <span class="ml-2"> <a href="#">SETTLE LOAN</a></span>
             </div>

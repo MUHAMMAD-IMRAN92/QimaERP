@@ -177,7 +177,15 @@ class FarmerController extends Controller
             $updatefarmer->farmer_code = $f_code;
             $updatefarmer->farmer_nicn = $request->farmer_nicn;
             $updatefarmer->price_per_kg = $request->price_per_kg;
-
+            $updatefarmer->ph_no = $request->ph_no;
+            $updatefarmer->reward = $request->reward;
+            $updatefarmer->cup_profile = $request->cup_prof;
+            $updatefarmer->cupping_score = $request->cup_score;
+            $updatefarmer->farmer_info = $request->info;
+            $updatefarmer->no_of_trees = $request->tree;
+            $updatefarmer->house_hold_size = $request->house_hold;
+            $updatefarmer->farm_size = $request->farm_size;
+            $updatefarmer->altitude = $request->alt;
             $updatefarmer->save();
             //    return redirect('admin/allfarmer');
             return back()->with(['msg' => 'farmer was updated Successfully.']);
@@ -314,6 +322,15 @@ class FarmerController extends Controller
             'is_status' => 1,
             'price_per_kg' => $request->price_per_kg,
             'created_by' => Auth::user()->user_id,
+            'ph_no' => $request->ph_no,
+            'reward' => $request->reward,
+            'cup_profile' => $request->cup_prof,
+            'cupping_score' => $request->cup_score,
+            'farmer_info' => $request->info,
+            'no_of_trees' => $request->tree,
+            'house_hold_size' => $request->house_hold,
+            'farm_size' => $request->farm_size,
+            'altitude' => $request->alt,
         ]);
 
         return redirect('admin/allfarmer');
