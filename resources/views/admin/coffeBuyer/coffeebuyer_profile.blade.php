@@ -92,8 +92,8 @@
         }
 
         /* #reciepts-hover:hover b{
-                                                                                                                                                                                                                cursor: pointer;
-                                                                                                                                                                                                            } */
+                                                                                                                                                                                                                        cursor: pointer;
+                                                                                                                                                                                                                    } */
 
     </style>
 
@@ -457,18 +457,33 @@
                         <p>Last Puchase</p>
                 </div>
                 <div class="col-sm-1 color bg-Green mr-1">
-                    <h4>{{ number_format($buyer->sum) }}</h3>
-
-                        <p>Quantity</p>
-                </div>
-                <div class="col-sm-1 color bg-Green mr-1">
                     <h4>{{ number_format($buyer->price) }}</h3>
 
                         <p>yer total coffee purchased</p>
                 </div>
-                <div class="col-sm-1 color bg-Green mr-1"></div>
-                <div class="col-sm-1 color bg-Green mr-1"></div>
-                <div class="col-sm-1 color bg-darkRed mr-1"></div>
+                <div class="col-sm-1 color bg-Green mr-1">
+                    <h4>-</h3>
+
+                        <p>YER SETTELED</p>
+                </div>
+                <div class="col-sm-1 color bg-Green mr-1">
+                    <h4>-</h3>
+
+                        <p>YER
+                            ACCOUNT
+                            PAYABLE</p>
+                </div>
+                <div class="col-sm-1 color bg-Green mr-1">
+                    <h4>-</h3>
+
+                        <p>YER
+                            PENALTY</p>
+                </div>
+                <div class="col-sm-1 color bg-darkRed mr-1">
+                    <h4>-</h3>
+
+                        <p>YER COMISSION</p>
+                </div>
             </div>
             <hr class="ml-2">
             <div class="row ml-2 blacklink mb-2">
