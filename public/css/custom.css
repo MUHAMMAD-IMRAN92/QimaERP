@@ -272,7 +272,7 @@
 .custom-table-dashboard tr:last-child td{
     border-bottom: 0;
 }
-.custom-table-dashboard tr td:last-child, tr th:last-child{
+.custom-table-dashboard tr td:last-child,.custom-table-dashboard tr th:last-child{
     border: 0;
     display: flex;
     grid-gap: 5px;
