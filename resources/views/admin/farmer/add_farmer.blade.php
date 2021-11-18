@@ -75,6 +75,78 @@
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Tel</label>
+                                        <input type="text" id="ph" class="form-control" value="" name="ph_no"
+                                            placeholder="Tel No" @error('ph') is-invalid @enderror>
+                                        @error('ph')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Reward Per Kg </label>
+                                        <input type="number" id="reward" class="form-control" value="" name="reward"
+                                            placeholder="Price Per Kg" @error('price_per_kg') is-invalid @enderror>
+                                        @error('price_per_kg')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Cupping Profile </label>
+                                        <input type="text" id="cup_prof" class="form-control" value="" name="cup_prof"
+                                            placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Cupping Score </label>
+                                        <input type="number" id="cup_score" class="form-control" value="" name="cup_score"
+                                            placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">House Hold Size </label>
+                                        <input type="number" id="cup_score" class="form-control" value=""
+                                            name="house_hold" placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Farm Size</label>
+                                        <input type="number" id="cup_score" class="form-control" value="" name="farm_size"
+                                            placeholder="Farm Size" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">No Of Trees</label>
+                                        <input type="number" id="trees" class="form-control" value="" name="tree"
+                                            placeholder="No Of Tree" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Altitude </label>
+                                        <input type="number" id="alt" class="form-control" value="" name="alt"
+                                            placeholder="Altitude" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Farmer Information </label>
+                                        <textarea type="text" id="info" class="form-control" value="" name="info"
+                                            placeholder="Altitude" @error('') is-invalid @enderror></textarea>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
 
                                     <div class="row">
 

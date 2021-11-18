@@ -94,6 +94,86 @@
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Tel</label>
+                                        <input type="text" id="ph" class="form-control" value="{{ $farmer->ph_no }}"
+                                            name="ph_no" placeholder="Tel No" @error('ph') is-invalid @enderror>
+                                        @error('ph')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Reward Per Kg </label>
+                                        <input type="number" id="reward" class="form-control"
+                                            value="{{ $farmer->reward }}" name="reward" placeholder="Price Per Kg"
+                                            @error('price_per_kg') is-invalid @enderror>
+                                        @error('price_per_kg')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Cupping Profile </label>
+                                        <input type="text" id="cup_prof" class="form-control"
+                                            value="{{ $farmer->cup_profile }}" name="cup_prof"
+                                            placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Cupping Score </label>
+                                        <input type="number" id="cup_score" class="form-control"
+                                            value="{{ $farmer->cupping_score }}" name="cup_score"
+                                            placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">House Hold Size </label>
+                                        <input type="number" id="cup_score" class="form-control"
+                                            value="{{ $farmer->house_hold_size }}" name="house_hold"
+                                            placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Farm Size</label>
+                                        <input type="number" id="cup_score" class="form-control"
+                                            value="{{ $farmer->farm_size }}" name="farm_size" placeholder="Farm Size"
+                                            @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">No Of Trees</label>
+                                        <input type="number" id="trees" class="form-control"
+                                            value=" {{ $farmer->no_of_trees }}" name="tree" placeholder="No Of Tree"
+                                            @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Altitude </label>
+                                        <input type="number" id="alt" class="form-control"
+                                            value="{{ $farmer->altitude }}" name="alt" placeholder="Altitude" @error('')
+                                            is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Farmer Information </label>
+                                        <textarea type="text" id="info" class="form-control" value="" name="info"
+                                            placeholder="Farmer Info" @error('') is-invalid
+                                            @enderror>{{ $farmer->farmer_info }}</textarea>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">

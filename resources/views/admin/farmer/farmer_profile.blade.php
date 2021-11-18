@@ -353,7 +353,8 @@
                 <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}"> OVERRIDE
                         PRICE
                     </a></span> &nbsp |
-                <span class="ml-2"> <a href="#">OVERRIDE REWARD</a></span> &nbsp |
+                <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">OVERRIDE
+                        REWARD</a></span> &nbsp |
                 <span class="ml-2"> <a href="#">ADD PREMIUM</a></span>&nbsp |
                 <span class="ml-2"> <a href="#">SETTLE LOAN</a></span>
             </div>
@@ -401,19 +402,19 @@
                             </tr>
                             <tr>
                                 <td colspan=""><strong>ALTITUDE</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ $farmer->altitude }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>HOUSE HOLD SIZE</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ $farmer->house_hold_size }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>FARM SIZE</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ $farmer->farm_size }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>NO OF TREES</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ $farmer->no_of_trees }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>STARTED WORKING WITH QIMA</strong></td>
@@ -421,20 +422,20 @@
                             </tr>
                             <tr>
                                 <td colspan=""><strong>FAMER INFORMATION</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ $farmer->farmer_info }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>CUPPING SCORE</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ $farmer->cupping_score }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>CUP PROFILE</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ $farmer->cup_profile }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>TEL</strong>
                                 </td>
-                                <td colspan="8">pending</td>
+                                <td colspan="8">{{ $farmer->ph_no }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>PRICE PER KG</strong>
@@ -450,7 +451,7 @@
                             </tr>
                             <tr>
                                 <td colspan=""><strong>REWARD PER KG</strong></td>
-                                <td colspan="4">pending</td>
+                                <td colspan="4">{{ $farmer->reward }}</td>
                             </tr>
 
                         </tbody>
