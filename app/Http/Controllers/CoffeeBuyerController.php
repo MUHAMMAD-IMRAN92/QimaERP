@@ -564,7 +564,7 @@ class CoffeeBuyerController extends Controller
     {
 
         $buyer = User::find($id);
-
+        $sent_to = 2;
         foreach ($buyer->roles as $role) {
             if ($role->id == 1) {
                 $sent_to = 3;

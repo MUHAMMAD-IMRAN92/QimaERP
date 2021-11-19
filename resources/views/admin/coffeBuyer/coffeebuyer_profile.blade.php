@@ -106,7 +106,7 @@
 
 
                 $.ajax({
-                    url: "{{ url('admin/daysFilter/' . $buyer->user_id) }}",
+                    url: "{{ url('admin/filterByDateprofile/' . $buyer->user_id) }}",
                     type: "GET",
                     data: {
                         'from': from,
