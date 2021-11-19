@@ -4,6 +4,7 @@
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="mx-lg-5">
         <!-- Content Header (Page header) -->
         <div class="row">
             <div class="col-md-12">
@@ -19,7 +20,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Edit Farmer</h1>
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Edit Farmer</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -41,7 +42,7 @@
                         <div class="card card-primary">
 
                             <div class="card-header">
-                                <h3 class="card-title">Edit</h3>
+                                <h3 class="card-title text-uppercase letter-spacing-2">Edit</h3>
                                 <h3 class="card-title float-sm-right">{{ $farmer->farmer_code }}</h3>
                             </div>
                             <!-- /.card-header -->
@@ -50,7 +51,7 @@
                                 enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="farmer_id" value="{{ $farmer->farmer_id }}">
-                                <div class="card-body">
+                                <div class="card-body  text-uppercase letter-spacing-1">
                                     <div class="form-group">
 
                                         <input type="hidden" class="form-control"
@@ -209,7 +210,7 @@
                                 <!-- /.card-body -->
 
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -261,7 +262,7 @@
                 </div>
 
             </div>
-            <!-- /.row -->
+        </div>   <!-- /.row -->
     </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->

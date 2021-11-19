@@ -931,11 +931,20 @@ class FarmerController extends Controller
 
         $farmerCode = $farmer->farmer_code;
         $farmer->price = $farmer->price()->price_per_kg;
-        $farmer->price = Village::where('village_code', $farmerCode)->first()['price_per_kg'];
+        $farmer->price = Village::where('village_code', $farmerCode)->first();
+        if ($farmer->price) {
+            $farmer->price =  $farmer->price['price_per_kg'];
+        }
         $farmer->first_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$request->from, $request->to])
-            ->first()['created_at'];
+            ->first();
+        if ($farmer->first_purchase) {
+            $farmer->first_purchase =  $farmer->first_purchase['created_at'];
+        }
         $farmer->last_purchase = Transaction::with('details')->where('batch_number', 'LIKE',  $farmerCode . '%')->whereBetween('created_at', [$request->from, $request->to])
-            ->latest()->first()['created_at'];
+            ->latest()->first();
+        if ($farmer->last_purchase) {
+            $farmer->last_purchase =  $farmer->last_purchase['created_at'];
+        }
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
             ->whereBetween('created_at', [$request->from, $request->to])
             ->where('sent_to', 2)

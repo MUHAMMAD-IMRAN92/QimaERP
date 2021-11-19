@@ -54,14 +54,15 @@
     </style>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+    <div class="mx-lg-5">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1><b>Batch Number</b>: {{ $batch->batch_number }}</h1>
+                    <div class="col-sm-8">
+                        <h1>Batch Number: <span style="color: darkgray; margin-left:10px; text-decoration: underline;text-decoration-color: darkgray;">{{$batch->batch_number }}</span></h1>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item active">Detail</li>
@@ -239,7 +240,7 @@
 
 
 
-   
+
 
     <?php
     foreach ($transations_data as $key => $transations) {
@@ -482,6 +483,7 @@
     <?php } ?>
     <!-- /.content -->
 
+    </div>
     </div>
 
 
