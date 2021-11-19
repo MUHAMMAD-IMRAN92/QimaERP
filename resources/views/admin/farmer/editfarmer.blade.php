@@ -51,7 +51,7 @@
                                 enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="farmer_id" value="{{ $farmer->farmer_id }}">
-                                <div class="card-body col-md-6 text-uppercase letter-spacing-1">
+                                <div class="card-body  text-uppercase letter-spacing-1">
                                     <div class="form-group">
 
                                         <input type="hidden" class="form-control"
