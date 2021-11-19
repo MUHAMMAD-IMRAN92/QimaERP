@@ -264,6 +264,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('supplyChain/{date}', 'SupplyChainController@supplyChainDays');
         Route::get('supplyChainDate', 'SupplyChainController@supplyChainDateFilter');
 
+        //report controller
         Route::get('report', 'ReportController@index');
         Route::post('report/generate', 'ReportController@generateReport');
     });
