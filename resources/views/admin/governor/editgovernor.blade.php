@@ -3,12 +3,13 @@
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="mx-lg-5">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Edit Governor</h1>
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Edit Governor</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -45,7 +46,7 @@
                                     </div>
                                 @endif
                                 {{ csrf_field() }}
-                                <div class="card-body">
+                                <div class="card-body col-md-6 text-uppercase letter-spacing-1">
                                     <input type="hidden" name="governor_id" value="{{ $governor->governerate_id }}">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Code</label>
@@ -73,7 +74,7 @@
                                 <!-- /.card-body -->
 
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -86,6 +87,7 @@
                 </div>
 
             </div>
+        </div>
             <!-- /.row -->
     </div><!-- /.container-fluid -->
     </section>

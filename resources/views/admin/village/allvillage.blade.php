@@ -32,7 +32,7 @@
         @endif
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <div class="container-fluid">
+            <div class="container-fluid p-0">
                 <div class="row mb-2">
 
                     <div class="col-sm-8">
@@ -64,7 +64,7 @@
                             <div class="table-responsive text-uppercase letter-spacing-1 governors_table">
                                 <table id="myTable" class="table table-bordered table-striped">
                                     <thead>
-                                        <tr>
+                                        <tr class="blacklink letter-spacing-1 text-uppercase">
                                             <th>S#</th>
                                             <th>Village Code</th>
                                             <th>Village Title (En)</th>

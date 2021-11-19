@@ -11,6 +11,7 @@
     </style>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+    <div class="mx-lg-5">
         @if (Session::has('message'))
             <div class="alert alert-success" role="alert">
                 <b>{{ Session::get('message') }}</b>
@@ -23,7 +24,7 @@
                 <div class="row mb-2">
 
                     <div class="col-sm-6">
-                        <h1>Batch Numbers
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Batch Numbers
                             <a href="" class="btn btn-add rounded-circle">
                                 {{-- <i class="fas fa-user-plus add-client-icon"></i> --}}
                             </a>
@@ -47,12 +48,12 @@
 
                         <!-- /.card -->
 
-                        <div class="card">
+                        <div class="card shadow-none">
                             <!-- /.card-header -->
-                            <div class="card-body">
+                            <div class="table-responsive text-uppercase letter-spacing-1 governors_table">
                                 <table id="get_batch_number" class="table table-bordered table-striped">
                                     <thead>
-                                        <tr>
+                                        <tr class="blacklink letter-spacing-1 text-uppercase">
                                             <th>S#</th>
                                             <th>Batch Number</th>
                                             <th>Session Number</th>
@@ -76,6 +77,8 @@
         </section>
         <!-- /.content -->
     </div>
+    </div>
+
     <!-- /.content-wrapper -->
     <script>
         let base_path = '<?= asset('/') ?>';

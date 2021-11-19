@@ -3,12 +3,13 @@
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="mx-lg-5">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Add Region</h1>
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Add Region</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -30,7 +31,7 @@
                         <div class="card card-primary">
 
                             <div class="card-header">
-                                <h3 class="card-title">Add</h3>
+                                <h3 class="card-title text-uppercase letter-spacing-2">Add</h3>
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
@@ -48,11 +49,11 @@
 
                           @endforeach
                       </ul>
-                      
+
                   </div>
               @endif --}}
                                 {{ csrf_field() }}
-                                <div class="card-body">
+                                <div class="card-body col-md-6 text-uppercase letter-spacing-1">
                                     <div class="form-group">
                                         <label for="country_name">All Governor</label>
                                         <select class="form-control input-add-inception" name="governerate_code">
@@ -108,7 +109,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1">Submit</button>
                         </div>
                         </form>
                     </div>
@@ -119,7 +120,7 @@
                 <!-- /.card -->
 
             </div>
-
+        </div>
     </div>
     <!-- /.row -->
     </div><!-- /.container-fluid -->
