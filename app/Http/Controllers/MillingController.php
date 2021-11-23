@@ -252,33 +252,44 @@ class MillingController extends Controller
     }
     public function newmillingCoffee()
     {
+        $transactions = collect();
+        $batches = BatchNumber::pluck('batch_number');
+        foreach ($batches as $batch) {
+            $transaction = Transaction::where('batch_number', $batch)->with('details')->latest()->first();
+            if ($transaction != null) {
+
+                $transactions->push($transaction);
+            }
+        }
+        // return $transactions;
         $data = array();
         $allTransactions = array();
-        $transactions = Transaction::where('is_parent', 0)
+        // $transactions = Transaction::where('is_parent', 0)
 
-            ->whereHas('log', function ($q) {
-                $q->where('action', 'received')->where('type', 'received_by_yemen');
-            })->whereHas('transactionDetail', function ($q) {
-                $q->where('container_status', 0);
-            }, '>', 0)->with(['transactionDetail' => function ($query) {
-                $query->where('container_status', 0);
-            }])->orderBy('transaction_id', 'desc')->get();
+        //     ->whereHas('log', function ($q) {
+        //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+        //     })->whereHas('transactionDetail', function ($q) {
+        //         $q->where('container_status', 0);
+        //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+        //         $query->where('container_status', 0);
+        //     }])->orderBy('transaction_id', 'desc')->get();
 
 
-
+        // return $transactions;
         foreach ($transactions as $key => $tran) {
-
-            $childTransaction = array();
-            $tran->makeHidden('log');
-            $removeLocalId = explode("-", $tran->batch_number);
-            if ($removeLocalId[3] == '000') {
-                $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
-                if ($FindParentTransactions) {
-                    $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+            if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
                 }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                array_push($allTransactions, $transaction);
             }
-            $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
-            array_push($allTransactions, $transaction);
         }
         $data['transactions'] = $allTransactions;
         // return $data;
