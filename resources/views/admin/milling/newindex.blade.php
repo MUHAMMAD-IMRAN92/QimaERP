@@ -443,16 +443,18 @@
 
                                                     <td>
                                                         @php
-                                                            
+
                                                             $batchNumber = $transaction['transaction']->batch_number;
                                                             $batchExplode = explode('-', $batchNumber);
                                                             $gov = $batchExplode[0];
                                                         @endphp
-                                                        <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                            name="transaction_id[]"
-                                                            value="{{ $transaction['transaction']->transaction_id }}"
-                                                            class="check_gov{{ $transaction['transaction']->transaction_id }}"
-                                                            onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                        @if ($transaction['transaction']->transaction_id == 13)
+                                                            <input type="checkbox" data-gov-rate="<?= $gov ?>"
+                                                                name="transaction_id[]"
+                                                                value="{{ $transaction['transaction']->transaction_id }}"
+                                                                class="check_gov{{ $transaction['transaction']->transaction_id }}"
+                                                                onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                        @endif
                                                     </td>
                                                 @else
                                                     <td>
@@ -475,7 +477,7 @@
                                                     </td>
                                                     <td>
                                                         @php
-                                                            
+
                                                             $batchNumber = $transaction['transaction']->batch_number;
                                                             $batchExplode = explode('-', $batchNumber);
                                                             $gov = $batchExplode[0];

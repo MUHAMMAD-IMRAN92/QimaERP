@@ -105,7 +105,7 @@ class RegionController extends Controller
             foreach ($governorate->villages as $village) {
                 $villageCode = $village->village_code;
                 $village->farmers = Farmer::where('farmer_code', 'LIKE', $villageCode . '%')->count();
-                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('sent_to', 2)->get();
+                $transactions = Transaction::where('batch_number', 'LIKE',  $villageCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->get();
 
                 $weight = 0;
                 foreach ($transactions as $transaction) {
