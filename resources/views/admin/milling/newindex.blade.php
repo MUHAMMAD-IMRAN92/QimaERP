@@ -68,12 +68,20 @@
             margin-top: 10px;
         }
 
+        #submitbtn {
+            background-color: rgb(255, 255, 255);
+            border-color: rgb(255, 255, 255);
+            color: rgb(19, 17, 17);
+            font-weight: bold;
+        }
+
     </style>
-    <style src="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"></style>
-    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"> </script>
+    <style href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"></style>
+    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
     <script>
         $(document).ready(function() {
+
             $('#myTable').DataTable();
             $('#to').on('change', function() {
                 let from = $('#from').val();
@@ -396,27 +404,49 @@
                                     {{ csrf_field() }}
                                     <table id="myTable">
                                         <tr>
+                                            <th>Transaction id</th>
                                             <th>Farmer Name</th>
-                                            <th>Farmer </th>
+                                            <th>Farmer Code </th>
+                                            <th>Batch Number</th>
+                                            <th>product</th>
                                             <th>Governerate</th>
                                             <th>Region</th>
                                             <th>VIllage</th>
                                             <th>Quantity</th>
-                                            <th>Select</th>
+                                            <th>Stage</th>
+                                            <th>Times</th>
+                                            <th> <button type="submit" id="submitbtn" class="btn btn-primary">Mix
+                                                    Batches</button> </th>
+                                            <th id='milling-th'><button type="submit" id="submitbtn"
+                                                    class="btn btn-primary">Confirm Milling</button></th>
                                         </tr>
                                         @foreach ($transactions as $transaction)
                                             <tr>
                                                 @if (Str::contains($transaction['transaction']->batch_number, '000'))
                                                     <td>
                                                         @foreach ($transaction['child_transactions'] as $childtran)
+                                                            {{ $childtran->transaction_id }} <br>
+                                                        @endforeach
+                                                    </td>
+                                                    <td>
+                                                        @foreach ($transaction['child_transactions'] as $childtran)
                                                             {{ getFarmer($childtran->batch_number) }} <br>
                                                         @endforeach
                                                     </td>
+
                                                     <td>
                                                         @foreach ($transaction['child_transactions'] as $childtran)
                                                             {{ explode('-', $childtran->batch_number)[0] . '-' . explode('-', $childtran->batch_number)[1] . '-' . explode('-', $childtran->batch_number)[2] . '-' . explode('-', $childtran->batch_number)[3] }}
                                                             <br>
                                                         @endforeach
+                                                    </td>
+                                                    <td>
+                                                        @foreach ($transaction['child_transactions'] as $childtran)
+                                                            {{ $childtran->batch_number }} <br>
+                                                        @endforeach
+                                                    </td>
+                                                    <td>
+                                                        SPECIALTY
                                                     </td>
                                                     <td>
                                                         @foreach ($transaction['child_transactions'] as $childtran)
@@ -440,7 +470,16 @@
                                                         @endforeach
                                                     </td>
 
-
+                                                    <td>
+                                                        {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
+                                                    </td>
+                                                    <td>
+                                                        @php
+                                                            $now = \Carbon\Carbon::now();
+                                                            $today = $now->today()->toDateString();
+                                                        @endphp
+                                                        {{ $transaction['transaction']->created_at->diffInDays($today) . ' ' . 'Days' }}
+                                                    </td>
                                                     <td>
                                                         @php
 
@@ -448,7 +487,23 @@
                                                             $batchExplode = explode('-', $batchNumber);
                                                             $gov = $batchExplode[0];
                                                         @endphp
-                                                        @if ($transaction['transaction']->transaction_id == 13)
+                                                        @if ($transaction['transaction']->sent_to == 13)
+                                                            <input type="checkbox" data-gov-rate="<?= $gov ?>"
+                                                                name="transaction_id[]"
+                                                                value="{{ $transaction['transaction']->transaction_id }}"
+                                                                class="check_gov{{ $transaction['transaction']->transaction_id }}"
+                                                                onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                        @endif
+
+                                                    </td>
+                                                    <td>
+                                                        @php
+
+                                                            $batchNumber = $transaction['transaction']->batch_number;
+                                                            $batchExplode = explode('-', $batchNumber);
+                                                            $gov = $batchExplode[0];
+                                                        @endphp
+                                                        @if ($transaction['transaction']->sent_to == 140)
                                                             <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                 name="transaction_id[]"
                                                                 value="{{ $transaction['transaction']->transaction_id }}"
@@ -458,10 +513,19 @@
                                                     </td>
                                                 @else
                                                     <td>
+                                                        {{ $transaction['transaction']->transaction_id }}
+                                                    </td>
+                                                    <td>
                                                         {{ getFarmer($transaction['transaction']->batch_number) }}
                                                     </td>
                                                     <td>
                                                         {{ explode('-', $transaction['transaction']->batch_number)[0] . '-' . explode('-', $transaction['transaction']->batch_number)[1] . '-' . explode('-', $transaction['transaction']->batch_number)[2] . '-' . explode('-', $transaction['transaction']->batch_number)[3] }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $transaction['transaction']->batch_number }}
+                                                    </td>
+                                                    <td>
+                                                        SPECIALTY
                                                     </td>
                                                     <td>
                                                         {{ getGov($transaction['transaction']->batch_number) }}
@@ -476,24 +540,52 @@
                                                         {{ $transaction['transaction']->transactionDetail->sum('container_weight') }}
                                                     </td>
                                                     <td>
+                                                        {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
+                                                    </td>
+                                                    <td>
+                                                        @php
+                                                            $now = \Carbon\Carbon::now();
+                                                            $today = $now->today()->toDateString();
+                                                        @endphp
+                                                        {{ $transaction['transaction']->created_at->diffInDays($today) . ' ' . 'Days' }}
+                                                    </td>
+                                                    <td>
                                                         @php
 
                                                             $batchNumber = $transaction['transaction']->batch_number;
                                                             $batchExplode = explode('-', $batchNumber);
                                                             $gov = $batchExplode[0];
                                                         @endphp
-                                                        <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                            name="transaction_id[]"
-                                                            value="{{ $transaction['transaction']->transaction_id }}"
-                                                            class="check_gov{{ $transaction['transaction']->transaction_id }}"
-                                                            onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                        @if ($transaction['transaction']->sent_to == 13)
+                                                            <input type="checkbox" data-gov-rate="<?= $gov ?>"
+                                                                name="transaction_id[]"
+                                                                value="{{ $transaction['transaction']->transaction_id }}"
+                                                                class="check_gov{{ $transaction['transaction']->transaction_id }}"
+                                                                onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                        @endif
+
+                                                    </td>
+                                                    <td>
+                                                        @php
+
+                                                            $batchNumber = $transaction['transaction']->batch_number;
+                                                            $batchExplode = explode('-', $batchNumber);
+                                                            $gov = $batchExplode[0];
+                                                        @endphp
+                                                        @if ($transaction['transaction']->sent_to == 140)
+                                                            <input type="checkbox" data-gov-rate="<?= $gov ?>"
+                                                                name="transaction_id[]"
+                                                                value="{{ $transaction['transaction']->transaction_id }}"
+                                                                class="check_gov{{ $transaction['transaction']->transaction_id }}"
+                                                                onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                        @endif
                                                     </td>
                                                 @endif
                                             </tr>
                                         @endforeach
                                     </table>
                                     <div class="card-footer">
-                                        <button type="submit" id="submitbtn" class="btn btn-primary">Submit</button>
+
                                     </div>
                                     <form>
                             </div>
@@ -532,6 +624,10 @@
         $(document).ready(function() {
             $('#submitbtn').on('click', function() {
                 $('#submitbtn').hide();
+            });
+            $('#milling-th').on('click', function() {
+                $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
+
             });
 
         });
