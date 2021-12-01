@@ -300,6 +300,15 @@ class MillingController extends Controller
     }
     public function newpost(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => "required|array|min:1",
+        ], [
+            'transaction_id.required' => 'Please select at least one batch number',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         DB::beginTransaction();
         try {
             $transactions = Transaction::whereIn('transaction_id', $request->transaction_id)->with('details', 'log')->get();
