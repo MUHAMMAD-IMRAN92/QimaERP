@@ -144,7 +144,7 @@ class AuthController extends Controller
         //         'weight' =>  $transaction->details->sum('container_weight')
         //     ]);
         // }
-        // $sorted = $ids->sortBy('weight');    
+        // $sorted = $ids->sortBy('weight');
         // $top =   array_reverse($sorted->values()->take(-20)->toArray());
         // return array_reverse($top);
         // foreach ($top as $t) {
