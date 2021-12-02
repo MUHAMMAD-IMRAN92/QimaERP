@@ -505,7 +505,7 @@ class FarmerController extends Controller
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
             $farmer = Farmer::where('farmer_code', $batch_number)->first();
             if ($farmer) {
-                if ($farmers->contains($farmer)) {
+                if (!$farmers->contains($farmer)) {
                     $farmers->push($farmer);
                 }
             }

@@ -113,6 +113,7 @@ class MillingController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        // return $request->all();
         $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
         $newLastBID = ($lastBatchNumber->batch_id + 1);
 
@@ -176,7 +177,7 @@ class MillingController extends Controller
                 'reference_id' => $refid,
                 'is_server_id' => 1,
                 'is_new' => 0,
-                'sent_to' => 14,
+                'sent_to' => 140,
                 'is_sent' => 1,
                 'session_no' => $serverbatch->session_no,
                 'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
@@ -244,10 +245,10 @@ class MillingController extends Controller
             $serverbatch->save();
             DB::commit();
             Session::flash('message', 'Milling coffee successfully.');
-            return redirect('admin/milling_coffee');
+            return redirect('admin/new_milling_coffee');
         } catch (\PDOException $e) {
             Session::flash('error', 'Something was wrong.');
-            return redirect('admin/milling_coffee');
+            return redirect('admin/new_milling_coffee');
         }
     }
     public function newmillingCoffee()
@@ -255,7 +256,7 @@ class MillingController extends Controller
         $transactions = collect();
         $batches = BatchNumber::pluck('batch_number');
         foreach ($batches as $batch) {
-            $transaction = Transaction::where('batch_number', $batch)->with('details')->latest()->first();
+            $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->with('details')->latest()->first();
             if ($transaction != null) {
 
                 $transactions->push($transaction);
@@ -277,22 +278,95 @@ class MillingController extends Controller
 
         // return $transactions;
         foreach ($transactions as $key => $tran) {
-            if ($tran->sent_to == 13) {
-                $childTransaction = array();
-                $tran->makeHidden('log');
-                $removeLocalId = explode("-", $tran->batch_number);
-                if ($removeLocalId[3] == '000') {
-                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
-                    if ($FindParentTransactions) {
-                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
-                    }
+            // if ($tran->sent_to == 13) {
+            $childTransaction = array();
+            $tran->makeHidden('log');
+            $removeLocalId = explode("-", $tran->batch_number);
+            if ($removeLocalId[3] == '000') {
+                $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                if ($FindParentTransactions) {
+                    $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
                 }
-                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
-                array_push($allTransactions, $transaction);
             }
+            $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+            // array_push($allTransactions, $tran);
+            array_push($allTransactions, $transaction);
+            // }
+            // array_push($allTransactions, $tran);
         }
         $data['transactions'] = $allTransactions;
         // return $data;
         return view('admin.milling.newindex', $data);
+    }
+    public function newpost(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => "required|array|min:1",
+        ], [
+            'transaction_id.required' => 'Please select at least one batch number',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        DB::beginTransaction();
+        try {
+            $transactions = Transaction::whereIn('transaction_id', $request->transaction_id)->with('details', 'log')->get();
+            foreach ($transactions as $transaction) {
+                $refid = implode(",", $request->transaction_id);
+                $newtransaction = Transaction::create([
+                    'batch_number' => $transaction->batch_number,
+                    'is_parent' => 0,
+                    'is_mixed' => 1,
+                    'created_by' => Auth::user()->user_id,
+                    'is_local' => FALSE,
+                    'transaction_type' => 1,
+                    'local_code' => null,
+                    'is_special' => $transaction->is_special,
+                    'transaction_status' => 'received',
+                    'reference_id' => $refid,
+                    'is_server_id' => 1,
+                    'is_new' => 0,
+                    'sent_to' => 14,
+                    'is_sent' => 1,
+                    'session_no' => $transaction->session_no,
+                    'local_created_at' => date("Y-m-d H:i:s", strtotime($transaction->local_created_at)),
+                ]);
+                foreach ($transaction->details as $detail) {
+                    TransactionDetail::create([
+                        'transaction_id' => $newtransaction->transaction_id,
+                        'container_number' => $detail['container_number'],
+                        'created_by' => Auth::user()->user_id,
+                        'is_local' => FALSE,
+                        'container_weight' => $detail['container_weight'],
+                        'weight_unit' => 'kg',
+                        'center_id' => 0,
+                        'reference_id' => 0,
+                    ]);
+                }
+
+                if (count($request->transaction_id) > 1) {
+                    foreach ($request->transaction_id as $key => $transaction) {
+                        $transaction  = Transaction::find($transaction);
+                        $transaction->update([
+                            'is_parent' => $newtransaction->transaction_id,
+                        ]);
+                    }
+                }
+                $transactionLog = TransactionLog::create([
+                    'transaction_id' => $newtransaction->transaction_id,
+                    'action' => 'received',
+                    'created_by' => Auth::user()->user_id,
+                    'entity_id' => $transaction->log->entity_id,
+                    'center_name' => '',
+                    'local_created_at' => date("Y-m-d H:i:s", strtotime($newtransaction->created_at)),
+                    'type' => 'milling_coffee',
+                ]);
+            }
+            DB::commit();
+        } catch (\PDOException $e) {
+            Session::flash('error', 'Something was wrong.');
+            return redirect('admin/new_milling_coffee');
+        }
     }
 }

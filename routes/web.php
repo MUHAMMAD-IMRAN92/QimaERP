@@ -214,6 +214,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('milling_coffee/{id}', 'MillingController@milling')->middleware('auth');
         Route::post('milling_coffee', 'MillingController@millingCoffee')->middleware('auth');
         Route::get('new_milling_coffee', 'MillingController@newmillingCoffee')->middleware('auth');
+        Route::post('newMilliing', 'MillingController@newpost')->middleware('auth');
 
         //packaging & export
         Route::get('/packaging/mixing', 'ExportMixingController@get')->name('mixing.index');
@@ -267,5 +268,7 @@ Route::group(['prefix' => 'admin'], function () {
         //report controller
         Route::get('report', 'ReportController@index');
         Route::post('report/generate', 'ReportController@generateReport');
+        Route::post('report/generateCfeDrying', 'ReportController@generateCfeDrying');
+        Route::post('report/generateWarehouse', 'ReportController@generateWarehouse');
     });
 });

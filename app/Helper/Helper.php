@@ -395,3 +395,32 @@ function govDescrption($regName)
     $gov = Governerate::where('governerate_title', $regName)->first();
     return $gov->description;
 }
+function stagesOfSentTo($value)
+{
+    $sentTo = [
+        2 => 'Coffee Buyer',
+        3 => 'Center Manager',
+        4 => 'Processing Manager',
+        5 => 'Special Processing',
+        6 => 'pending in special Processing',
+        8 => 'Recieved By Special Processing',
+        7 => 'Special processing',
+        9 => 'Sent By Special Processing',
+        10 => 'On Drying Beds',
+        11 => 'Recieved By Coffee Drying',
+        12 => 'Dry Coffee',
+        13 => 'Sent For Approve Milling',
+        14 => 'Ready To Be Milled',
+        15 => 'Mill Operative',
+        21 => 'Milled',
+        22 => 'sorting Pending',
+        23 => 'sorting Rec',
+        201 => 'sorting sent',
+    ];
+    $value = $sentTo[$value];
+    if ($value) {
+        return $value;
+    } else {
+        return  ' ';
+    }
+}

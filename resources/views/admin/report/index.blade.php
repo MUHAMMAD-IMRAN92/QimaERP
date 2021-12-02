@@ -11,10 +11,21 @@
             height: 70%;
         }
 
+        .newbtn {
+            width: 30%;
+
+        }
+
     </style>
     <script>
         $(document).ready(function() {
             $('#myTable').DataTable();
+            $('#cfeDrying').on('click', function() {
+                $('form').attr('action', '{{ url('admin/report/generateCfeDrying') }}')
+            });
+            $('#cfeDryingWarehouse').on('click', function() {
+                $('form').attr('action', '{{ url('admin/report/generateWarehouse') }}')
+            });
         });
     </script>
 
@@ -64,17 +75,30 @@
                                     <div class="row">
 
                                         <div class="col-6"> <label for="exampleInputEmail1">From</label>
-                                            <input type="date" name="from" class="form-control input-height" id="exampleInputEmail1"
-                                                aria-describedby="emailHelp">
+                                            <input type="date" name="from" class="form-control input-height"
+                                                id="exampleInputEmail1" aria-describedby="emailHelp">
                                         </div>
                                         <div class="col-6"> <label for="exampleInputEmail1">To</label>
-                                            <input type="date" name="to" class="form-control input-height" id="exampleInputEmail1"
-                                                aria-describedby="emailHelp">
+                                            <input type="date" name="to" class="form-control input-height"
+                                                id="exampleInputEmail1" aria-describedby="emailHelp">
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-4"> <button type="submit"
+                                                class="btn btn-primary newbtn  mt-4"
+                                                style="margin-left:47%">Purchase</button></div>
+                                        <div class="col-md-4">
+                                            <button type="submit" id="cfeDrying" class="btn btn-primary  newbtn mt-4"
+                                                style="margin-left:47%">Coffee on Drying</button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="submit" id="cfeDryingWarehouse"
+                                                class="btn btn-primary newbtn  mt-4" style="margin-left:47%">Dry
+                                                coffee warehouse</button>
+                                        </div>
 
-                                    <button type="submit" class="btn btn-primary  mt-4"
-                                        style="margin-left:47%">Submit</button>
+                                    </div>
+
                                 </form>
 
                             </div>
