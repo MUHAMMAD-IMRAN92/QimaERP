@@ -278,3 +278,42 @@
     grid-gap: 5px;
     padding-left: 25px;
 }
+.milling-table th,.milling-table td{
+    border: 1px solid#343a40;
+    text-align: center;
+    font-weight: lighter;
+    border-left: 0;
+    border-top: 0;
+    vertical-align: middle;
+    letter-spacing: 2px;
+    padding: 0.75rem;
+    font-size: 14px;
+}
+.milling-table th{
+border-top: 1px solid#343a40 !important;
+}
+.milling-table th:last-child,.milling-table td:last-child{
+border-right: 0;
+}
+.milling-table td{
+    font-weight: normal;
+}
+.milling-table th:nth-last-child(2),.milling-table td:nth-last-child(2),
+.milling-table th:last-child,.milling-table td:last-child {
+border: 0 !important;
+}
+.milling-table{
+    border: 1px solid#343a40 !important;
+    border-bottom: 0 !important;
+    border-top: 0 !important;
+}
+.milling-form{
+    overflow-x: scroll;
+}
+.milling-link{
+    color: #B23552 !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 0;
+}
