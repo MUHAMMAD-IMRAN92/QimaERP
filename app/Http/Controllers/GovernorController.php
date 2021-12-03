@@ -30,7 +30,7 @@ class GovernorController extends Controller
         $orderby = 'DESC';
         $column = 'governerate_id';
         //::count total record
-        $total_members = Governerate::count();
+        $total_members = Governerate::where('status', 1)->count();
         $members = Governerate::query()->where('status', 1);
         //::select columns
         $members = $members->select('governerate_id', 'governerate_code', 'governerate_title', 'status');
