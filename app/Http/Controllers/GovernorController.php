@@ -12,7 +12,7 @@ class GovernorController extends Controller
 
     public function allgovernor()
     {
-        $data['governors'] = Governerate::all();
+        $data['governors'] = Governerate::where('status', 1)->get();
         return view('admin.governor.allgovernor', $data);
     }
 
