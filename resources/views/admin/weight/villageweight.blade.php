@@ -18,7 +18,7 @@
 
                     <div class="col-sm-6">
                         <h1> Village Weight
-                            {{-- <a href="{{URL::to('')}}/admin/addnewvillage" class="btn btn-add rounded-circle"> 
+                            {{-- <a href="{{URL::to('')}}/admin/addnewvillage" class="btn btn-add rounded-circle">
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a> --}}
                         </h1>

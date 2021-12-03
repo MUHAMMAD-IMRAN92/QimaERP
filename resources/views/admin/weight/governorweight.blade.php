@@ -18,7 +18,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>Governor Weight Information
-                            {{-- <a href="{{url('')}}" class="btn btn-add rounded-circle"> 
+                            {{-- <a href="{{url('')}}" class="btn btn-add rounded-circle">
                 <i class="fas fa-user-plus add-client-icon"></i>
               </a> --}}
                         </h1>
