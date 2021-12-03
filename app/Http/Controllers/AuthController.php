@@ -39,7 +39,7 @@ class AuthController extends Controller
     public function dashboard()
     {
 
-        $governorate = Governerate::all();
+        $governorate = Governerate::where('status', 1)->get();
         $villages = Village::all();
         $regionWeight = collect();
         $farmerWeight = collect();
@@ -63,7 +63,7 @@ class AuthController extends Controller
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
                 $farmerCode = Str::beforeLast($transaction->batch_number, '-');
-                $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode-%")->first();
+                $farmer =  Farmer::where('status', 1)->where('farmer_code', "LIKE",   "$farmerCode-%")->first();
                 if (!$farmerToBeCount->contains($farmer)) {
                     $farmerToBeCount->push($farmer);
                 }
@@ -71,7 +71,7 @@ class AuthController extends Controller
             array_push($govName, $govern->governerate_title);
             array_push($govQuantity, round($weight, 2));
             $govFarmersCount = $farmerToBeCount->count();
-            $govRegion  = Region::where('region_code', 'LIKE', "$govCode-%")->get();
+            $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode-%")->get();
             $govRegionQty = collect();
             foreach ($govRegion as $r) {
                 $regionCode = $r->region_code;
@@ -113,7 +113,7 @@ class AuthController extends Controller
         // $regions = Region::whereIn('region_id', $regions)->get();
 
 
-        $farmers = Farmer::all();
+        $farmers = Farmer::where('status', 1)->get();
         foreach ($farmers as $farmer) {
             $farmerCode = $farmer->farmer_code;
             $weight = 0;
@@ -391,7 +391,7 @@ class AuthController extends Controller
         $farmerArray = collect();
         foreach ($transactions as $transaction) {
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
-            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
             if ($farmer) {
                 if (!$farmerArray->contains($farmer->farmer_code)) {
                     $farmerArray->push($farmer->farmer_code);
@@ -401,20 +401,20 @@ class AuthController extends Controller
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $farmerPrice = Farmer::where('farmer_code', $farmer_code)->first();
+            $farmerPrice = Farmer::where('status', 1)->where('farmer_code', $farmer_code)->first();
             if ($farmerPrice) {
                 $farmerPrice = $farmerPrice->price_per_kg;
             }
             if (!$farmerPrice) {
                 $village_code = Str::beforeLast($farmer_code, '-');
                 if ($village_code) {
-                    $price = Village::where('village_code',  $village_code)->first();
+                    $price = Village::where('status', 1)->where('village_code',  $village_code)->first();
                     if ($price) {
                         $price = $price->price_per_kg;
                     }
                 }
             } else {
-                $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $farmer_code)->first();
                 if ($farmer) {
                     $price =  $farmer->price_per_kg;
                 }
@@ -462,7 +462,7 @@ class AuthController extends Controller
         $sorted =   $buyerArray->sortBy('weight');
         $topBuyer = $sorted->reverse()->values()->take(5);
 
-        $governorate = Governerate::all();
+        $governorate = Governerate::where('status', 1)->get();
         $govName = [];
         $govQuantity = [];
         $govQuantityRegion = collect();
@@ -475,7 +475,7 @@ class AuthController extends Controller
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
                 $farmerCode = Str::beforeLast($transaction->batch_number, '-');
-                $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                $farmer =  Farmer::where('status', 1)->where('farmer_code', "LIKE",   "$farmerCode%")->first();
                 if (!$farmerToBeCount->contains($farmer)) {
                     $farmerToBeCount->push($farmer);
                 }
@@ -483,7 +483,7 @@ class AuthController extends Controller
             array_push($govName, $govern->governerate_title);
             array_push($govQuantity, round($weight, 2));
             $govFarmersCount = $farmerToBeCount->count();
-            $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+            $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
             $govRegionQty = collect();
             foreach ($govRegion as $r) {
                 $regionCode = $r->region_code;
@@ -732,7 +732,7 @@ class AuthController extends Controller
             $sorted =   $buyerArray->sortBy('weight');
             $topBuyer = $sorted->reverse()->values()->take(5);
 
-            $governorate = Governerate::all();
+            $governorate = Governerate::where('status', 1)->get();
             $govName = [];
             $govQuantity = [];
             $govQuantityRegion = collect();
@@ -752,7 +752,7 @@ class AuthController extends Controller
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
                 $govFarmersCount = $farmerToBeCount->count();
-                $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
                     $regionCode = $r->region_code;
@@ -996,7 +996,7 @@ class AuthController extends Controller
             $sorted =   $buyerArray->sortBy('weight');
             $topBuyer = $sorted->reverse()->values()->take(5);
 
-            $governorate = Governerate::all();
+            $governorate = Governerate::where('status', 1)->get();
             $govName = [];
             $govQuantity = [];
             $govQuantityRegion = collect();
@@ -1016,7 +1016,7 @@ class AuthController extends Controller
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
                 $govFarmersCount = $farmerToBeCount->count();
-                $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
                     $regionCode = $r->region_code;
@@ -1128,7 +1128,7 @@ class AuthController extends Controller
             $regionWeight = collect();
             $regionName = [];
             $regionQuantity = [];
-            $regions = Region::all();
+            $regions = Region::where('status', 1)->get();
             foreach ($regions as $region) {
                 $regionCode = $region->region_code;
                 $weight = 0;
@@ -1194,7 +1194,7 @@ class AuthController extends Controller
 
                 foreach ($transactions as $transaction) {
                     $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                     if ($farmer) {
                         if (!$farmerArray->contains($farmer->farmer_code)) {
                             $farmerArray->push($farmer->farmer_code);
@@ -1211,13 +1211,13 @@ class AuthController extends Controller
                     if (!$farmerPrice) {
                         $village_code = Str::beforeLast($farmer_code, '-');
                         if ($village_code) {
-                            $price = Village::where('village_code',  $village_code)->first();
+                            $price = Village::where('status', 1)->where('village_code',  $village_code)->first();
                             if ($price) {
                                 $price = $price->price_per_kg;
                             }
                         }
                     } else {
-                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        $farmer = Farmer::where('status', 1)->where('farmer_code', $farmer_code)->first();
                         if ($farmer) {
                             $price =  $farmer->price_per_kg;
                         }
@@ -1261,7 +1261,7 @@ class AuthController extends Controller
             $sorted =   $buyerArray->sortBy('weight');
             $topBuyer = $sorted->reverse()->values()->take(5);
 
-            $governorate = Governerate::all();
+            $governorate = Governerate::where('status', 1)->get();
             $govName = [];
             $govQuantity = [];
             $govQuantityRegion = collect();
@@ -1273,7 +1273,7 @@ class AuthController extends Controller
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
                     $farmerCode = Str::beforeLast($transaction->batch_number, '-');
-                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    $farmer =  Farmer::where('status', 1)->where('farmer_code', "LIKE",   "$farmerCode%")->first();
                     if (!$farmerToBeCount->contains($farmer)) {
                         $farmerToBeCount->push($farmer);
                     }
@@ -1281,7 +1281,7 @@ class AuthController extends Controller
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
                 $govFarmersCount = $farmerToBeCount->count();
-                $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
                     $regionCode = $r->region_code;
@@ -1393,7 +1393,7 @@ class AuthController extends Controller
             $regionWeight = collect();
             $regionName = [];
             $regionQuantity = [];
-            $regions = Region::all();
+            $regions = Region::where('status', 1)->get();
             foreach ($regions as $region) {
                 $regionCode = $region->region_code;
                 $weight = 0;
@@ -1532,7 +1532,7 @@ class AuthController extends Controller
             $sorted =   $buyerArray->sortBy('weight');
             $topBuyer = $sorted->reverse()->values()->take(5);
 
-            $governorate = Governerate::all();
+            $governorate = Governerate::where('status', 1)->get();
             $govName = [];
             $govQuantity = [];
             $govQuantityRegion = collect();
@@ -1544,7 +1544,7 @@ class AuthController extends Controller
                 foreach ($transactions as $transaction) {
                     $weight +=  $transaction->details->sum('container_weight');
                     $farmerCode = Str::beforeLast($transaction->batch_number, '-');
-                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    $farmer =  Farmer::where('status', 1)->where('farmer_code', "LIKE",   "$farmerCode%")->first();
                     if (!$farmerToBeCount->contains($farmer)) {
                         $farmerToBeCount->push($farmer);
                     }
@@ -1552,7 +1552,7 @@ class AuthController extends Controller
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
                 $govFarmersCount = $farmerToBeCount->count();
-                $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
                     $regionCode = $r->region_code;
@@ -1664,7 +1664,7 @@ class AuthController extends Controller
             $regionWeight = collect();
             $regionName = [];
             $regionQuantity = [];
-            $regions = Region::all();
+            $regions = Region::where('status', 1)->get();
             foreach ($regions as $region) {
                 $regionCode = $region->region_code;
                 $weight = 0;
@@ -1803,7 +1803,7 @@ class AuthController extends Controller
             $sorted =   $buyerArray->sortBy('weight');
             $topBuyer = $sorted->reverse()->values()->take(5);
 
-            $governorate = Governerate::all();
+            $governorate = Governerate::where('status', 1)->get();
             $govName = [];
             $govQuantity = [];
             $govQuantityRegion = collect();
@@ -1823,7 +1823,7 @@ class AuthController extends Controller
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
                 $govFarmersCount = $farmerToBeCount->count();
-                $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
                     $regionCode = $r->region_code;
@@ -1935,7 +1935,7 @@ class AuthController extends Controller
             $regionWeight = collect();
             $regionName = [];
             $regionQuantity = [];
-            $regions = Region::all();
+            $regions = Region::where('status', 1)->get();
             foreach ($regions as $region) {
                 $regionCode = $region->region_code;
                 $weight = 0;
@@ -2072,7 +2072,7 @@ class AuthController extends Controller
             $sorted =   $buyerArray->sortBy('weight');
             $topBuyer = $sorted->reverse()->values()->take(5);
 
-            $governorate = Governerate::all();
+            $governorate = Governerate::where('status', 1)->get();
             $govName = [];
             $govQuantity = [];
             $govQuantityRegion = collect();
@@ -2092,7 +2092,7 @@ class AuthController extends Controller
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
                 $govFarmersCount = $farmerToBeCount->count();
-                $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
                     $regionCode = $r->region_code;
@@ -2204,7 +2204,7 @@ class AuthController extends Controller
             $regionWeight = collect();
             $regionName = [];
             $regionQuantity = [];
-            $regions = Region::all();
+            $regions = Region::where('status', 1)->get();
             foreach ($regions as $region) {
                 $regionCode = $region->region_code;
                 $weight = 0;
@@ -2339,7 +2339,7 @@ class AuthController extends Controller
             $sorted =   $buyerArray->sortBy('weight');
             $topBuyer = $sorted->reverse()->values()->take(5);
 
-            $governorate = Governerate::all();
+            $governorate = Governerate::where('status', 1)->get();
             $govName = [];
             $govQuantity = [];
             $govQuantityRegion = collect();
@@ -2359,7 +2359,7 @@ class AuthController extends Controller
                 array_push($govName, $govern->governerate_title);
                 array_push($govQuantity, round($weight, 2));
                 $govFarmersCount = $farmerToBeCount->count();
-                $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
                 $govRegionQty = collect();
                 foreach ($govRegion as $r) {
                     $regionCode = $r->region_code;
@@ -2471,7 +2471,7 @@ class AuthController extends Controller
             $regionWeight = collect();
             $regionName = [];
             $regionQuantity = [];
-            $regions = Region::all();
+            $regions = Region::where('status', 1)->get();
             foreach ($regions as $region) {
                 $regionCode = $region->region_code;
                 $weight = 0;
@@ -2609,7 +2609,7 @@ class AuthController extends Controller
             $sorted =   $buyerArray->sortBy('weight');
             $topBuyer = $sorted->reverse()->values()->take(5);
 
-            $governorate = Governerate::all();
+            $governorate = Governerate::where('status', 1)->get();
             $govName = [];
             $govQuantity = [];
             $govQuantityRegion = collect();
@@ -2741,7 +2741,7 @@ class AuthController extends Controller
             $regionWeight = collect();
             $regionName = [];
             $regionQuantity = [];
-            $regions = Region::all();
+            $regions = Region::where('status', 1)->get();
             foreach ($regions as $region) {
                 $regionCode = $region->region_code;
                 $weight = 0;
