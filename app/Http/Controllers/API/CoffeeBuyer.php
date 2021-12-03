@@ -60,7 +60,7 @@ class CoffeeBuyer extends Controller
         // $user_image_path = asset('storage/app/images/');
         $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
         $user_image_path = Storage::disk('s3')->url('images');
-        $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
+        $farmers = Farmer::where('status', 1)->when($farmerName, function ($q) use ($farmerName) {
             $q->where(function ($q) use ($farmerName) {
                 $q->where('farmer_name', 'like', "%$farmerName%");
             });
@@ -268,7 +268,7 @@ class CoffeeBuyer extends Controller
                     $childBatchNumberArray = array();
                     //::insert child transactions id
                     $childTransactionArray = array();
-                    //::Add child batch number  
+                    //::Add child batch number
 
                     foreach ($batch_numbers->child_batch as $key => $childBatch) {
                         $newLastBID = 1;
