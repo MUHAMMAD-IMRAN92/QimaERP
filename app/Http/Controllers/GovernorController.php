@@ -50,6 +50,8 @@ class GovernorController extends Controller
                 $column = 'governerate_title';
             } else {
                 $column = 'governerate_code';
+
+
             }
         }
         $members = $members->orderBy($column, $orderby)->where('status', 1)->get();
