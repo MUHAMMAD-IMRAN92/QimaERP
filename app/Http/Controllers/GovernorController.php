@@ -35,8 +35,8 @@ class GovernorController extends Controller
         //::select columns
         $members = $members->select('governerate_id', 'governerate_code', 'governerate_title', 'status');
         //::search with farmername or farmer_code or  governerate_code
-        $members = $members->when($search, function ($q) use ($search) {
-            $q->where('governerate_code', 'like', "%$search%")->where('status', 1)->orWhere('governerate_title', 'like', "%$search%");
+        $members = $members->where('status', 1)->when($search, function ($q) use ($search) {
+            $q->where('status', 1)->where('governerate_code', 'like', "%$search%")->orWhere('governerate_title', 'like', "%$search%");
         });
         if ($request->has('order') && !is_null($request['order'])) {
             $orderBy = $request->get('order');
@@ -52,7 +52,7 @@ class GovernorController extends Controller
                 $column = 'governerate_code';
             }
         }
-        $members = $members->orderBy($column, $orderby)->get();
+        $members = $members->orderBy($column, $orderby)->where('status', 1)->get();
         $data = array(
             'draw' => $draw,
             'recordsTotal' => $total_members,
