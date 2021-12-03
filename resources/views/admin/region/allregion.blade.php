@@ -2,6 +2,7 @@
 @section('title', 'All Regions')
 @section('content')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
     <style type="text/css">
         .dataTables_wrapper .dataTables_filter input {
             margin-left: 0.5em;
@@ -323,10 +324,16 @@
                     }
                 });
             });
+            $(".dd_data").click(function() {
+                $(this).parents("tr").find("td").toggleClass("show_data");
+                $(this).parents("tr").find(".show_data_icon").toggleClass("d-show-icon");
+                $(this).parents("tr").find(".hide_data_icon").toggleClass("d-none-icon");
+            });
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="mx-lg-5">
         @if (Session::has('message'))
             <div class="alert alert-success" role="alert">
                 <b>{{ Session::get('message') }}</b>
@@ -334,7 +341,6 @@
             </div>
         @endif
         <!-- Content Header (Page header) -->
-        <div class="mx-lg-5">
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
@@ -565,7 +571,7 @@
                                     <!-- /.card-header -->
                                     <div class="">
 
-                                        <table class="table table-bordered region-table-custom">
+                                        <table class="table table-bordered region-table-custom all_regiom_dropdown mb-0">
                                             <thead>
                                                 <tr class="blacklink letter-spacing-1 text-uppercase">
 
@@ -579,10 +585,17 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @php
+                                                 $i = 0;
+                                                @endphp
                                                 @foreach ($governorates as $governorate)
                                                     <tr>
 
-                                                        <td>{{ $governorate->governerate_title }}</td>
+                                                        <td class="dd_data">
+                                                            {{ $governorate->governerate_title }}
+                                                            <i class="fas fa-caret-down show_data_icon"></i>
+                                                            <i class="fas fa-caret-up hide_data_icon"></i>
+                                                        </td>
                                                         <td>
                                                             @foreach ($governorate->regions as $region)
                                                                 {{ $region->region_title }} <br>
@@ -629,6 +642,9 @@
                                                                     class="fa">&#xf044;</i></a>
                                                         </td>
                                                     </tr>
+                                                    @php
+                                                    $i++;
+                                                    @endphp
                                                 @endforeach
                                             </tbody>
                                         </table>

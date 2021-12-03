@@ -16,11 +16,6 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-8 pl-0">
-                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Governors Information
-                            <a href="{{url('/admin/addnewgovernor')}}" class="btn btn-add rounded-circle">
-                                <i class="fas fa-user-plus add-client-icon"></i>
-                            </a>
-                        </h1>
                     </div>
                     <div class="col-sm-4">
                         <ol class="breadcrumb float-sm-right">
@@ -28,10 +23,25 @@
                             <li class="breadcrumb-item active">All Governors</li>
                         </ol>
                     </div>
+                    <div class="col-sm-8 pl-0">
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">
+                            Governors Information
+                        </h1>
+                    </div>
+                    <div class="col-sm-4 d-flex justify-content-end align-items-end">
+                        <ol class="breadcrumb float-sm-right">
+                            <a href="{{url('/admin/addnewgovernor')}}" class="px-0 btn btn-add rounded-circle">
+                                <button class="px-0 btn btn-dark bg-transparent border-0 add-button text-uppercase">
+                                    Add Governorate
+                                </button>
+                            </a>
+                        </ol>
+                    </div>
+
                 </div>
             </div><!-- /.container-fluid -->
+        <hr class="ml-md-2">
         </section>
-
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">

@@ -35,7 +35,7 @@
                             <form role="form" method="POST" action="{{ URL::to('/admin/create_farmer') }}"
                                 enctype="multipart/form-data">
                                 {{ csrf_field() }}
-                                <div class="card-body col-md-6 text-uppercase letter-spacing-1">
+                                <div class="card-body text-uppercase letter-spacing-1">
                                     <div class="form-group">
                                         <label for="country_name">Villages</label>
                                         <select class="form-control input-add-inception" name="village_code"
@@ -180,7 +180,7 @@
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1"
+                                    <button type="submit" class="btn bg-green-btn text-uppercase letter-spacing-1"
                                         id="submit-btn-ofform">Submit</button>
                                 </div>
                             </form>
