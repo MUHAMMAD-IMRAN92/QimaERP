@@ -21,7 +21,7 @@ class VillageController extends Controller
 
     public function index()
     {
-        $data = Village::all();
+        $data = Village::where('status', 1)->get();
         return view('admin.village.allvillage', compact('data'));
     }
 
@@ -219,7 +219,7 @@ class VillageController extends Controller
         $farmerToBeCount = collect();
         foreach ($transactions as $transaction) {
             $farmerCode = Str::beforeLast($transaction->batch_number, '-');
-            $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+            $farmer =  Farmer::where('status', 1)->where('farmer_code', $farmerCode)->first();
             if (!$farmerToBeCount->contains($farmer)) {
                 $farmerToBeCount->push($farmer);
             }
@@ -231,14 +231,14 @@ class VillageController extends Controller
         foreach ($transactions as $transaction) {
             $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
 
-            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first();
+            $farmerPrice = Farmer::where('status', 1)->where('farmer_code', $farmerCode)->first();
             if ($farmerPrice) {
                 $farmerPrice =  $farmerPrice['price_per_kg'];
             }
             if (!$farmerPrice) {
 
                 $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                $vilagePrice = Village::where('village_code', $villageCode)->first();
+                $vilagePrice = Village::where('status', 1)->where('village_code', $villageCode)->first();
                 if ($vilagePrice) {
                     $vilagePrice =  $vilagePrice->price_per_kg;
                 }
@@ -279,7 +279,7 @@ class VillageController extends Controller
         $createdBys = collect();
         foreach ($transactions as $transaction) {
             $farmerCode = Str::beforeLast($transaction->batch_number, '-');
-            $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+            $farmer =  Farmer::where('status', 1)->where('farmer_code', $farmerCode)->first();
             if (!$farmerToBeCount->contains($farmer)) {
                 $farmerToBeCount->push($farmer);
             }
@@ -300,7 +300,7 @@ class VillageController extends Controller
             if (!$farmerPrice) {
 
                 $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                $vilagePrice = Village::where('status', 1)->where('village_code', $villageCode)->first()->price_per_kg;
                 foreach ($transactions as $transaction) {
                     $quantity = $transaction->details->sum('container_weight');
                     $price +=  $quantity * $vilagePrice;
@@ -346,7 +346,7 @@ class VillageController extends Controller
             foreach ($transactions as $transaction) {
                 $farmerCode = Str::beforeLast($transaction->batch_number, '-');
 
-                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                $farmer =  Farmer::where('status', 1)->where('farmer_code', $farmerCode)->first();
                 if (!$farmerToBeCount->contains($farmer)) {
                     $farmerToBeCount->push($farmer);
                 }
@@ -370,7 +370,7 @@ class VillageController extends Controller
                 if (!$farmerPrice) {
 
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                    $vilagePrice = Village::where('status', 1)->where('village_code', $villageCode)->first()->price_per_kg;
                     foreach ($transactions as $transaction) {
                         $quantity = $transaction->details->sum('container_weight');
                         $price +=  $quantity * $vilagePrice;
@@ -413,7 +413,7 @@ class VillageController extends Controller
             foreach ($transactions as $transaction) {
                 $farmerCode = Str::beforeLast($transaction->batch_number, '-');
 
-                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                $farmer =  Farmer::where('status', 1)->where('farmer_code', $farmerCode)->first();
                 if (!$farmerToBeCount->contains($farmer)) {
                     $farmerToBeCount->push($farmer);
                 }
@@ -756,7 +756,7 @@ class VillageController extends Controller
             foreach ($transactions as $transaction) {
                 $farmerCode = Str::beforeLast($transaction->batch_number, '-');
 
-                $farmer =  Farmer::where('farmer_code', $farmerCode)->first();
+                $farmer =  Farmer::where('status', 1)->where('farmer_code', $farmerCode)->first();
                 if (!$farmerToBeCount->contains($farmer)) {
                     $farmerToBeCount->push($farmer);
                 }
@@ -848,7 +848,7 @@ class VillageController extends Controller
                 if (!$farmerPrice) {
 
                     $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
-                    $vilagePrice = Village::where('village_code', $villageCode)->first()->price_per_kg;
+                    $vilagePrice = Village::where('status', 1)->where('village_code', $villageCode)->first()->price_per_kg;
                     foreach ($transactions as $transaction) {
                         $quantity = $transaction->details->sum('container_weight');
                         $price +=  $quantity * $vilagePrice;
