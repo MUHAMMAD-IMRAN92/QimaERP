@@ -68,7 +68,7 @@ class CommonController extends Controller
         foreach ($governerates as $key => $governerate) {
             $systemExist = Governerate::Where('governerate_code', $governerate->governerate_code)->where('governerate_title', $governerate->governerate_title)->first();
             if (!$systemExist) {
-                //::create new 
+                //::create new
                 $governerate = Governerate::create([
                     'governerate_code' => $governerate->governerate_code,
                     'governerate_title' => $governerate->governerate_title,
@@ -85,7 +85,7 @@ class CommonController extends Controller
     {
         $search = $request->search;
 
-        $governerates = Governerate::when($search, function ($q) use ($search) {
+        $governerates = Governerate::where('status', 1)->when($search, function ($q) use ($search) {
             $q->where(function ($q) use ($search) {
                 $q->where('governerate_title', 'like', "%$search%")->orwhere('governerate_code', 'like', "%$search%");
             });
@@ -107,7 +107,7 @@ class CommonController extends Controller
         foreach ($regions as $key => $region) {
             $systemExist = Region::Where('region_code', $region->region_code)->where('region_title', $region->region_title)->first();
             if (!$systemExist) {
-                //::create new 
+                //::create new
                 $region = Region::create([
                     'region_code' => $region->region_code,
                     'region_title' => $region->region_title,
@@ -123,7 +123,7 @@ class CommonController extends Controller
     function regions(Request $request)
     {
         $search = $request->search;
-        $regions = Region::when($search, function ($q) use ($search) {
+        $regions = Region::where('status', 1)->when($search, function ($q) use ($search) {
             $q->where(function ($q) use ($search) {
                 $q->where('region_title', 'like', "%$search%")->orwhere('region_code', 'like', "%$search%");
             });
@@ -154,7 +154,7 @@ class CommonController extends Controller
                 $systemExist = Village::Where('local_code', 'like', "%$explodeCode%")->where('village_title', $village->village_title)->first();
                 if (!$systemExist) {
                     $twoDigitCode = sprintf("%02d", ($currentVillageCode));
-                    //::create new 
+                    //::create new
                     $village = Village::create([
                         'village_code' => $explodeCode . '-' . $twoDigitCode,
                         'village_title' => $village->village_title,
@@ -186,7 +186,7 @@ class CommonController extends Controller
             // return  count($uservillage);
             if (count($uservillage) == 0) {
                 $search = $request->search;
-                $villages = Village::when($search, function ($q) use ($search) {
+                $villages = Village::where('status', 1)->when($search, function ($q) use ($search) {
                     $q->where(function ($q) use ($search) {
                         $q->where('village_title', 'like', "%$search%")->orwhere('village_title_ar', 'like', "%$search%")->orwhere('village_code', 'like', "%$search%");
                     });
@@ -220,7 +220,7 @@ class CommonController extends Controller
 
             if (count($villages) == 0) {
                 $search = $request->search;
-                $farmers = Farmer::when($search, function ($q) use ($search) {
+                $farmers = Farmer::where('status', 1)->when($search, function ($q) use ($search) {
                     $q->where(function ($q) use ($search) {
                         $q->where('farmer_code', 'like', "%$search%")->orwhere('farmer_name', 'like', "%$search%");
                     });
@@ -263,7 +263,7 @@ class CommonController extends Controller
             $containerType = searcharray($containerTypeCode, 'code', $containerTypeArray);
             $alreadyContainer = Container::where('container_number', $container->container_number)->first();
             if (!$alreadyContainer) {
-                //::create new 
+                //::create new
                 $newcontainer = Container::create([
                     'container_number' => $container->container_number,
                     'container_type' => $containerType,

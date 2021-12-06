@@ -17,7 +17,7 @@ class WeightController extends Controller
 	public function governorweight()
 	{
 
-		$data['governor'] = Governerate::all();
+		$data['governor'] = Governerate::where('status' , 1)->get();
 		// $governerate=Governerate::select('governerate_code')->get();
 		// // dd($governerate_code);
 
@@ -38,21 +38,21 @@ class WeightController extends Controller
 	public function governorweightcode($id)
 	{
 		$data['governore'] = Governerate::find($id);
-		$data['region'] = Region::where('region_code', 'LIKE', $data['governore']->governerate_code . '%')->get();
+		$data['region'] = Region::where('status' , 1)->where('region_code', 'LIKE', $data['governore']->governerate_code . '%')->get();
 		return view('admin.weight.regionweight', $data);
 	}
 
 	public function regionweightcode($id)
 	{
 		$data['region'] = Region::find($id);
-		$data['village'] = Village::where('village_code', 'LIKE', $data['region']->region_code . '%')->get();
+		$data['village'] = Village::where('status' , 1)->where('village_code', 'LIKE', $data['region']->region_code . '%')->get();
 		return view('admin.weight.villageweight', $data);
 	}
 
 	public function villageweightcode($id)
 	{
 		$data['village'] = Village::find($id);
-		$data['farmer'] = Farmer::where('farmer_code', 'LIKE', $data['village']->village_code . '-' . '%')->get();
+		$data['farmer'] = Farmer::where('status' , 1)->where('farmer_code', 'LIKE', $data['village']->village_code . '-' . '%')->get();
 		return view('admin.weight.farmerweight', $data);
 	}
 }
