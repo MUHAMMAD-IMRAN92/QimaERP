@@ -370,12 +370,24 @@
     </div>
 </div>
 <hr class="col-">
+
+{{-- start --}}
 <div class="row">
 
     <div class="col-md-5 ">
-        <center>Governorate Wise</center>
+        <div class="row ml-2 text-uppercase mb-2">
+            <strong>
+                <b>Governorate Wise</b>
+            </strong>
+            <div class="bg-lightGreen text-uppercase mb-2 ml-4 py-2 px-2" style="color: white;min-width: 125px;">
+                <div>
+                    <h4 class="mb-0">-</h4>
+                    <span class="mb-0 font-weight-normal letter-spacing-1" style="font-size: 12px;">Usd
+                        Sales</span>
+                </div>
+            </div>
+        </div>
         <canvas id="4rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
-
         <script>
             var xValues = @json($govName);
             var yValues = @json($govQuantity);
@@ -416,29 +428,35 @@
         </script>
     </div>
     <div class="col-md-7">
-        <h6 class='ml-2 mt-2'>OVERVIEW OF COFFEE BOUGHT BY GOVERNORATE</h6>
-        <div class="row">
+        <div class="row text-uppercase mb-2">
+            <strong>
+                <b>OVERVIEW OF COFFEE BOUGHT BY GOVERNORATE</b>
+            </strong>
+        </div>
+        <div class="row mt-3">
 
             <div class="col-sm-12">
 
-                <table style=" height:200px; width: 100%; font-size: 12px ;">
-                    <tr align="center" style="border-bottom: 1px solid black; border-right: 1px solid black">
-                        <td align="center" style="border-right: 1px solid black;">GOVERNORATE</td>
-                        <td align="center" style=" border-right: 1px solid black">QUANTITY</td>
-                        <td align="center" style=" border-right: 1px solid black">FARMERS</td>
-                        <td></td>
+                <table class="letter-spaciing-2 text-uppercase table-borderless custom-table-dashboard"
+                    style=" height:200px;">
+                    <tr align="center">
+                        <th align="center">GOVERNORATE</th>
+                        <th align="center">QUANTITY</th>
+                        <th align="center">FARMERS</th>
+                        <th></th>
                     </tr>
                     <tbody>
                         @foreach ($govQuantityRegion as $gov)
-                            <tr style="border-right: 1px solid black">
-                                <td align="center" style="border-right: 1px solid black">
+                            <tr>
+                                <td align="center">
                                     {{ $gov['title'] }}
                                 </td>
-                                <td align="center" style="border-right: 1px solid black">
+                                <td align="center">
                                     {{ $gov['weight'] . 'KGs' }}
                                 </td>
-                                <td align="center" style="border-right: 1px solid black">
-                                    {{ $gov['farmerCount'] }}</td>
+                                <td align="center">
+                                    {{ $gov['farmerCount'] }}
+                                </td>
                                 <td>
                                     @foreach ($gov['region']->reverse() as $r)
                                         @php
@@ -469,10 +487,14 @@
 
     </div>
 </div>
-<div class="row">
+<div class="row mt-4">
     <div class="col-md-5">
-        <center>Region Wise</center>
-        <canvas id="3rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
+        <div class="row ml-2 text-uppercase mb-5">
+            <strong>
+                <b>Region Wise</b>
+            </strong>
+        </div>
+        <canvas id="3rd" class="ml-md-2 pt-4" style="width:100%; height:200px;"></canvas>
 
         <script>
             var xValues = @json($regionName);
@@ -513,7 +535,18 @@
         </script>
     </div>
     <div class="col-md-7">
-        <center>Yemen Sales</center>
+        <div class="row ml-2 text-uppercase mb-3">
+            <strong>
+                <b>Yemen sales</b>
+            </strong>
+            <div class="bg-Green text-uppercase mb-2 ml-4 py-2 px-2" style="color: white;min-width: 125px;">
+                <div>
+                    <h4 class="mb-0">-</h4>
+                    <span class="mb-0 font-weight-normal letter-spacing-1" style="font-size: 12px;">yer
+                        yemen sales</span>
+                </div>
+            </div>
+        </div>
         <canvas id="6rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
 
         <script>
@@ -556,3 +589,5 @@
         </script>
     </div>
 </div>
+{{-- end --}}
+

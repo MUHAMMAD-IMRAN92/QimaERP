@@ -11,20 +11,21 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        @if (\Session::has('message'))
-            <div class="alert alert-success">
-                <p>{{ \Session::get('message') }}<button type="button" class="close"
-                        data-dismiss="alert">&times;</button></p>
+        <div class="mx-lg-5">
+            @if (\Session::has('message'))
+                <div class="alert alert-success">
+                    <p>{{ \Session::get('message') }}<button type="button" class="close"
+                            data-dismiss="alert">&times;</button></p>
 
-            </div>
-        @endif
-        @if (session()->has('msg'))
-            <div class="alert alert-success">
-                <p>{{ session()->get('msg') }}<button type="button" class="close"
-                        data-dismiss="alert">&times;</button></p>
+                </div>
+            @endif
+            @if (session()->has('msg'))
+                <div class="alert alert-success">
+                    <p>{{ session()->get('msg') }}<button type="button" class="close"
+                            data-dismiss="alert">&times;</button></p>
 
-            </div>
-            @endif 
+                </div>
+            @endif
             @if (\Session::has('update'))
                 <div class="alert alert-success">
                     <p>{{ \Session::get('update') }}<button type="button" class="close"
@@ -36,21 +37,30 @@
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>Users Information
-                                <a href="{{ url('/admin/adduser') }}" class="btn btn-add rounded-circle">
-                                    <i class="fas fa-user-plus add-client-icon"></i>
-                                </a>
-                            </h1>
-                        </div>
+                        <div class="col-sm-6"></div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                                 <li class="breadcrumb-item active">All Users</li>
                             </ol>
                         </div>
+                        <div class="col-sm-8 pl-0">
+                            <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Users Information
+
+                            </h1>
+                        </div>
+                        <div class="col-sm-4 d-flex justify-content-end align-items-end">
+                            <ol class="breadcrumb float-sm-right">
+                                <a href="{{ url('/admin/adduser') }}" class="px-0 btn btn-add rounded-circle">
+                                    <button class="px-0 btn btn-dark bg-transparent border-0 add-button text-uppercase">
+                                        Add User</button>
+                                </a>
+                            </ol>
+                        </div>
+
                     </div>
                 </div><!-- /.container-fluid -->
+                <hr class="ml-md-2">
             </section>
 
             <!-- Main content -->
@@ -61,10 +71,10 @@
 
                             <!-- /.card -->
 
-                            <div class="card">
+                            <div class="card shadow-none">
                                 <!-- /.card-header -->
-                                <div class="card-body">
-                                    <table id="users" class="table table-bordered table-striped">
+                                <div class="table-responsive text-uppercase letter-spacing-2 governors_table ">
+                                    <table id="users" class="table border-bottom-0 table-bordered-custom text-center custom-table ">
                                         <thead>
                                             <tr>
                                                 <th>S#</th>
@@ -90,6 +100,7 @@
                 <!-- /.container-fluid -->
             </section>
             <!-- /.content -->
+        </div>
     </div>
     <!-- /.content-wrapper -->
     <script>

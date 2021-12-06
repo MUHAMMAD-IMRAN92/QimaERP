@@ -52,7 +52,7 @@
                                             </div>
                                             @endif --}}
                                     {{ csrf_field() }}
-                                    <div class="card-body col-md-6 text-uppercase letter-spacing-1">
+                                    <div class="card-body text-uppercase letter-spacing-1">
                                         <div class="form-group">
                                             <label for="country_name">All Region</label>
                                             <select class="form-control input-add-inception" name="region_code"
@@ -152,7 +152,7 @@
                                         <!-- /.card-body -->
                                         <div class="card-footer">
                                             <button type="submit"
-                                                class="btn btn-primary text-uppercase letter-spacing-1">Submit</button>
+                                                class="btn bg-green-btn text-uppercase letter-spacing-1">Submit</button>
                                         </div>
                                 </form>
                             </div>
