@@ -350,7 +350,7 @@ class AuthController extends Controller
             if ($buyer) {
                 $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
             }
-            $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            $buyerArray->push(['id' => $buyer->user_id, 'name' => $buyerName, 'weight' => round($weight, 2)]);
         }
         $sorted =   $buyerArray->sortBy('weight');
         $topBuyer = $sorted->reverse()->values()->take(5);
@@ -1984,8 +1984,8 @@ class AuthController extends Controller
         } elseif ($date == 'weekToDate') {
 
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
-            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
+            $start = $now->startOfWeek(Carbon::SATURDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::FRIDAY)->toDateString();
 
 
 

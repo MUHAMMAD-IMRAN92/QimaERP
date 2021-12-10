@@ -392,6 +392,7 @@ function regDescrption($govName)
 }
 function govDescrption($regName)
 {
+
     $gov = Governerate::where('governerate_title', $regName)->first();
     return $gov->description;
 }
@@ -416,11 +417,25 @@ function stagesOfSentTo($value)
         22 => 'sorting Pending',
         23 => 'sorting Rec',
         201 => 'sorting sent',
+        140 => 'Ready For Approve'
     ];
     $value = $sentTo[$value];
     if ($value) {
         return $value;
     } else {
         return  ' ';
+    }
+}
+function regionOfVillage($id)
+{
+    $village = Village::find($id);
+
+    $regionCode = Str::beforeLast($village->village_code, '-');
+    // dd($regionCode);
+    $region =  Region::where('region_code', $regionCode)->first();
+    if ($region) {
+        return $region->region_title;
+    } else {
+        return ' ';
     }
 }

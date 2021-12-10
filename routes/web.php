@@ -111,7 +111,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('assignVillages', 'CoffeeBuyerController@upload');
         Route::get('coffeeBuyer/reciepts/{id}', 'CoffeeBuyerController@reciepts');
         Route::get('coffeeBuyer/idcard/{id}', 'CoffeeBuyerController@idcard');
-
+        Route::get('coffeeBuyer/profileid/{id}', 'CoffeeBuyerController@coffeeBuyerProfileByid');
 
         //BatchNumber Controller
         Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');
@@ -215,6 +215,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('milling_coffee', 'MillingController@millingCoffee')->middleware('auth');
         Route::get('new_milling_coffee', 'MillingController@newmillingCoffee')->middleware('auth');
         Route::post('newMilliing', 'MillingController@newpost')->middleware('auth');
+        //miling filters
+        Route::get('newMilling/filterByDays', 'MillingController@filterByDays');
 
         //packaging & export
         Route::get('/packaging/mixing', 'ExportMixingController@get')->name('mixing.index');

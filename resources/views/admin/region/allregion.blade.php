@@ -40,6 +40,11 @@
             cursor: pointer;
         }
 
+        .newclass {
+            display: flex;
+            justify-content: space-between;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
@@ -334,13 +339,13 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <div class="mx-lg-5">
-        @if (Session::has('message'))
-            <div class="alert alert-success" role="alert">
-                <b>{{ Session::get('message') }}</b>
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-            </div>
-        @endif
-        <!-- Content Header (Page header) -->
+            @if (Session::has('message'))
+                <div class="alert alert-success" role="alert">
+                    <b>{{ Session::get('message') }}</b>
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            @endif
+            <!-- Content Header (Page header) -->
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
@@ -458,7 +463,22 @@
                     </div>
                     <div class="col-sm-1 color bg-darkGreen p-2 content-box">
                         <h4>{{ $totalPrice }}</h4>
-                        <p>YER COFFEE Purchased</p>
+                        <p>YER TOTAL
+                            SPCIAILTY COFFEE
+                            PURCHASED</p>
+                    </div>
+
+                    <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                        <h4>{{ $total_coffee }}</h4>
+                        <p> KG DRY COFFEE
+                            BOUGHT </p>
+                    </div>
+
+                    <div class="col-sm-1 color bg-darkGreen p-2 content-box">
+                        <h4>{{ $totalPrice }}</h4>
+                        <p> YER TOTAL COMMERCIAL
+                            COFFEE
+                            PURCHASED</p>
                     </div>
                     <div class="col-sm-1 color bg-darkRed p-2 content-box">
                         <h4>-</h4>
@@ -471,15 +491,27 @@
                         <h4>-</h4>
                         <p>YER SETTELED</p>
                     </div>
-                    {{-- <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                    <h4>{{ App\Region::count() }}</h4>
 
-                    <p>Regions</p>
-                </div> --}}
+
                     <div class="col-sm-1 color bg-lightBrown p-2 content-box">
                         <h4>{{ $farmerCount }}</h4>
 
-                        <p>Farmers </p>
+                        <p>TOTAL NUMBER
+                            OF FARMERS
+                            COFFEE BOUGHT
+                            FROM </p>
+                    </div>
+                    <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                        <h4>{{ $govcount }}</h4>
+                        <p>NO OF GOVERNORATES </p>
+                    </div>
+                    <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                        <h4>{{ $regionCount }}</h4>
+                        <p>NO OF SUB REGIONS </p>
+                    </div>
+                    <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+                        <h4>{{ $villageCount }}</h4>
+                        <p>VILLAGES</p>
                     </div>
                     {{-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
                     <h4>{{ $governorate->count() }}</h4>
@@ -490,26 +522,16 @@
                     <p>Total Coffee </p>
                 </div> --}}
                     <div class="col-sm-1 color bg-lightGreen p-2 content-box">
-                        <h4>{{ $readyForExport }}</h4>
-                        <p>KG SPECIALTY
-                            COFFEE EXPORT
-                            READY IN YEMEN</p>
+                        @if ($farmerCount != 0)
+                            <h4>{{ number_format(round($total_coffee / $farmerCount, 2)) }}</h4>
+                        @else
+                            <h4>0</h4>
+                        @endif
+                        <p>KG CHERRY
+                            AVERAGE PER
+                            FARMER</p>
                     </div>
-                    <div class="col-sm-1 color bg-lightGreen p-2 content-box">
-                        <h4>-</h4>
-                        <p>KG COMMERCIAL
-                            GREEN COFFEE
-                            EXPORT READY</p>
-                    </div>
-                    <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                        <h4>-</h4>
-                        <p>YER YEMEN
-                            SALES</p>
-                    </div>
-                    <div class="col-sm-1 color bg-lightGreen p-2 content-box">
-                        <h4>-</h4>
-                        <p>USD SALES</p>
-                    </div>
+
 
                 </div>
                 <hr>
@@ -581,12 +603,12 @@
                                                     <th>Quantity /</th>
                                                     <th>Value /</th>
                                                     <th>Farmers /</th>
-                                                    <th>Action </th>
+                                                    {{-- <th>Action </th> --}}
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @php
-                                                 $i = 0;
+                                                    $i = 0;
                                                 @endphp
                                                 @foreach ($governorates as $governorate)
                                                     <tr>
@@ -598,14 +620,21 @@
                                                         </td>
                                                         <td>
                                                             @foreach ($governorate->regions as $region)
-                                                                {{ $region->region_title }} <br>
+                                                                <div class="newclass"> {{ $region->region_title }}
+                                                                    <a
+                                                                        href="{{ url('admin/editregion', $region->region_id) }}"><i
+                                                                            style="font-size:24px"
+                                                                            class="fa">&#xf044;</i></a>
+                                                                </div>
+                                                                <br>
                                                             @endforeach
                                                         </td>
                                                         <td>
                                                             @if ($governorate->villages)
 
                                                                 @foreach ($governorate->villages as $village)
-                                                                    {{ $village->village_title }} <br>
+                                                                    {{ $village->village_title }}
+                                                                    ({{ regionOfVillage($village->village_id) }}) <br>
                                                                 @endforeach
 
                                                             @endif
@@ -636,14 +665,15 @@
                                                                 @endforeach
                                                             @endif
                                                         </td>
-                                                        <td>
-                                                            <a href="{{ url('admin/editregion', $region->region_id) }}"><i
-                                                                    style="font-size:24px"
-                                                                    class="fa">&#xf044;</i></a>
-                                                        </td>
+                                                        {{-- <td>
+                                                            <div class="newclass"> <a
+                                                                    href="{{ url('admin/editregion', $region->region_id) }}"><i
+                                                                        style="font-size:24px"
+                                                                        class="fa">&#xf044;</i></a></div>
+                                                        </td> --}}
                                                     </tr>
                                                     @php
-                                                    $i++;
+                                                        $i++;
                                                     @endphp
                                                 @endforeach
                                             </tbody>
