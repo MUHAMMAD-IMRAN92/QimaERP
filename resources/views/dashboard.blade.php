@@ -387,22 +387,22 @@
                         <p>YER SETTELED</p>
                     </div>
                     <!-- <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                                                                            <h4>{{ App\Region::count() }}</h4>
-                                                                             <p>Regions</p>
-                                                                    </div>  -->
+                                                                                <h4>{{ App\Region::count() }}</h4>
+                                                                                 <p>Regions</p>
+                                                                        </div>  -->
                     <div class="col-sm-1 color bg-lightBrown p-2 content-box">
                         <h4>{{ $farmerCount }}</h4>
 
                         <p>Farmers </p>
                     </div>
                     <!-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
-                                                                        <h4>{{ $governorate->count() }}</h4>
-                                                                        <p>Governorate</p>
-                                                                    </div>
-                                                                    <div class="col-sm-1 color bg-lightBrown p-2 content-box">
-                                                                        <h4>{{ $totalWeight }}</h4>
-                                                                        <p>Total Coffee </p>
-                                                                    </div> -->
+                                                                            <h4>{{ $governorate->count() }}</h4>
+                                                                            <p>Governorate</p>
+                                                                        </div>
+                                                                        <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                                                                            <h4>{{ $totalWeight }}</h4>
+                                                                            <p>Total Coffee </p>
+                                                                        </div> -->
                     <div class="col-sm-1 color bg-lightGreen p-2 content-box">
                         <h4>{{ $readyForExport }}</h4>
                         <p>KG SPECIALTY
@@ -534,7 +534,7 @@
                         <div class="card shadow-none">
                             <div class="text-uppercase px-3 h5">
                                 <strong>
-                                    <b>Coffee Buyers</b>
+                                    <a href="{{ url('admin/allcoffeebuyer') }}"> <b>Coffee Buyers</b></a>
                                 </strong>
                                 <p class="mb-0 card-custom-description">KG CHERRY<br>BOUGHT</p>
                             </div>
@@ -594,7 +594,7 @@
                         <div class="card shadow-none">
                             <div class="text-uppercase px-3 h5">
                                 <strong>
-                                    <b>Regions</b>
+                                    <a href="{{ url('admin/allregion') }}"> <b>Regions</b> </a>
                                 </strong>
                                 <p class="mb-0 card-custom-description">KG CHERRY<br>BOUGHT</p>
                             </div>
