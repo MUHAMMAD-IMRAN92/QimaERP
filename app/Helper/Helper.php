@@ -417,6 +417,7 @@ function stagesOfSentTo($value)
         22 => 'sorting Pending',
         23 => 'sorting Rec',
         201 => 'sorting sent',
+        140 => 'Ready For Approve'
     ];
     $value = $sentTo[$value];
     if ($value) {
