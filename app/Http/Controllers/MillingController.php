@@ -365,6 +365,7 @@ class MillingController extends Controller
                 ]);
             }
             DB::commit();
+            return redirect('admin/new_milling_coffee');
         } catch (\PDOException $e) {
             Session::flash('error', 'Something was wrong.');
             return redirect('admin/new_milling_coffee');
