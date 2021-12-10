@@ -1,7 +1,83 @@
 @extends('layouts.default')
 @section('title', 'Transection Detail')
 @section('content')
+    <style>
+        /* Center the loader */
+        #loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            width: 120px;
+            height: 120px;
+            margin: -76px 0 0 -56px;
+            border: 16px solid #cac6c6;
+            border-radius: 50%;
+            border-top: 16px solid #a81515;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+            display: none
+        }
 
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Add animation to "page content" */
+        .animate-bottom {
+            position: relative;
+            -webkit-animation-name: animatebottom;
+            -webkit-animation-duration: 1s;
+            animation-name: animatebottom;
+            animation-duration: 1s
+        }
+
+        @-webkit-keyframes animatebottom {
+            from {
+                bottom: -100px;
+                opacity: 0
+            }
+
+            to {
+                bottom: 0px;
+                opacity: 1
+            }
+        }
+
+        @keyframes animatebottom {
+            from {
+                bottom: -100px;
+                opacity: 0
+            }
+
+            to {
+                bottom: 0;
+                opacity: 1
+            }
+        }
+
+        #myDiv {
+            display: none;
+            text-align: center;
+        }
+
+    </style>
     <style type="text/css">
         .nav.nav-tabs {
             float: left;
@@ -232,15 +308,17 @@
                     'font-weight': 'bold',
                     'text-decoration': 'underline'
                 });
+                $('#loader').css('display', 'block');
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/newMilling/filterByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'today'
                     },
                     success: function(data) {
 
-                        $('#transactionGraph').html(data);
+                        $('#ajaxdiv').html(data);
+                        $('#loader').css('display', 'none');
                         console.log(data);
                     }
                 });
@@ -254,15 +332,18 @@
                     'font-weight': 'bold',
                     'text-decoration': 'underline'
                 });
+                $('#loader').css('display', 'block');
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/newMilling/filterByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'yesterday'
                     },
                     success: function(data) {
 
-                        $('#transactionGraph').html(data);
+                        $('#ajaxdiv').html(data);
+                        $('#loader').css('display', 'none');
+
                         console.log(data);
                     }
                 });
@@ -276,15 +357,18 @@
                     'font-weight': 'bold',
                     'text-decoration': 'underline'
                 });
+                $('#loader').css('display', 'block');
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/newMilling/filterByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'weekToDate'
                     },
                     success: function(data) {
 
-                        $('#transactionGraph').html(data);
+                        $('#ajaxdiv').html(data);
+                        $('#loader').css('display', 'none');
+
                         console.log(data);
                     }
                 });
@@ -298,15 +382,18 @@
                     'font-weight': 'bold',
                     'text-decoration': 'underline'
                 });
+                $('#loader').css('display', 'block');
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/newMilling/filterByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'monthToDate'
                     },
                     success: function(data) {
 
-                        $('#transactionGraph').html(data);
+                        $('#ajaxdiv').html(data);
+                        $('#loader').css('display', 'none');
+
                         console.log(data);
                     }
                 });
@@ -320,15 +407,18 @@
                     'font-weight': 'bold',
                     'text-decoration': 'underline'
                 });
+                $('#loader').css('display', 'block');
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/newMilling/filterByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'lastmonth'
                     },
                     success: function(data) {
 
-                        $('#transactionGraph').html(data);
+                        $('#ajaxdiv').html(data);
+                        $('#loader').css('display', 'none');
+
                         console.log(data);
                     }
                 });
@@ -342,15 +432,18 @@
                     'font-weight': 'bold',
                     'text-decoration': 'underline'
                 });
+                $('#loader').css('display', 'block');
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/newMilling/filterByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'yearToDate'
                     },
                     success: function(data) {
 
-                        $('#transactionGraph').html(data);
+                        $('#ajaxdiv').html(data);
+                        $('#loader').css('display', 'none');
+
                         console.log(data);
                     }
                 });
@@ -364,15 +457,18 @@
                     'font-weight': 'bold',
                     'text-decoration': 'underline'
                 });
+                $('#loader').css('display', 'block');
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/newMilling/filterByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'currentyear'
                     },
                     success: function(data) {
 
-                        $('#transactionGraph').html(data);
+                        $('#ajaxdiv').html(data);
+                        $('#loader').css('display', 'none');
+
                         console.log(data);
                     }
                 });
@@ -386,15 +482,19 @@
                     'font-weight': 'bold',
                     'text-decoration': 'underline'
                 });
+                $('#loader').css('display', 'block');
                 $.ajax({
-                    url: "{{ url('admin/regionByDays') }}",
+                    url: "{{ url('admin/newMilling/filterByDays') }}",
                     type: "GET",
                     data: {
                         'date': 'lastyear'
                     },
+
                     success: function(data) {
 
-                        $('#transactionGraph').html(data);
+                        $('#ajaxdiv').html(data);
+                        $('#loader').css('display', 'none');
+
                         console.log(data);
                     }
                 });
@@ -506,14 +606,14 @@
             <hr>
             <div id="transactionGraph">
 
-
+                <div id="loader"></div>
                 <!-- Main content -->
                 <section class="content">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="card col-lg-12">
                                 <!-- /.card-header -->
-                                <div class="card-body pl-0">
+                                <div class="card-body pl-0" id='ajaxdiv'>
                                     <div class="col-md-12">
                                         @if ($errors->any())
                                             <div class="alert alert-danger">
@@ -524,10 +624,13 @@
 
                                             </div>
                                         @endif
-                                        <form class="milling-form" role="form" method="POST" action="{{ URL::to('admin/milling_coffee') }}">
+                                        <form class="milling-form" role="form" method="POST"
+                                            action="{{ URL::to('admin/milling_coffee') }}">
                                             {{ csrf_field() }}
-                                                <table class="milling-table table table-borderless border-0 custom-table text-center"
+                                            <table
+                                                class="milling-table table table-borderless border-0 custom-table text-center"
                                                 style="border-collapse: separate;" id="myTable">
+                                                <thead>
                                                     <tr>
                                                         <th>Transaction id</th>
                                                         <th>Farmer Name</th>
@@ -543,16 +646,19 @@
                                                         <th> <button class="milling-link" type="submit" id="submitbtn"
                                                                 class="btn btn-primary">Mix
                                                                 Batches</button> </th>
-                                                        <th id='milling-th'><button class="milling-link" type="submit" id="submitbtn"
-                                                                class="btn btn-primary">Confirm Milling</button></th>
+                                                        <th id='milling-th'><button class="milling-link" type="submit"
+                                                                id="submitbtn" class="btn btn-primary">Confirm
+                                                                Milling</button></th>
                                                     </tr>
+                                                </thead>
+                                                <tbody>
                                                     @foreach ($transactions as $transaction)
                                                         <tr>
                                                             @if (Str::contains($transaction['transaction']->batch_number, '000'))
                                                                 <td>
-                                                                    @foreach ($transaction['child_transactions'] as $childtran)
-                                                                        {{ $childtran->transaction_id }} <br>
-                                                                    @endforeach
+
+                                                                    {{ $transaction['transaction']->transaction_id }}
+                                                                    <br>
                                                                 </td>
                                                                 <td>
                                                                     @foreach ($transaction['child_transactions'] as $childtran)
@@ -707,9 +813,11 @@
                                                                     @endif
                                                                 </td>
                                                             @endif
+
                                                         </tr>
                                                     @endforeach
-                                                </table>
+                                                </tbody>
+                                            </table>
                                             <div class="card-footer">
 
                                             </div>
