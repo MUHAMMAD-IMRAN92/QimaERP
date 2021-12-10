@@ -392,6 +392,7 @@ function regDescrption($govName)
 }
 function govDescrption($regName)
 {
+
     $gov = Governerate::where('governerate_title', $regName)->first();
     return $gov->description;
 }
@@ -422,5 +423,18 @@ function stagesOfSentTo($value)
         return $value;
     } else {
         return  ' ';
+    }
+}
+function regionOfVillage($id)
+{
+    $village = Village::find($id);
+
+    $regionCode = Str::beforeLast($village->village_code, '-');
+    // dd($regionCode);
+    $region =  Region::where('region_code', $regionCode)->first();
+    if ($region) {
+        return $region->region_title;
+    } else {
+        return ' ';
     }
 }

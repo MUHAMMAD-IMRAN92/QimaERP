@@ -510,7 +510,7 @@
             <div class="row ml-2">
                 <div class="col-sm-1 color bg-danger p-0 ml-0" style="display: flex; grid-gap: 8px;">
                     <!-- <h3>{{ App\Village::count() }}</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                            <p>Villages</p> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        <p>Villages</p> -->
                     @if ($village->attach_images != null)
                         @php
                             $attachImages = explode('|', $village->attach_images);
@@ -662,7 +662,8 @@
                                         id="region_farmer">
                                 @endif
 
-                                <span class="ml-3 mr-4">{{ $buyer['first_name'] }}</span>
+                                <a href="{{ route('coffeBuyer.profile', $buyer) }}"> <span
+                                    class="ml-3 mr-4">{{ $buyer['first_name'] }}</span></a>
                             </li>
                         @endforeach
                     </ul>
@@ -677,6 +678,7 @@
                 <div class="row ml-2 mb-2">
                     <ul class="list-group list-group-horizontal text-uppercase font-weight-bold w-100 flex-wrap">
                         @foreach ($village->farmers as $farmer)
+
                             <li class="col-3 list-group-item data-content-list border-0">
                                 @if ($farmer->file == null)
                                     <img style="max-width: 30%; width: auto !important;"
@@ -687,8 +689,11 @@
                                         id="region_farmer">
                                 @endif
 
-                                <span class="ml-3 mr-4">{{ $farmer['farmer_name'] }}</span>
+                                <a href="{{ route('farmer.profile', $farmer) }}"> <span
+                                        class="ml-3 mr-4">{{ $farmer['farmer_name'] }}</span>
+                                </a>
                             </li>
+
                         @endforeach
                     </ul>
                 </div>

@@ -387,22 +387,22 @@
                         <p>YER SETTELED</p>
                     </div>
                     <!-- <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                            <h4>{{ App\Region::count() }}</h4>
-                             <p>Regions</p>
-                    </div>  -->
+                                                                            <h4>{{ App\Region::count() }}</h4>
+                                                                             <p>Regions</p>
+                                                                    </div>  -->
                     <div class="col-sm-1 color bg-lightBrown p-2 content-box">
                         <h4>{{ $farmerCount }}</h4>
 
                         <p>Farmers </p>
                     </div>
                     <!-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
-                        <h4>{{ $governorate->count() }}</h4>
-                        <p>Governorate</p>
-                    </div>
-                    <div class="col-sm-1 color bg-lightBrown p-2 content-box">
-                        <h4>{{ $totalWeight }}</h4>
-                        <p>Total Coffee </p>
-                    </div> -->
+                                                                        <h4>{{ $governorate->count() }}</h4>
+                                                                        <p>Governorate</p>
+                                                                    </div>
+                                                                    <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                                                                        <h4>{{ $totalWeight }}</h4>
+                                                                        <p>Total Coffee </p>
+                                                                    </div> -->
                     <div class="col-sm-1 color bg-lightGreen p-2 content-box">
                         <h4>{{ $readyForExport }}</h4>
                         <p>KG SPECIALTY
@@ -571,11 +571,13 @@
                                                 <!-- <td>{{ $loop->iteration }}</td> -->
 
                                                 <td class="d-flex align-items-center px-0">
-                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
-                                                        width="50">
-                                                    <span class="ml-3">
-                                                        <b>{{ $buyer['name'] . '-' . $buyer['weight'] }}</b>
-                                                    </span>
+                                                    <a href="{{ url('admin/coffeeBuyer/profileid/' . $buyer['id']) }}"><img
+                                                            class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
+                                                            width="50">
+                                                        <span class="">
+                                                            <b>{{ $buyer['name'] . '-' . $buyer['weight'] }}</b>
+                                                        </span>
+                                                    </a>
                                                 </td>
 
                                             </tr>
@@ -600,33 +602,24 @@
                             <div class="card-body pt-0">
                                 <table class="table table-borderless">
                                     <tbody>
-                                        {{-- @if (count($regions) == 0)
-                                    @php
-                                    $loop = 5 - count($regions); @endphp
-                                    @foreach (App\Region::all()->take(5) as $region)
-                                        <tr style="white-space:nowrap">
-                                            <!-- <td>{{ $loop->iteration }}</td> -->
-                        <td class="d-flex align-items-center px-0">
-                            <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg" width="50">
-                            <span class="ml-3">
-                                {{ $region->region_title }}
-                            </span>
-                        </td>
-                        </tr>
-                        @endforeach
-                        @endif --}}
+
                                         @foreach ($regions as $region)
+
                                             <tr style="white-space:nowrap">
                                                 <!-- <td>{{ $loop->iteration }}</td> -->
 
                                                 <td class="d-flex align-items-center px-0">
-                                                    <img class="rounded-circle" src="https://i.imgur.com/C4egmYM.jpg"
-                                                        width="50">
-                                                    <span class="ml-3">
-                                                        <b> {{ $region['region_title'] . '-' . $region['weight'] }}</b>
-                                                    </span>
+                                                    <a href="{{ url('admin/allregion') }}"> <img class="rounded-circle"
+                                                            src="https://i.imgur.com/C4egmYM.jpg" width="50">
+                                                        <span class="ml-3">
+                                                            <b>
+                                                                {{ $region['region_title'] . '-' . $region['weight'] }}</b>
+                                                        </span>
+                                                    </a>
                                                 </td>
+
                                             </tr>
+
                                         @endforeach
                                     </tbody>
                                 </table>

@@ -560,6 +560,60 @@ class CoffeeBuyerController extends Controller
             'buyer' =>  $buyer,
         ])->render();
     }
+    public function coffeeBuyerProfileByid($id)
+    {
+
+        $buyer = User::find($id);
+        $buyer->farmers = $buyer->getFarmers();
+        foreach ($buyer->roles as $role) {
+            if ($role->id == 1) {
+                $buyer->transactions = $buyer->getTransactionsManager();
+            } else {
+                $buyer->transactions = $buyer->getTransactions();
+            }
+        }
+
+        $buyer->image = $buyer->getImage();
+        $buyer->villages = $buyer->getVillages();
+        $buyer->resposibleVillage = $buyer->VillagesResposibleFor();
+        $buyer->first_purchase = $buyer->firstPurchase();
+        $buyer->last_purchase = $buyer->lastPurchase();
+        $sum = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $sum += $transaction->details->sum('container_weight');
+        }
+        $buyer->sum = $sum;
+        $price = 0;
+        foreach ($buyer->transactions as $transaction) {
+            $farmerCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3];
+
+            $farmerPrice = Farmer::where('farmer_code', $farmerCode)->first();
+
+
+            if ($farmerPrice) {
+                $farmerPrice = $farmerPrice['price_per_kg'];
+            }
+            if (!$farmerPrice) {
+                $villageCode = explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2];
+                $village = Village::where('village_code', $villageCode)->first();
+                $vilagePrice = 0;
+                if ($village) {
+                    $vilagePrice = $village->price_per_kg;
+                }
+
+
+                $quantity = $transaction->details->sum('container_weight');
+                $price +=  $quantity * $vilagePrice;
+            } else {
+                $quantity = $transaction->details->sum('container_weight');
+                $price +=  $quantity * $farmerPrice;
+            }
+        }
+        $buyer->price = $price;
+        return   view('admin.coffeBuyer.coffeebuyer_profile', [
+            'buyer' =>  $buyer,
+        ])->render();
+    }
     public function filterByDateprofile(Request $request, $id)
     {
 

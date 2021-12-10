@@ -111,7 +111,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('assignVillages', 'CoffeeBuyerController@upload');
         Route::get('coffeeBuyer/reciepts/{id}', 'CoffeeBuyerController@reciepts');
         Route::get('coffeeBuyer/idcard/{id}', 'CoffeeBuyerController@idcard');
-
+        Route::get('coffeeBuyer/profileid/{id}', 'CoffeeBuyerController@coffeeBuyerProfileByid');
 
         //BatchNumber Controller
         Route::get('allbatchnumber', 'BatchNumberController@index')->middleware('auth');

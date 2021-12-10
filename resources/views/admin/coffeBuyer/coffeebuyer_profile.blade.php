@@ -92,8 +92,8 @@
         }
 
         /* #reciepts-hover:hover b{
-                                                                                                                                                                                                                        cursor: pointer;
-                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                                                cursor: pointer;
+                                                                                                                                                                                                                                                            } */
 
     </style>
 
@@ -621,8 +621,17 @@
                 </strong>
             </div>
             <div class="row">
-                @foreach ($buyer->farmers as $farmer)
-                    <div class="col-sm-4 mb-1">
+                <table style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Farmer Name</th>
+                            <th>First Purchase </th>
+                            <th>Last Purchase</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($buyer->farmers as $farmer)
+                            {{-- <div class="col-sm-4 mb-1">
                         <ul class="list-group list-group-horizontal">
                             <li class="list-group-item data-content-list">
                                 @if ($farmer['farmer_image'] == null)
@@ -636,8 +645,19 @@
                             </li>
 
                         </ul>
-                    </div>
-                @endforeach
+                    </div> --}}
+
+
+                            <tr>
+                                <td>{{ $farmer['farmer_name'] }}</td>
+                                <td>{{ $farmer->getfirstTransaction() }}</td>
+                                <td> {{ $farmer->getlastTransaction() }}</td>
+                            </tr>
+
+                        @endforeach
+                    </tbody>
+
+                </table>
             </div>
             <hr class="ml-2">
             <div class="row ml-2 text-uppercase mb-2">
@@ -653,8 +673,12 @@
                                 {{ $transaction->created_at }} /{{ $buyer->first_name }} /
                                 {{ explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] }}
                                 /
+                                {{                                 explode('-', $transaction->batch_number)[0] . '-' . explode('-', $transaction->batch_number)[1] . '-' . explode('-', $transaction->batch_number)[2] . '-' . explode('-', $transaction->batch_number)[3] }}
+                                /
                                 @php
                                     echo floatval($transaction->details->sum('container_weight'));
+                                    echo '/';
+                                    echo number_format(round(farmerPricePerKg($transaction->batch_number) * $transaction->details->sum('container_weight'), 2));
                                 @endphp
 
                             </li>

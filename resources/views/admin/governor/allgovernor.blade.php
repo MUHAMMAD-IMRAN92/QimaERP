@@ -18,8 +18,8 @@
                     <div class="row mb-2">
                         <div class="col-sm-8 pl-0">
                             <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Governors Information
-                                <a href="{{ url('/admin/addnewgovernor') }}" class="btn btn-add rounded-circle">
-                                    <i class="fas fa-user-plus add-client-icon"></i>
+                                <a href="{{ url('/admin/addnewgovernor') }}" class="btn btn-add rounded-circle" style="color:red;">
+                                    Add Governerate
                                 </a>
                             </h1>
                         </div>

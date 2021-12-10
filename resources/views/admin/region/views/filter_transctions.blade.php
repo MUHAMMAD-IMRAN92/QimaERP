@@ -28,6 +28,18 @@
 
         <p>Farmers </p>
     </div>
+    <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+        <h4>{{ $govcount }}</h4>
+        <p>NO OF GOVERNORATES </p>
+    </div>
+    <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+        <h4>{{ $regionCount }}</h4>
+        <p>NO OF SUB REGIONS </p>
+    </div>
+    <div class="col-sm-1 color bg-darkPurple p-2 content-box">
+        <h4>{{ $villageCount }}</h4>
+        <p>VILLAGES</p>
+    </div>
     {{-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
         <h4>{{ $governorate->count() }}</h4>
         <p>Governorate</p>
@@ -137,7 +149,12 @@
                                         <td>{{ $governorate->governerate_title }}</td>
                                         <td>
                                             @foreach ($governorate->regions as $region)
-                                                {{ $region->region_title }} <br>
+                                                <div class="newclass"> {{ $region->region_title }}
+                                                    <a
+                                                        href="{{ url('admin/editregion', $region->region_id) }}"><i
+                                                        style="font-size:24px"
+                                                        class="fa">&#xf044;</i></a>
+                                                </div> <br>
                                             @endforeach
                                         </td>
                                         <td>
