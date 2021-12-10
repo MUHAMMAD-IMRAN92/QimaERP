@@ -16,21 +16,33 @@
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
-                        <div class="col-sm-8 pl-0">
-                            <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Governors Information
-                                <a href="{{ url('/admin/addnewgovernor') }}" class="btn btn-add rounded-circle" style="color:red;">
-                                    Add Governerate
-                                </a>
-                            </h1>
+                        <div class="col-sm-6">
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                                 <li class="breadcrumb-item active">All Governors</li>
                             </ol>
                         </div>
+                        <div class="col-sm-8 pl-0">
+                            <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Governors Information
+                                {{--  <a href="{{ url('/admin/addnewgovernor') }}" class="btn btn-add rounded-circle" style="color:red;">
+                                    Add Governerate
+                                </a>  --}}
+                            </h1>
+                        </div>
+                        <div class="col-sm-4 pr-0 d-flex align-items-end justify-content-end">
+                            <ol class="breadcrumb float-sm-right">
+                                <a href="{{ url('/admin/addnewgovernor') }}" class="btn btn-add rounded-circle p-0">
+                                    <button
+                                        class="btn btn-color-darkRed btn-dark bg-transparent border-0 add-button text-uppercase pr-0">
+                                        Add Governerate</button>
+                                </a>
+                            </ol>
+                        </div>
                     </div>
                 </div><!-- /.container-fluid -->
+                <hr class="ml-md-2">
             </section>
 
             <!-- Main content -->
