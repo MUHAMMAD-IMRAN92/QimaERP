@@ -522,7 +522,11 @@
                     <p>Total Coffee </p>
                 </div> --}}
                     <div class="col-sm-1 color bg-lightGreen p-2 content-box">
-                        <h4>{{ number_format(round($total_coffee / $villageCount, 2)) }}</h4>
+                        @if ($farmerCount != 0)
+                            <h4>{{ number_format(round($total_coffee / $farmerCount, 2)) }}</h4>
+                        @else
+                            <h4>0</h4>
+                        @endif
                         <p>KG CHERRY
                             AVERAGE PER
                             FARMER</p>
