@@ -246,10 +246,10 @@ class MillingController extends Controller
             $serverbatch->save();
             DB::commit();
             Session::flash('message', 'Milling coffee successfully.');
-            return redirect('admin/milling_coffee');
+            return redirect('admin/new_milling_coffee');
         } catch (\PDOException $e) {
             Session::flash('error', 'Something was wrong.');
-            return redirect('admin/milling_coffee');
+            return redirect('admin/new_milling_coffee');
         }
     }
     public function newmillingCoffee()
