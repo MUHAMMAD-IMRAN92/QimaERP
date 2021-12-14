@@ -178,7 +178,7 @@ class MillingController extends Controller
                 'reference_id' => $refid,
                 'is_server_id' => 1,
                 'is_new' => 0,
-                'sent_to' => 14,
+                'sent_to' => 140,
                 'is_sent' => 1,
                 'session_no' => $serverbatch->session_no,
                 'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
