@@ -634,7 +634,7 @@
 
                                                                 @foreach ($governorate->villages as $village)
                                                                     {{ $village->village_title }}
-                                                                    (<b> {{ regionOfVillage($village->village_id) }}</b>)
+                                                                    (<b>{{ regionOfVillage($village->village_id)}}</b>)
                                                                     <br>
                                                                 @endforeach
 
