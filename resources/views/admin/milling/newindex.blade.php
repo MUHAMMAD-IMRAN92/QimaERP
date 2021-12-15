@@ -194,7 +194,12 @@
     <script>
         $(document).ready(function() {
 
-            $('#myTable').DataTable();
+            $('#myTable').DataTable({
+                columnDefs: [
+                  { orderable: false, targets: [11,12]}
+                ],
+                order: [[1, 'asc']]
+              });
             $('#to').on('change', function() {
                 let from = $('#from').val();
                 let to = $('#to').val();
@@ -695,9 +700,9 @@
                                                                 </td>
                                                                 <td>
                                                                     {{-- @foreach ($transaction['child_transactions'] as $childtran)
-                                                                        {{ $childtran->transactionDetail->sum('container_weight') }}
-                                                                        <br>
-                                                                    @endforeach --}}
+                                                                            {{ $childtran->transactionDetail->sum('container_weight') }}
+                                                                            <br>
+                                                                        @endforeach --}}
                                                                     @foreach ($transaction['transaction']->transactionDetail as $detail)
                                                                         {{ $detail->container_number . ':' . $detail->container_weight }}
                                                                         <br>
@@ -868,7 +873,6 @@
                 });
                 $('#milling-th').on('click', function() {
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
-
                 });
 
             });

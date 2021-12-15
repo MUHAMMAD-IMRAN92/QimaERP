@@ -104,6 +104,7 @@ class MillingController extends Controller
 
     public function millingCoffee(Request $request)
     {
+        // return $request->all();
         $validator = Validator::make($request->all(), [
             'transaction_id' => "required|array|min:1",
         ], [
@@ -301,6 +302,7 @@ class MillingController extends Controller
     }
     public function newpost(Request $request)
     {
+        // return $request->all();
         $validator = Validator::make($request->all(), [
             'transaction_id' => "required|array|min:1",
         ], [
