@@ -29,7 +29,7 @@ class FarmerController extends Controller
         $governorates = Governerate::all();
         $regions = Region::all();
         $villages = Village::all();
-        $farmers = Farmer::where('status' , 1)->get();
+        $farmers = Farmer::where('status', 1)->get();
 
         $farmers = $farmers->map(function ($farmer) {
             $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
@@ -115,9 +115,14 @@ class FarmerController extends Controller
     public function update(Request $request)
     {
         // $request->all();
-        $validatedData = $request->validate([
+        $validatedData =  Validator::make($request->all(), [
             'farmer_nicn' => 'required|unique:farmers,farmer_id' . $request->farmer_ids,
+            'farmer_code' => 'numeric',
         ]);
+        if ($validatedData->fails()) {
+            //::validation failed
+            return redirect()->back()->withErrors($validatedData)->withInput();
+        }
         $f_code = $request->code . '-'  . $request->farmer_code;
         $updatefarmer = Farmer::findOrFail($request->farmer_id);
         if ($updatefarmer->farmer_code != $f_code) {
@@ -369,7 +374,7 @@ class FarmerController extends Controller
         $transactions = Transaction::with('details')->whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
         foreach ($transactions as $transaction) {
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
-            $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+            $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
             if ($farmer) {
                 if (!$farmers->contains($farmer)) {
                     $farmers->push($farmer);
@@ -405,7 +410,7 @@ class FarmerController extends Controller
         $id = $request->from;
         $governorateCode = Governerate::where('governerate_id', $id)->first()->governerate_code;
 
-        $regions = Region::where('status' , 1)->get();
+        $regions = Region::where('status', 1)->get();
 
         $govRegions = $regions->filter(function ($region) use ($governorateCode) {
             return explode('-', $region->region_code)[0] == $governorateCode;
@@ -451,9 +456,9 @@ class FarmerController extends Controller
     {
         $id = $request->from;
 
-        $regionCode = Region::where('status' , 1)->where('region_id', $id)->first()->region_code;
+        $regionCode = Region::where('status', 1)->where('region_id', $id)->first()->region_code;
         $region_Code = explode('-', $regionCode)[1];
-        $villages = Village::where('status' , 1)->get();
+        $villages = Village::where('status', 1)->get();
         $villages = $villages->filter(function ($village) use ($region_Code) {
             return explode('-', $village->village_code)[1] == $region_Code;
         })->values();
@@ -462,7 +467,7 @@ class FarmerController extends Controller
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $regionCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
         foreach ($transactions as $transaction) {
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
-            $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+            $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
             if ($farmer) {
                 if (!$farmers->contains($farmer)) {
                     $farmers->push($farmer);
@@ -496,14 +501,14 @@ class FarmerController extends Controller
     public function farmerByVillages(Request $request)
     {
         $id = $request->from;
-        $villageCode = Village::where('status' , 1)->where('village_id', $id)->first()->village_code;
+        $villageCode = Village::where('status', 1)->where('village_id', $id)->first()->village_code;
 
         // $farmers = Farmer::where('village_code', $villageCode)->get();
         $farmers = collect();
         $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $villageCode . '%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
         foreach ($transactions as $transaction) {
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
-            $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+            $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
             if ($farmer) {
                 if (!$farmers->contains($farmer)) {
                     $farmers->push($farmer);
@@ -544,7 +549,7 @@ class FarmerController extends Controller
             $transactions = Transaction::with('details')->whereDate('created_at',  $date)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                 if ($farmer) {
                     if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
@@ -593,7 +598,7 @@ class FarmerController extends Controller
             $transactions = Transaction::with('details')->whereDate('created_at',  $yesterday)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                 if ($farmer) {
                     if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
@@ -642,7 +647,7 @@ class FarmerController extends Controller
             $transactions = Transaction::with('details')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                 if ($farmer) {
                     if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
@@ -691,7 +696,7 @@ class FarmerController extends Controller
             $transactions = Transaction::with('details')->whereYear('created_at', $year)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                 if ($farmer) {
                     if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
@@ -740,7 +745,7 @@ class FarmerController extends Controller
             $transactions = Transaction::with('details')->whereYear('created_at', $year)->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                 if ($farmer) {
                     if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
@@ -790,7 +795,7 @@ class FarmerController extends Controller
             $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $end])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                 if ($farmer) {
                     if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
@@ -838,7 +843,7 @@ class FarmerController extends Controller
             $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                 if ($farmer) {
                     if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
@@ -886,7 +891,7 @@ class FarmerController extends Controller
             $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $date])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             foreach ($transactions as $transaction) {
                 $batch_number = Str::beforeLast($transaction->batch_number, '-');
-                $farmer = Farmer::where('status' , 1)->where('farmer_code', $batch_number)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
                 if ($farmer) {
                     if (!$farmers->contains($farmer)) {
                         $farmers->push($farmer);
@@ -931,7 +936,7 @@ class FarmerController extends Controller
 
         $farmerCode = $farmer->farmer_code;
         $farmer->price = $farmer->price()->price_per_kg;
-        $farmer->price = Village::where('status' , 1)->where('village_code', $farmerCode)->first();
+        $farmer->price = Village::where('status', 1)->where('village_code', $farmerCode)->first();
         if ($farmer->price) {
             $farmer->price =  $farmer->price['price_per_kg'];
         }
@@ -969,7 +974,7 @@ class FarmerController extends Controller
             $farmerCode = $farmer->farmer_code;
             $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
-            $farmer->price = Village::where('status' , 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->price = Village::where('status', 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
@@ -994,7 +999,7 @@ class FarmerController extends Controller
             $farmerCode = $farmer->farmer_code;
             $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
-            $farmer->price = Village::where('status' , 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->price = Village::where('status', 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
@@ -1021,7 +1026,7 @@ class FarmerController extends Controller
             $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('status' , 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->price = Village::where('status', 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
@@ -1047,7 +1052,7 @@ class FarmerController extends Controller
             $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('status' , 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->price = Village::where('status', 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
@@ -1075,7 +1080,7 @@ class FarmerController extends Controller
             $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('status' , 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->price = Village::where('status', 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
@@ -1101,7 +1106,7 @@ class FarmerController extends Controller
             $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('status' , 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->price = Village::where('status', 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
@@ -1127,7 +1132,7 @@ class FarmerController extends Controller
             $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('status' , 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->price = Village::where('status', 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
@@ -1154,7 +1159,7 @@ class FarmerController extends Controller
             $farmerVillageCode = Str::beforeLast($farmer->farmer_code, '-');
 
 
-            $farmer->price = Village::where('status' , 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
+            $farmer->price = Village::where('status', 1)->where('village_code', $farmerVillageCode)->first()['price_per_kg'];
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
