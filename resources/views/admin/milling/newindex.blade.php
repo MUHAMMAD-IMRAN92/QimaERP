@@ -699,8 +699,8 @@
                                                                         <br>
                                                                     @endforeach --}}
                                                                     @foreach ($transaction['transaction']->transactionDetail as $detail)
-                                                                        {{ $detail->container_number }}
-                                                                        :{{ $detail->container_weight }}
+                                                                        {{ $detail->container_number . ':' . $detail->container_weight }}
+                                                                        <br>
                                                                     @endforeach
                                                                 </td>
 
@@ -772,8 +772,9 @@
                                                                 </td>
                                                                 <td>
                                                                     @foreach ($transaction['transaction']->transactionDetail as $detail)
-                                                                        {{ $detail->container_number }}
-                                                                        :{{ $detail->container_weight }}
+                                                                        {{ $detail->container_number . ':' . $detail->container_weight }}
+                                                                        <br>
+
                                                                     @endforeach
                                                                 </td>
                                                                 <td>
