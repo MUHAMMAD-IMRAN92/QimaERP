@@ -346,6 +346,10 @@ class MillingController extends Controller
                         'center_id' => 0,
                         'reference_id' => 0,
                     ]);
+
+                    $detail->update([
+                        'contrainer_status' => 1
+                    ]);
                 }
 
                 if (count($request->transaction_id) > 1) {
