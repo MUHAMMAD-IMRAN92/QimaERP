@@ -178,7 +178,7 @@ class AuthController extends Controller
         $farmerArray = collect();
         foreach ($transactions as $transaction) {
             $batch_number = Str::beforeLast($transaction->batch_number, '-');
-            $farmer = Farmer::where('farmer_code', $batch_number)->first();
+            $farmer = Farmer::where('farmer_code', $batch_number)->where('status', 1)->first();
             if ($farmer) {
                 if (!$farmerArray->contains($farmer->farmer_code)) {
                     $farmerArray->push($farmer->farmer_code);
