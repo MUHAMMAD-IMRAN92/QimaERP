@@ -673,9 +673,7 @@
                                                                     @endforeach
                                                                 </td>
                                                                 <td>
-                                                                    @foreach ($transaction['child_transactions'] as $childtran)
-                                                                        {{ $childtran->batch_number }} <br>
-                                                                    @endforeach
+                                                                    {{ $transaction['transaction']->batch_number }}
                                                                 </td>
                                                                 <td>
                                                                     SPECIALTY
@@ -696,9 +694,13 @@
                                                                     @endforeach
                                                                 </td>
                                                                 <td>
-                                                                    @foreach ($transaction['child_transactions'] as $childtran)
+                                                                    {{-- @foreach ($transaction['child_transactions'] as $childtran)
                                                                         {{ $childtran->transactionDetail->sum('container_weight') }}
                                                                         <br>
+                                                                    @endforeach --}}
+                                                                    @foreach ($transaction['transaction']->transactionDetail as $detail)
+                                                                        {{ $detail->container_number }}
+                                                                        :{{ $detail->container_weight }}
                                                                     @endforeach
                                                                 </td>
 
@@ -769,7 +771,10 @@
                                                                     {{ getVillage($transaction['transaction']->batch_number) }}
                                                                 </td>
                                                                 <td>
-                                                                    {{ $transaction['transaction']->transactionDetail->sum('container_weight') }}
+                                                                    @foreach ($transaction['transaction']->transactionDetail as $detail)
+                                                                        {{ $detail->container_number }}
+                                                                        :{{ $detail->container_weight }}
+                                                                    @endforeach
                                                                 </td>
                                                                 <td>
                                                                     {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
