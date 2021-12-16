@@ -11,6 +11,7 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="mx-lg-5">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -22,11 +23,6 @@
                 @endif
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Centers Information
-                            <a href="{{ url('/admin/addcenter') }}" class="btn btn-add rounded-circle">
-                                <i class="fas fa-user-plus add-client-icon"></i>
-                            </a>
-                        </h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -34,8 +30,26 @@
                             <li class="breadcrumb-item active">All Centers</li>
                         </ol>
                     </div>
+                    <div class="col-sm-8 pl-0">
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">
+                            Centers Information
+                            {{-- <a href="{{ url('/admin/addcenter') }}" class="btn btn-add rounded-circle">
+                                <i class="fas fa-user-plus add-client-icon"></i>
+                            </a> --}}
+                        </h1>
+                    </div>
+                    <div class="col-sm-4 pr-0 d-flex align-items-end justify-content-end">
+                        <ol class="breadcrumb float-sm-right">
+                            <a href="{{ url('/admin/addcenter') }}" class="btn btn-add rounded-circle p-0">
+                                <button
+                                    class="btn btn-color-darkRed btn-dark bg-transparent border-0 add-button text-uppercase pr-0">
+                                    Add Center</button>
+                            </a>
+                        </ol>
+                    </div>
                 </div>
             </div><!-- /.container-fluid -->
+            <hr class="ml-md-2">
         </section>
 
         <!-- Main content -->
@@ -75,6 +89,7 @@
         </section>
         <!-- /.content -->
     </div>
+</div>
     <!-- /.content-wrapper -->
     <script>
         let base_path = '<?= asset('/') ?>';
