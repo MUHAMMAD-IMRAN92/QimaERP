@@ -335,6 +335,9 @@ class MillingController extends Controller
                     'session_no' => $transaction->session_no,
                     'local_created_at' => date("Y-m-d H:i:s", strtotime($transaction->local_created_at)),
                 ]);
+                $transaction->update([
+                    'is_parent' => $newtransaction->transaction_id,
+                ]);
                 foreach ($transaction->details as $detail) {
                     TransactionDetail::create([
                         'transaction_id' => $newtransaction->transaction_id,
