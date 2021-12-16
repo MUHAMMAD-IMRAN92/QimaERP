@@ -355,7 +355,7 @@ class MillingController extends Controller
                     ]);
                 }
 
-                if (count($request->transaction_id) > 1) {
+                if (count($request->transaction_id) > 0) {
                     foreach ($request->transaction_id as $key => $transaction) {
                         $transaction  = Transaction::find($transaction);
                         $transaction->update([
