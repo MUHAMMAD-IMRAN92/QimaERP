@@ -324,7 +324,7 @@ class MillingController extends Controller
                     'created_by' => Auth::user()->user_id,
                     'is_local' => FALSE,
                     'transaction_type' => 1,
-                    'local_code' => null,
+                    'local_code' =>  $transaction->local_code,
                     'is_special' => $transaction->is_special,
                     'transaction_status' => 'received',
                     'reference_id' => $refid,
