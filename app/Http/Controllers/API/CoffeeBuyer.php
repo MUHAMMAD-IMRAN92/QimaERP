@@ -559,6 +559,8 @@ class CoffeeBuyer extends Controller
                                         'transaction_id' => $parentTransaction->transaction_id,
                                         'created_by' => $transactionsInvoice->created_by,
                                         'invoice_id' => $userProfileImage->file_id,
+                                        'invoice_price' =>  $transactionsInvoice->invoice_price,
+
                                     ]);
                                 }
                                 $i++;
