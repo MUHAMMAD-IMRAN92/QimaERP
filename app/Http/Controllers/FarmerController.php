@@ -41,6 +41,7 @@ class FarmerController extends Controller
 
             $farmer->quantity = $farmer->quntity();
             $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
+            $farmer->paidprice = $farmer->paidPriceFromInvoice();
 
             return $farmer;
         });
@@ -390,7 +391,7 @@ class FarmerController extends Controller
             $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
-
+            $farmer->paidprice = $farmer->paidPriceFromInvoice();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             $weight = 0;
             foreach ($transactions as $transaction) {
@@ -435,7 +436,7 @@ class FarmerController extends Controller
             $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
-
+            $farmer->paidprice = $farmer->paidPriceFromInvoice();
             // $farmer->quantity = $farmer->quntity();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $governorateCode . '%')->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             $weight = 0;
@@ -481,7 +482,7 @@ class FarmerController extends Controller
             $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
-
+            $farmer->paidprice = $farmer->paidPriceFromInvoice();
             // $farmer->quantity = $farmer->quntity();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $regionCode . '%')->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             $weight = 0;
@@ -523,7 +524,7 @@ class FarmerController extends Controller
             $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
-
+            $farmer->paidprice = $farmer->paidPriceFromInvoice();
             // $farmer->quantity = $farmer->quntity();
             $transactions = Transaction::with('details')->where('batch_number', 'LIKE',   $villageCode . '%')->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
             $weight = 0;
@@ -568,7 +569,7 @@ class FarmerController extends Controller
                 $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
-
+                $farmer->paidprice = $farmer->paidPriceFromInvoice();
                 // $farmer->quantity = $farmer->quntity();
                 $transactions = Transaction::with('details')->whereDate('created_at',  $date)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
                 $weight = 0;
@@ -616,7 +617,7 @@ class FarmerController extends Controller
                 $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
-
+                $farmer->paidprice = $farmer->paidPriceFromInvoice();
                 // $farmer->quantity = $farmer->quntity();
                 $transactions = Transaction::with('details')->whereDate('created_at',  $yesterday)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
                 $weight = 0;
@@ -665,7 +666,7 @@ class FarmerController extends Controller
                 $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
-
+                $farmer->paidprice = $farmer->paidPriceFromInvoice();
                 // $farmer->quantity = $farmer->quntity();
                 $transactions = Transaction::with('details')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
                 $weight = 0;
@@ -714,7 +715,7 @@ class FarmerController extends Controller
                 $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
-
+                $farmer->paidprice = $farmer->paidPriceFromInvoice();
                 // $farmer->quantity = $farmer->quntity();
                 $transactions = Transaction::with('details')->whereYear('created_at', $year)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
                 $weight = 0;
@@ -763,7 +764,7 @@ class FarmerController extends Controller
                 $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
-
+                $farmer->paidprice = $farmer->paidPriceFromInvoice();
                 // $farmer->quantity = $farmer->quntity();
                 $transactions = Transaction::with('details')->whereYear('created_at', $year)->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
                 $weight = 0;
@@ -813,7 +814,7 @@ class FarmerController extends Controller
                 $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
-
+                $farmer->paidprice = $farmer->paidPriceFromInvoice();
                 // $farmer->quantity = $farmer->quntity();
                 $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $end])->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
                 $weight = 0;
@@ -861,7 +862,7 @@ class FarmerController extends Controller
                 $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
-
+                $farmer->paidprice = $farmer->paidPriceFromInvoice();
                 // $farmer->quantity = $farmer->quntity();
                 $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $date])->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
                 $weight = 0;
@@ -909,7 +910,7 @@ class FarmerController extends Controller
                 $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
                 $farmer->first_purchase = $farmer->getfirstTransaction();
                 $farmer->last_purchase = $farmer->getlastTransaction();
-
+                $farmer->paidprice = $farmer->paidPriceFromInvoice();
                 // $farmer->quantity = $farmer->quntity();
                 $transactions = Transaction::with('details')->whereBetween('created_at', [$start, $date])->where('batch_number', 'LIKE', $farmer->farmer_code . '-%')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
                 $weight = 0;

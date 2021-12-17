@@ -321,8 +321,10 @@
                                                 </th>
                                                 <th class="border border-dark border-left-0 font-weight-lighter">Quantity
                                                 </th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Coffe
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Coffee
                                                     Bought</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Price Paid
+                                                </th>
                                                 <th class="border border-dark border-left-0 font-weight-lighter">Reward</th>
                                                 <th class="border border-dark border-left-0 font-weight-lighter">Money Owed
                                                 </th>
@@ -374,9 +376,10 @@
                                                             {{ number_format($farmer->price_per_kg * $farmer->quantity) }}
                                                         </td>
                                                     @endif
-
                                                     <td class="border border-dark border-left-0 border-top-0">
-                                                        {{$farmer->reward }}</td>
+                                                        {{ $farmer->paidprice }}</td>
+                                                    <td class="border border-dark border-left-0 border-top-0">
+                                                        {{ $farmer->reward }}</td>
                                                     <td class="border border-dark border-left-0 border-top-0">
                                                         {{ $farmer->id }}</td>
                                                     <td class="border border-dark border-left-0 border-top-0">
