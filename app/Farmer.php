@@ -164,7 +164,7 @@ class Farmer extends Model
     {
         $farmerCode = $this->farmer_code;
         $paidPrice = 0;
-        $transactions = Transaction::where('sent_to', 2)->where('batch_number', 'LIKE',   '%' . $farmerCode . '%')->get();
+        $transactions = Transaction::where('sent_to', 2)->where('batch_number', 'LIKE',   '%' . $farmerCode . '-%')->get();
         foreach ($transactions as $transaction) {
             $transInvoices = TransactionInvoice::where('transaction_id', $transaction->transaction_id)->get();
             foreach ($transInvoices as  $transInvoice) {
