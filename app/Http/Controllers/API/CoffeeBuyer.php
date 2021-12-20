@@ -245,7 +245,7 @@ class CoffeeBuyer extends Controller
         }
 
         $batches_numbers = json_decode(str_replace('&quot;', '"', $request->input('batch_number')));
-        \Log::info($request);
+        // \Log::info($request);
         // foreach($batches_numbers as $batch){
         //     return response()->json([
         //         'local_updated_at_raw' => $batch->batch->transactions[0]->transactions->local_updated_at,
@@ -385,7 +385,7 @@ class CoffeeBuyer extends Controller
                         array_push($childBatchNumberArray, $newBatch->batch_id);
 
                         array_push($childTransactionArray, $newTransaction->transaction_id);
-                        Log::info('Child invoice' );
+                        Log::info('Child invoice', $childBatch->transactions_invoices);
                         // if (isset($childBatch->transactions_invoices) && $childBatch->transactions_invoices) {
                         //     $transactionsInvoices = $childBatch->transactions_invoices;
                         //     $i = 1;
@@ -431,7 +431,7 @@ class CoffeeBuyer extends Controller
                         $newLastBID = ($lastBatchNumber->batch_id + 1);
                     }
                     array_pop($removeLocalId);
-                    Log::info(implode("-", $removeLocalId));
+                    // Log::info(implode("-", $removeLocalId));
                     $checkMixed = 0;
                     if ($removeLocalId[3] == '000') {
                         $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
