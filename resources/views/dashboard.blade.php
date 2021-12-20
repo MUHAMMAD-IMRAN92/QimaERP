@@ -387,22 +387,22 @@
                         <p>YER SETTELED</p>
                     </div>
                     <!-- <div class="col-sm-1 color bg-darkGreen p-2 content-box">
-                                                                                <h4>{{ App\Region::count() }}</h4>
-                                                                                 <p>Regions</p>
-                                                                        </div>  -->
+                                                                                    <h4>{{ App\Region::count() }}</h4>
+                                                                                     <p>Regions</p>
+                                                                            </div>  -->
                     <div class="col-sm-1 color bg-lightBrown p-2 content-box">
                         <h4>{{ $farmerCount }}</h4>
 
                         <p>Farmers </p>
                     </div>
                     <!-- <div class="col-sm-1 color bg-darkPurple p-2 content-box">
-                                                                            <h4>{{ $governorate->count() }}</h4>
-                                                                            <p>Governorate</p>
-                                                                        </div>
-                                                                        <div class="col-sm-1 color bg-lightBrown p-2 content-box">
-                                                                            <h4>{{ $totalWeight }}</h4>
-                                                                            <p>Total Coffee </p>
-                                                                        </div> -->
+                                                                                <h4>{{ $governorate->count() }}</h4>
+                                                                                <p>Governorate</p>
+                                                                            </div>
+                                                                            <div class="col-sm-1 color bg-lightBrown p-2 content-box">
+                                                                                <h4>{{ $totalWeight }}</h4>
+                                                                                <p>Total Coffee </p>
+                                                                            </div> -->
                     <div class="col-sm-1 color bg-lightGreen p-2 content-box">
                         <h4>{{ $readyForExport }}</h4>
                         <p>KG SPECIALTY
@@ -827,13 +827,13 @@
                     </div>
                 </div>
                 <div class="row mt-4">
-                    <div class="col-md-5">
+                    <div class="col-md-12">
                         <div class="row ml-2 text-uppercase mb-5">
                             <strong>
                                 <b>Region Wise</b>
                             </strong>
                         </div>
-                        <canvas id="3rd" class="ml-md-2 pt-4" style="width:100%; height:200px;"></canvas>
+                        <canvas id="3rd" class="ml-md-2 pt-4" style="width:100%; height:300px;"></canvas>
 
                         <script>
                             var xValues = @json($regionName);
@@ -870,7 +870,7 @@
                             });
                         </script>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-12">
                         <div class="row ml-2 text-uppercase mb-3">
                             <strong>
                                 <b>Yemen sales</b>
@@ -884,7 +884,7 @@
                                 </div>
                             </div>
                         </div>
-                        <canvas id="6rd" class="ml-md-2" style="width:100%; height:200px;"></canvas>
+                        <canvas id="6rd" class="ml-md-2" style="width:100%; height:300px;"></canvas>
 
                         <script>
                             var xValues = @json($yemenSalesDay);

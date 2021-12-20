@@ -142,6 +142,7 @@ class VillageController extends Controller
             'village_title' => 'required|max:100',
             'village_title_ar' => 'required|max:100',
             'village_id' => 'required',
+            'village_code' => 'numeric',
         ]);
         if ($validator->fails()) {
             //::validation failed

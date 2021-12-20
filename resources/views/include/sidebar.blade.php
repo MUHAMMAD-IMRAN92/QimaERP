@@ -284,13 +284,20 @@
 
 
                         <li class="nav-item">
-                            <a href="{{ URL::to('') }}/admin/milling_coffee"
+                            <a href="{{ url('admin/new_milling_coffee') }}"
+                                class="nav-link {{ Request::is('admin/new_milling_coffee') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-tree"> </i> -->
+                                <p>
+                                    Inventory In Process
+                                </p>
+                            </a>
+                            {{-- <a href="{{ URL::to('') }}/admin/milling_coffee"
                                 class="nav-link {{ Request::is('admin/milling_coffee') ? 'active' : '' }}">
                                 <!-- <i class="nav-icon fas fa-tree"> </i> -->
                                 <p>
                                     Milling
                                 </p>
-                            </a>
+                            </a> --}}
                         </li>
 
                         <li class="nav-item {{ Request::is('admin/packaging/*') ? 'menu-open' : '' }}">
