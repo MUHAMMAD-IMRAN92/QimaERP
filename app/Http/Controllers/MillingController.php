@@ -8,6 +8,7 @@ use App\Transaction;
 use App\TransactionLog;
 use App\ChildTransaction;
 use App\TransactionDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -103,6 +104,7 @@ class MillingController extends Controller
 
     public function millingCoffee(Request $request)
     {
+        // return $request->all();
         $validator = Validator::make($request->all(), [
             'transaction_id' => "required|array|min:1",
         ], [
@@ -113,6 +115,7 @@ class MillingController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        // return $request->all();
         $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
         $newLastBID = ($lastBatchNumber->batch_id + 1);
 
@@ -176,7 +179,7 @@ class MillingController extends Controller
                 'reference_id' => $refid,
                 'is_server_id' => 1,
                 'is_new' => 0,
-                'sent_to' => 14,
+                'sent_to' => 140,
                 'is_sent' => 1,
                 'session_no' => $serverbatch->session_no,
                 'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
@@ -244,10 +247,513 @@ class MillingController extends Controller
             $serverbatch->save();
             DB::commit();
             Session::flash('message', 'Milling coffee successfully.');
-            return redirect('admin/milling_coffee');
+            return redirect('admin/new_milling_coffee');
         } catch (\PDOException $e) {
             Session::flash('error', 'Something was wrong.');
-            return redirect('admin/milling_coffee');
+            return redirect('admin/new_milling_coffee');
+        }
+    }
+    public function newmillingCoffee()
+    {
+        $transactions = collect();
+        $batches = BatchNumber::pluck('batch_number');
+        foreach ($batches as $batch) {
+            $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->with('details')->latest()
+                ->first();
+            if ($transaction) {
+                if ($transaction->sent_to == 13) {
+                    $newtransaction = Transaction::where('batch_number', $batch)->where('sent_to', 13)->where('is_parent', 0)->with('details')->get();
+                    if ($newtransaction) {
+                        foreach ($newtransaction as $t) {
+                            if ($t != null) {
+
+                                $transactions->push($t);
+                            }
+                        }
+                    }
+                } else {
+                    if ($transaction != null) {
+
+                        $transactions->push($transaction);
+                    }
+                }
+            }
+        }
+        // return $transactions;
+        $data = array();
+        $allTransactions = array();
+        // $transactions = Transaction::where('is_parent', 0)
+
+        //     ->whereHas('log', function ($q) {
+        //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+        //     })->whereHas('transactionDetail', function ($q) {
+        //         $q->where('container_status', 0);
+        //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+        //         $query->where('container_status', 0);
+        //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+        // return $transactions;
+        foreach ($transactions as $key => $tran) {
+            // if ($tran->sent_to == 13) {
+            $childTransaction = array();
+            $tran->makeHidden('log');
+            $removeLocalId = explode("-", $tran->batch_number);
+            if ($removeLocalId[3] == '000') {
+                $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                if ($FindParentTransactions) {
+                    $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                }
+            }
+            $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+            // array_push($allTransactions, $tran);
+            array_push($allTransactions, $transaction);
+            // }
+            // array_push($allTransactions, $tran);
+        }
+        $data['transactions'] = $allTransactions;
+        // return $data;
+        return view('admin.milling.newindex', $data);
+    }
+    public function newpost(Request $request)
+    {
+        // return $request->all();
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => "required|array|min:1",
+        ], [
+            'transaction_id.required' => 'Please select at least one batch number',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        DB::beginTransaction();
+        try {
+            $transactions = Transaction::whereIn('transaction_id', $request->transaction_id)->with('details', 'log')->get();
+            foreach ($transactions as $transaction) {
+                $refid = implode(",", $request->transaction_id);
+                $newtransaction = Transaction::create([
+                    'batch_number' => $transaction->batch_number,
+                    'is_parent' => 0,
+                    'is_mixed' => 1,
+                    'created_by' => Auth::user()->user_id,
+                    'is_local' => FALSE,
+                    'transaction_type' => 1,
+                    'local_code' =>  $transaction->local_code,
+                    'is_special' => $transaction->is_special,
+                    'transaction_status' => 'received',
+                    'reference_id' => $refid,
+                    'is_server_id' => 1,
+                    'is_new' => 0,
+                    'sent_to' => 14,
+                    'is_sent' => 1,
+                    'session_no' => $transaction->session_no,
+                    'local_created_at' => date("Y-m-d H:i:s", strtotime($transaction->local_created_at)),
+                ]);
+                // $transaction->update([
+                //     'is_parent' => $newtransaction->transaction_id,
+                // ]);
+                foreach ($transaction->details as $detail) {
+                    TransactionDetail::create([
+                        'transaction_id' => $newtransaction->transaction_id,
+                        'container_number' => $detail['container_number'],
+                        'created_by' => Auth::user()->user_id,
+                        'is_local' => FALSE,
+                        'container_weight' => $detail['container_weight'],
+                        'weight_unit' => 'kg',
+                        'center_id' => 0,
+                        'reference_id' => 0,
+                    ]);
+
+                    $detail->update([
+                        'contrainer_status' => 1
+                    ]);
+                }
+
+                if (count($request->transaction_id) > 0) {
+                    foreach ($request->transaction_id as $key => $transaction) {
+                        $transaction  = Transaction::find($transaction);
+                        $transaction->update([
+                            'is_parent' => $newtransaction->transaction_id,
+                        ]);
+                    }
+                }
+                $transactionLog = TransactionLog::create([
+                    'transaction_id' => $newtransaction->transaction_id,
+                    'action' => 'received',
+                    'created_by' => Auth::user()->user_id,
+                    'entity_id' => $transaction->log->entity_id,
+                    'center_name' => '',
+                    'local_created_at' => date("Y-m-d H:i:s", strtotime($newtransaction->created_at)),
+                    'type' => 'milling_coffee',
+                ]);
+            }
+            DB::commit();
+            return redirect('admin/new_milling_coffee');
+        } catch (\PDOException $e) {
+            Session::flash('error', 'Something was wrong.');
+            return redirect('admin/new_milling_coffee');
+        }
+    }
+    public function filterByDays(Request $request)
+    {
+        $date = $request->date;
+        if ($date == 'today') {
+            $date = Carbon::today()->toDateString();
+
+            // $farmers = Farmer::whereDate('created_at',  $date)->get();
+            $transactions = collect();
+            $batches = BatchNumber::pluck('batch_number');
+            foreach ($batches as $batch) {
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereDate('created_at', $date)->with('details')->latest()->first();
+                if ($transaction != null) {
+
+                    $transactions->push($transaction);
+                }
+            }
+            // return $transactions;
+            $data = array();
+            $allTransactions = array();
+            // $transactions = Transaction::where('is_parent', 0)
+
+            //     ->whereHas('log', function ($q) {
+            //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+            //     })->whereHas('transactionDetail', function ($q) {
+            //         $q->where('container_status', 0);
+            //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+            //         $query->where('container_status', 0);
+            //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+            // return $transactions;
+            foreach ($transactions as $key => $tran) {
+                // if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                // array_push($allTransactions, $tran);
+                array_push($allTransactions, $transaction);
+                // }
+                // array_push($allTransactions, $tran);
+            }
+            $data['transactions'] = $allTransactions;
+            // return $data;
+            return view('admin.milling.indexajax', $data);
+        } elseif ($date == 'yesterday') {
+            $now = Carbon::now();
+            $yesterday = Carbon::yesterday();
+
+            // $farmers = Farmer::whereDate('created_at', $yesterday)->get();
+            $transactions = collect();
+            $batches = BatchNumber::pluck('batch_number');
+            foreach ($batches as $batch) {
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereDate('created_at', $yesterday)->with('details')->latest()->first();
+                if ($transaction != null) {
+
+                    $transactions->push($transaction);
+                }
+            }
+            // return $transactions;
+            $data = array();
+            $allTransactions = array();
+            // $transactions = Transaction::where('is_parent', 0)
+
+            //     ->whereHas('log', function ($q) {
+            //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+            //     })->whereHas('transactionDetail', function ($q) {
+            //         $q->where('container_status', 0);
+            //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+            //         $query->where('container_status', 0);
+            //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+            // return $transactions;
+            foreach ($transactions as $key => $tran) {
+                // if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                // array_push($allTransactions, $tran);
+                array_push($allTransactions, $transaction);
+                // }
+                // array_push($allTransactions, $tran);
+            }
+            $data['transactions'] = $allTransactions;
+            // return $data;
+            return view('admin.milling.indexajax', $data);
+        } elseif ($date == 'lastmonth') {
+
+            $date = Carbon::now();
+
+            $lastMonth =  $date->subMonth()->format('m');
+            $year = $date->year;
+
+            $transactions = collect();
+            $batches = BatchNumber::pluck('batch_number');
+            foreach ($batches as $batch) {
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->with('details')->latest()->first();
+                if ($transaction != null) {
+
+                    $transactions->push($transaction);
+                }
+            }
+            // return $transactions;
+            $data = array();
+            $allTransactions = array();
+            // $transactions = Transaction::where('is_parent', 0)
+
+            //     ->whereHas('log', function ($q) {
+            //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+            //     })->whereHas('transactionDetail', function ($q) {
+            //         $q->where('container_status', 0);
+            //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+            //         $query->where('container_status', 0);
+            //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+            // return $transactions;
+            foreach ($transactions as $key => $tran) {
+                // if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                // array_push($allTransactions, $tran);
+                array_push($allTransactions, $transaction);
+                // }
+                // array_push($allTransactions, $tran);
+            }
+            $data['transactions'] = $allTransactions;
+            // return $data;
+            return view('admin.milling.indexajax', $data);
+        } elseif ($date == 'currentyear') {
+
+            $date = Carbon::now();
+
+
+            $year = $date->year;
+
+            // $farmers = Farmer::whereYear('created_at', $year)->get();
+
+            $transactions = collect();
+            $batches = BatchNumber::pluck('batch_number');
+            foreach ($batches as $batch) {
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereYear('created_at', $year)->with('details')->latest()->first();
+                if ($transaction != null) {
+
+                    $transactions->push($transaction);
+                }
+            }
+            // return $transactions;
+            $data = array();
+            $allTransactions = array();
+            // $transactions = Transaction::where('is_parent', 0)
+
+            //     ->whereHas('log', function ($q) {
+            //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+            //     })->whereHas('transactionDetail', function ($q) {
+            //         $q->where('container_status', 0);
+            //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+            //         $query->where('container_status', 0);
+            //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+            // return $transactions;
+            foreach ($transactions as $key => $tran) {
+                // if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                // array_push($allTransactions, $tran);
+                array_push($allTransactions, $transaction);
+                // }
+                // array_push($allTransactions, $tran);
+            }
+            $data['transactions'] = $allTransactions;
+            // return $data;
+            return view('admin.milling.indexajax', $data);
+        } elseif ($date == 'weekToDate') {
+
+            $now = Carbon::now();
+            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
+
+
+
+            $transactions = collect();
+            $batches = BatchNumber::pluck('batch_number');
+            foreach ($batches as $batch) {
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereBetween('created_at', [$start, $end])->with('details')->latest()->first();
+                if ($transaction != null) {
+
+                    $transactions->push($transaction);
+                }
+            }
+            // return $transactions;
+            $data = array();
+            $allTransactions = array();
+            // $transactions = Transaction::where('is_parent', 0)
+
+            //     ->whereHas('log', function ($q) {
+            //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+            //     })->whereHas('transactionDetail', function ($q) {
+            //         $q->where('container_status', 0);
+            //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+            //         $query->where('container_status', 0);
+            //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+            // return $transactions;
+            foreach ($transactions as $key => $tran) {
+                // if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                // array_push($allTransactions, $tran);
+                array_push($allTransactions, $transaction);
+                // }
+                // array_push($allTransactions, $tran);
+            }
+            $data['transactions'] = $allTransactions;
+            // return $data;
+            return view('admin.milling.indexajax', $data);
+        } elseif ($date == 'monthToDate') {
+
+            $now = Carbon::now();
+            $date = Carbon::tomorrow()->toDateString();
+            $start = $now->firstOfMonth();
+
+
+
+            $transactions = collect();
+            $batches = BatchNumber::pluck('batch_number');
+            foreach ($batches as $batch) {
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereBetween('created_at', [$start, $date])->with('details')->latest()->first();
+                if ($transaction != null) {
+
+                    $transactions->push($transaction);
+                }
+            }
+            // return $transactions;
+            $data = array();
+            $allTransactions = array();
+            // $transactions = Transaction::where('is_parent', 0)
+
+            //     ->whereHas('log', function ($q) {
+            //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+            //     })->whereHas('transactionDetail', function ($q) {
+            //         $q->where('container_status', 0);
+            //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+            //         $query->where('container_status', 0);
+            //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+            // return $transactions;
+            foreach ($transactions as $key => $tran) {
+                // if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                // array_push($allTransactions, $tran);
+                array_push($allTransactions, $transaction);
+                // }
+                // array_push($allTransactions, $tran);
+            }
+            $data['transactions'] = $allTransactions;
+            // return $data;
+            return view('admin.milling.indexajax', $data);
+        } elseif ($date == 'yearToDate') {
+
+            $now = Carbon::now();
+            $date = Carbon::tomorrow()->toDateString();
+            $start = $now->startOfYear();
+
+
+            $transactions = collect();
+            $batches = BatchNumber::pluck('batch_number');
+            foreach ($batches as $batch) {
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereBetween('created_at', [$start, $date])->with('details')->latest()->first();
+                if ($transaction != null) {
+
+                    $transactions->push($transaction);
+                }
+            }
+            // return $transactions;
+            $data = array();
+            $allTransactions = array();
+            // $transactions = Transaction::where('is_parent', 0)
+
+            //     ->whereHas('log', function ($q) {
+            //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+            //     })->whereHas('transactionDetail', function ($q) {
+            //         $q->where('container_status', 0);
+            //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+            //         $query->where('container_status', 0);
+            //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+            // return $transactions;
+            foreach ($transactions as $key => $tran) {
+                // if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                // array_push($allTransactions, $tran);
+                array_push($allTransactions, $transaction);
+                // }
+                // array_push($allTransactions, $tran);
+            }
+            $data['transactions'] = $allTransactions;
+            // return $data;
+            return view('admin.milling.indexajax', $data);
         }
     }
 }

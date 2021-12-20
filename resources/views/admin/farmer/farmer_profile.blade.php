@@ -25,7 +25,6 @@
             background-color: transparent;
             text-decoration: none;
             font-size: 15px;
-
         }
 
         .margin-left {
@@ -34,11 +33,24 @@
 
         #farmerTable {
             border-collapse: separate;
-            border-spacing: 3px;
+            border-spacing: 0px;
         }
 
         #farmerTable tr td {
             padding: unset !important;
+            padding: 0 20px !important;
+        }
+
+        #farmerTable tr td:first-child {
+            border-right: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        #farmerTable tr:first-child td {
+            padding-top: 1rem !important;
+        }
+
+        #farmerTable tr:last-child td {
+            padding-bottom: 1rem !important;
         }
 
         .txt-size {
@@ -52,6 +64,11 @@
         #reciepts,
         #iddocuments {
             cursor: pointer;
+        }
+
+        #idimage:hover {
+            width: 700px !important;
+            height: 500px !important;
         }
 
     </style>
@@ -78,7 +95,14 @@
                 });
             });
             $('#today').on('click', function() {
-
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -93,7 +117,14 @@
                 });
             });
             $('#yesterday').on('click', function() {
-
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -108,7 +139,14 @@
                 });
             });
             $('#weekToDate').on('click', function() {
-
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -123,7 +161,14 @@
                 });
             });
             $('#monthToDate').on('click', function() {
-
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -138,7 +183,14 @@
                 });
             });
             $('#lastmonth').on('click', function() {
-
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -153,7 +205,14 @@
                 });
             });
             $('#yearToDate').on('click', function() {
-
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -168,7 +227,14 @@
                 });
             });
             $('#currentyear').on('click', function() {
-
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -183,7 +249,14 @@
                 });
             });
             $('#lastyear').on('click', function() {
-
+                $('.blacklink .hover').css({
+                    'font-weight': 'normal',
+                    'text-decoration': 'none'
+                });
+                $(this).css({
+                    'font-weight': 'bold',
+                    'text-decoration': 'underline'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_by_date_profile/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -198,6 +271,12 @@
                 });
             });
             $('#reciepts').on('click', function() {
+                $('.blacklink .hover-2').css({
+                    'border-bottom': '0'
+                });
+                $(this).css({
+                    'border-bottom': '1px solid'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_invoice/invoices/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -208,6 +287,13 @@
                 });
             });
             $('#iddocuments').on('click', function() {
+                $('.blacklink .hover-2').css({
+                    'border-bottom': '0'
+
+                });
+                $(this).css({
+                    'border-bottom': '1px solid'
+                });
                 $.ajax({
                     url: "{{ url('admin/farmer_id_documents/' . $farmer->farmer_id) }}",
                     type: "GET",
@@ -233,13 +319,12 @@
     <div class="content-wrapper">
 
         <!-- Content Header (Page header) -->
-        <section class="content-header">
+        <section class="content-header mx-lg-5">
             <div class="container-fluid">
                 <div class="row mb-2">
 
-                    <div class="col-sm-6">
-                        <h1>Farmer Profile
-
+                    <div class="col-sm-6 pl-0">
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Farmer Profile
                         </h1>
                     </div>
 
@@ -261,20 +346,21 @@
                 </div>
             @endif
 
-            <div class="row  margin-left anchor">
+            <div class="row anchor  btn-color-darkRed add-button justify-content-end">
                 <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">EDIT
                         INFORMATION</a></span> &nbsp |
                 <span class="ml-2"> <a href="#"> ADD CROPSTER REPORT</a></span> &nbsp |
                 <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}"> OVERRIDE
                         PRICE
                     </a></span> &nbsp |
-                <span class="ml-2"> <a href="#">OVERRIDE REWARD</a></span> &nbsp |
+                <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">OVERRIDE
+                        REWARD</a></span> &nbsp |
                 <span class="ml-2"> <a href="#">ADD PREMIUM</a></span>&nbsp |
                 <span class="ml-2"> <a href="#">SETTLE LOAN</a></span>
             </div>
-            <hr>
+            <hr class="mb-0">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 my-3">
                     @if ($farmer->picture_id == null)
                         <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
                                 style="width: 300px ; height:300px; border-radius:50%; border: 1px solid gray;" alt=""></td>
@@ -287,84 +373,69 @@
 
                 </div>
                 <div class="col-md-8">
-                    <table class="table table-borderless" id="farmerTable">
+                    <table class="table table-borderless w-auto village_profile_table mb-0" id="farmerTable">
 
                         <tbody>
                             <tr>
                                 <td colspan=""> <strong>Name</strong> </td>
                                 <td colspan="4">{{ $farmer->farmer_name }}</td>
-                                <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>IDENTIFICATION NUMBER</strong></td>
                                 <td colspan="4">{{ $farmer->farmer_nicn }}</td>
-                                <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>CODE </strong></td>
                                 <td colspan="4">{{ $farmer->farmer_code }}</td>
-                                <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>GOVERNORATE</strong></td>
                                 <td colspan="4">{{ $farmer->governerate_title }}</td>
-                                <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>REGION</strong></td>
                                 <td colspan="4">{{ $farmer->region_title }}</td>
-                                <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>VILLAGE</strong></td>
                                 <td colspan="4">{{ $farmer->village_title }}</td>
-                                <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>ALTITUDE</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="4">{{ $farmer->altitude }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>HOUSE HOLD SIZE</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="4">{{ $farmer->house_hold_size }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>FARM SIZE</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="4">{{ $farmer->farm_size }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>NO OF TREES</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="4">{{ $farmer->no_of_trees }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>STARTED WORKING WITH QIMA</strong></td>
                                 <td colspan="4">{{ $farmer->created_at->toDateString() }}</td>
-                                <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>FAMER INFORMATION</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="4">{{ $farmer->farmer_info }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>CUPPING SCORE</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="4">{{ $farmer->cupping_score }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>CUP PROFILE</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="4">{{ $farmer->cup_profile }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>TEL</strong>
                                 </td>
-                                <td colspan="8">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="8">{{ $farmer->ph_no }}</td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>PRICE PER KG</strong>
@@ -377,35 +448,33 @@
                                     <td colspan="4">{{ number_format($farmer->price) }}</td>
                                 @endif
 
-                                <td colspan="4"></td>
                             </tr>
                             <tr>
                                 <td colspan=""><strong>REWARD PER KG</strong></td>
-                                <td colspan="4">pending</td>
-                                <td colspan="4"></td>
+                                <td colspan="4">{{ $farmer->reward }}</td>
                             </tr>
 
                         </tbody>
                     </table>
                 </div>
             </div>
-            <hr>
-
-            <div class="row ml-2">
+            <hr class="ml-md-2 mt-0">
+            <div class="row ml-2 text-uppercase mb-2">
                 <strong>
                     <b>Date Filter</b>
                 </strong>
             </div>
             <div class="row ml-2">
                 <form action="" method="POST" id="data-form">
-                    <label for="from">From</label>
-                    <input type="date" name="" id="from">
-                    <label for="To">To</label>
-                    <input type="date" name="" id="to">
+                    <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="from">From</label>
+                    <input class="mr-3" type="date" name="" id="from">
+                    <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1" for="To">To</label>
+                    <input class="mr-3" type="date" name="" id="to">
                 </form>
             </div>
-            <div class="row ml-2 blacklink ">
-                <span class="ml-2 hover" id="today"> TODAY</span> &nbsp |
+            <br>
+            <div class="row ml-2 blacklink letter-spacing-1">
+                <span class="hover" id="today"> TODAY</span> &nbsp |
                 <span class="ml-2 hover" id="yesterday"> YESTERDAY</span>
                 &nbsp |
                 <span class="ml-2 hover" id="weekToDate"> WEEK TO DATE
@@ -427,79 +496,108 @@
                 <span class="ml-2 hover" id="lastyear"> 2020
                     SEASON</a></span>
                 &nbsp |
-                <span class="ml-2"> <a href="{{ route('farmer.profile', $farmer) }}">ALL
+                <span class="ml-2 hover" style="font-weight: bold; text-decoration: underline;"> <a
+                        href="{{ route('farmer.profile', $farmer) }}">ALL
                         TIME</a></span>
             </div>
-            <hr>
-            <div class="row ml-2" id="transaction">
-                <div class="col-sm-1 color bg-danger">
-                    <h3 style="font-size: 16px !important">{{ $farmer->first_purchase }}</h3>
+            <hr class="ml-2">
+            <div class="ml-2 text-uppercase d-flex flex-wrap p-0 mb-3 data-tabs" id="transaction">
+                <div class="col-sm-1 color bg-darkPurple mr-1">
+                    <h4>{{ $farmer->first_purchase }}</h4>
                     <p>First Purchase</p>
                 </div>
-                <div class="col-sm-1 color bg-primary">
-                    <h3 style="font-size: 16px !important">{{ $farmer->last_purchase }}</h3>
+                <div class="col-sm-1 color bg-darkPurple mr-1">
+                    <h4>{{ $farmer->last_purchase }}</h4>
 
                     <p>Last Purchase</p>
                 </div>
-                <div class="col-sm-1 color bg-warning">
+                <div class="col-sm-1 color bg-Green mr-1">
                     @if ($farmer->price_per_kg == null)
-                        <h3 style="font-size: 16px !important">{{ number_format($farmer->price * $farmer->quantity) }}
-                        </h3>
+                        <h4>{{ number_format($farmer->price * $farmer->quantity) }}
+                        </h4>
                     @else
-                        <h3 style="font-size: 16px !important">
+                        <h4>
                             {{ number_format($farmer->price_per_kg * $farmer->quantity) }}
-                        </h3>
+                        </h4>
                     @endif
 
-                    <p>yer total coffee purchased </p>
-                </div>
-                <div class="col-sm-1 color bg-info">
-                    <h3 style="font-size: 16px !important">{{ $farmer->quantity }}</h3>
-
-                    <p>Quantity</p>
+                    <p>Yer Total Coffee Purchased </p>
                 </div>
 
-
+                <div class="col-sm-1 color bg-Green mr-1">
+                    <h4>-</h4>
+                    <p>YER SETTELED</p>
+                </div>
+                <div class="col-sm-1 color bg-Green mr-1">
+                    <h4>-</h4>
+                    <p>YER REWARD</p>
+                </div>
+                <div class="col-sm-1 color bg-Green mr-1">
+                    <h4>-</h4>
+                    <p>YER ADDITIONAL
+                        PREMIUM</p>
+                </div>
+                <div class="col-sm-1 color bg-darkRed mr-1">
+                    <h4>-</h4>
+                    <p>YER
+                        ACCOUNT
+                        PAYABLE</p>
+                </div>
             </div>
             <hr>
-            <div class="row ml-2 blacklink">
-
-                <span href="" class="ml-2" id="iddocuments">
-                    <p>ID DOCUMENTS &nbsp;|</p>
+            <div class="row ml-2 blacklink mb-2">
+                <span class="row ml-2 text-uppercase mb-2 hover-2" id="iddocuments">
+                    <strong>
+                        <b>ID DOCUMENTS</b>
+                    </strong>
                 </span>
-                <span class="ml-2" id="reciepts">
-                    <p>RECIEPTS &nbsp;|</p>
+                <span class="ml-3 font-weight-bold">|</span>
+                <span class="row ml-2 text-uppercase mb-2 hover-2" id="reciepts">
+                    <strong>
+                        <b>RECIEPTS</b>
+                    </strong>
                 </span>
-                <span href="#" class="ml-2">
-                    <p>LOANS &nbsp;|</p>
+                <span class="ml-3 font-weight-bold">|</span>
+                <span class="row ml-2 text-uppercase mb-2 hover-2" id="">
+                    <strong>
+                        <b>LOANS</b>
+                    </strong>
                 </span>
-                <span href="#" class="ml-2">
-                    <p>PREMIUMS &nbsp;</p>
+                <span class="ml-3 font-weight-bold">|</span>
+                <span class="row ml-2 text-uppercase mb-2 hover-2" id="">
+                    <strong>
+                        <b>PREMIUMS &nbsp;</b>
+                    </strong>
                 </span>
-
             </div>
             <div class="row ml-2" id="farmer-inovices">
+                <div class="col-sm-1 color p-0 ml-0">
 
-                @if ($farmer->cnicImage == null)
-                    <td> <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
-                            style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;" alt=""
-                            id="idimage"></td>
-                @else
-                    <td> <img class="famerimg"
-                            style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
+                    @if ($farmer->cnicImage == null)
+
+                        <img class="famerimg" src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                            style="max-width: 100%; height: 100%;" alt="">
+
+                    @else
+                        <img class="famerimg" style="width: 100%; height: 100%;"
                             src="{{ Storage::disk('s3')->url('images/' . $farmer->cnicImage) }}" alt="no img"
-                            id="idimage"></td>
-                @endif
-
-
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-8">
-                    <b>
-                        <p>TRANSACTIONS </p>
-                    </b>
+                            id="idimage">
+                    @endif
+                    <div id="myModal" class="modal">
+                        <span class="close">&times;</span>
+                        <img class="modal-content" id="img01">
+                        <div id="caption"></div>
+                    </div>
                 </div>
+            </div>
+            <hr class="ml-2">
+            <div class="row ml-2">
+                <div class="col-8 text-uppercase">
+                    <strong>
+                        <b>TRANSACTIONS</b>
+                    </strong>
+                </div>
+
                 <div class="col-2 mt-1">
                     <b>Current Season</b> : {{ $farmer->season_no }}
                 </div>
@@ -513,12 +611,14 @@
                     <div class="col-4">
                         <ol class=" breadcrumb  txt-size">
                             <li class="breadcrumb-item active">
-                                {{ $transaction->created_at }} /{{ $farmer->farmer_name }} /
+                                {{ $transaction->created_at }} /{{ $farmer->farmer_name }}
+                                /{{ App\User::find($transaction->created_by)->first_name . '' . App\User::find($transaction->created_by)->last_name }}/
                                 {{ $farmer->governerate_title }} /
                                 {{ $farmer->region_title }} /
                                 @php
                                     echo floatval($transaction->details->sum('container_weight'));
                                 @endphp
+                                /{{ number_format(round($transaction->details->sum('container_weight') * farmerPricePerKg($transaction->batch_number), 2)) }}
                             </li>
                         </ol>
                     </div>
@@ -527,7 +627,4 @@
             @endforeach
         </section>
     </div>
-
-
-
 @endsection

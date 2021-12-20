@@ -1,7 +1,11 @@
-@if ($farmer['cnicImage'] == null)
-    <td> <img class="famerimg" src="{{ asset('public/images/farmericon.png') }}"
-            style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;" alt="" id="idimage"></td>
-@else
-    <td> <img class="famerimg" style="width: 150px  ; height:150px ; border-radius:30%; border: 1px solid gray;"
-            src="{{ asset('storage/app/images/' . $farmer['cnicImage']) }}" alt="no img" id="idimage"></td>
-@endif
+<div class="col-sm-1 color p-0 ml-0">
+
+    @if ($farmer['cnicImage'] == null)
+
+        <img style="max-width: 100%; height: 100%;" class="famerimg"
+            src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}" alt="">
+    @else
+        <img class="famerimg" style="width: 100%; height: 100%;"
+            src="{{ Storage::disk('s3')->url('images/' . $farmer['cnicImage']) }}" alt="no img" id="idimage">
+    @endif
+</div>

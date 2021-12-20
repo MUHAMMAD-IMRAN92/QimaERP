@@ -4,6 +4,7 @@
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="mx-lg-5">
         <!-- Content Header (Page header) -->
         <div class="row">
             <div class="col-md-12">
@@ -19,7 +20,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Edit Farmer</h1>
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Edit Farmer</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -41,7 +42,7 @@
                         <div class="card card-primary">
 
                             <div class="card-header">
-                                <h3 class="card-title">Edit</h3>
+                                <h3 class="card-title text-uppercase letter-spacing-2">Edit</h3>
                                 <h3 class="card-title float-sm-right">{{ $farmer->farmer_code }}</h3>
                             </div>
                             <!-- /.card-header -->
@@ -50,7 +51,7 @@
                                 enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="farmer_id" value="{{ $farmer->farmer_id }}">
-                                <div class="card-body">
+                                <div class="card-body  text-uppercase letter-spacing-1">
                                     <div class="form-group">
 
                                         <input type="hidden" class="form-control"
@@ -89,8 +90,88 @@
                                         <label for="exampleInputPassword1">Price Per Kg </label>
                                         <input type="number" id="price_per_kg" class="form-control"
                                             value="{{ $farmer->price_per_kg }}" name="price_per_kg"
-                                            placeholder="Price Per Kg" @error('price_per_kg') is-invalid @enderror>
-                                        @error('farmer_nicn')
+                                            placeholder="Price Per Kg" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Tel</label>
+                                        <input type="text" id="ph" class="form-control" value="{{ $farmer->ph_no }}"
+                                            name="ph_no" placeholder="Tel No" @error('ph') is-invalid @enderror>
+                                        @error('ph')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Reward Per Kg </label>
+                                        <input type="number" id="reward" class="form-control"
+                                            value="{{ $farmer->reward }}" name="reward" placeholder="Price Per Kg"
+                                            @error('price_per_kg') is-invalid @enderror>
+                                        @error('price_per_kg')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Cupping Profile </label>
+                                        <input type="text" id="cup_prof" class="form-control"
+                                            value="{{ $farmer->cup_profile }}" name="cup_prof"
+                                            placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Cupping Score </label>
+                                        <input type="number" id="cup_score" class="form-control"
+                                            value="{{ $farmer->cupping_score }}" name="cup_score"
+                                            placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">House Hold Size </label>
+                                        <input type="number" id="cup_score" class="form-control"
+                                            value="{{ $farmer->house_hold_size }}" name="house_hold"
+                                            placeholder="Cupping Score" @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Farm Size</label>
+                                        <input type="number" id="cup_score" class="form-control"
+                                            value="{{ $farmer->farm_size }}" name="farm_size" placeholder="Farm Size"
+                                            @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">No Of Trees</label>
+                                        <input type="number" id="trees" class="form-control"
+                                            value=" {{ $farmer->no_of_trees }}" name="tree" placeholder="No Of Tree"
+                                            @error('') is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Altitude </label>
+                                        <input type="number" id="alt" class="form-control"
+                                            value="{{ $farmer->altitude }}" name="alt" placeholder="Altitude" @error('')
+                                            is-invalid @enderror>
+                                        @error('')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Farmer Information </label>
+                                        <textarea type="text" id="info" class="form-control" value="" name="info"
+                                            placeholder="Farmer Info" @error('') is-invalid
+                                            @enderror>{{ $farmer->farmer_info }}</textarea>
+                                        @error('')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -129,7 +210,7 @@
                                 <!-- /.card-body -->
 
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -181,7 +262,7 @@
                 </div>
 
             </div>
-            <!-- /.row -->
+        </div>   <!-- /.row -->
     </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->

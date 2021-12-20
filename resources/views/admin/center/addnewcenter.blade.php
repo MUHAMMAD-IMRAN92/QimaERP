@@ -8,12 +8,13 @@
 }</style>
      <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+    <div class="mx-lg-5">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Add Center</h1>
+            <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Add Center</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -35,7 +36,7 @@
             <div class="card card-primary">
 
               <div class="card-header">
-                <h3 class="card-title">Add</h3>
+                <h3 class="card-title text-uppercase letter-spacing-2">Add</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -54,7 +55,7 @@
                   </div>
               @endif --}}
                 {{ csrf_field() }}
-                <div class="card-body">
+                <div class="card-body col-md-6 text-uppercase letter-spacing-1">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Code</label>
                     <input type="text" id="center_code" class="form-control " id="exampleInputEmail1" name="center_code" placeholder="Enter Code" @error('center_code') is-invalid @enderror>
@@ -94,7 +95,7 @@
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn bg-green-btn text-uppercase letter-spacing-1">Submit</button>
                 </div>
               </form>
             </div>
@@ -108,6 +109,7 @@
          
         </div>
         <!-- /.row -->
+      </div>
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->

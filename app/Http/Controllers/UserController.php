@@ -8,8 +8,10 @@ use App\User;
 use App\Center;
 use App\ResetPassword;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB as FacadesDB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -79,15 +81,28 @@ class UserController extends Controller
             'email' => 'required|unique:users',
             'password' => 'required',
         ]);
-        // dd($request->all());
         $user = new User;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        if ($request->hasFile('profile_picture')) {
+            $file = $request->profile_picture;
+            $file_name = time() . '.' . $file->getClientOriginalExtension();
+            $path = $request->file('profile_picture')->storeAs('images', $file_name, 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $user->profile_image = $file_name;
+        }
+        if ($request->hasFile('idcard_picture')) {
+            $file = $request->profile_picture;
+            $file_name = time() . '.' . $file->getClientOriginalExtension();
+            $path = $request->file('idcard_picture')->storeAs('images', $file_name, 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $user->idcard_image = $file_name;
+        }
         // dd($user);
         $user->save();
-        DB::table('model_has_roles')->insert([
+        \DB::table('model_has_roles')->insert([
             'role_id' => $request->role_id,
             'model_id' => $user->user_id,
             'model_type' => 'App\User'
@@ -96,7 +111,7 @@ class UserController extends Controller
         if ($request->center_id) {
 
 
-            DB::table('center_users')->insert([
+            \DB::table('center_users')->insert([
                 'center_id' => $request->center_id,
                 'user_id' => $user->user_id,
                 'role_name' => $data->roles['0']->name,
@@ -114,14 +129,27 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->all());
         $updateuser = User::find($request->user_id);
         $updateuser->first_name = $request->first_name;
         $updateuser->last_name = $request->last_name;
         $updateuser->email = $request->email;
-        $updateuser->update();
 
-        DB::table('model_has_roles')->where('model_id', $request->user_id)->delete();
+        if ($request->hasFile('profile_picture')) {
+            $file = $request->profile_picture;
+            $file_name = time() . '.' . $file->getClientOriginalExtension();
+            $path = $request->file('profile_picture')->storeAs('images', $file_name, 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $updateuser->profile_image = $file_name;
+        }
+        if ($request->hasFile('idcard_picture')) {
+            $file = $request->profile_picture;
+            $file_name = time() . '.' . $file->getClientOriginalExtension();
+            $path = $request->file('idcard_picture')->storeAs('images', $file_name, 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $updateuser->idcard_image = $file_name;
+        }
+        $updateuser->update();
+        \DB::table('model_has_roles')->where('model_id', $request->user_id)->delete();
 
 
         $updateuser->assignRole($request->input('roles'));

@@ -1,7 +1,10 @@
 <?php
 
 use App\Lot;
+use App\Governerate;
+use App\Region;
 use App\Farmer;
+use App\Village;
 use Carbon\Carbon;
 use App\Transaction;
 use Illuminate\Support\Str;
@@ -314,5 +317,126 @@ function mixFarmes($id)
     } else {
         $id = $transaction->reference_id;
         mixFarmes($id);
+    }
+}
+
+function checkBatchNumber($farmerCode)
+{
+    // return $farmerCode;
+    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+
+    if ($farmer) {
+        $batchArr = explode('-', $farmerCode);
+        $lastnumber =  array_pop($batchArr);
+        $newNumber = $lastnumber + 1;
+        $newFarmerCode =  array_shift($batchArr) . '-' .  array_shift($batchArr) . '-' .  array_shift($batchArr) . '-' . $newNumber;
+        return   checkBatchNumber($newFarmerCode);
+    } else {
+
+        return $farmerCode;
+        exit;
+    }
+}
+function getGov($code)
+{
+    $govCode = Str::before($code, '-');
+    $governrate = Governerate::where('governerate_code', $govCode)->first();
+    if ($governrate) {
+        return $governrate->governerate_title;
+    }
+}
+function getRegion($code)
+{
+    $regCode = explode('-', $code)[0] . '-' . explode('-', $code)[1];
+    $region = Region::where('region_code', $regCode)->first();
+    if ($region) {
+        return $region->region_title;
+    }
+}
+function getVillage($code)
+{
+    $villageCode = explode('-', $code)[0] . '-' . explode('-', $code)[1] . '-' . explode('-', $code)[2];
+    $village = Village::where('village_code', $villageCode)->first();
+    if ($village) {
+        return $village->village_title;
+    }
+}
+function getFarmer($code)
+{
+    $farmerCode = explode('-', $code)[0] . '-' . explode('-', $code)[1] . '-' . explode('-', $code)[2] . '-' . explode('-', $code)[3];
+    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+    if ($farmer) {
+        return $farmer->farmer_name;
+    }
+}
+function farmerPricePerKg($code)
+{
+    $farmerCode = explode('-', $code)[0] . '-' . explode('-', $code)[1] . '-' . explode('-', $code)[2] . '-' . explode('-', $code)[3];
+    $farmer = Farmer::where('farmer_code', $farmerCode)->first();
+    if ($farmer) {
+        if ($farmer->price_per_kg != null) {
+            return $farmer->price_per_kg;
+        } else {
+            $villageCode = explode('-', $code)[0] . '-' . explode('-', $code)[1] . '-' . explode('-', $code)[2];
+            $village = Village::where('village_code', $villageCode)->first();
+            if ($village) {
+                return $village->price_per_kg;
+            }
+        }
+    }
+}
+function regDescrption($govName)
+{
+    $region = Region::where('region_title', $govName)->first();
+    return $region->description;
+}
+function govDescrption($regName)
+{
+
+    $gov = Governerate::where('governerate_title', $regName)->first();
+    return $gov->description;
+}
+function stagesOfSentTo($value)
+{
+    $sentTo = [
+        2 => 'Coffee Buyer',
+        3 => 'Center Manager',
+        4 => 'Processing Manager',
+        5 => 'Special Processing',
+        6 => 'pending in special Processing',
+        8 => 'Recieved By Special Processing',
+        7 => 'Special processing',
+        9 => 'Sent By Special Processing',
+        10 => 'On Drying Beds',
+        11 => 'Recieved By Coffee Drying',
+        12 => 'Dry Coffee',
+        13 => 'Sent For Approve Milling',
+        14 => 'Ready To Be Milled',
+        15 => 'Mill Operative',
+        17 => 'Mill Operative Received',
+        21 => 'Milled',
+        22 => 'sorting Pending',
+        23 => 'sorting Rec',
+        201 => 'sorting sent',
+        140 => 'Ready For Approve'
+    ];
+    $value = $sentTo[$value];
+    if ($value) {
+        return $value;
+    } else {
+        return  ' ';
+    }
+}
+function regionOfVillage($id)
+{
+    $village = Village::find($id);
+
+    $regionCode = Str::beforeLast($village->village_code, '-');
+    // dd($regionCode);
+    $region =  Region::where('region_code', $regionCode)->first();
+    if ($region) {
+        return $region->region_title;
+    } else {
+        return ' ';
     }
 }

@@ -114,7 +114,7 @@ class Farmer extends Model
     public function quntity()
     {
         $farmerCode = $this->farmer_code;
-        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode%")
+        $transactions = Transaction::with('details')->where('batch_number', 'LIKE', "$farmerCode-%")
             ->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')
             ->get();
         if ($transactions) {
@@ -159,5 +159,19 @@ class Farmer extends Model
         } else {
             return null;
         }
+    }
+    public function paidPriceFromInvoice()
+    {
+        $farmerCode = $this->farmer_code;
+        $paidPrice = 0;
+        $transactions = Transaction::where('sent_to', 2)->where('batch_number', 'LIKE',   '%' . $farmerCode . '-%')->get();
+        foreach ($transactions as $transaction) {
+            $transInvoices = TransactionInvoice::where('transaction_id', $transaction->transaction_id)->get();
+            foreach ($transInvoices as  $transInvoice) {
+                $paidPrice += $transInvoice->invoice_price;
+            }
+        }
+
+        return $paidPrice;
     }
 }

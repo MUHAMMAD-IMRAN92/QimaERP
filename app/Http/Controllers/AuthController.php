@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\API\UkWareHouse;
+use App\Order;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\VarDumper\Cloner\Data;
 
@@ -38,8 +39,8 @@ class AuthController extends Controller
     public function dashboard()
     {
 
-        $governorate = Governerate::all();
-        $villages = Village::all();
+        $governorate = Governerate::where('status', 1)->get();
+        $villages = Village::where('status', 1)->get();
         $regionWeight = collect();
         $farmerWeight = collect();
 
@@ -48,25 +49,60 @@ class AuthController extends Controller
         // $transactions = Transaction::where('batch_number', 'not like', '%BATCH%')->where('batch_number', 'not like', '%GR%')->where('batch_number', 'not like', '%SRG%')
         //     ->with(['details'])
         //     ->get();
-        $regions = Region::all();
+        $regions = Region::where('status', 1)->get();
         $regionName = [];
         $regionQuantity = [];
         $govName = [];
         $govQuantity = [];
+        $govQuantityRegion = collect();
+
         foreach ($governorate as $govern) {
             $govCode = $govern->governerate_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $farmerToBeCount = collect();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '-%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+
+                $farmer =  Farmer::where('status', 1)->where('farmer_code',   $farmerCode)->first();
+                if ($farmer) {
+
+                    if (!$farmerToBeCount->contains($farmer->farmer_code)) {
+                        $farmerToBeCount->push($farmer->farmer_code);
+                    }
+                }
             }
             array_push($govName, $govern->governerate_title);
             array_push($govQuantity, round($weight, 2));
+            $govFarmersCount = $farmerToBeCount->count();
+            $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode-%")->get();
+            $govRegionQty = collect();
+            foreach ($govRegion as $r) {
+                $regionCode = $r->region_code;
+                $regweight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '-%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+                    $regweight +=  $transaction->details->sum('container_weight');
+                }
+                if ($regweight > 0) {
+                    $govRegionQty->push([
+                        'regionTitle' => $r->region_title,
+                        'weight' =>  round($regweight, 2)
+                    ]);
+                }
+            }
+
+            $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
         }
+        // return $farmerToBeCount;
+        $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+        $govQuantityRegion = $govQuantityReg->take(5);
+
         foreach ($regions as $region) {
             $regionCode = $region->region_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $regionCode . '-%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
 
 
@@ -75,31 +111,39 @@ class AuthController extends Controller
             array_push($regionName, $region->region_title);
             array_push($regionQuantity, $weight);
             $regionWeight->push([
-                'regionId' => $region->region_id,
+                'region_title' => $region->region_title,
                 'weight' =>  round($weight, 2)
             ]);
         }
         $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
-        $regions = $regionsByWeight->take(5)->pluck('regionId');
-        $regions = Region::whereIn('region_id', $regions)->get();
+        $regions = $regionsByWeight->take(5);
+        // $regions = Region::whereIn('region_id', $regions)->get();
 
 
-        $farmers = Farmer::all();
+        $farmers = Farmer::where('status', 1)->get();
         foreach ($farmers as $farmer) {
             $farmerCode = $farmer->farmer_code;
             $weight = 0;
-            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $farmerCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $farmerCode . '-%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
             foreach ($transactions as $transaction) {
                 $weight +=  $transaction->details->sum('container_weight');
             }
             $farmerWeight->push([
-                'farmerId' => $farmer->farmer_id,
+                'farmer_name' => $farmer->farmer_name,
                 'weight' => round($weight, 2)
             ]);
         }
         $farmerByWeight = $farmerWeight->sortBy('weight')->reverse()->values();
-        $farmer = $farmerByWeight->take(5)->pluck('farmerId');
-        $farmers = Farmer::whereIn('farmer_id', $farmer)->get();
+        $farmers = $farmerByWeight->take(5);
+        // $farmers = collect();
+        // foreach ($farmer as $f) {
+        //     $farmer = Farmer::find($f);
+        //     if ($farmer) {
+        //         $farmers->push($farmer);
+        //     }
+        // }
+        // return $farmers;
+        // return  $farmers = Farmer::whereIn('farmer_id', $farmer)->get();
 
         // foreach ($transactions as $transaction) {
         //     $ids->push([
@@ -107,7 +151,7 @@ class AuthController extends Controller
         //         'weight' =>  $transaction->details->sum('container_weight')
         //     ]);
         // }
-        // $sorted = $ids->sortBy('weight');    
+        // $sorted = $ids->sortBy('weight');
         // $top =   array_reverse($sorted->values()->take(-20)->toArray());
         // return array_reverse($top);
         // foreach ($top as $t) {
@@ -131,7 +175,16 @@ class AuthController extends Controller
         $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get();
         $totalWeight = 0;
         $totalPrice = 0;
+        $farmerArray = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('farmer_code', $batch_number)->where('status', 1)->first();
+            if ($farmer) {
+                if (!$farmerArray->contains($farmer->farmer_code)) {
+                    $farmerArray->push($farmer->farmer_code);
+                }
+            }
+
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -200,7 +253,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('is_parent', 0)
             ->where('created_at', $today)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -213,7 +266,7 @@ class AuthController extends Controller
             ->where('is_parent', 0)
             ->where('created_at', $today)
 
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -226,7 +279,7 @@ class AuthController extends Controller
             ->where('created_at', $today)
             ->where('is_parent', 0)
 
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -238,7 +291,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 2)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -250,7 +303,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -262,7 +315,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -270,6 +323,45 @@ class AuthController extends Controller
             $weight += $transaction->details->sum('container_weight');
         }
         array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+
+        $yemenExport = TransactionDetail::whereHas('transaction', function ($q) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39);
+        })->sum('container_weight');
+
+        $yemenExportGraphDay = [];
+        $yemenExportGraphWeight = [];
+        $now = Carbon::now();
+        $yearMonth =  $now->year . '-' . $now->month;
+
+
+        for ($x = 01; $x <= 31; $x++) {
+            $order = Order::whereDate('created_at', "$yearMonth-$x")->where('status', 5)->with('details')->get();
+            if ($order->count() > 0) {
+                $weight =  $order->details->sum('weight');
+            } else {
+                $weight = 0;
+            }
+            array_push($yemenExportGraphDay, $x);
+            array_push($yemenExportGraphWeight,  $weight);
+        }
+        $buyerArray = collect();
+        $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->get()->groupBy('created_by');
+
+        foreach ($buyerTransactions  as $key => $transactions) {
+            $weight = 0;
+            foreach ($transactions  as  $transaction) {
+                $weight +=   $transaction->details->sum('container_weight');
+            }
+            $buyer = User::find($key);
+            if ($buyer) {
+                $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+            }
+            $buyerArray->push(['id' => $buyer->user_id, 'name' => $buyerName, 'weight' => round($weight, 2)]);
+        }
+        $sorted =   $buyerArray->sortBy('weight');
+        $topBuyer = $sorted->reverse()->values()->take(5);
+        // return $govFarmersCount;
         return view('dashboard', [
             'governorate' => $governorate,
             'farmers' => $farmers->take(5),
@@ -285,6 +377,12 @@ class AuthController extends Controller
             'govQuantity' => $govQuantity,
             'stock' => $stocks,
             'nonspecialstock' => $nonspecialstocks,
+            'govQuantityRegion' => $govQuantityRegion,
+            'readyForExport' => $yemenExport,
+            'yemenSalesDay' => $yemenExportGraphDay,
+            'yemenSalesCoffee' => $yemenExportGraphWeight,
+            'topBuyer' => $topBuyer,
+            'farmerCount' => $farmerArray->count(),
         ]);
     }
     public function dashboardByDate(Request $request)
@@ -297,25 +395,33 @@ class AuthController extends Controller
 
         $totalWeight = 0;
         $totalPrice = 0;
+        $farmerArray = collect();
         foreach ($transactions as $transaction) {
+            $batch_number = Str::beforeLast($transaction->batch_number, '-');
+            $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
+            if ($farmer) {
+                if (!$farmerArray->contains($farmer->farmer_code)) {
+                    $farmerArray->push($farmer->farmer_code);
+                }
+            }
             $weight = $transaction->details->sum('container_weight');
             $price = 0;
             $farmer_code = Str::beforeLast($transaction->batch_number, '-');
 
-            $farmerPrice = Farmer::where('farmer_code', $farmer_code)->first();
+            $farmerPrice = Farmer::where('status', 1)->where('farmer_code', $farmer_code)->first();
             if ($farmerPrice) {
                 $farmerPrice = $farmerPrice->price_per_kg;
             }
             if (!$farmerPrice) {
                 $village_code = Str::beforeLast($farmer_code, '-');
                 if ($village_code) {
-                    $price = Village::where('village_code',  $village_code)->first();
+                    $price = Village::where('status', 1)->where('village_code',  $village_code)->first();
                     if ($price) {
                         $price = $price->price_per_kg;
                     }
                 }
             } else {
-                $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                $farmer = Farmer::where('status', 1)->where('farmer_code', $farmer_code)->first();
                 if ($farmer) {
                     $price =  $farmer->price_per_kg;
                 }
@@ -324,16 +430,224 @@ class AuthController extends Controller
             $totalPrice += $weight * $price;
             $totalWeight += $weight;
         }
+        $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($request) {
+            $q->where('is_parent', 0)
+                ->where('sent_to', 39)->whereBetween('created_at', [$request->from, $request->to]);
+        })->sum('container_weight');
+        $now = Carbon::now();
+        $currentYear = $now->year;
+        $createdAt = [];
 
+        $quantity = [];
+        $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        foreach ($monthsArr as $month) {
+
+            $monthName = date("F", mktime(0, 0, 0, $month, 10));
+            $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereBetween('created_at', [$request->from, $request->to])->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+
+            $weight = 0;
+            foreach ($transactions as $key => $trans) {
+                $weight += $trans->details->sum('container_weight');
+            }
+            array_push($createdAt, $monthName);
+            array_push($quantity, $weight);
+        }
+        $buyerArray = collect();
+        $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$request->from, $request->to])->get()->groupBy('created_by');
+
+        foreach ($buyerTransactions  as $key => $transactions) {
+            $weight = 0;
+            foreach ($transactions  as  $transaction) {
+                $weight +=   $transaction->details->sum('container_weight');
+            }
+            $buyer = User::find($key);
+            if ($buyer) {
+                $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+            }
+            $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+        }
+        $sorted =   $buyerArray->sortBy('weight');
+        $topBuyer = $sorted->reverse()->values()->take(5);
+
+        $governorate = Governerate::where('status', 1)->get();
+        $govName = [];
+        $govQuantity = [];
+        $govQuantityRegion = collect();
+        foreach ($governorate as $govern) {
+            $govCode = $govern->governerate_code;
+            $weight = 0;
+
+            $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            $farmerToBeCount = collect();
+            foreach ($transactions as $transaction) {
+                $weight +=  $transaction->details->sum('container_weight');
+                $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                $farmer =  Farmer::where('status', 1)->where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                if (!$farmerToBeCount->contains($farmer)) {
+                    $farmerToBeCount->push($farmer);
+                }
+            }
+            array_push($govName, $govern->governerate_title);
+            array_push($govQuantity, round($weight, 2));
+            $govFarmersCount = $farmerToBeCount->count();
+            $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
+            $govRegionQty = collect();
+            foreach ($govRegion as $r) {
+                $regionCode = $r->region_code;
+                $regweight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+                    $regweight +=  $transaction->details->sum('container_weight');
+                }
+                if ($regweight > 0) {
+                    $govRegionQty->push([
+                        'regionTitle' => $r->region_title,
+                        'weight' =>  round($regweight, 2)
+                    ]);
+                }
+            }
+            $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+        }
+        $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+        $govQuantityRegion = $govQuantityReg->take(5);
+
+        $yemenExportGraphDay = [];
+        $yemenExportGraphWeight = [];
+        $now = Carbon::now();
+        $yearMonth =  $now->year . '-' . $now->month;
+        $order = Order::whereBetween('created_at', [$request->from, $request->to])->where('status', 5)->with('details')->get();
+        foreach ($order as $or) {
+
+            $weight =  $order->details->sum('weight');
+
+            array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
+            array_push($yemenExportGraphWeight,  $weight);
+        }
+
+        $today = Carbon::today()->toDateString();
+        $stocks = [];
+        $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+            ->where('is_parent', 0)
+            ->where('created_at', $today)
+            // ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($YemenWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+        $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->where('is_parent', 0)
+            ->where('created_at', $today)
+
+            // ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($UKWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+        $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+            ->where('created_at', $today)
+            ->where('is_parent', 0)
+
+            // ->where('is_special', 1)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+        $nonspecialstocks = [];
+        $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+            ->where('created_at', $today)
+            ->where('is_parent', 0)
+            ->where('is_special', 02)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($YemenWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+        $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+            ->where('created_at', $today)
+            ->where('is_parent', 0)
+            ->where('is_special', 02)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($UKWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+        $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+            ->where('created_at', $today)
+            ->where('is_parent', 0)
+            ->where('is_special', 02)
+            ->with('meta')
+            ->get();
+        $weight = 0;
+        foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+            $weight += $transaction->details->sum('container_weight');
+        }
+        array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+        $regionWeight = collect();
+        $regionName = [];
+        $regionQuantity = [];
+        $regions = Region::all();
+        foreach ($regions as $region) {
+            $regionCode = $region->region_code;
+            $weight = 0;
+            $transactions = Transaction::whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+            foreach ($transactions as $transaction) {
+
+
+                $weight +=  $transaction->details->sum('container_weight');
+            }
+            array_push($regionName, $region->region_title);
+            array_push($regionQuantity, $weight);
+            if ($weight > 0) {
+
+                $regionWeight->push([
+                    'region_title' => $region->region_title,
+                    'weight' =>  round($weight, 2)
+                ]);
+            }
+        }
+        $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+        $regions = $regionsByWeight->take(5);
         return view('filter_transctions', [
             'governorates' =>   $governorates,
             'regions' => $regions,
             'villages' => $villages,
+            'regions' => $regions->take(5),
             'farmers' => $farmers,
             'total_coffee' => $totalWeight,
-            'totalPrice' => $totalPrice
+            'totalPrice' => $totalPrice,
+            'readyForExport' => $yemenExport,
+            'quantity' => $quantity,
+            'createdAt' => $createdAt,
+            'farmerCount' => $farmerArray->count(),
+            'topBuyer' => $topBuyer,
+            'govQuantityRegion' => $govQuantityRegion,
+            'readyForExport' => $yemenExport,
+            'yemenSalesDay' => $yemenExportGraphDay,
+            'yemenSalesCoffee' => $yemenExportGraphWeight,
+            'stock' => $stocks,
+            'govName' => $govName,
+            'nonspecialstock' => $nonspecialstocks,
+            'govQuantity' => $govQuantity,  'regionName' => $regionName,
+            'regionQuantity' => $regionQuantity,
 
-        ]);
+        ])->render();
     }
     public function dashboardByDays(Request $request)
     {
@@ -350,8 +664,16 @@ class AuthController extends Controller
 
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -379,15 +701,220 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereDate('created_at',  $date);
+            })->sum('container_weight');
+
+            $now = Carbon::now();
+            $currentYear = $now->year;
+            $createdAt = [];
+
+            $quantity = [];
+            // $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            // foreach ($monthsArr as $month) {
+
+            // $monthName = date("F", mktime(0, 0, 0, $month, 10));
+            $transactions = Transaction::where('sent_to', 2)->whereDate('created_at',  $date)->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                // $weight += $transaction->details->sum('container_weight');
+                array_push($createdAt, $transaction->created_at->format('H:i:s'));
+                array_push($quantity, $transaction->details->sum('container_weight'));
+            }
+            $buyerArray = collect();
+            $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at',  $date)->get()->groupBy('created_by');
+
+            foreach ($buyerTransactions  as $key => $transactions) {
+                $weight = 0;
+                foreach ($transactions  as  $transaction) {
+                    $weight +=   $transaction->details->sum('container_weight');
+                }
+                $buyer = User::find($key);
+                if ($buyer) {
+                    $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+                }
+                $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            }
+            $sorted =   $buyerArray->sortBy('weight');
+            $topBuyer = $sorted->reverse()->values()->take(5);
+
+            $governorate = Governerate::where('status', 1)->get();
+            $govName = [];
+            $govQuantity = [];
+            $govQuantityRegion = collect();
+            foreach ($governorate as $govern) {
+                $govCode = $govern->governerate_code;
+                $weight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereDate('created_at',  $date)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
+                foreach ($transactions as $transaction) {
+                    $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
+                }
+                array_push($govName, $govern->governerate_title);
+                array_push($govQuantity, round($weight, 2));
+                $govFarmersCount = $farmerToBeCount->count();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegionQty = collect();
+                foreach ($govRegion as $r) {
+                    $regionCode = $r->region_code;
+                    $regweight = 0;
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereDate('created_at',  $date)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    foreach ($transactions as $transaction) {
+                        $regweight +=  $transaction->details->sum('container_weight');
+                    }
+                    if ($regweight > 0) {
+                        $govRegionQty->push([
+                            'regionTitle' => $r->region_title,
+                            'weight' =>  round($regweight, 2)
+                        ]);
+                    }
+                }
+                $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+            }
+            $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+            $govQuantityRegion = $govQuantityReg->take(5);
+
+            $yemenExportGraphDay = [];
+            $yemenExportGraphWeight = [];
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $order = Order::whereDate('created_at',  $date)->where('status', 5)->with('details')->get();
+            foreach ($order as $or) {
+
+                $weight =  $order->details->sum('weight');
+
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
+                array_push($yemenExportGraphWeight,  $weight);
+            }
+
+            $today = Carbon::today()->toDateString();
+            $stocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $nonspecialstocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $regionWeight = collect();
+            $regionName = [];
+            $regionQuantity = [];
+            $regions = Region::where('status', 1)->get();
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereDate('created_at',  $date)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
 
 
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+                if ($weight > 0) {
+
+                    $regionWeight->push([
+                        'region_title' => $region->region_title,
+                        'weight' =>  round($weight, 2)
+                    ]);
+                }
+            }
+            $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+            $regions = $regionsByWeight->take(5);
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'regions' => $regions->take(5),
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
+                'topBuyer' => $topBuyer,
+                'govQuantityRegion' => $govQuantityRegion,
+                'readyForExport' => $yemenExport,
+                'yemenSalesDay' => $yemenExportGraphDay,
+                'yemenSalesCoffee' => $yemenExportGraphWeight,
+                'stock' => $stocks,
+                'govName' => $govName,
+                'nonspecialstock' => $nonspecialstocks,
+                'govQuantity' => $govQuantity,  'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ])->render();
         } elseif ($date == 'yesterday') {
@@ -401,9 +928,17 @@ class AuthController extends Controller
             $transactions  = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at', $yesterday)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -431,14 +966,219 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($yesterday) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereDate('created_at',  $yesterday);
+            })->sum('container_weight');
+            $now = Carbon::now();
+            $currentYear = $now->year;
+            $createdAt = [];
 
+            $quantity = [];
+            // $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            // foreach ($monthsArr as $month) {
+
+            // $monthName = date("F", mktime(0, 0, 0, $month, 10));
+            $transactions = Transaction::where('sent_to', 2)->whereDate('created_at',  $yesterday)->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+            $weight = 0;
+            foreach ($transactions as $transaction) {
+                // $weight += $transaction->details->sum('container_weight');
+                array_push($createdAt, $transaction->created_at->format('H:i:s'));
+                array_push($quantity, $transaction->details->sum('container_weight'));
+            }
+            $buyerArray = collect();
+            $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereDate('created_at',  $yesterday)->get()->groupBy('created_by');
+
+            foreach ($buyerTransactions  as $key => $transactions) {
+                $weight = 0;
+                foreach ($transactions  as  $transaction) {
+                    $weight +=   $transaction->details->sum('container_weight');
+                }
+                $buyer = User::find($key);
+                if ($buyer) {
+                    $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+                }
+                $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            }
+            $sorted =   $buyerArray->sortBy('weight');
+            $topBuyer = $sorted->reverse()->values()->take(5);
+
+            $governorate = Governerate::where('status', 1)->get();
+            $govName = [];
+            $govQuantity = [];
+            $govQuantityRegion = collect();
+            foreach ($governorate as $govern) {
+                $govCode = $govern->governerate_code;
+                $weight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '-%')->whereDate('created_at',  $yesterday)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
+                foreach ($transactions as $transaction) {
+                    $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
+                }
+                array_push($govName, $govern->governerate_title);
+                array_push($govQuantity, round($weight, 2));
+                $govFarmersCount = $farmerToBeCount->count();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegionQty = collect();
+                foreach ($govRegion as $r) {
+                    $regionCode = $r->region_code;
+                    $regweight = 0;
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '-%')->whereDate('created_at',  $yesterday)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    foreach ($transactions as $transaction) {
+                        $regweight +=  $transaction->details->sum('container_weight');
+                    }
+                    if ($regweight > 0) {
+                        $govRegionQty->push([
+                            'regionTitle' => $r->region_title,
+                            'weight' =>  round($regweight, 2)
+                        ]);
+                    }
+                }
+                $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+            }
+            $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+            $govQuantityRegion = $govQuantityReg->take(5);
+
+            $yemenExportGraphDay = [];
+            $yemenExportGraphWeight = [];
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $order = Order::whereDate('created_at',  $yesterday)->where('status', 5)->with('details')->get();
+            foreach ($order as $or) {
+
+                $weight =  $order->details->sum('weight');
+
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
+                array_push($yemenExportGraphWeight,  $weight);
+            }
+
+            $today = Carbon::today()->toDateString();
+            $stocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $nonspecialstocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $regionWeight = collect();
+            $regionName = [];
+            $regionQuantity = [];
+            $regions = Region::where('status', 1)->get();
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereDate('created_at',  $yesterday)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+                if ($weight > 0) {
+
+                    $regionWeight->push([
+                        'region_title' => $region->region_title,
+                        'weight' =>  round($weight, 2)
+                    ]);
+                }
+            }
+            $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+            $regions = $regionsByWeight->take(5);
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'regions' => $regions->take(5),
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
+                'topBuyer' => $topBuyer,
+                'govQuantityRegion' => $govQuantityRegion,
+                'readyForExport' => $yemenExport,
+                'yemenSalesDay' => $yemenExportGraphDay,
+                'yemenSalesCoffee' => $yemenExportGraphWeight,
+                'stock' => $stocks,
+                'govName' => $govName,
+                'nonspecialstock' => $nonspecialstocks,
+                'govQuantity' => $govQuantity,  'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ])->render();
         } elseif ($date == 'lastmonth') {
@@ -456,9 +1196,17 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('status', 1)->where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -470,13 +1218,13 @@ class AuthController extends Controller
                     if (!$farmerPrice) {
                         $village_code = Str::beforeLast($farmer_code, '-');
                         if ($village_code) {
-                            $price = Village::where('village_code',  $village_code)->first();
+                            $price = Village::where('status', 1)->where('village_code',  $village_code)->first();
                             if ($price) {
                                 $price = $price->price_per_kg;
                             }
                         }
                     } else {
-                        $farmer = Farmer::where('farmer_code', $farmer_code)->first();
+                        $farmer = Farmer::where('status', 1)->where('farmer_code', $farmer_code)->first();
                         if ($farmer) {
                             $price =  $farmer->price_per_kg;
                         }
@@ -486,14 +1234,216 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($lastMonth,  $year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year);
+            })->sum('container_weight');
+            $yearMonth =  $year . '-' . $lastMonth;
+            $createdAt = [];
+            $quantity = [];
+            for ($x = 01; $x <= 31; $x++) {
 
+                $transactions = Transaction::where('sent_to', 2)->whereDate('created_at', "$yearMonth-$x")->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                array_push($createdAt, $x);
+                array_push($quantity,  $weight);
+            }
+            $buyerArray = collect();
+            $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->get()->groupBy('created_by');
+
+            foreach ($buyerTransactions  as $key => $transactions) {
+                $weight = 0;
+                foreach ($transactions  as  $transaction) {
+                    $weight +=   $transaction->details->sum('container_weight');
+                }
+                $buyer = User::find($key);
+                if ($buyer) {
+                    $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+                }
+                $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            }
+            $sorted =   $buyerArray->sortBy('weight');
+            $topBuyer = $sorted->reverse()->values()->take(5);
+
+            $governorate = Governerate::where('status', 1)->get();
+            $govName = [];
+            $govQuantity = [];
+            $govQuantityRegion = collect();
+            foreach ($governorate as $govern) {
+                $govCode = $govern->governerate_code;
+                $weight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
+                foreach ($transactions as $transaction) {
+                    $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('status', 1)->where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
+                }
+                array_push($govName, $govern->governerate_title);
+                array_push($govQuantity, round($weight, 2));
+                $govFarmersCount = $farmerToBeCount->count();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegionQty = collect();
+                foreach ($govRegion as $r) {
+                    $regionCode = $r->region_code;
+                    $regweight = 0;
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    foreach ($transactions as $transaction) {
+                        $regweight +=  $transaction->details->sum('container_weight');
+                    }
+                    if ($regweight > 0) {
+                        $govRegionQty->push([
+                            'regionTitle' => $r->region_title,
+                            'weight' =>  round($regweight, 2)
+                        ]);
+                    }
+                }
+                $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+            }
+            $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+            $govQuantityRegion = $govQuantityReg->take(5);
+
+            $yemenExportGraphDay = [];
+            $yemenExportGraphWeight = [];
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $order = Order::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('status', 5)->with('details')->get();
+            foreach ($order as $or) {
+
+                $weight =  $order->details->sum('weight');
+
+                array_push($yemenExportGraphDay, $or->created_at);
+                array_push($yemenExportGraphWeight,  $weight);
+            }
+
+            $today = Carbon::today()->toDateString();
+            $stocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $nonspecialstocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $regionWeight = collect();
+            $regionName = [];
+            $regionQuantity = [];
+            $regions = Region::where('status', 1)->get();
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+                if ($weight > 0) {
+
+                    $regionWeight->push([
+                        'region_title' => $region->region_title,
+                        'weight' =>  round($weight, 2)
+                    ]);
+                }
+            }
+            $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+            $regions = $regionsByWeight->take(5);
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'regions' => $regions->take(5),
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
+                'topBuyer' => $topBuyer,
+                'govQuantityRegion' => $govQuantityRegion,
+                'readyForExport' => $yemenExport,
+                'yemenSalesDay' => $yemenExportGraphDay,
+                'yemenSalesCoffee' => $yemenExportGraphWeight,
+                'stock' => $stocks,
+                'govName' => $govName,
+                'nonspecialstock' => $nonspecialstocks,
+                'govQuantity' => $govQuantity,  'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ])->render();
         } elseif ($date == 'currentyear') {
@@ -512,9 +1462,17 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -542,14 +1500,221 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereYear('created_at', $year);
+            })->sum('container_weight');
+            $now = Carbon::now();
+            $currentYear = $now->year;
+            $createdAt = [];
 
+            $quantity = [];
+            $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            foreach ($monthsArr as $month) {
+
+                $monthName = date("F", mktime(0, 0, 0, $month, 10));
+                $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+
+                $weight = 0;
+                foreach ($transactions as $key => $trans) {
+                    $weight += $trans->details->sum('container_weight');
+                }
+                array_push($createdAt, $monthName);
+                array_push($quantity, $weight);
+            }
+            $buyerArray = collect();
+            $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->whereYear('created_at', $year)->get()->groupBy('created_by');
+
+            foreach ($buyerTransactions  as $key => $transactions) {
+                $weight = 0;
+                foreach ($transactions  as  $transaction) {
+                    $weight +=   $transaction->details->sum('container_weight');
+                }
+                $buyer = User::find($key);
+                if ($buyer) {
+                    $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+                }
+                $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            }
+            $sorted =   $buyerArray->sortBy('weight');
+            $topBuyer = $sorted->reverse()->values()->take(5);
+
+            $governorate = Governerate::where('status', 1)->get();
+            $govName = [];
+            $govQuantity = [];
+            $govQuantityRegion = collect();
+            foreach ($governorate as $govern) {
+                $govCode = $govern->governerate_code;
+                $weight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
+                foreach ($transactions as $transaction) {
+                    $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('status', 1)->where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
+                }
+                array_push($govName, $govern->governerate_title);
+                array_push($govQuantity, round($weight, 2));
+                $govFarmersCount = $farmerToBeCount->count();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegionQty = collect();
+                foreach ($govRegion as $r) {
+                    $regionCode = $r->region_code;
+                    $regweight = 0;
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    foreach ($transactions as $transaction) {
+                        $regweight +=  $transaction->details->sum('container_weight');
+                    }
+                    if ($regweight > 0) {
+                        $govRegionQty->push([
+                            'regionTitle' => $r->region_title,
+                            'weight' =>  round($regweight, 2)
+                        ]);
+                    }
+                }
+                $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+            }
+            $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+            $govQuantityRegion = $govQuantityReg->take(5);
+
+            $yemenExportGraphDay = [];
+            $yemenExportGraphWeight = [];
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $order = Order::whereYear('created_at', $year)->where('status', 5)->with('details')->get();
+            foreach ($order as $or) {
+
+                $weight =  $order->details->sum('weight');
+
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
+                array_push($yemenExportGraphWeight,  $weight);
+            }
+
+            $today = Carbon::today()->toDateString();
+            $stocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $nonspecialstocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $regionWeight = collect();
+            $regionName = [];
+            $regionQuantity = [];
+            $regions = Region::where('status', 1)->get();
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereYear('created_at', $year)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+                if ($weight > 0) {
+
+                    $regionWeight->push([
+                        'region_title' => $region->region_title,
+                        'weight' =>  round($weight, 2)
+                    ]);
+                }
+            }
+            $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+            $regions = $regionsByWeight->take(5);
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'regions' => $regions->take(5),
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
+                'topBuyer' => $topBuyer,
+                'govQuantityRegion' => $govQuantityRegion,
+                'readyForExport' => $yemenExport,
+                'yemenSalesDay' => $yemenExportGraphDay,
+                'yemenSalesCoffee' => $yemenExportGraphWeight,
+                'stock' => $stocks,
+                'govName' => $govName,
+                'nonspecialstock' => $nonspecialstocks,
+                'govQuantity' => $govQuantity,  'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ])->render();
         } elseif ($date == 'lastyear') {
@@ -568,9 +1733,17 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -598,21 +1771,228 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($year) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereYear('created_at', $year);
+            })->sum('container_weight');
+            // $now = Carbon::now();
+            // $currentYear = $now->year;
+            $createdAt = [];
 
+            $quantity = [];
+            $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            foreach ($monthsArr as $month) {
+
+                $monthName = date("F", mktime(0, 0, 0, $month, 10));
+                $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $year)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+
+                $weight = 0;
+                foreach ($transactions as $key => $trans) {
+                    $weight += $trans->details->sum('container_weight');
+                }
+                array_push($createdAt, $monthName);
+                array_push($quantity, $weight);
+            }
+            $buyerArray = collect();
+            $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereYear('created_at', $year)->whereYear('created_at', $year)->get()->groupBy('created_by');
+
+            foreach ($buyerTransactions  as $key => $transactions) {
+                $weight = 0;
+                foreach ($transactions  as  $transaction) {
+                    $weight +=   $transaction->details->sum('container_weight');
+                }
+                $buyer = User::find($key);
+                if ($buyer) {
+                    $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+                }
+                $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            }
+            $sorted =   $buyerArray->sortBy('weight');
+            $topBuyer = $sorted->reverse()->values()->take(5);
+
+            $governorate = Governerate::where('status', 1)->get();
+            $govName = [];
+            $govQuantity = [];
+            $govQuantityRegion = collect();
+            foreach ($governorate as $govern) {
+                $govCode = $govern->governerate_code;
+                $weight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
+                foreach ($transactions as $transaction) {
+                    $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
+                }
+                array_push($govName, $govern->governerate_title);
+                array_push($govQuantity, round($weight, 2));
+                $govFarmersCount = $farmerToBeCount->count();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegionQty = collect();
+                foreach ($govRegion as $r) {
+                    $regionCode = $r->region_code;
+                    $regweight = 0;
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereYear('created_at', $year)->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    foreach ($transactions as $transaction) {
+                        $regweight +=  $transaction->details->sum('container_weight');
+                    }
+                    if ($regweight > 0) {
+                        $govRegionQty->push([
+                            'regionTitle' => $r->region_title,
+                            'weight' =>  round($regweight, 2)
+                        ]);
+                    }
+                }
+                $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+            }
+            $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+            $govQuantityRegion = $govQuantityReg->take(5);
+
+            $yemenExportGraphDay = [];
+            $yemenExportGraphWeight = [];
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $order = Order::whereYear('created_at', $year)->where('status', 5)->with('details')->get();
+            foreach ($order as $or) {
+
+                $weight =  $order->details->sum('weight');
+
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
+                array_push($yemenExportGraphWeight,  $weight);
+            }
+
+            $today = Carbon::today()->toDateString();
+            $stocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $nonspecialstocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $regionWeight = collect();
+            $regionName = [];
+            $regionQuantity = [];
+            $regions = Region::where('status', 1)->get();
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereYear('created_at', $year)->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+                if ($weight > 0) {
+
+                    $regionWeight->push([
+                        'region_title' => $region->region_title,
+                        'weight' =>  round($weight, 2)
+                    ]);
+                }
+            }
+            $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+            $regions = $regionsByWeight->take(5);
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'regions' => $regions->take(5),
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
+                'topBuyer' => $topBuyer,
+                'govQuantityRegion' => $govQuantityRegion,
+                'readyForExport' => $yemenExport,
+                'yemenSalesDay' => $yemenExportGraphDay,
+                'yemenSalesCoffee' => $yemenExportGraphWeight,
+                'stock' => $stocks,
+                'govName' => $govName,
+                'nonspecialstock' => $nonspecialstocks,
+                'govQuantity' => $govQuantity,  'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ])->render();
         } elseif ($date == 'weekToDate') {
 
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
-            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
+            $start = $now->startOfWeek(Carbon::SATURDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::FRIDAY)->toDateString();
 
 
 
@@ -626,9 +2006,17 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $end])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -656,14 +2044,217 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $end) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $end]);
+            })->sum('container_weight');
+            $createdAt = [];
+            $quantity = [];
+            for ($i = 0; $i <= 6; $i++) {
+                $date = date('Y-m-d', strtotime("+$i day", strtotime($start)));
+                $transactions = Transaction::where('sent_to', 2)->whereDate('created_at',  $date)->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
 
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                array_push($createdAt, $date);
+                array_push($quantity,  $weight);
+            }
+
+            $buyerArray = collect();
+            $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $end])->get()->groupBy('created_by');
+
+            foreach ($buyerTransactions  as $key => $transactions) {
+                $weight = 0;
+                foreach ($transactions  as  $transaction) {
+                    $weight +=   $transaction->details->sum('container_weight');
+                }
+                $buyer = User::find($key);
+                if ($buyer) {
+                    $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+                }
+                $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            }
+            $sorted =   $buyerArray->sortBy('weight');
+            $topBuyer = $sorted->reverse()->values()->take(5);
+
+            $governorate = Governerate::where('status', 1)->get();
+            $govName = [];
+            $govQuantity = [];
+            $govQuantityRegion = collect();
+            foreach ($governorate as $govern) {
+                $govCode = $govern->governerate_code;
+                $weight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereBetween('created_at', [$start, $end])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
+                foreach ($transactions as $transaction) {
+                    $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
+                }
+                array_push($govName, $govern->governerate_title);
+                array_push($govQuantity, round($weight, 2));
+                $govFarmersCount = $farmerToBeCount->count();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegionQty = collect();
+                foreach ($govRegion as $r) {
+                    $regionCode = $r->region_code;
+                    $regweight = 0;
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereBetween('created_at', [$start, $end])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    foreach ($transactions as $transaction) {
+                        $regweight +=  $transaction->details->sum('container_weight');
+                    }
+                    if ($regweight > 0) {
+                        $govRegionQty->push([
+                            'regionTitle' => $r->region_title,
+                            'weight' =>  round($regweight, 2)
+                        ]);
+                    }
+                }
+                $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+            }
+            $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+            $govQuantityRegion = $govQuantityReg->take(5);
+
+            $yemenExportGraphDay = [];
+            $yemenExportGraphWeight = [];
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $order = Order::whereBetween('created_at', [$start, $end])->where('status', 5)->with('details')->get();
+            foreach ($order as $or) {
+
+                $weight =  $order->details->sum('weight');
+
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
+                array_push($yemenExportGraphWeight,  $weight);
+            }
+
+            $today = Carbon::today()->toDateString();
+            $stocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $nonspecialstocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $regionWeight = collect();
+            $regionName = [];
+            $regionQuantity = [];
+            $regions = Region::where('status', 1)->get();
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereBetween('created_at', [$start, $end])->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+                if ($weight > 0) {
+
+                    $regionWeight->push([
+                        'region_title' => $region->region_title,
+                        'weight' =>  round($weight, 2)
+                    ]);
+                }
+            }
+            $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+            $regions = $regionsByWeight->take(5);
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'regions' => $regions->take(5),
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
+                'topBuyer' => $topBuyer,
+                'govQuantityRegion' => $govQuantityRegion,
+                'readyForExport' => $yemenExport,
+                'yemenSalesDay' => $yemenExportGraphDay,
+                'yemenSalesCoffee' => $yemenExportGraphWeight,
+                'stock' => $stocks,
+                'govName' => $govName,
+                'nonspecialstock' => $nonspecialstocks,
+                'govQuantity' => $govQuantity,  'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ])->render();
         } elseif ($date == 'monthToDate') {
@@ -681,9 +2272,17 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -711,14 +2310,218 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
+            })->sum('container_weight');
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $createdAt = [];
+            $quantity = [];
+            for ($x = 01; $x <= 31; $x++) {
 
+                $transactions = Transaction::where('sent_to', 2)->whereDate('created_at', "$yearMonth-$x")->orderBy('created_at', 'asc')->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+                $weight = 0;
+                foreach ($transactions as $transaction) {
+                    $weight += $transaction->details->sum('container_weight');
+                }
+                array_push($createdAt, $x);
+                array_push($quantity,  $weight);
+            }
+
+            $buyerArray = collect();
+            $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get()->groupBy('created_by');
+
+            foreach ($buyerTransactions  as $key => $transactions) {
+                $weight = 0;
+                foreach ($transactions  as  $transaction) {
+                    $weight +=   $transaction->details->sum('container_weight');
+                }
+                $buyer = User::find($key);
+                if ($buyer) {
+                    $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+                }
+                $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            }
+            $sorted =   $buyerArray->sortBy('weight');
+            $topBuyer = $sorted->reverse()->values()->take(5);
+
+            $governorate = Governerate::where('status', 1)->get();
+            $govName = [];
+            $govQuantity = [];
+            $govQuantityRegion = collect();
+            foreach ($governorate as $govern) {
+                $govCode = $govern->governerate_code;
+                $weight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereBetween('created_at', [$start, $date])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
+                foreach ($transactions as $transaction) {
+                    $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
+                }
+                array_push($govName, $govern->governerate_title);
+                array_push($govQuantity, round($weight, 2));
+                $govFarmersCount = $farmerToBeCount->count();
+                $govRegion  = Region::where('status', 1)->where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegionQty = collect();
+                foreach ($govRegion as $r) {
+                    $regionCode = $r->region_code;
+                    $regweight = 0;
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereBetween('created_at', [$start, $date])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    foreach ($transactions as $transaction) {
+                        $regweight +=  $transaction->details->sum('container_weight');
+                    }
+                    if ($regweight > 0) {
+                        $govRegionQty->push([
+                            'regionTitle' => $r->region_title,
+                            'weight' =>  round($regweight, 2)
+                        ]);
+                    }
+                }
+                $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+            }
+            $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+            $govQuantityRegion = $govQuantityReg->take(5);
+
+            $yemenExportGraphDay = [];
+            $yemenExportGraphWeight = [];
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $order = Order::whereBetween('created_at', [$start, $date])->where('status', 5)->with('details')->get();
+            foreach ($order as $or) {
+
+                $weight =  $order->details->sum('weight');
+
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
+                array_push($yemenExportGraphWeight,  $weight);
+            }
+
+            $today = Carbon::today()->toDateString();
+            $stocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $nonspecialstocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $regionWeight = collect();
+            $regionName = [];
+            $regionQuantity = [];
+            $regions = Region::where('status', 1)->get();
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereBetween('created_at', [$start, $date])->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+                if ($weight > 0) {
+
+                    $regionWeight->push([
+                        'region_title' => $region->region_title,
+                        'weight' =>  round($weight, 2)
+                    ]);
+                }
+            }
+            $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+            $regions = $regionsByWeight->take(5);
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'regions' => $regions->take(5),
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
+                'topBuyer' => $topBuyer,
+                'govQuantityRegion' => $govQuantityRegion,
+                'readyForExport' => $yemenExport,
+                'yemenSalesDay' => $yemenExportGraphDay,
+                'yemenSalesCoffee' => $yemenExportGraphWeight,
+                'stock' => $stocks,
+                'govName' => $govName,
+                'nonspecialstock' => $nonspecialstocks,
+                'govQuantity' => $govQuantity,  'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ])->render();
         } elseif ($date == 'yearToDate') {
@@ -735,9 +2538,17 @@ class AuthController extends Controller
             $transactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get();
             $totalWeight = 0;
             $totalPrice = 0;
+            $farmerArray = collect();
             if ($transactions) {
 
                 foreach ($transactions as $transaction) {
+                    $batch_number = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer = Farmer::where('farmer_code', $batch_number)->first();
+                    if ($farmer) {
+                        if (!$farmerArray->contains($farmer->farmer_code)) {
+                            $farmerArray->push($farmer->farmer_code);
+                        }
+                    }
                     $weight = $transaction->details->sum('container_weight');
                     $price = 0;
                     $farmer_code = Str::beforeLast($transaction->batch_number, '-');
@@ -765,14 +2576,222 @@ class AuthController extends Controller
                     $totalWeight += $weight;
                 }
             }
+            $yemenExport = TransactionDetail::whereHas('transaction', function ($q) use ($start, $date) {
+                $q->where('is_parent', 0)
+                    ->where('sent_to', 39)->whereBetween('created_at', [$start, $date]);
+            })->sum('container_weight');
+            $now = Carbon::now();
+            $currentYear = $now->year;
+            $createdAt = [];
 
+            $quantity = [];
+            $monthsArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            foreach ($monthsArr as $month) {
+
+                $monthName = date("F", mktime(0, 0, 0, $month, 10));
+                $transactions = Transaction::where('sent_to', 2)->orderBy('created_at', 'asc')->whereYear('created_at', $currentYear)->whereMonth('created_at', $month)->where('batch_number', 'NOT LIKE', '%000%')->with('details')->get();
+
+                $weight = 0;
+                foreach ($transactions as $key => $trans) {
+                    $weight += $trans->details->sum('container_weight');
+                }
+                array_push($createdAt, $monthName);
+                array_push($quantity, $weight);
+            }
+
+            $buyerArray = collect();
+            $buyerTransactions = Transaction::with('details')->where('sent_to', 2)->where('batch_number', 'NOT LIKE', '%000%')->whereBetween('created_at', [$start, $date])->get()->groupBy('created_by');
+
+            foreach ($buyerTransactions  as $key => $transactions) {
+                $weight = 0;
+                foreach ($transactions  as  $transaction) {
+                    $weight +=   $transaction->details->sum('container_weight');
+                }
+                $buyer = User::find($key);
+                if ($buyer) {
+                    $buyerName = $buyer->first_name . ' ' . $buyer->last_name;
+                }
+                $buyerArray->push(['name' => $buyerName, 'weight' => round($weight, 2)]);
+            }
+            $sorted =   $buyerArray->sortBy('weight');
+            $topBuyer = $sorted->reverse()->values()->take(5);
+
+            $governorate = Governerate::where('status', 1)->get();
+            $govName = [];
+            $govQuantity = [];
+            $govQuantityRegion = collect();
+            foreach ($governorate as $govern) {
+                $govCode = $govern->governerate_code;
+                $weight = 0;
+                $transactions = Transaction::where('batch_number', 'LIKE', '%' .  $govCode . '%')->whereBetween('created_at', [$start, $date])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                $farmerToBeCount = collect();
+                foreach ($transactions as $transaction) {
+                    $weight +=  $transaction->details->sum('container_weight');
+                    $farmerCode = Str::beforeLast($transaction->batch_number, '-');
+                    $farmer =  Farmer::where('farmer_code', "LIKE",   "$farmerCode%")->first();
+                    if (!$farmerToBeCount->contains($farmer)) {
+                        $farmerToBeCount->push($farmer);
+                    }
+                }
+                array_push($govName, $govern->governerate_title);
+                array_push($govQuantity, round($weight, 2));
+                $govFarmersCount = $farmerToBeCount->count();
+                $govRegion  = Region::where('region_code', 'LIKE', "$govCode%")->get();
+                $govRegionQty = collect();
+                foreach ($govRegion as $r) {
+                    $regionCode = $r->region_code;
+                    $regweight = 0;
+                    $transactions = Transaction::where('batch_number', 'LIKE', $regionCode . '%')->whereBetween('created_at', [$start, $date])->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                    foreach ($transactions as $transaction) {
+                        $regweight +=  $transaction->details->sum('container_weight');
+                    }
+                    if ($regweight > 0) {
+                        $govRegionQty->push([
+                            'regionTitle' => $r->region_title,
+                            'weight' =>  round($regweight, 2)
+                        ]);
+                    }
+                }
+                $govQuantityRegion->push(['title' => $govern->governerate_title, 'weight' => $weight, 'farmerCount' => $govFarmersCount, 'region' => $govRegionQty]);
+            }
+            $govQuantityReg = $govQuantityRegion->sortBy('weight')->reverse()->values();
+            $govQuantityRegion = $govQuantityReg->take(5);
+
+            $yemenExportGraphDay = [];
+            $yemenExportGraphWeight = [];
+            $now = Carbon::now();
+            $yearMonth =  $now->year . '-' . $now->month;
+            $order = Order::whereBetween('created_at', [$start, $date])->where('status', 5)->with('details')->get();
+            foreach ($order as $or) {
+
+                $weight =  $order->details->sum('weight');
+
+                array_push($yemenExportGraphDay, $or->created_at->format('Y:m:d'));
+                array_push($yemenExportGraphWeight,  $weight);
+            }
+
+            $today = Carbon::today()->toDateString();
+            $stocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('is_parent', 0)
+                ->where('created_at', $today)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+
+                // ->where('is_special', 1)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($stocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $nonspecialstocks = [];
+            $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($YemenWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "Yemen", "today" => $weight, "end" => $weight]);
+
+            $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($UKWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "UK", "today" => $weight, "end" => $weight]);
+
+            $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
+                ->where('created_at', $today)
+                ->where('is_parent', 0)
+                ->where('is_special', 02)
+                ->with('meta')
+                ->get();
+            $weight = 0;
+            foreach ($ChinaWarehouseTransactions as $key => $transaction) {
+                $weight += $transaction->details->sum('container_weight');
+            }
+            array_push($nonspecialstocks, ["wareHouse" => "China", "today" => $weight, "end" => $weight]);
+            $regionWeight = collect();
+            $regionName = [];
+            $regionQuantity = [];
+            $regions = Region::where('status', 1)->get();
+            foreach ($regions as $region) {
+                $regionCode = $region->region_code;
+                $weight = 0;
+                $transactions = Transaction::whereBetween('created_at', [$start, $date])->where('batch_number', 'LIKE', '%' .  $regionCode . '%')->where('batch_number', 'NOT LIKE', '%000%')->where('sent_to', 2)->with('details')->get();
+                foreach ($transactions as $transaction) {
+
+
+                    $weight +=  $transaction->details->sum('container_weight');
+                }
+                array_push($regionName, $region->region_title);
+                array_push($regionQuantity, $weight);
+                if ($weight > 0) {
+
+                    $regionWeight->push([
+                        'region_title' => $region->region_title,
+                        'weight' =>  round($weight, 2)
+                    ]);
+                }
+            }
+            $regionsByWeight = $regionWeight->sortBy('weight')->reverse()->values();
+            $regions = $regionsByWeight->take(5);
             return view('filter_transctions', [
                 'governorates' =>   $governorates,
                 'regions' => $regions,
                 'villages' => $villages,
+                'regions' => $regions->take(5),
                 'farmers' => $farmers,
                 'total_coffee' => $totalWeight,
-                'totalPrice' => $totalPrice
+                'totalPrice' => $totalPrice,
+                'readyForExport' => $yemenExport,
+                'quantity' => $quantity,
+                'createdAt' => $createdAt,
+                'farmerCount' => $farmerArray->count(),
+                'topBuyer' => $topBuyer,
+                'govQuantityRegion' => $govQuantityRegion,
+                'readyForExport' => $yemenExport,
+                'yemenSalesDay' => $yemenExportGraphDay,
+                'yemenSalesCoffee' => $yemenExportGraphWeight,
+                'stock' => $stocks,
+                'govName' => $govName,
+                'nonspecialstock' => $nonspecialstocks,
+                'govQuantity' => $govQuantity,  'regionName' => $regionName,
+                'regionQuantity' => $regionQuantity,
 
             ])->render();
         }
@@ -805,7 +2824,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at',  $today)
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -815,7 +2834,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -826,7 +2845,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->where('is_parent', 0)
             ->where('created_at', $today)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -836,7 +2855,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -847,7 +2866,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -857,7 +2876,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 1)
+            // ->where('is_special', 1)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -880,7 +2899,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->where('created_at',  $today)
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -890,7 +2909,7 @@ class AuthController extends Controller
         $YemenWarehouseTransactions =  Transaction::where('sent_to', 12)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -901,7 +2920,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->where('is_parent', 0)
             ->where('created_at', $today)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -911,7 +2930,7 @@ class AuthController extends Controller
         $UKWarehouseTransactions =  Transaction::where('sent_to', 41)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;
@@ -922,7 +2941,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->where('created_at', $today)
             ->where('is_special', 0)
-            ->where('is_parent', 0)
+            ->where('is_parent', 02)
             ->with('meta')
             ->get();
         $todayweight = 0;
@@ -932,7 +2951,7 @@ class AuthController extends Controller
         $ChinaWarehouseTransactions =  Transaction::where('sent_to', 473)
             ->whereBetween('created_at', [$endDate, $today])
             ->where('is_parent', 0)
-            ->where('is_special', 0)
+            ->where('is_special', 02)
             ->with('meta')
             ->get();
         $weight = 0;

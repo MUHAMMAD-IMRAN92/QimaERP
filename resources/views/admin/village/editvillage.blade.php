@@ -3,6 +3,8 @@
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="mx-lg-5">
+
         <div class="row">
             <div class="col-md-12">
                 @if (Session::has('msg'))
@@ -15,10 +17,11 @@
         </div>
         <!-- Content Header (Page header) -->
         <section class="content-header">
+
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Edit Village</h1>
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading">Edit Village</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -40,12 +43,13 @@
                         <div class="card card-primary">
 
                             {{-- <div class="card-header">
-                                    <h3 class="card-title">Edit</h3>                    
+                                    <h3 class="card-title">Edit</h3>
                                     </div> --}}
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form role="form" method="POST" action="{{ URL::to('') }}/admin/updatevillage">
-                                {{-- @if ($errors->any())                    
+                            <form role="form" method="POST" action="{{ URL::to('') }}/admin/updatevillage"
+                                enctype="multipart/form-data">
+                                {{-- @if ($errors->any())
                                     <div class="alert alert-danger">
                                                                  <ul>
                                             @foreach ($errors->all() as $error)
@@ -61,7 +65,7 @@
                                 {{ csrf_field() }}
                                 <input type="hidden" name="village_id" value="{{ $village->village_id }}">
                                 <div class="row">
-                                    <div class="card-body col-md-6">
+                                    <div class="card-body col-md-6 text-uppercase letter-spacing-1">
                                         <div class="form-group">
 
                                             <input type="hidden" id="village_title" class="form-control" id="hiddenfield"
@@ -106,13 +110,66 @@
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Altitude </label>
+                                            <input type="number" id="altitude" class="form-control"
+                                                value="{{ $village->altitude }}" name="altitude" placeholder="Altitude"
+                                                @error('altitude') is-invalid @enderror>
+                                            @error('altitude')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Reward Per Kg </label>
+                                            <input type="number" id="reward" class="form-control" name="reward"
+                                                value="{{ $village->reward_per_kg }}" placeholder="Reward Per KG"
+                                                @error('reward') is-invalid @enderror>
+                                            @error('reward')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price_per_kg">Village Information </label>
+                                            <textarea type="text" id="description" class="form-control" value=""
+                                                name="description" placeholder="Village Information" @error('description')
+                                                is-invalid @enderror>{{ $village->description }} </textarea>
+                                            @error('description')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="">Profile Image </label>
+                                                    <br>
+                                                    <input type="file" id="" value="" name="village_image" placeholder=""
+                                                        @error('village_image') is-invalid @enderror>
+                                                    @error('village_image')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="">Attach Images : </label> You Can Select
+                                                    Multiple
+                                                    <br>
+                                                    <input type="file" id="" value="" name="images[]" multiple
+                                                        placeholder="" @error('images') is-invalid @enderror>
+
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="card-body col-md-6" style=" margin-top:1em !important;">
 
-                                        <caption>
-                                            <h4>Farmers</h4>
-                                        </caption>
-                                        <table style="width:100%; ">
+                                        <div class="text-uppercase mb-2">
+                                            <strong>
+                                                <b>Farmers</b>
+                                            </strong>
+                                        </div>
+                                        <table class="table table-bordered region-table-custom">
                                             <thead>
                                                 <th>Sr#</th>
                                                 <th>Farmer Name</th>
@@ -141,7 +198,7 @@
                                 <!-- /.card-body -->
 
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary text-uppercase letter-spacing-1">Submit</button>
                                 </div>
                             </form>
                         </div>
@@ -155,6 +212,7 @@
                 </div>
 
             </div>
+        </div>
             <!-- /.row -->
     </div><!-- /.container-fluid -->
     </section>

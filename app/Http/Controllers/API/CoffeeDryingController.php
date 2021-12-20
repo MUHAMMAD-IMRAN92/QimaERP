@@ -99,7 +99,7 @@ class CoffeeDryingController extends Controller
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
 
-
+        DB::beginTransaction();
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
 
@@ -110,6 +110,15 @@ class CoffeeDryingController extends Controller
                         $updateCoffees->is_in_process = $receivedTransaction->transaction->is_in_process;
                         $updateCoffees->local_updated_at = toSqlDT($receivedTransaction->transaction->local_updated_at);
                         $updateCoffees->update();
+                        MetaTransation::where('transaction_id', $receivedTransaction->transaction->transaction_id)->delete();
+                        $transactionMeta = $receivedTransaction->transactionMeta;
+                        foreach ($transactionMeta as $key => $transactionMe) {
+                            MetaTransation::create([
+                                'transaction_id' => $receivedTransaction->transaction->transaction_id,
+                                'key' => $transactionMe->key,
+                                'value' => $transactionMe->value,
+                            ]);
+                        }
                     }
                 } else {
 
@@ -368,7 +377,7 @@ class CoffeeDryingController extends Controller
                                     'reference_id' => $receivedTransaction->transaction->reference_id,
                                 ]);
 
-                                TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
+                                $transactionToBeUpdated =   TransactionDetail::where('transaction_id', $receivedTransId)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
                             }
 
                             $transactionMeta = $receivedTransaction->transactionMeta;
@@ -566,8 +575,9 @@ class CoffeeDryingController extends Controller
                     }
                 }
             }
+            DB::commit();
         } catch (Exception $e) {
-
+            DB::rollback();
             Log::channel('error')->error('Coffee Drying Exception', [
                 'message' => $e->getMessage(),
                 'exception' => $e
@@ -652,26 +662,26 @@ class CoffeeDryingController extends Controller
         foreach ($receivedMeta as $key => $transactionsInformation) {
 
             if ($transactionsInformation->transactionDetails) {
-                if ($transactionsInformation->transactionDetails->is_local == TRUE) {
-                    TransactionDetail::create([
-                        'transaction_id' => $transactionsInformation->transactionDetails->transaction_id,
-                        'container_number' => $transactionsInformation->transactionDetails->container_number,
-                        'created_by' => $userId,
-                        'is_local' => FALSE,
-                        'container_weight' => $transactionsInformation->transactionDetails->container_weight,
-                        'weight_unit' => 'kg',
-                        'center_id' => $transactionsInformation->transactionDetails->center_id,
-                        'reference_id' => $transactionsInformation->transactionDetails->reference_id,
-                    ]);
-                } else {
-                    $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)
-                        ->where('container_number', $transactionsInformation->transactionDetails->container_number)
-                        ->first();
+                // if ($transactionsInformation->transactionDetails->is_local == TRUE) {
+                //     TransactionDetail::create([
+                //         'transaction_id' => $transactionsInformation->transactionDetails->transaction_id,
+                //         'container_number' => $transactionsInformation->transactionDetails->container_number,
+                //         'created_by' => $userId,
+                //         'is_local' => FALSE,
+                //         'container_weight' => $transactionsInformation->transactionDetails->container_weight,
+                //         'weight_unit' => 'kg',
+                //         'center_id' => $transactionsInformation->transactionDetails->center_id,
+                //         'reference_id' => $transactionsInformation->transactionDetails->reference_id,
+                //     ]);
+                // } else {
+                $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)
+                    ->where('container_number', $transactionsInformation->transactionDetails->container_number)
+                    ->first();
 
-                    $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
-                    $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
-                    $alreadyExistTransactionDetail->save();
-                }
+                $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
+                $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
+                $alreadyExistTransactionDetail->save();
+                // }
                 if (!in_array($transactionsInformation->transactionDetails->transaction_id, $transationsIdArray)) {
                     array_push($transationsIdArray, $transactionsInformation->transactionDetails->transaction_id);
                 }
