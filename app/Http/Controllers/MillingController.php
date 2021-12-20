@@ -104,6 +104,7 @@ class MillingController extends Controller
 
     public function millingCoffee(Request $request)
     {
+        // return $request->all();
         $validator = Validator::make($request->all(), [
             'transaction_id' => "required|array|min:1",
         ], [
@@ -178,7 +179,7 @@ class MillingController extends Controller
                 'reference_id' => $refid,
                 'is_server_id' => 1,
                 'is_new' => 0,
-                'sent_to' => 14,
+                'sent_to' => 140,
                 'is_sent' => 1,
                 'session_no' => $serverbatch->session_no,
                 'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
@@ -246,10 +247,10 @@ class MillingController extends Controller
             $serverbatch->save();
             DB::commit();
             Session::flash('message', 'Milling coffee successfully.');
-            return redirect('admin/milling_coffee');
+            return redirect('admin/new_milling_coffee');
         } catch (\PDOException $e) {
             Session::flash('error', 'Something was wrong.');
-            return redirect('admin/milling_coffee');
+            return redirect('admin/new_milling_coffee');
         }
     }
     public function newmillingCoffee()
@@ -257,10 +258,25 @@ class MillingController extends Controller
         $transactions = collect();
         $batches = BatchNumber::pluck('batch_number');
         foreach ($batches as $batch) {
-            $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->with('details')->latest()->first();
-            if ($transaction != null) {
+            $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->with('details')->latest()
+                ->first();
+            if ($transaction) {
+                if ($transaction->sent_to == 13) {
+                    $newtransaction = Transaction::where('batch_number', $batch)->where('sent_to', 13)->where('is_parent', 0)->with('details')->get();
+                    if ($newtransaction) {
+                        foreach ($newtransaction as $t) {
+                            if ($t != null) {
 
-                $transactions->push($transaction);
+                                $transactions->push($t);
+                            }
+                        }
+                    }
+                } else {
+                    if ($transaction != null) {
+
+                        $transactions->push($transaction);
+                    }
+                }
             }
         }
         // return $transactions;
@@ -301,6 +317,7 @@ class MillingController extends Controller
     }
     public function newpost(Request $request)
     {
+        // return $request->all();
         $validator = Validator::make($request->all(), [
             'transaction_id' => "required|array|min:1",
         ], [
@@ -322,7 +339,7 @@ class MillingController extends Controller
                     'created_by' => Auth::user()->user_id,
                     'is_local' => FALSE,
                     'transaction_type' => 1,
-                    'local_code' => null,
+                    'local_code' =>  $transaction->local_code,
                     'is_special' => $transaction->is_special,
                     'transaction_status' => 'received',
                     'reference_id' => $refid,
@@ -333,6 +350,9 @@ class MillingController extends Controller
                     'session_no' => $transaction->session_no,
                     'local_created_at' => date("Y-m-d H:i:s", strtotime($transaction->local_created_at)),
                 ]);
+                // $transaction->update([
+                //     'is_parent' => $newtransaction->transaction_id,
+                // ]);
                 foreach ($transaction->details as $detail) {
                     TransactionDetail::create([
                         'transaction_id' => $newtransaction->transaction_id,
@@ -344,9 +364,13 @@ class MillingController extends Controller
                         'center_id' => 0,
                         'reference_id' => 0,
                     ]);
+
+                    $detail->update([
+                        'contrainer_status' => 1
+                    ]);
                 }
 
-                if (count($request->transaction_id) > 1) {
+                if (count($request->transaction_id) > 0) {
                     foreach ($request->transaction_id as $key => $transaction) {
                         $transaction  = Transaction::find($transaction);
                         $transaction->update([

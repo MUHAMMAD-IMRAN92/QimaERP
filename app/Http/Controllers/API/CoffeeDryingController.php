@@ -99,7 +99,7 @@ class CoffeeDryingController extends Controller
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
 
-
+        DB::beginTransaction();
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
 
@@ -575,8 +575,9 @@ class CoffeeDryingController extends Controller
                     }
                 }
             }
+            DB::commit();
         } catch (Exception $e) {
-
+            DB::rollback();
             Log::channel('error')->error('Coffee Drying Exception', [
                 'message' => $e->getMessage(),
                 'exception' => $e
@@ -673,13 +674,13 @@ class CoffeeDryingController extends Controller
                 //         'reference_id' => $transactionsInformation->transactionDetails->reference_id,
                 //     ]);
                 // } else {
-                    $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)
-                        ->where('container_number', $transactionsInformation->transactionDetails->container_number)
-                        ->first();
+                $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)
+                    ->where('container_number', $transactionsInformation->transactionDetails->container_number)
+                    ->first();
 
-                    $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
-                    $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
-                    $alreadyExistTransactionDetail->save();
+                $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
+                $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
+                $alreadyExistTransactionDetail->save();
                 // }
                 if (!in_array($transactionsInformation->transactionDetails->transaction_id, $transationsIdArray)) {
                     array_push($transationsIdArray, $transactionsInformation->transactionDetails->transaction_id);
