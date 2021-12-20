@@ -195,11 +195,14 @@
         $(document).ready(function() {
 
             $('#myTable').DataTable({
-                columnDefs: [
-                  { orderable: false, targets: [11,12]}
-                ],
-                order: [[1, 'asc']]
-              });
+                columnDefs: [{
+                    orderable: false,
+                    targets: [11, 12]
+                }],
+                order: [
+                    [1, 'asc']
+                ]
+            });
             $('#to').on('change', function() {
                 let from = $('#from').val();
                 let to = $('#to').val();
@@ -721,7 +724,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-
+                                                                        
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -730,14 +733,14 @@
                                                                         <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                             name="transaction_id[]"
                                                                             value="{{ $transaction['transaction']->transaction_id }}"
-                                                                            class="check_gov{{ $transaction['transaction']->transaction_id }}"
+                                                                            class="milling_check check_gov{{ $transaction['transaction']->transaction_id }}"
                                                                             onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
                                                                     @endif
 
                                                                 </td>
                                                                 <td>
                                                                     @php
-
+                                                                        
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -794,7 +797,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-
+                                                                        
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -810,7 +813,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-
+                                                                        
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -875,6 +878,51 @@
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
                 });
 
+            });
+
+            const slider = document.querySelector(".milling-form");
+            const preventClick = (e) => {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+            let isDown = false;
+            let isDragged = false;
+            let startX;
+            let scrollLeft;
+
+            slider.addEventListener("mousedown", e => {
+                isDown = true;
+                slider.classList.add("active");
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+            slider.addEventListener("mouseleave", () => {
+                isDown = false;
+                slider.classList.remove("active");
+            });
+            slider.addEventListener("mouseup", (e) => {
+                isDown = false;
+                const elements = document.querySelectorAll(".milling-table a");
+                if (isDragged) {
+                    for (let i = 0; i < elements.length; i++) {
+                        elements[i].addEventListener("click", preventClick);
+                    }
+                } else {
+                    for (let i = 0; i < elements.length; i++) {
+                        elements[i].removeEventListener("click", preventClick);
+                    }
+                }
+                slider.classList.remove("active");
+                isDragged = false;
+            });
+            slider.addEventListener("mousemove", e => {
+                if (!isDown) return;
+                isDragged = true;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = (x - startX) * 2;
+                slider.scrollLeft = scrollLeft - walk;
+                console.log(walk);
             });
         </script>
     @endsection

@@ -291,6 +291,7 @@
 }
 .milling-table th{
 border-top: 1px solid#343a40 !important;
+border-right: 1px solid #343a40 !important;
 }
 .milling-table th:last-child,.milling-table td:last-child{
 border-right: 0;
@@ -298,17 +299,38 @@ border-right: 0;
 .milling-table td{
     font-weight: normal;
 }
+.milling-table td:nth-last-child(2),
+.milling-table td:last-child {
+/* border: 0 !important; */
+position: relative;
+
+}
 .milling-table th:nth-last-child(2),.milling-table td:nth-last-child(2),
-.milling-table th:last-child,.milling-table td:last-child {
-border: 0 !important;
+.milling-table th:last-child,.milling-table td:last-child{
+    border: 0 !important;
+}
+
+.milling-table th:nth-last-child(2) button,.milling-table td:nth-last-child(2) button,
+.milling-table th:last-child button,.milling-table td:last-child button{
+    background-color: #5E9770 !important;
+color: #fff !important;
+width: max-content;
+padding: 10px 9px;
+}
+.milling-table th:nth-last-child(2) button:hover,.milling-table td:nth-last-child(2) button:hover,
+.milling-table th:last-child button:hover,.milling-table td:last-child button:hover{
+    background-color: #295D3A !important;
 }
 .milling-table{
     border: 1px solid#343a40 !important;
     border-bottom: 0 !important;
     border-top: 0 !important;
+    border-right: 0 !important;
+
 }
 .milling-form{
     overflow-x: scroll;
+    cursor: move;
 }
 .milling-link{
     color: #B23552 !important;
@@ -355,4 +377,12 @@ border: 0 !important;
 .bg-green-btn:hover{
     background-color: #295D3A;
     color: #fff;
+}
+.milling_check{
+    width: 30%;
+    height: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
