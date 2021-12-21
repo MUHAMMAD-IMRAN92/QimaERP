@@ -184,7 +184,7 @@ class MillingController extends Controller
                 'session_no' => $serverbatch->session_no,
                 'local_created_at' => date("Y-m-d H:i:s", strtotime($serverbatch->created_at)),
             ]);
-            if (count($request->transaction_id) > 1) {
+            if (count($request->transaction_id)  > 0) {
                 foreach ($request->transaction_id as $key => $transaction) {
                     $transaction  = Transaction::find($transaction);
                     $transaction->update([
@@ -261,8 +261,8 @@ class MillingController extends Controller
             $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->with('details')->latest()
                 ->first();
             if ($transaction) {
-                if ($transaction->sent_to == 13) {
-                    $newtransaction = Transaction::where('batch_number', $batch)->where('sent_to', 13)->where('is_parent', 0)->with('details')->get();
+                if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
+                    $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
                     if ($newtransaction) {
                         foreach ($newtransaction as $t) {
                             if ($t != null) {
