@@ -386,7 +386,7 @@ class CoffeeBuyer extends Controller
 
                         array_push($childTransactionArray, $newTransaction->transaction_id);
                         Log::info('Child invoice--->');
-                        Log::info($childBatch->transactions[0]->transactions_invoices);
+                        // Log::info($childBatch->transactions[0]->transactions_invoices);
                         if (isset($childBatch->transactions[0]->transactions_invoices) && $childBatch->transactions[0]->transactions_invoices) {
                             $transactionsInvoices = $childBatch->transactions[0]->transactions_invoices;
                             $i = 1;
