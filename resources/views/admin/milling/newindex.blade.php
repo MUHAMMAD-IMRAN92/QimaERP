@@ -195,14 +195,11 @@
         $(document).ready(function() {
 
             $('#myTable').DataTable({
-                columnDefs: [{
-                    orderable: false,
-                    targets: [11, 12]
-                }],
-                order: [
-                    [1, 'asc']
-                ]
-            });
+                columnDefs: [
+                  { orderable: false, targets: [11,12]}
+                ],
+                order: [[1, 'asc']]
+              });
             $('#to').on('change', function() {
                 let from = $('#from').val();
                 let to = $('#to').val();
@@ -724,7 +721,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-                                                                        
+
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -740,7 +737,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-                                                                        
+
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -797,7 +794,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-                                                                        
+
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -813,7 +810,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-                                                                        
+
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
