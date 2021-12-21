@@ -122,21 +122,22 @@
             order: [
                 [1, 'asc']
             ]
+
         });
 
     });
 
-<<<<<<< HEAD
-=======
     $(document).ready(function() {
-        $('#submitbtn').on('click', function() {
-            $('#submitbtn').hide();
-        });
-        $('#milling-th').on('click', function() {
-            $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
-        });
+    $('#submitbtn').on('click', function() {
+        $('#submitbtn').hide();
+    });
+    $('#milling-th').on('click', function() {
+        $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
+    });
 
->>>>>>> master
+
+    });
+
     });
 </script>
 <div class="col-md-12">
