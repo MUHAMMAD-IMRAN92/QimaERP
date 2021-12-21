@@ -245,7 +245,7 @@ class CoffeeBuyer extends Controller
         }
 
         $batches_numbers = json_decode(str_replace('&quot;', '"', $request->input('batch_number')));
-        \Log::info($request);
+        // \Log::info($request);
         // foreach($batches_numbers as $batch){
         //     return response()->json([
         //         'local_updated_at_raw' => $batch->batch->transactions[0]->transactions->local_updated_at,
@@ -385,6 +385,34 @@ class CoffeeBuyer extends Controller
                         array_push($childBatchNumberArray, $newBatch->batch_id);
 
                         array_push($childTransactionArray, $newTransaction->transaction_id);
+                        Log::info('Child invoice--->');
+                        // Log::info($childBatch->transactions[0]->transactions_invoices);
+                        if (isset($childBatch->transactions[0]->transactions_invoices) && $childBatch->transactions[0]->transactions_invoices) {
+                            $transactionsInvoices = $childBatch->transactions[0]->transactions_invoices;
+                            $i = 1;
+                            foreach ($transactionsInvoices as $key => $transactionsInvoice) {
+                                if ($transactionsInvoice->invoice_image) {
+                                    //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
+                                    $destinationPath =  'images/';
+                                    // $destinationPath = 'public/images';
+                                    $file = base64_decode($transactionsInvoice->invoice_image);
+                                    $file_name = time() . $i . getFileExtensionForBase64($file);
+                                    Storage::disk('s3')->put($destinationPath  . $file_name, $file);
+                                    // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
+
+                                    $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $file_name,
+                                    ]);
+                                    TransactionInvoice::create([
+                                        'transaction_id' => $newTransaction->transaction_id,
+                                        'created_by' => $transactionsInvoice->created_by,
+                                        'invoice_id' => $userProfileImage->file_id,
+                                        'invoice_price' =>  $transactionsInvoice->invoice_price,
+                                    ]);
+                                }
+                                $i++;
+                            }
+                        }
                     }
 
                     //::add parent batch
@@ -404,7 +432,7 @@ class CoffeeBuyer extends Controller
                         $newLastBID = ($lastBatchNumber->batch_id + 1);
                     }
                     array_pop($removeLocalId);
-                    Log::info(implode("-", $removeLocalId));
+                    // Log::info(implode("-", $removeLocalId));
                     $checkMixed = 0;
                     if ($removeLocalId[3] == '000') {
                         $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
