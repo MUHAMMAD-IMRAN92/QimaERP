@@ -114,8 +114,29 @@
 <script>
     $(document).ready(function() {
 
-        $('#myTable').DataTable();
+        $('#myTable').DataTable({
+            columnDefs: [{
+                orderable: false,
+                targets: [11, 12]
+            }],
+            order: [
+                [1, 'asc']
+            ]
+        });
 
+    });
+
+<<<<<<< HEAD
+=======
+    $(document).ready(function() {
+        $('#submitbtn').on('click', function() {
+            $('#submitbtn').hide();
+        });
+        $('#milling-th').on('click', function() {
+            $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
+        });
+
+>>>>>>> master
     });
 </script>
 <div class="col-md-12">
@@ -197,9 +218,10 @@
                                 @endforeach
                             </td>
                             <td>
-                                @foreach ($transaction['child_transactions'] as $childtran)
-                                    {{ $childtran->transactionDetail->sum('container_weight') }}
+                                @foreach ($transaction['transaction']->transactionDetail as $detail)
+                                    {{ $detail->container_number . ':' . $detail->container_weight }}
                                     <br>
+
                                 @endforeach
                             </td>
 
@@ -268,7 +290,11 @@
                                 {{ getVillage($transaction['transaction']->batch_number) }}
                             </td>
                             <td>
-                                {{ $transaction['transaction']->transactionDetail->sum('container_weight') }}
+                                @foreach ($transaction['transaction']->transactionDetail as $detail)
+                                    {{ $detail->container_number . ':' . $detail->container_weight }}
+                                    <br>
+
+                                @endforeach
                             </td>
                             <td>
                                 {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
