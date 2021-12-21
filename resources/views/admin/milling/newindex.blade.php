@@ -724,7 +724,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-                                                                        
+
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -740,7 +740,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-                                                                        
+
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -797,7 +797,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-                                                                        
+
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
@@ -813,7 +813,7 @@
                                                                 </td>
                                                                 <td>
                                                                     @php
-                                                                        
+
                                                                         $batchNumber = $transaction['transaction']->batch_number;
                                                                         $batchExplode = explode('-', $batchNumber);
                                                                         $gov = $batchExplode[0];
