@@ -405,6 +405,7 @@ class MillingController extends Controller
             $transactions = collect();
             $batches = BatchNumber::pluck('batch_number');
             foreach ($batches as $batch) {
+
                 $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereDate('created_at', $date)->with('details')->latest()->first();
                 if ($transaction) {
                     if ($transaction->sent_to == 13) {
