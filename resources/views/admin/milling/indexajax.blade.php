@@ -114,7 +114,15 @@
 <script>
     $(document).ready(function() {
 
-        $('#myTable').DataTable();
+        $('#myTable').DataTable({
+            columnDefs: [{
+                orderable: false,
+                targets: [11, 12]
+            }],
+            order: [
+                [1, 'asc']
+            ]
+        });
 
     });
 </script>
