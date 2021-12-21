@@ -114,11 +114,19 @@
 <script>
     $(document).ready(function() {
 
-        $('#myTable').DataTable();
-
+        $('#myTable').DataTable({
+            columnDefs: [{
+                orderable: false,
+                targets: [11, 12]
+            }],
+            order: [
+                [1, 'asc']
+            ]
         });
+
+    });
 </script>
-<div class="col-md-12" >
+<div class="col-md-12">
     @if ($errors->any())
         <div class="alert alert-danger">
 
@@ -128,11 +136,9 @@
 
         </div>
     @endif
-    <form class="milling-form" role="form" method="POST"
-        action="{{ URL::to('admin/milling_coffee') }}">
+    <form class="milling-form" role="form" method="POST" action="{{ URL::to('admin/milling_coffee') }}">
         {{ csrf_field() }}
-        <table
-            class="milling-table table table-borderless border-0 custom-table text-center"
+        <table class="milling-table table table-borderless border-0 custom-table text-center"
             style="border-collapse: separate;" id="myTable">
             <thead>
                 <tr>
@@ -147,11 +153,10 @@
                     <th>Quantity</th>
                     <th>Stage</th>
                     <th>Times</th>
-                    <th> <button class="milling-link" type="submit" id="submitbtn"
-                            class="btn btn-primary">Mix
+                    <th> <button class="milling-link" type="submit" id="submitbtn" class="btn btn-primary">Mix
                             Batches</button> </th>
-                    <th id='milling-th'><button class="milling-link" type="submit"
-                            id="submitbtn" class="btn btn-primary">Confirm
+                    <th id='milling-th'><button class="milling-link" type="submit" id="submitbtn"
+                            class="btn btn-primary">Confirm
                             Milling</button></th>
                 </tr>
             </thead>
@@ -200,9 +205,10 @@
                                 @endforeach
                             </td>
                             <td>
-                                @foreach ($transaction['child_transactions'] as $childtran)
-                                    {{ $childtran->transactionDetail->sum('container_weight') }}
+                                @foreach ($transaction['transaction']->transactionDetail as $detail)
+                                    {{ $detail->container_number . ':' . $detail->container_weight }}
                                     <br>
+
                                 @endforeach
                             </td>
 
@@ -224,8 +230,7 @@
                                     $gov = $batchExplode[0];
                                 @endphp
                                 @if ($transaction['transaction']->sent_to == 13)
-                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                        name="transaction_id[]"
+                                    <input type="checkbox" data-gov-rate="<?= $gov ?>" name="transaction_id[]"
                                         value="{{ $transaction['transaction']->transaction_id }}"
                                         class="check_gov{{ $transaction['transaction']->transaction_id }}"
                                         onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
@@ -240,8 +245,7 @@
                                     $gov = $batchExplode[0];
                                 @endphp
                                 @if ($transaction['transaction']->sent_to == 140)
-                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                        name="transaction_id[]"
+                                    <input type="checkbox" data-gov-rate="<?= $gov ?>" name="transaction_id[]"
                                         value="{{ $transaction['transaction']->transaction_id }}"
                                         class="check_gov{{ $transaction['transaction']->transaction_id }}"
                                         onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
@@ -273,7 +277,11 @@
                                 {{ getVillage($transaction['transaction']->batch_number) }}
                             </td>
                             <td>
-                                {{ $transaction['transaction']->transactionDetail->sum('container_weight') }}
+                                @foreach ($transaction['transaction']->transactionDetail as $detail)
+                                    {{ $detail->container_number . ':' . $detail->container_weight }}
+                                    <br>
+
+                                @endforeach
                             </td>
                             <td>
                                 {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
@@ -293,8 +301,7 @@
                                     $gov = $batchExplode[0];
                                 @endphp
                                 @if ($transaction['transaction']->sent_to == 13)
-                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                        name="transaction_id[]"
+                                    <input type="checkbox" data-gov-rate="<?= $gov ?>" name="transaction_id[]"
                                         value="{{ $transaction['transaction']->transaction_id }}"
                                         class="check_gov{{ $transaction['transaction']->transaction_id }}"
                                         onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
@@ -309,8 +316,7 @@
                                     $gov = $batchExplode[0];
                                 @endphp
                                 @if ($transaction['transaction']->sent_to == 140)
-                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                        name="transaction_id[]"
+                                    <input type="checkbox" data-gov-rate="<?= $gov ?>" name="transaction_id[]"
                                         value="{{ $transaction['transaction']->transaction_id }}"
                                         class="check_gov{{ $transaction['transaction']->transaction_id }}"
                                         onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
