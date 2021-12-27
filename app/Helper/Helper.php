@@ -414,6 +414,7 @@ function stagesOfSentTo($value)
         14 => 'Ready To Be Milled',
         15 => 'Mill Operative',
         17 => 'Mill Operative Received',
+        20 => 'Local Market',
         21 => 'Milled',
         22 => 'sorting Pending',
         23 => 'sorting Rec',
