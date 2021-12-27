@@ -302,7 +302,7 @@ class MillingController extends Controller
             if ($removeLocalId[3] == '000') {
                 $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
                 if ($FindParentTransactions) {
-                    $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get(); 
                 }
             }
             $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
