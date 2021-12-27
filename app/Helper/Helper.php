@@ -421,9 +421,13 @@ function stagesOfSentTo($value)
         201 => 'sorting sent',
         140 => 'Ready For Approve'
     ];
-    $value = $sentTo[$value];
-    if ($value) {
-        return $value;
+    if (array_key_exists($value, $sentTo)) {
+        $value = $sentTo[$value];
+        if ($value) {
+            return $value;
+        } else {
+            return  ' ';
+        }
     } else {
         return  ' ';
     }
