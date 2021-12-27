@@ -122,17 +122,21 @@
             order: [
                 [1, 'asc']
             ]
+
         });
 
     });
 
     $(document).ready(function() {
-        $('#submitbtn').on('click', function() {
-            $('#submitbtn').hide();
-        });
-        $('#milling-th').on('click', function() {
-            $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
-        });
+    $('#submitbtn').on('click', function() {
+        $('#submitbtn').hide();
+    });
+    $('#milling-th').on('click', function() {
+        $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
+    });
+
+
+    });
 
     });
 </script>

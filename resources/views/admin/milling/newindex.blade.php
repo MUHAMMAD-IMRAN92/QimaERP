@@ -195,14 +195,11 @@
         $(document).ready(function() {
 
             $('#myTable').DataTable({
-                columnDefs: [{
-                    orderable: false,
-                    targets: [11, 12]
-                }],
-                order: [
-                    [1, 'asc']
-                ]
-            });
+                columnDefs: [
+                  { orderable: false, targets: [11,12]}
+                ],
+                order: [[1, 'asc']]
+              });
             $('#to').on('change', function() {
                 let from = $('#from').val();
                 let to = $('#to').val();
