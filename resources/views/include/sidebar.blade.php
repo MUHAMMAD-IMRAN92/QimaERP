@@ -299,7 +299,15 @@
                                 </p>
                             </a> --}}
                         </li>
-
+                        <li class="nav-item">
+                            <a href="{{ url('admin/lot_mixing') }}"
+                                class="nav-link {{ Request::is('admin/lot_mixing') ? 'active' : '' }}">
+                                <!-- <i class="nav-icon fas fa-tree"> </i> -->
+                                <p>
+                                    LOT MIXING
+                                </p>
+                            </a>
+                        </li>
                         <li class="nav-item {{ Request::is('admin/packaging/*') ? 'menu-open' : '' }}">
                             <a href="" class="nav-link ">
                                 <!-- <i class="nav-icon fas fa-box"></i> -->

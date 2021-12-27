@@ -272,5 +272,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('report/generate', 'ReportController@generateReport');
         Route::post('report/generateCfeDrying', 'ReportController@generateCfeDrying');
         Route::post('report/generateWarehouse', 'ReportController@generateWarehouse');
+
+        Route::get('lot_mixing' , 'LotMixingController@index')->name('lotMixing');
     });
 });
