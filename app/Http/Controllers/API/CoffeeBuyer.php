@@ -403,11 +403,15 @@ class CoffeeBuyer extends Controller
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
                                     ]);
+                                    $invoicePrice = null;
+                                    if ($transactionsInvoice->invoice_price) {
+                                        $invoicePrice = $transactionsInvoice->invoice_price;
+                                    }
                                     TransactionInvoice::create([
                                         'transaction_id' => $newTransaction->transaction_id,
                                         'created_by' => $transactionsInvoice->created_by,
                                         'invoice_id' => $userProfileImage->file_id,
-                                        'invoice_price' =>  $transactionsInvoice->invoice_price,
+                                        'invoice_price' =>  $invoicePrice,
                                     ]);
                                 }
                                 $i++;
@@ -583,11 +587,15 @@ class CoffeeBuyer extends Controller
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
                                     ]);
+                                    $invoicePrice = null;
+                                    if ($transactionsInvoice->invoice_price) {
+                                        $invoicePrice = $transactionsInvoice->invoice_price;
+                                    }
                                     TransactionInvoice::create([
                                         'transaction_id' => $parentTransaction->transaction_id,
                                         'created_by' => $transactionsInvoice->created_by,
                                         'invoice_id' => $userProfileImage->file_id,
-                                        'invoice_price' =>  $transactionsInvoice->invoice_price,
+                                        'invoice_price' =>  $invoicePrice,
 
                                     ]);
                                 }
@@ -749,11 +757,15 @@ class CoffeeBuyer extends Controller
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
                                     ]);
+                                    $invoicePrice = null;
+                                    if ($transactionsInvoice->invoice_price) {
+                                        $invoicePrice = $transactionsInvoice->invoice_price;
+                                    }
                                     TransactionInvoice::create([
                                         'transaction_id' => $parentTransaction->transaction_id,
                                         'created_by' => $transactionsInvoice->created_by,
                                         'invoice_id' => $userProfileImage->file_id,
-                                        'invoice_price' =>  $transactionsInvoice->invoice_price,
+                                        'invoice_price' =>  $invoicePrice,
                                     ]);
                                 }
                                 $i++;
@@ -1155,11 +1167,15 @@ class CoffeeBuyer extends Controller
                             $userProfileImage = FileSystem::create([
                                 'user_file_name' => $file_name,
                             ]);
+                            $invoicePrice = null;
+                            if ($transactionsInvoice->invoice_price) {
+                                $invoicePrice = $transactionsInvoice->invoice_price;
+                            }
                             TransactionInvoice::create([
                                 'transaction_id' => $newTransaction->transaction_id,
                                 'created_by' => $transactionsInvoice->created_by,
                                 'invoice_id' => $userProfileImage->file_id,
-                                'invoice_price' =>  $transactionsInvoice->invoice_price,
+                                'invoice_price' =>  $invoicePrice,
                             ]);
                         }
                         $i++;
