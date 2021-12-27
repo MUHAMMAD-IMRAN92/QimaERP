@@ -403,7 +403,7 @@ class CoffeeBuyer extends Controller
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
                                     ]);
-                                    $invoicePrice = ' ';
+                                    $invoicePrice = 0;
                                     if ($transactionsInvoice->invoice_price) {
                                         $invoicePrice = $transactionsInvoice->invoice_price;
                                     }
@@ -587,7 +587,7 @@ class CoffeeBuyer extends Controller
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
                                     ]);
-                                    $invoicePrice = ' ';
+                                    $invoicePrice = 0;
                                     if ($transactionsInvoice->invoice_price) {
                                         $invoicePrice = $transactionsInvoice->invoice_price;
                                     }
@@ -757,7 +757,7 @@ class CoffeeBuyer extends Controller
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
                                     ]);
-                                    $invoicePrice = ' ';
+                                    $invoicePrice = 0;
                                     if ($transactionsInvoice->invoice_price) {
                                         $invoicePrice = $transactionsInvoice->invoice_price;
                                     }
@@ -1167,7 +1167,7 @@ class CoffeeBuyer extends Controller
                             $userProfileImage = FileSystem::create([
                                 'user_file_name' => $file_name,
                             ]);
-                            $invoicePrice = ' ';
+                            $invoicePrice = 0;
                             if ($transactionsInvoice->invoice_price) {
                                 $invoicePrice = $transactionsInvoice->invoice_price;
                             }
