@@ -300,7 +300,6 @@ class MillingController extends Controller
             $tran->makeHidden('log');
             $removeLocalId = explode("-", $tran->batch_number);
             if ($removeLocalId[3]) {
-
                 if ($removeLocalId[3] == '000') {
                     $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
                     if ($FindParentTransactions) {
