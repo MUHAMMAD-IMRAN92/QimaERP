@@ -47,6 +47,11 @@
             border-radius: 50%;
         }
 
+        .active-tabs {
+            font-weight: bold !important;
+            text-decoration: underline !important;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
@@ -68,6 +73,7 @@
                     }
                 });
             });
+
         });
     </script>
 
@@ -115,35 +121,43 @@
             </div>
 
             <div class="row ml-2 blacklink letter-spacing-1">
-                <span class="hover"> <a
+                <span class="hover"> <a class="{{ \Request::is('*today') ? 'active-tabs' : '' }}"
                         href="{{ url('admin/supplyChain/' . ($date = 'today')) }}">TODAY</a></span> &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/supplyChain/' . ($date = 'yesterday')) }}">
+                <span class="ml-md-2 hover"> <a class="{{ \Request::is('*yesterday') ? 'active-tabs' : '' }}"
+                        href="{{ url('admin/supplyChain/' . ($date = 'yesterday')) }}">
                         YESTERDAY</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/supplyChain/' . ($date = 'weekToDate')) }}"> WEEK
+                <span class="ml-md-2 hover"> <a class="{{ \Request::is('*weekToDate') ? 'active-tabs' : '' }}"
+                        href="{{ url('admin/supplyChain/' . ($date = 'weekToDate')) }}"> WEEK
                         TO
                         DATE
                     </a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/supplyChain/' . ($date = 'monthToDate')) }}">MONTH
+                <span class="ml-md-2 hover"> <a class="{{ \Request::is('*monthToDate') ? 'active-tabs' : '' }}"
+                        href="{{ url('admin/supplyChain/' . ($date = 'monthToDate')) }}">MONTH
                         TO
                         DATE</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/supplyChain/' . ($date = 'lastmonth')) }}"> LAST
+                <span class="ml-md-2 hover"> <a class="{{ \Request::is('*lastmonth') ? 'active-tabs' : '' }}"
+                        href="{{ url('admin/supplyChain/' . ($date = 'lastmonth')) }}"> LAST
                         MONTH</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/supplyChain/' . ($date = 'yearToDate')) }}">YEAR
+                <span class="ml-md-2 hover"> <a class="{{ \Request::is('*yearToDate') ? 'active-tabs' : '' }}"
+                        href="{{ url('admin/supplyChain/' . ($date = 'yearToDate')) }}">YEAR
                         TO
                         DATE</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/supplyChain/' . ($date = 'currentyear')) }}">
+                <span class="ml-md-2 hover"> <a class="{{ \Request::is('*currentyear') ? 'active-tabs' : '' }}"
+                        href="{{ url('admin/supplyChain/' . ($date = 'currentyear')) }}">
                         2021
                         SEASON</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/supplyChain/' . ($date = 'lastyear')) }}"> 2020
+                <span class="ml-md-2 hover"> <a class="{{ \Request::is('*lastyear') ? 'active-tabs' : '' }}"
+                        href="{{ url('admin/supplyChain/' . ($date = 'lastyear')) }}"> 2020
                         SEASON</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/supplyChain') }}"> ALL TIME</a></span>
+                <span class="ml-md-2 hover"> <a class="{{ \Request::is('*/*') ? 'active-tabs' : '' }}"
+                        href="{{ url('admin/supplyChain') }}"> ALL TIME</a></span>
             </div>
             <hr class="ml-md-2">
             <!-- Main content -->
