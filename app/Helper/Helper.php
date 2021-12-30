@@ -472,3 +472,34 @@ function regionOfVillage($id)
         return ' ';
     }
 }
+function parentBatch($batch)
+{
+    $batchNUmber = $batch;
+    $farmers = collect();
+
+    $transaction = Transaction::where('batch_number', $batchNUmber)->first();
+    // return $transaction->batch_number . !Str::contains($transaction->batbatch_numberch, '000');
+    if ($transaction->sent_to == 2 && !Str::contains($transaction->batch_number, '000')) {
+        $farmer = Farmer::where('farmer_code', Str::beforeLast($transaction->batch_number, '-'))->first();
+        // return $farmer;
+        $farmers->push($farmer);
+        // return 'here';
+    } else {
+        $childTransaction =  Transaction::where('is_parent',  $transaction->transaction_id)->get();
+
+        foreach ($childTransaction as $childTran) {
+            if ($childTran->sent_to == 2 && !Str::contains($childTran->batch, '000')) {
+                // return $childTran->batch_number;
+                // return Str::beforeLast($childTran->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', Str::beforeLast($childTran->batch_number, '-'))->first();
+                // return $farmer;
+                $farmers->push($farmer);
+            } else {
+                $batch_number = $childTran->batch_number;
+                // return $batch_number;
+                $farmers =  parentBatch($batch_number);
+            }
+        }
+    }
+    return $farmers;
+}
