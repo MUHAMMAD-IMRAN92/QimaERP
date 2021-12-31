@@ -104,4 +104,15 @@ class BatchNumberController extends Controller
     //
     //        return view('admin.batchdetail', $data);
     //    }
+
+
+    public function duplication()
+    {
+        $data = \DB::table('transactions')->where('sent_to', 10)->select(\DB::raw('count(*) as duplicate'), 'batch_number', 'sent_to', 'created_by', 'local_code')
+            ->groupBy('batch_number', 'sent_to', 'created_by', 'local_code')->orderBy(\DB::raw('1'), 'desc')->get();
+        // return $data;
+        return view('duplication', [
+            'data' => $data,
+        ]);
+    }
 }

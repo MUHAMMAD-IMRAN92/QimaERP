@@ -38,6 +38,20 @@ class DevTestController extends Controller
         // $oldfarmerCode = 'SAN-HAR-133-1790';
         // $code = checkBatchNumber($oldfarmerCode);
         // dd($code);}
-        return parentBatch('SAN-HAY-03-000-2328');
+        // return parentBatch('SAN-HAY-03-000-2328');
+
+
+
+
+        // $transactions = \DB::table('transactions')->where('sent_to', 10)
+        //     ->select(\DB::raw('count(*) as duplicated', 'batch_number', 'sent_to', 'created_by', 'local_code'))
+        //     ->groupBy('batch_number', 'batch_number', 'sent_to', 'created_by')
+        //     ->get();
+        // return $transactions;
+
+        $transactions = \DB::table('transactions')->where('sent_to', 10)->select(\DB::raw('count(*) as duplicate'),'batch_number', 'sent_to', 'created_by', 'local_code')
+            ->groupBy('batch_number', 'sent_to', 'created_by', 'local_code')->orderBy(\DB::raw('1'),'desc')->get();
+        return $transactions;
+
     }
 }

@@ -274,5 +274,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('report/generateWarehouse', 'ReportController@generateWarehouse');
 
         Route::get('lot_mixing' , 'LotMixingController@index')->name('lotMixing');
+
+
+
+        //Duplication
+        Route::get('duplication' , 'BatchNumberController@duplication')->name('duplication');
     });
 });
