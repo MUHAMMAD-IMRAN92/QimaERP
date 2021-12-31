@@ -1,5 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    .duplication-table {
+
+        width: 100%;
+        text-align: center;
+    }
+
+    .border {
+        border: 1px solid black;
+    }
+
+    tr td {
+        border: 1px solid black;
+    }
+
+</style>
 
 <head>
     <meta charset="UTF-8">
@@ -9,16 +25,18 @@
 </head>
 
 <body>
-    <center>QIMA DUPLICATIONS</center>
-    <table>
-        <tr>
+    <center>
+        <h1>QIMA DUPLICATIONS</h1>
+    </center>
+    <table class="duplication-table border">
+        <tr class="border">
             <th>Batch_number</th>
             <th>Stage</th>
-            <th>Local COde</th>
+            <th>Local Code</th>
             <th>Repetations</th>
         </tr>
         @foreach ($data as $d)
-            <tr>
+            <tr class="border">
                 <td>{{ $d->batch_number }}</td>
                 <td>{{ $d->sent_to }}</td>
                 <td>{{ $d->local_code }}</td>
