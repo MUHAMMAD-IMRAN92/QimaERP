@@ -49,9 +49,23 @@ class DevTestController extends Controller
         //     ->get();
         // return $transactions;
 
-        $transactions = \DB::table('transactions')->where('sent_to', 10)->select(\DB::raw('count(*) as duplicate'),'batch_number', 'sent_to', 'created_by', 'local_code')
-            ->groupBy('batch_number', 'sent_to', 'created_by', 'local_code')->orderBy(\DB::raw('1'),'desc')->get();
-        return $transactions;
+        $transactions = Transaction::where('sent_to', 10)->select(\DB::raw('count(*) as duplicate'), 'batch_number', 'sent_to', 'created_by', 'local_code')
+            ->groupBy('batch_number', 'sent_to', 'created_by', 'local_code')->orderBy(\DB::raw('1'), 'desc')->get();
+        $transactions->map(function ($tran) {
 
+            $details = collect();
+            $batchNumber = $tran->batch_number;
+            // $dryTransactionDetails=   Transaction::where('batch_number',  $batchNumber)->where('sent_to', 10)->with('details')->get();
+            $dryTransactionDetails = TransactionDetail::whereHas('transaction', function ($q) use ($batchNumber) {
+                $q->where('batch_number',  $batchNumber)->where('sent_to', 10);
+            })->get();
+
+            foreach ($dryTransactionDetails as  $d) {
+                $details->push($d);
+            }
+            $tran->details = $details;
+            return $tran;
+        });
+        return $transactions;
     }
 }

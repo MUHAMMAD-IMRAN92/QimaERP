@@ -27,7 +27,9 @@
 <body>
     <center>
         <h1>QIMA DUPLICATIONS</h1>
+
     </center>
+    {{-- <h3> <b> Note:</b>The duplication is considered when repetation will be greater than 2!</h3> --}}
     <table class="duplication-table border">
         <tr class="border">
             <th>Batch_number</th>
@@ -41,6 +43,11 @@
                 <td>{{ $d->sent_to }}</td>
                 <td>{{ $d->local_code }}</td>
                 <td>{{ $d->duplicate }}</td>
+                <td>
+                    @foreach ($d->details as $detail)
+                        {{ $detail->container_number . ' : ' . $detail->container_weight }} <br>
+                    @endforeach
+                </td>
             </tr>
         @endforeach
     </table>
