@@ -415,7 +415,7 @@ class CoffeeBuyer extends Controller
                                         'invoice_price' =>  $invoicePrice,
                                     ]);
                                 }
-                                if ($transactionsInvoice->invoice_name &&  strlen($transactionsInvoice->invoice_name) > 1) {
+                                if (isset($transactionsInvoice->invoice_name) && $transactionsInvoice->invoice_name &&  strlen($transactionsInvoice->invoice_name) > 1) {
                                     //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
 
                                     $invoiceName = '';
@@ -622,7 +622,7 @@ class CoffeeBuyer extends Controller
                                         'invoice_price' =>  $invoicePrice,
                                     ]);
                                 }
-                                if ($transactionsInvoice->invoice_name &&  strlen($transactionsInvoice->invoice_name) > 1) {
+                                if (isset($transactionsInvoice->invoice_name) && $transactionsInvoice->invoice_name &&  strlen($transactionsInvoice->invoice_name) > 1) {
 
                                     $invoiceName = '';
                                     if ($transactionsInvoice->invoice_name) {
@@ -815,9 +815,8 @@ class CoffeeBuyer extends Controller
                                         'invoice_id' => $userProfileImage->file_id,
                                         'invoice_price' =>  $invoicePrice,
                                     ]);
-
                                 }
-                                if ($transactionsInvoice->invoice_name  &&  strlen($transactionsInvoice->invoice_name) > 1) {
+                                if (isset($transactionsInvoice->invoice_name) && $transactionsInvoice->invoice_name  &&  strlen($transactionsInvoice->invoice_name) > 1) {
 
                                     $invoiceName = '';
                                     if ($transactionsInvoice->invoice_name) {
