@@ -29,13 +29,14 @@
         <h1>QIMA DUPLICATIONS</h1>
 
     </center>
-    {{-- <h3> <b> Note:</b>The duplication is considered when repetation will be greater than 2!</h3> --}}
+    <h3> <b> Note:</b>The duplication is considered when </h3>
     <table class="duplication-table border">
         <tr class="border">
             <th>Batch_number</th>
             <th>Stage</th>
             <th>Local Code</th>
             <th>Repetations</th>
+            <th>Bakets</th>
         </tr>
         @foreach ($data as $d)
             <tr class="border">
