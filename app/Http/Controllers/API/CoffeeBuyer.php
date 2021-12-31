@@ -600,6 +600,7 @@ class CoffeeBuyer extends Controller
                                     if ($transactionsInvoice->invoice_name) {
                                         $invoiceName = $transactionsInvoice->invoice_name;
                                     }
+                                    return $invoiceName;
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $invoiceName,
                                     ]);
@@ -763,7 +764,7 @@ class CoffeeBuyer extends Controller
                             $i = 1;
 
                             foreach ($transactionsInvoices as $key => $transactionsInvoice) {
-                                return 'here';
+
                                 if ($transactionsInvoice->invoice_name) {
                                     //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
                                     $destinationPath =  'images/';
