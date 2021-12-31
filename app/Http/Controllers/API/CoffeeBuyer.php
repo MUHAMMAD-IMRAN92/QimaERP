@@ -399,11 +399,11 @@ class CoffeeBuyer extends Controller
                                     $file = base64_decode($transactionsInvoice->invoice_image);
                                     $file_name = time() . $i . getFileExtensionForBase64($file);
                                     Storage::disk('s3')->put($destinationPath  . $file_name, $file);
-                                    // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
+                                    $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
 
-                                    // $userProfileImage = FileSystem::create([
-                                    //     'user_file_name' => $file_name,
-                                    // ]);
+                                    $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $file_name,
+                                    ]);
                                     $invoiceName = '';
                                     if ($transactionsInvoice->invoice_name) {
                                         $invoiceName = $transactionsInvoice->invoice_name;
@@ -593,9 +593,9 @@ class CoffeeBuyer extends Controller
                                     $file_name = time() . $i . getFileExtensionForBase64($file);
                                     Storage::disk('s3')->put($destinationPath  . $file_name, $file);
 
-                                    // $userProfileImage = FileSystem::create([
-                                    //     'user_file_name' => $file_name,
-                                    // ]);
+                                    $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $file_name,
+                                    ]);
                                     $invoiceName = '';
                                     if ($transactionsInvoice->invoice_name) {
                                         $invoiceName = $transactionsInvoice->invoice_name;
@@ -772,11 +772,11 @@ class CoffeeBuyer extends Controller
                                     $file = base64_decode($transactionsInvoice->invoice_image);
                                     $file_name = time() . $i . getFileExtensionForBase64($file);
                                     Storage::disk('s3')->put($destinationPath  . $file_name, $file);
-                                    // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
+                                    $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
 
-                                    // $userProfileImage = FileSystem::create([
-                                    //     'user_file_name' => $file_name,
-                                    // ]);
+                                    $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $file_name,
+                                    ]);
                                     $invoiceName = '';
                                     if ($transactionsInvoice->invoice_name) {
                                         $invoiceName = $transactionsInvoice->invoice_name;
