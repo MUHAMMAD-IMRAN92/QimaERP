@@ -49,7 +49,7 @@ class DevTestController extends Controller
         //     ->get();
         // return $transactions;
 
-        $transactions = Transaction::where('sent_to', 10)->select(\DB::raw('count(*) as duplicate'), 'batch_number', 'sent_to', 'created_by', 'local_code')
+        $transactions = Transaction::select(\DB::raw('count(*) as duplicate'), 'batch_number', 'sent_to', 'created_by', 'local_code')
             ->groupBy('batch_number', 'sent_to', 'created_by', 'local_code')->orderBy(\DB::raw('1'), 'desc')->get();
         $transactions->map(function ($tran) {
 
