@@ -29,7 +29,7 @@
         <h1>QIMA DUPLICATIONS</h1>
 
     </center>
-    <h3> <b> Note! </b>The duplication is considered when baskets are repeated twice or more times in a Batch Number</h3>
+    <h3> <b> Note! </b>The duplication is considered when baskets are repeated twice or more times in a Batch Number.</h3>
     <table class="duplication-table border">
         <tr class="border">
             <th>Batch_number</th>
