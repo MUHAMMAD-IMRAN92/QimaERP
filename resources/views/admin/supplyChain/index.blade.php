@@ -149,11 +149,11 @@
                 &nbsp |
                 <span class="ml-md-2 hover"> <a class="{{ \Request::is('*currentyear') ? 'active-tabs' : '' }}"
                         href="{{ url('admin/supplyChain/' . ($date = 'currentyear')) }}">
-                        2021
+                        2022
                         SEASON</a></span>
                 &nbsp |
                 <span class="ml-md-2 hover"> <a class="{{ \Request::is('*lastyear') ? 'active-tabs' : '' }}"
-                        href="{{ url('admin/supplyChain/' . ($date = 'lastyear')) }}"> 2020
+                        href="{{ url('admin/supplyChain/' . ($date = 'lastyear')) }}"> 2021
                         SEASON</a></span>
                 &nbsp |
                 <span class="ml-md-2 hover"> <a class="{{ \Request::is('*/*') ? 'active-tabs' : '' }}"

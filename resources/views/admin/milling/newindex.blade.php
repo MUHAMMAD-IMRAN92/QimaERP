@@ -563,10 +563,10 @@
                 <span class="ml-2 hover" id="yearToDate"> YEAR TO
                     DATE</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover" id="currentyear"> 2021
+                <span class="ml-md-2 hover" id="currentyear"> 2022
                     SEASON</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover" id="lastyear"> 2020
+                <span class="ml-md-2 hover" id="lastyear"> 2021
                     SEASON</a></span>
                 &nbsp |
                 <span class="ml-md-2 hover" style="font-weight: bold; text-decoration: underline;"> <a
@@ -671,7 +671,9 @@
                                                                     $farmers = parentBatch($transaction['transaction']->batch_number);
                                                                 @endphp
                                                                 @foreach ($farmers as $farmer)
-                                                                    {{ $farmer->farmer_name }} <br>
+                                                                    @if ($farmer)
+                                                                        {{ $farmer->farmer_name }} <br>
+                                                                    @endif
                                                                 @endforeach
                                                             </td>
                                                             <td>
@@ -679,7 +681,9 @@
                                                                     $farmers = parentBatch($transaction['transaction']->batch_number);
                                                                 @endphp
                                                                 @foreach ($farmers as $farmer)
-                                                                    {{ $farmer->farmer_name }} <br>
+                                                                    @if ($farmer)
+                                                                        {{ $farmer->farmer_name }} <br>
+                                                                    @endif
                                                                 @endforeach
                                                             </td>
                                                             <td>
@@ -703,7 +707,9 @@
                                                                     @php
                                                                         $village = \App\Village::where('village_code', $farmer->village_code)->first();
                                                                     @endphp
-                                                                    {{ $village->village_title }}
+                                                                    @if ($village)
+                                                                        {{ $village->village_title }}
+                                                                    @endif
                                                                     <br>
                                                                 @endforeach
                                                             </td>

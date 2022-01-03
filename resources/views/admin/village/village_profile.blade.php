@@ -566,10 +566,10 @@
                 <span class="ml-2 hover" id="yearToDate"> YEAR TO
                     DATE</a></span>
                 &nbsp |
-                <span class="ml-2 hover" id="currentyear"> 2021
+                <span class="ml-2 hover" id="currentyear"> 2022
                     SEASON</a></span>
                 &nbsp |
-                <span class="ml-2 hover" id="lastyear"> 2020
+                <span class="ml-2 hover" id="lastyear"> 2021
                     SEASON</a></span>
                 &nbsp |
                 <span class="ml-2 hover" style="font-weight: bold; text-decoration: underline;"> <a
