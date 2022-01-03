@@ -701,7 +701,7 @@
                                                                 @endphp
                                                                 @foreach ($farmers as $farmer)
                                                                     @php
-                                                                        $village = \App\village::where('village_code', $farmer->village_code)->first();
+                                                                        $village = \App\Village::where('village_code', $farmer->village_code)->first();
                                                                     @endphp
                                                                     {{ $village->village_title }}
                                                                     <br>
