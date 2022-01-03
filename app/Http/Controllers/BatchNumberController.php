@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\BatchNumber;
 use App\Transaction;
+use App\TransactionDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -104,4 +105,30 @@ class BatchNumberController extends Controller
     //
     //        return view('admin.batchdetail', $data);
     //    }
+
+
+    public function duplication()
+    {
+        $data = \DB::table('transactions')->select(\DB::raw('count(*) as duplicate'), 'batch_number', 'sent_to', 'created_by', 'local_code', 'transaction_status')
+            ->groupBy('batch_number', 'sent_to', 'created_by', 'local_code', 'transaction_status')->orderBy(\DB::raw('1'), 'desc')->get();
+
+        $data->map(function ($tran) {
+
+            $details = collect();
+            $batchNumber = $tran->batch_number;
+            // $dryTransactionDetails=   Transaction::where('batch_number',  $batchNumber)->where('sent_to', 10)->with('details')->get();
+            $dryTransactionDetails = TransactionDetail::whereHas('transaction', function ($q) use ($batchNumber, $tran) {
+                $q->where('batch_number',  $batchNumber)->where('sent_to', $tran->sent_to);
+            })->get();
+
+            foreach ($dryTransactionDetails as  $d) {
+                $details->push($d);
+            }
+            $tran->details = $details;
+            return $tran;
+        });
+        return view('duplication', [
+            'data' => $data,
+        ]);
+    }
 }
