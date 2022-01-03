@@ -55,7 +55,7 @@ class CoffeeBuyerManager extends Controller
             $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
             $user_image_path = Storage::disk('s3')->url('images');
             foreach ($villages as $village) {
-                $villagefarmer = Farmer::where('village_code', $village->village_code)->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
+                $villagefarmer = Farmer::where('status' , 1)->where('village_code', $village->village_code)->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                 }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
@@ -252,7 +252,7 @@ class CoffeeBuyerManager extends Controller
                         array_push($sentCoffeeArray, $sentTransaction->transactions->transaction_id);
                     }
                 } else {
-                    
+
                     try {
                         $alreadyExistTransaction = Transaction::where('reference_id', $sentTransaction->transactions->reference_id)->first();
                         // adding because we get same reference id and transaction id
