@@ -9,11 +9,11 @@ class LotMixingController extends Controller
 {
     public function index()
     {
-        // $transactions = Transaction::with('details')
-        //     ->where('is_parent', 0)
-        //     ->where('sent_to', 24)
-        //     ->orderBy('transaction_id', 'desc')
-        //     ->get();
+        $transactions = Transaction::with('details')
+            ->where('is_parent', 0)
+            ->where('sent_to', 24)
+            ->orderBy('transaction_id', 'desc')
+            ->get();
         // $allTransactions = array();
 
         // foreach ($transactions as $key => $tran) {
@@ -35,7 +35,7 @@ class LotMixingController extends Controller
         // }
         // return $transactions;
         return view('admin.lotMixing.index', [
-            // 'transactions' => $transactions,
+            'transactions' => $transactions,
         ]);
     }
 }

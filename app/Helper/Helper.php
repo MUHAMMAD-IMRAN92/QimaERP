@@ -414,12 +414,39 @@ function stagesOfSentTo($value)
         14 => 'Ready To Be Milled',
         15 => 'Mill Operative',
         17 => 'Mill Operative Received',
-        20 => 'Local Market',
-        21 => 'Milled',
-        22 => 'sorting Pending',
-        23 => 'sorting Rec',
-        201 => 'sorting sent',
-        140 => 'Ready For Approve'
+        // 20 => 'Local Market',
+        // 21 => 'Milled',
+        // 22 => 'sorting Pending',
+        // 23 => 'sorting Rec',
+        // 201 => 'sorting sent',
+        140 => 'Ready For Approve',
+        20 => 'local market from Mill op',
+        21 => 'sorting pending',
+        22 =>  'sorting Received',
+        23 =>  'Yemen Pack Coffee',
+        201 =>  'Local Market from sorting Op',
+        191 =>  'local market Received',
+        193 =>  'sent to inventory',
+        195 =>  'order Prepared',
+        24 =>  'Pack Coffee For Mixing(Admin)',
+        26 =>  'Yemen Pack Coffee Mixed',
+        27 =>  'Yemen Pack Coffee Re-Pack',
+        29 =>  'Packaging Approval',
+        30 => 'Yemen Pack Coffee Prepared',
+        31 => 'Yemen Packaging Op Pending',
+        33 => 'Yemen Packaging Op Received',
+        34 => 'Yemen Packaging Bags',
+        36 => 'Yemen Packaging Cartons',
+        39 => 'Sent Approval',
+        40 => 'Approved For Shipping',
+        41 => 'Sent To UK Quality Op',
+        197 => 'Order Received',
+        198 => 'Order Delivered',
+        43 => 'UK warehouse',
+        44 => 'Uk Warehouse (set prices)',
+        472 => 'Allocate To Ukwarehouse',
+        473 => 'China Pending',
+        474 => 'China Received',
     ];
     if (array_key_exists($value, $sentTo)) {
         $value = $sentTo[$value];
@@ -444,4 +471,35 @@ function regionOfVillage($id)
     } else {
         return ' ';
     }
+}
+function parentBatch($batch)
+{
+    $batchNUmber = $batch;
+    $farmers = collect();
+
+    $transaction = Transaction::where('batch_number', $batchNUmber)->first();
+    // return $transaction->batch_number . !Str::contains($transaction->batbatch_numberch, '000');
+    if ($transaction->sent_to == 2 && !Str::contains($transaction->batch_number, '000')) {
+        $farmer = Farmer::where('farmer_code', Str::beforeLast($transaction->batch_number, '-'))->first();
+        // return $farmer;
+        $farmers->push($farmer);
+        // return 'here';
+    } else {
+        $childTransaction =  Transaction::where('is_parent',  $transaction->transaction_id)->get();
+
+        foreach ($childTransaction as $childTran) {
+            if ($childTran->sent_to == 2 && !Str::contains($childTran->batch, '000')) {
+                // return $childTran->batch_number;
+                // return Str::beforeLast($childTran->batch_number, '-');
+                $farmer = Farmer::where('farmer_code', Str::beforeLast($childTran->batch_number, '-'))->first();
+                // return $farmer;
+                $farmers->push($farmer);
+            } else {
+                $batch_number = $childTran->batch_number;
+                // return $batch_number;
+                $farmers =  parentBatch($batch_number);
+            }
+        }
+    }
+    return $farmers;
 }

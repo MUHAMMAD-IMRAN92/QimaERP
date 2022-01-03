@@ -11,7 +11,7 @@ class SupplyChainController extends Controller
 {
     public function supplyChain()
     {
-        $sentTo = ['Cherry Bought' => 2, 'On Drying Beds' => 10, 'Special Process' => 7, 'Dry Coffee' => 12, 'Ready To Be Milled' => 14, 'Milled' => 21, 'Export Green' => 0, 'Cascara' => 0, 'Local Coffee' => 0, 'In Transit' => 0, 'London Inventory' => 0, 'China Recieved' => 0];
+        $sentTo = ['Cherry Bought' => 2, 'On Drying Beds' => 10, 'Special Process' => 7, 'Dry Coffee' => 12, 'Ready To Be Milled' => 14, 'Milled' => 21, 'Export Green' => 4000, 'Cascara' => 4000, 'Local Coffee' => 4000, 'In Transit' => 4000, 'London Inventory' => 4000, 'China Recieved' => 4000];
         $weightLabel = [];
         $managerName = [];
         $carbon = Carbon::now();
@@ -130,7 +130,7 @@ class SupplyChainController extends Controller
     }
     public function supplyChainDateFilter(Request $request)
     {
-        $sentTo = ['Cherry Bought' => 2, 'On Drying Beds' => 10, 'Special processing' => 7, 'Dry Coffee' => 12, 'Ready To Be Milled' => 14, 'Milled' => 21, 'Export Green' => 0, 'Cascara' => 0, 'Local Coffee' => 0, 'In Transit' => 0, 'London Inventory' => 0, 'China Recieved' => 0];
+        $sentTo = ['Cherry Bought' => 2, 'On Drying Beds' => 10, 'Special processing' => 7, 'Dry Coffee' => 12, 'Ready To Be Milled' => 14, 'Milled' => 21, 'Export Green' => 4000, 'Cascara' => 4000, 'Local Coffee' => 4000, 'In Transit' => 4000, 'London Inventory' => 4000, 'China Recieved' => 4000];
         $weightLabel = [];
         $managerName = [];
         $carbon = Carbon::now();
@@ -255,7 +255,7 @@ class SupplyChainController extends Controller
         $carbon = Carbon::now();
         $year = $carbon->year;
         $date = $request->date;
-        $sentTo = ['Coffe Buyer' => 2, 'On Drying Beds' => 10, 'Special processing' => 7, 'Dry Coffee' => 12, 'Ready To Be Milled' => 14, 'Milled' => 21, 'Export Green' => 0, 'Cascara' => 0, 'Local Coffee' => 0, 'In Transit' => 0, 'London Inventory' => 0, 'China Recieved' => 0];
+        $sentTo = ['Coffe Buyer' => 2, 'On Drying Beds' => 10, 'Special processing' => 7, 'Dry Coffee' => 12, 'Ready To Be Milled' => 14, 'Milled' => 21, 'Export Green' => 4000, 'Cascara' => 4000, 'Local Coffee' => 4000, 'In Transit' => 4000, 'London Inventory' => 4000, 'China Recieved' => 4000];
 
         if ($date == 'today') {
             $date = Carbon::today()->toDateString();

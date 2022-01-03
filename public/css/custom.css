@@ -386,3 +386,13 @@ padding: 10px 9px;
     left: 50%;
     transform: translate(-50%,-50%);
 }
+.lot_mixing-table th:nth-last-child(2){
+    border-top: 1px solid#343a40 !important;
+    border-right: 1px solid #343a40 !important;
+    border-bottom: 1px solid #343a40 !important;
+}
+.lot_mixing-table td:nth-last-child(2){
+border: 1px solid#343a40 !important;
+    border-left: 0 !important;
+    border-top: 0 !important;
+}

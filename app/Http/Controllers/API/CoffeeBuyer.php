@@ -270,6 +270,7 @@ class CoffeeBuyer extends Controller
                     $childTransactionArray = array();
                     //::Add child batch number
 
+
                     foreach ($batch_numbers->child_batch as $key => $childBatch) {
                         $newLastBID = 1;
                         $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
@@ -391,7 +392,7 @@ class CoffeeBuyer extends Controller
                             $transactionsInvoices = $childBatch->transactions[0]->transactions_invoices;
                             $i = 1;
                             foreach ($transactionsInvoices as $key => $transactionsInvoice) {
-                                if ($transactionsInvoice->invoice_image) {
+                                if ($transactionsInvoice->invoice_image &&  strlen($transactionsInvoice->invoice_image) > 2) {
                                     //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
                                     $destinationPath =  'images/';
                                     // $destinationPath = 'public/images';
@@ -402,6 +403,27 @@ class CoffeeBuyer extends Controller
 
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
+                                    ]);
+                                    $invoicePrice = 0;
+                                    if ($transactionsInvoice->invoice_price) {
+                                        $invoicePrice = $transactionsInvoice->invoice_price;
+                                    }
+                                    TransactionInvoice::create([
+                                        'transaction_id' => $newTransaction->transaction_id,
+                                        'created_by' => $transactionsInvoice->created_by,
+                                        'invoice_id' => $userProfileImage->file_id,
+                                        'invoice_price' =>  $invoicePrice,
+                                    ]);
+                                }
+                                if (isset($transactionsInvoice->invoice_name) && $transactionsInvoice->invoice_name &&  strlen($transactionsInvoice->invoice_name) > 1) {
+                                    //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
+
+                                    $invoiceName = '';
+                                    if ($transactionsInvoice->invoice_name) {
+                                        $invoiceName = $transactionsInvoice->invoice_name;
+                                    }
+                                    $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $invoiceName,
                                     ]);
                                     $invoicePrice = 0;
                                     if ($transactionsInvoice->invoice_price) {
@@ -451,6 +473,7 @@ class CoffeeBuyer extends Controller
                         $checkMixed = 1;
                     }
                     if ($checkMixed != 0) {
+
                         //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                         // $farmerCode = implode("-", $removeLocalId);
                         // $userId = Auth::user()->user_id;
@@ -576,16 +599,38 @@ class CoffeeBuyer extends Controller
                             $transactionsInvoices = $batch_numbers->batch->transactions[0]->transactions_invoices;
                             $i = 1;
                             foreach ($transactionsInvoices as $key => $transactionsInvoice) {
-                                if ($transactionsInvoice->invoice_image) {
+                                if ($transactionsInvoice->invoice_image &&  strlen($transactionsInvoice->invoice_image) > 2) {
                                     //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
                                     $destinationPath =  'images/';
                                     // $destinationPath = 'public/images';
                                     $file = base64_decode($transactionsInvoice->invoice_image);
                                     $file_name = time() . $i . getFileExtensionForBase64($file);
                                     Storage::disk('s3')->put($destinationPath  . $file_name, $file);
+                                    // $path =   Storage::putFile($destinationPath . $file_name, $file, 's3');
 
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
+                                    ]);
+                                    $invoicePrice = 0;
+                                    if ($transactionsInvoice->invoice_price) {
+                                        $invoicePrice = $transactionsInvoice->invoice_price;
+                                    }
+                                    TransactionInvoice::create([
+                                        'transaction_id' => $parentTransaction->transaction_id,
+                                        'created_by' => $transactionsInvoice->created_by,
+                                        'invoice_id' => $userProfileImage->file_id,
+                                        'invoice_price' =>  $invoicePrice,
+                                    ]);
+                                }
+                                if (isset($transactionsInvoice->invoice_name) && $transactionsInvoice->invoice_name &&  strlen($transactionsInvoice->invoice_name) > 1) {
+
+                                    $invoiceName = '';
+                                    if ($transactionsInvoice->invoice_name) {
+                                        $invoiceName = $transactionsInvoice->invoice_name;
+                                    }
+                                    // return $invoiceName;
+                                    $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $invoiceName,
                                     ]);
                                     $invoicePrice = 0;
                                     if ($transactionsInvoice->invoice_price) {
@@ -620,6 +665,7 @@ class CoffeeBuyer extends Controller
                         Transaction::whereIn('transaction_id', $childTransactionArray)->update(['is_parent' => $parentTransaction->transaction_id]);
                     }
                     if ($checkMixed == 0) {
+
                         //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                         $farmerCode = implode("-", $removeLocalId);
                         $userId = Auth::user()->user_id;
@@ -744,8 +790,10 @@ class CoffeeBuyer extends Controller
                         if (isset($batch_numbers->batch->transactions[0]->transactions_invoices) && $batch_numbers->batch->transactions[0]->transactions_invoices) {
                             $transactionsInvoices = $batch_numbers->batch->transactions[0]->transactions_invoices;
                             $i = 1;
+
                             foreach ($transactionsInvoices as $key => $transactionsInvoice) {
-                                if ($transactionsInvoice->invoice_image) {
+
+                                if ($transactionsInvoice->invoice_image  &&  strlen($transactionsInvoice->invoice_image) > 2) {
                                     //TransactionInvoices::dispatch($parentTransaction->transaction_id, $transactionsInvoice->invoice_image, $transactionsInvoice->created_by ,$i)->delay(Carbon::now()->addSecond(1200));
                                     $destinationPath =  'images/';
                                     // $destinationPath = 'public/images';
@@ -756,6 +804,27 @@ class CoffeeBuyer extends Controller
 
                                     $userProfileImage = FileSystem::create([
                                         'user_file_name' => $file_name,
+                                    ]);
+                                    $invoicePrice = 0;
+                                    if ($transactionsInvoice->invoice_price) {
+                                        $invoicePrice = $transactionsInvoice->invoice_price;
+                                    }
+                                    TransactionInvoice::create([
+                                        'transaction_id' => $parentTransaction->transaction_id,
+                                        'created_by' => $transactionsInvoice->created_by,
+                                        'invoice_id' => $userProfileImage->file_id,
+                                        'invoice_price' =>  $invoicePrice,
+                                    ]);
+                                }
+                                if (isset($transactionsInvoice->invoice_name) && $transactionsInvoice->invoice_name  &&  strlen($transactionsInvoice->invoice_name) > 1) {
+
+                                    $invoiceName = '';
+                                    if ($transactionsInvoice->invoice_name) {
+                                        $invoiceName = $transactionsInvoice->invoice_name;
+                                    }
+
+                                    $userProfileImage = FileSystem::create([
+                                        'user_file_name' => $invoiceName,
                                     ]);
                                     $invoicePrice = 0;
                                     if ($transactionsInvoice->invoice_price) {

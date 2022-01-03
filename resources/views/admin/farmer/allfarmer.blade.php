@@ -226,10 +226,10 @@
                         DATE</a></span>
                 &nbsp |
                 <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'currentyear')) }}">
-                        2021
+                        2022
                         SEASON</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2020
+                <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'lastyear')) }}"> 2021
                         SEASON</a></span>
                 &nbsp |
                 <span class="ml-md-2 hover"> <a href="{{ url('admin/allfarmer') }}"> ALL TIME</a></span>
