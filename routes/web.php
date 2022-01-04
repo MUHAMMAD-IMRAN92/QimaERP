@@ -273,11 +273,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('report/generateCfeDrying', 'ReportController@generateCfeDrying');
         Route::post('report/generateWarehouse', 'ReportController@generateWarehouse');
 
-        Route::get('lot_mixing' , 'LotMixingController@index')->name('lotMixing');
-
+        Route::get('lot_mixing', 'LotMixingController@index')->name('lotMixing');
+        Route::get('lot_mixing/filterByDays', 'LotMixingController@filterByDays');
 
 
         //Duplication
-        Route::get('duplication' , 'BatchNumberController@duplication')->name('duplication');
+        Route::get('duplication', 'BatchNumberController@duplication')->name('duplication');
     });
 });
