@@ -779,7 +779,12 @@
                                                                 -
                                                             </td>
                                                             <td>
-                                                                -
+                                                                @if (str_contains($transaction->batch_number , '000'))
+                                                        
+                                                                MicroLot
+                                                                @else
+                                                                Single Farmer
+                                                                @endif
                                                             </td>
                                                             <td>
                                                                 @foreach ($transaction->details as $detail)
