@@ -1,6 +1,7 @@
 <?php
 
 use App\Center;
+use App\Http\Controllers\CropsterReportController;
 use App\Transaction;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
@@ -282,5 +283,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         //Duplication
         Route::get('duplication', 'BatchNumberController@duplication')->name('duplication');
+
+        //Cropster Report
+        Route::post('add_cropster_report', 'CropsterReportController@index')->name('AddCropsterReport');
     });
 });

@@ -363,6 +363,7 @@ class FarmerController extends Controller
         $farmer = $farmer->transactions();
         $farmer->image = $farmer->getImage();
         $farmer->cnicImage = $farmer->cnic();
+        $farmer->cropsterReports = $farmer->cropsterReports();
 
         return view('admin.farmer.farmer_profile', [
             'farmer' => $farmer
