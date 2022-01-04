@@ -625,7 +625,7 @@
         </div>
     </div>
     <hr class="ml-2">
-    <div class="">
+    <div class="ml-2">
         <strong>
             <b>Cropster Reports</b>
         </strong>
