@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Governerate;
+use App\Region;
 use Illuminate\Http\Request;
 use App\Transaction;
+use App\Village;
 use Carbon\Carbon;
 
 class LotMixingController extends Controller
@@ -155,5 +158,73 @@ class LotMixingController extends Controller
                 'transactions' => $transactions,
             ]);
         }
+    }
+    public function betweenDate(Request $request)
+    {
+        $transactions = Transaction::with('details')
+            ->where('is_parent', 0)
+            ->where('sent_to', 24)
+            ->whereBetween('created_at', [$request->from, $request->to])
+            ->orderBy('transaction_id', 'desc')
+            ->get();
+        return view('admin.lotMixing.view', [
+            'transactions' => $transactions,
+        ]);
+    }
+    public function filterLotMixingByGovernrate(Request $request)
+    {
+        $id = $request->from;
+
+        $governorate = Governerate::find($id);
+        $governorateCode = $governorate->governerate_code;
+        $regions = Region::where('status', 1)->where('region_code', 'LIKE', $governorateCode . '%')->get();
+        $transactions = Transaction::with('details')
+            ->where('batch_number', 'LIKE', $governorateCode . '%')
+            ->where('is_parent', 0)
+            ->where('sent_to', 24)
+            ->orderBy('transaction_id', 'desc')
+            ->get();
+        return response()->json([
+            'view' => view('admin.lotMixing.view', [
+                'transactions' => $transactions,
+            ])->render(),
+            'regions' => $regions
+        ]);
+    }
+    public function filterLotMixingByRegion(Request $request)
+    {
+        $id = $request->from;
+        $region = Region::find($id);
+        $regionCode = $region->region_code;
+        $villages = Village::where('status', 1)->where('village_code', 'LIKE', $regionCode . '%')->get();
+        $transactions = Transaction::with('details')
+            ->where('batch_number', 'LIKE', '%' . $regionCode . '%')
+            ->where('is_parent', 0)
+            ->where('sent_to', 24)
+            ->orderBy('transaction_id', 'desc')
+            ->get();
+        return response()->json([
+            'view' => view('admin.lotMixing.view', [
+                'transactions' => $transactions,
+            ])->render(),
+            'villages' => $villages
+        ]);
+    }
+    public function filterLotMixingByvillage(Request $request)
+    {
+        $id = $request->from;
+        $village = Village::find($id);
+        $villageCode = $village->village_code;
+        $transactions = Transaction::with('details')
+            ->where('batch_number', 'LIKE', '%' . $villageCode . '%')
+            ->where('is_parent', 0)
+            ->where('sent_to', 24)
+            ->orderBy('transaction_id', 'desc')
+            ->get();
+        return response()->json([
+            'view' => view('admin.lotMixing.view', [
+                'transactions' => $transactions,
+            ])->render()
+        ]);
     }
 }

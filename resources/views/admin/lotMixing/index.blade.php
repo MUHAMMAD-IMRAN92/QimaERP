@@ -213,14 +213,14 @@
 
                 $.ajax({
 
-                    url: "{{ url('admin/regionByDate') }}",
+                    url: "{{ url('admin/lot_mixing/betweenDate') }}",
                     type: "GET",
                     data: {
                         'from': from,
                         'to': to
                     },
                     success: function(data) {
-                        $('#transactionGraph').html(data);
+                        $('#table-body').html(data);
                         console.log(data);
                     }
                 });
@@ -233,7 +233,7 @@
                 });
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/filterRegionByGovernrate') }}",
+                    url: "{{ url('admin/lot_mixing/filterLotMixingByGovernrate') }}",
                     type: "GET",
                     data: {
                         'from': from,
@@ -251,7 +251,7 @@
                         });
 
                         $('#regions_dropdown').append(html);
-                        $('#transactionGraph').html(data.view);
+                        $('#table-body').html(data.view);
 
                     }
                 });
@@ -265,7 +265,7 @@
 
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/filterRegionByRegions') }}",
+                    url: "{{ url('admin/lot_mixing/filterLotMixingByRegion') }}",
                     type: "GET",
                     data: {
                         'from': from,
@@ -283,7 +283,7 @@
 
 
                         $('#village_dropdown').append(html);
-                        $('#transactionGraph').html(data.view);
+                        $('#table-body').html(data.view);
                         console.log(data);
 
 
@@ -299,14 +299,14 @@
 
                 let from = e.target.value;
                 $.ajax({
-                    url: "{{ url('admin/filterRegionByVillages') }}",
+                    url: "{{ url('admin/lot_mixing/filterLotMixingByvillage') }}",
                     type: "GET",
                     data: {
                         'from': from,
 
                     },
                     success: function(data) {
-                        $('#transactionGraph').html(data.view);
+                        $('#table-body').html(data.view);
                         console.log(data);
                     }
                 });

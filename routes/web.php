@@ -275,7 +275,10 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('lot_mixing', 'LotMixingController@index')->name('lotMixing');
         Route::get('lot_mixing/filterByDays', 'LotMixingController@filterByDays');
-
+        Route::get('lot_mixing/betweenDate', 'LotMixingController@betweenDate');
+        Route::get('lot_mixing/filterLotMixingByGovernrate', 'LotMixingController@filterLotMixingByGovernrate');
+        Route::get('lot_mixing/filterLotMixingByRegion', 'LotMixingController@filterLotMixingByRegion');
+        Route::get('lot_mixing/filterLotMixingByvillage', 'LotMixingController@filterLotMixingByvillage');
 
         //Duplication
         Route::get('duplication', 'BatchNumberController@duplication')->name('duplication');
