@@ -524,6 +524,12 @@
                 $('#milling-form').attr('action',
                     '{{ URL::to('admin/packaging/approval') }}');
             });
+            const myTimeout = setTimeout(myGreeting, 5000);
+
+            function myGreeting() {
+                $(".alert").css('display', 'none');
+            }
+
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
