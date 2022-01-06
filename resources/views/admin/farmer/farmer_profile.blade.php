@@ -349,6 +349,14 @@
                     </button>
                 </div>
             @endif
+            @if (Session()->has('dmsg'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session()->get('msg') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
 
             <div class="row anchor  btn-color-darkRed add-button justify-content-end">
                 <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">EDIT
@@ -388,7 +396,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-primary">
-                                        Uploade Report
+                                        UploadF Report
                                     </button>
                                 </div>
                             </div>

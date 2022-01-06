@@ -537,8 +537,9 @@
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active">Lot Mixing</li>
+                                <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase mt-3">ADD
+                                    CROPSTER REPORT</button>
+                               {{--  /<li class="btn btn-dark bg-transparent border-0 add-button text-uppercase"><a href="#"></a></li>  --}}
                             </ol>
                         </div>
                     </div>
@@ -602,7 +603,7 @@
                         Governrate
                     </span>
                     <select class="ml-md-2" name="" id="governorate_dropdown">
-                        <option value="0" selected disabled>Select Governrate</option>
+                        <option value="0" selected disabled>Select Governorate</option>
                         <option value="1">
                             1
                         </option>
@@ -688,7 +689,7 @@
                                                         <th>Farmer Name</th>
                                                         <th>Code</th>
                                                         <th>Harvest Date</th>
-                                                        <th>Governerate</th>
+                                                        <th>Governorate</th>
                                                         <th>Region</th>
                                                         <th>VIllage</th>
                                                         <th>Altitude</th>
@@ -779,11 +780,11 @@
                                                                 -
                                                             </td>
                                                             <td>
-                                                                @if (str_contains($transaction->batch_number , '000'))
-                                                        
-                                                                MicroLot
+                                                                @if (str_contains($transaction->batch_number, '000'))
+
+                                                                    MicroLot
                                                                 @else
-                                                                Single Farmer
+                                                                    Single Farmer
                                                                 @endif
                                                             </td>
                                                             <td>

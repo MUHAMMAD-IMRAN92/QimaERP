@@ -177,7 +177,7 @@ class Farmer extends Model
     public function cropsterReports()
     {
         $farmerId = $this->farmer_id;
-        $urls =   CropsterReport::where('entity_type', 1)->where('entity_id', $farmerId)->get();
+        $urls =   CropsterReport::where('entity_type', 1)->where('entity_id', $farmerId)->orderByDesc('created_at')->get();
         return $urls;
     }
 }
