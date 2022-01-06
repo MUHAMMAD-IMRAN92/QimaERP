@@ -15,7 +15,7 @@ class LotMixingController extends Controller
     {
         $transactions = Transaction::with('details')
             ->where('is_parent', 0)
-            ->where('sent_to', 24)
+            ->whereIn('sent_to', [24, 29])
             ->orderBy('transaction_id', 'desc')
             ->get();
         // $allTransactions = array();
@@ -50,7 +50,7 @@ class LotMixingController extends Controller
 
             $transactions = Transaction::with('details')
                 ->where('is_parent', 0)
-                ->where('sent_to', 24)
+                ->whereIn('sent_to', [24, 29])
                 ->whereDate('created_at', $date)
                 ->orderBy('transaction_id', 'desc')
                 ->get();
@@ -63,7 +63,7 @@ class LotMixingController extends Controller
 
             $transactions = Transaction::with('details')
                 ->where('is_parent', 0)
-                ->where('sent_to', 24)->whereDate('created_at', $yesterday)
+                ->whereIn('sent_to', [24, 29])->whereDate('created_at', $yesterday)
                 ->orderBy('transaction_id', 'desc')
                 ->get();
             return view('admin.lotMixing.view', [
@@ -77,7 +77,7 @@ class LotMixingController extends Controller
             $year = $date->year;
             $transactions = Transaction::with('details')
                 ->where('is_parent', 0)
-                ->where('sent_to', 24)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
+                ->whereIn('sent_to', [24, 29])->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)
                 ->orderBy('transaction_id', 'desc')
                 ->get();
             return view('admin.lotMixing.view', [
@@ -92,7 +92,7 @@ class LotMixingController extends Controller
 
             $transactions = Transaction::with('details')
                 ->where('is_parent', 0)
-                ->where('sent_to', 24)->whereYear('created_at', $year)
+                ->whereIn('sent_to', [24, 29])->whereYear('created_at', $year)
                 ->orderBy('transaction_id', 'desc')
                 ->get();
             return view('admin.lotMixing.view', [
@@ -107,7 +107,7 @@ class LotMixingController extends Controller
 
             $transactions = Transaction::with('details')
                 ->where('is_parent', 0)
-                ->where('sent_to', 24)->whereBetween('created_at', [$start, $end])
+                ->whereIn('sent_to', [24, 29])->whereBetween('created_at', [$start, $end])
                 ->orderBy('transaction_id', 'desc')
                 ->get();
             return view('admin.lotMixing.view', [
@@ -122,7 +122,7 @@ class LotMixingController extends Controller
 
             $transactions = Transaction::with('details')
                 ->where('is_parent', 0)
-                ->where('sent_to', 24)->whereBetween('created_at', [$start, $date])
+                ->whereIn('sent_to', [24, 29])->whereBetween('created_at', [$start, $date])
                 ->orderBy('transaction_id', 'desc')
                 ->get();
             return view('admin.lotMixing.view', [
@@ -136,7 +136,7 @@ class LotMixingController extends Controller
 
             $transactions = Transaction::with('details')
                 ->where('is_parent', 0)->whereBetween('created_at', [$start, $date])
-                ->where('sent_to', 24)
+                ->whereIn('sent_to', [24, 29])
                 ->orderBy('transaction_id', 'desc')
                 ->get();
             return view('admin.lotMixing.view', [
@@ -151,7 +151,7 @@ class LotMixingController extends Controller
 
             $transactions = Transaction::with('details')
                 ->where('is_parent', 0)
-                ->where('sent_to', 24)->whereYear('created_at', $year)
+                ->whereIn('sent_to', [24, 29])->whereYear('created_at', $year)
                 ->orderBy('transaction_id', 'desc')
                 ->get();
             return view('admin.lotMixing.view', [
@@ -163,7 +163,7 @@ class LotMixingController extends Controller
     {
         $transactions = Transaction::with('details')
             ->where('is_parent', 0)
-            ->where('sent_to', 24)
+            ->whereIn('sent_to', [24, 29])
             ->whereBetween('created_at', [$request->from, $request->to])
             ->orderBy('transaction_id', 'desc')
             ->get();
@@ -181,7 +181,7 @@ class LotMixingController extends Controller
         $transactions = Transaction::with('details')
             ->where('batch_number', 'LIKE', $governorateCode . '%')
             ->where('is_parent', 0)
-            ->where('sent_to', 24)
+            ->whereIn('sent_to', [24, 29])
             ->orderBy('transaction_id', 'desc')
             ->get();
         return response()->json([
@@ -200,7 +200,7 @@ class LotMixingController extends Controller
         $transactions = Transaction::with('details')
             ->where('batch_number', 'LIKE', '%' . $regionCode . '%')
             ->where('is_parent', 0)
-            ->where('sent_to', 24)
+            ->whereIn('sent_to', [24, 29])
             ->orderBy('transaction_id', 'desc')
             ->get();
         return response()->json([
@@ -218,7 +218,7 @@ class LotMixingController extends Controller
         $transactions = Transaction::with('details')
             ->where('batch_number', 'LIKE', '%' . $villageCode . '%')
             ->where('is_parent', 0)
-            ->where('sent_to', 24)
+            ->whereIn('sent_to', [24, 29])
             ->orderBy('transaction_id', 'desc')
             ->get();
         return response()->json([

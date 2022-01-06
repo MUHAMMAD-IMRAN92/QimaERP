@@ -201,7 +201,7 @@
             $('#myTable').DataTable({
                 columnDefs: [{
                     orderable: false,
-                    targets: [11, 13]
+                    targets: [11, 13, 14]
                 }],
                 order: [
                     [1, 'asc']
@@ -520,6 +520,10 @@
                     }
                 });
             });
+            $('#pack-approval').on('click', function() {
+                $('#milling-form').attr('action',
+                    '{{ URL::to('admin/packaging/approval') }}');
+            });
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
@@ -539,7 +543,7 @@
                             <ol class="breadcrumb float-sm-right">
                                 <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase mt-3">ADD
                                     CROPSTER REPORT</button>
-                               {{--  /<li class="btn btn-dark bg-transparent border-0 add-button text-uppercase"><a href="#"></a></li>  --}}
+                                {{-- /<li class="btn btn-dark bg-transparent border-0 add-button text-uppercase"><a href="#"></a></li> --}}
                             </ol>
                         </div>
                     </div>
@@ -646,7 +650,8 @@
 
                                             </div>
                                         @endif
-                                        <form class="milling-form" action="{{ route('mixing.store') }}" method="POST">
+                                        <form class="milling-form" action="{{ route('mixing.store') }}" method="POST"
+                                            id="milling-form">
                                             {{ csrf_field() }}
                                             <table
                                                 class="milling-table lot_mixing-table table table-borderless border-0 custom-table text-center"
@@ -707,6 +712,10 @@
                                                         <th id='milling-th'><button type="button" class="btn btn-primary"
                                                                 data-toggle="modal" data-target="#exampleModal">
                                                                 Cofirm Mixing
+                                                            </button></th>
+                                                        <th><button type="submit" class="btn btn-primary"
+                                                                id='pack-approval'>
+                                                                Packaging Approval
                                                             </button></th>
                                                     </tr>
                                                 </thead>
@@ -804,6 +813,22 @@
                                                                     $gov = $batchExplode[0];
                                                                 @endphp
                                                                 @if ($transaction->sent_to == 24)
+                                                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
+                                                                        name="mixings[]"
+                                                                        value="{{ $transaction->transaction_id }}"
+                                                                        class="check_gov{{ $transaction->transaction_id }}"
+                                                                        onClick="checkGov('<?= $gov ?>',{{ $transaction->transaction_id }})">
+                                                                @endif
+
+                                                            </td>
+                                                            <td>
+                                                                @php
+
+                                                                    $batchNumber = $transaction->batch_number;
+                                                                    $batchExplode = explode('-', $batchNumber);
+                                                                    $gov = $batchExplode[0];
+                                                                @endphp
+                                                                @if ($transaction->sent_to == 29)
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                         name="mixings[]"
                                                                         value="{{ $transaction->transaction_id }}"
