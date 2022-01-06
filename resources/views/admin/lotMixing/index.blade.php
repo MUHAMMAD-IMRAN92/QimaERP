@@ -686,7 +686,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Transaction id</th>
-                                                        <th>Farmer Name</th>
+                                                        <th>Name</th>
                                                         <th>Code</th>
                                                         <th>Harvest Date</th>
                                                         <th>Governorate</th>
