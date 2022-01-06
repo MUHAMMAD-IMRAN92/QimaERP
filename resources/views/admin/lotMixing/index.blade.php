@@ -660,7 +660,7 @@
                                             id="milling-form">
                                             {{ csrf_field() }}
                                             <table
-                                                class="milling-table lot_mixing-table table table-borderless border-0 custom-table text-center"
+                                                class="milling-table table table-borderless border-0 custom-table text-center"
                                                 style="border-collapse: separate;" id="myTable">
                                                 <!-- Button trigger modal -->
 
