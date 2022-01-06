@@ -830,10 +830,9 @@
                                                                 @endphp
                                                                 @if ($transaction->sent_to == 29)
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                        name="mixings[]"
+                                                                        name="approvals[]"
                                                                         value="{{ $transaction->transaction_id }}"
-                                                                        class="check_gov{{ $transaction->transaction_id }}"
-                                                                        onClick="checkGov('<?= $gov ?>',{{ $transaction->transaction_id }})">
+                                                                        class="check_gov{{ $transaction->transaction_id }}">
                                                                 @endif
 
                                                             </td>
