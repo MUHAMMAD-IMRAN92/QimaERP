@@ -530,6 +530,15 @@
                 $(".alert").css('display', 'none');
             }
 
+            $('.checkSentTo24').on('click', function() {
+                console.log('');
+                $('.checkSentTo29').prop('checked', false);
+            });
+            $('.checkSentTo29').on('click', function() {
+                console.log('');
+                $('.checkSentTo24').prop('checked', false);
+            });
+
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
@@ -812,33 +821,20 @@
                                                                 -
                                                             </td>
                                                             <td>
-                                                                @php
 
-                                                                    $batchNumber = $transaction->batch_number;
-                                                                    $batchExplode = explode('-', $batchNumber);
-                                                                    $gov = $batchExplode[0];
-                                                                @endphp
                                                                 @if ($transaction->sent_to == 24)
-                                                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                        name="mixings[]"
+                                                                    <input type="checkbox" name="mixings[]"
                                                                         value="{{ $transaction->transaction_id }}"
-                                                                        class="check_gov{{ $transaction->transaction_id }}"
-                                                                        onClick="checkGov('<?= $gov ?>',{{ $transaction->transaction_id }})">
+                                                                        class="checkSentTo24">
                                                                 @endif
 
                                                             </td>
                                                             <td>
-                                                                @php
 
-                                                                    $batchNumber = $transaction->batch_number;
-                                                                    $batchExplode = explode('-', $batchNumber);
-                                                                    $gov = $batchExplode[0];
-                                                                @endphp
                                                                 @if ($transaction->sent_to == 29)
-                                                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                        name="approvals[]"
+                                                                    <input type="checkbox" name="approvals[]"
                                                                         value="{{ $transaction->transaction_id }}"
-                                                                        class="check_gov{{ $transaction->transaction_id }}">
+                                                                        class="checkSentTo29">
                                                                 @endif
 
                                                             </td>
