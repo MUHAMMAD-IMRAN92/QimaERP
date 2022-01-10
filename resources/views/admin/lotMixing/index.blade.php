@@ -531,16 +531,29 @@
             }
 
             $('.checkSentTo24').on('click', function() {
-
+                console.log('');
                 $('.checkSentTo29').prop('checked', false);
                 $('#pack-approval').prop('disabled', true);
                 $('#cnf-mixing').prop('disabled', false);
+                if ($('.checkSentTo24').prop('checked')) {
+                    $('#pack-approval').prop('disabled', true);
+                } else {
+                    $('#pack-approval').prop('disabled', false);
+                }
+
             });
             $('.checkSentTo29').on('click', function() {
 
                 $('.checkSentTo24').prop('checked', false);
                 $('#cnf-mixing').prop('disabled', true);
                 $('#pack-approval').prop('disabled', false);
+                if ($('.checkSentTo29').prop('checked')) {
+                    $('#cnf-mixing').prop('disabled', true);
+                } else {
+                    $('#cnf-mixing').prop('disabled', false);
+                }
+
+
             });
 
         });
