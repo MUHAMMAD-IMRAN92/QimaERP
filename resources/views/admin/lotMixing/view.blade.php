@@ -79,16 +79,18 @@
             -
         </td>
         <td>
-            @php
 
-                $batchNumber = $transaction->batch_number;
-                $batchExplode = explode('-', $batchNumber);
-                $gov = $batchExplode[0];
-            @endphp
             @if ($transaction->sent_to == 24)
-                <input type="checkbox" data-gov-rate="<?= $gov ?>" name="mixings[]"
-                    value="{{ $transaction->transaction_id }}" class="check_gov{{ $transaction->transaction_id }}"
-                    onClick="checkGov('<?= $gov ?>',{{ $transaction->transaction_id }})">
+                <input type="checkbox" name="mixings[]" value="{{ $transaction->transaction_id }}"
+                    class="checkSentTo24">
+            @endif
+
+        </td>
+        <td>
+
+            @if ($transaction->sent_to == 29)
+                <input type="checkbox" name="approvals[]" value="{{ $transaction->transaction_id }}"
+                    class="checkSentTo29">
             @endif
 
         </td>
