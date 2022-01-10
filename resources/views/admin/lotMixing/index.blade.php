@@ -531,12 +531,16 @@
             }
 
             $('.checkSentTo24').on('click', function() {
-                console.log('');
+
                 $('.checkSentTo29').prop('checked', false);
+                $('#pack-approval').prop('disabled', true);
+                $('#cnf-mixing').prop('disabled', false);
             });
             $('.checkSentTo29').on('click', function() {
-                console.log('');
+
                 $('.checkSentTo24').prop('checked', false);
+                $('#cnf-mixing').prop('disabled', true);
+                $('#pack-approval').prop('disabled', false);
             });
 
         });
@@ -725,7 +729,8 @@
                                                                 id="submitbtn" class="btn btn-primary">Confirm
                                                                 Mixing</button> --}}
                                                         <th id='milling-th'><button type="button" class="btn btn-primary"
-                                                                data-toggle="modal" data-target="#exampleModal">
+                                                                data-toggle="modal" data-target="#exampleModal"
+                                                                id="cnf-mixing">
                                                                 Cofirm Mixing
                                                             </button></th>
                                                         <th><button type="submit" class="btn btn-primary"
