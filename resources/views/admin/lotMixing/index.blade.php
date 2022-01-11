@@ -744,7 +744,7 @@
                                                         <th id='milling-th'><button type="button" class="btn btn-primary"
                                                                 data-toggle="modal" data-target="#exampleModal"
                                                                 id="cnf-mixing">
-                                                                Cofirm Mixing
+                                                                Confirm Mixing
                                                             </button></th>
                                                         <th><button type="submit" class="btn btn-primary"
                                                                 id='pack-approval'>
