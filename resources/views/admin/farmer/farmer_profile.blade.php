@@ -396,7 +396,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-primary">
-                                        UploadF Report
+                                        Upload Report
                                     </button>
                                 </div>
                             </div>
@@ -645,7 +645,7 @@
         <div class="">
             <ul>
                 @foreach ($farmer->cropsterReports as $url)
-                    <li> <a href="{{ $url->file_url }}" target="_blank">{{ Str::afterLast($url->file_url, '/') }}</a>
+                    <li> <a href="{{ $url->file_url }}" target="_blank">Report {{ Str::afterLast($url->file_url, '/') }}</a>
                     </li>
                 @endforeach
             </ul>
