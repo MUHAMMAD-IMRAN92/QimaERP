@@ -127,7 +127,7 @@ class BatchNumberController extends Controller
         //     $tran->details = $details;
         //     return $tran;
         // });
-        $data = Transaction::with('details')->where('sent_to', 2)->where('is_parent' , 0)->where('batch_number', 'NOT LIKE', '%000%')->orderBy('batch_number')->get();
+        $data = Transaction::with('details')->where('sent_to', 2)->where('is_parent', '!=', 0)->where('batch_number', 'NOT LIKE', '%000%')->orderBy('batch_number')->get();
         // return $data;
         return view('duplication', [
             'data' => $data,
