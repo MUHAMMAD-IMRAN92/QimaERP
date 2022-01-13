@@ -507,24 +507,6 @@
                     }
                 });
             });
-            $('.checkSentTo13').on('click', function() {
-                console.log('1');
-                {{--  --}}
-
-            });
-            {{-- $('.checkSentTo140').on('click', function() {
-
-                $('.checkSentTo140').prop('checked', false);
-                $('#mix').prop('disabled', true);
-                $('#pack-approval').prop('disabled', false);
-                if ($('.checkSentTo13').prop('checked')) {
-                    $('#mix').prop('disabled', true);
-                } else {
-                    $('#mix').prop('disabled', false);
-                }
-
-
-            }); --}}
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
@@ -672,7 +654,7 @@
                                                         <th> <button class="milling-link" type="submit" id="mix">Mix
                                                                 Batches</button> </th>
                                                         <th id='milling-th'><button class="milling-link" type="submit"
-                                                                id="milling-btn">Confirm
+                                                                id="millingbtn">Confirm
                                                                 Milling</button></th>
                                                     </tr>
                                                 </thead>
@@ -761,7 +743,7 @@
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                         name="transaction_id[]"
                                                                         value="{{ $transaction['transaction']->transaction_id }}"
-                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }} checkSentTo13"
+                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }} checkBox13"
                                                                         onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
                                                                 @endif
 
@@ -772,7 +754,7 @@
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                         name="transaction_id[]"
                                                                         value="{{ $transaction['transaction']->transaction_id }}"
-                                                                        class='checkSentTo140'>
+                                                                        class="checkSentTo140" onclick="disableFun()">
                                                                 @endif
                                                             </td>
 
@@ -797,19 +779,26 @@
             </div>
         </div>
         <script>
+            function disableFun() {
+                $('.checkBox13').prop('checked', false);
+
+                if ($(".checkSentTo140:checkbox:checked").length > 0) {
+                    console.log($(".checkSentTo140:checkbox:checked").length);
+                    $('#mix').prop('disabled', true);
+                } else {
+                    console.log('0');
+                    $('#mix').prop('disabled', false);
+                }
+            }
             var gov = null;
 
             function checkGov(checkgov, id) {
-
-
                 $('.checkSentTo140').prop('checked', false);
-                $('#milling-btn').prop('disabled', true);
-                console.log($('#milling-btn').prop('disabled'));
-                $('#mix').prop('disabled', false);
-                if ($('.checkSentTo24').prop('checked')) {
-                    $('#milling-btn').prop('disabled', true);
+
+                if ($(".checkBox13:checkbox:checked").length > 0) {
+                    $('#millingbtn').attr('disabled', true);
                 } else {
-                    $('#milling-btn').prop('disabled', false);
+                    $('#millingbtn').attr('disabled', false);
                 }
                 if (gov == null) {
                     gov = checkgov;
@@ -835,9 +824,6 @@
                 });
                 $('#milling-th').on('click', function() {
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
-                });
-                $('.checkSentTo140').on('click' , function(){
-                    
                 });
             });
 

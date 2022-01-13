@@ -94,7 +94,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('farmer_by_date_profile/{date}', 'FarmerController@filter_farmer_profile_by_date');
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
-        Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
+        Route::get('farmer/profile/{id}', 'FarmerController@farmerProfile')->name('farmer.profile');
         Route::get('farmer_invoice/invoices/{id}', 'FarmerController@farmerInvoice');
         Route::get('farmer_id_documents/{id}', 'FarmerController@farmeridCard');
         Route::get('farmer_invoice/{id}', 'FarmerController@transaction_invoice');

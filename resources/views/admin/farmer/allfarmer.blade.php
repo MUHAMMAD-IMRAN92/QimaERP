@@ -66,7 +66,56 @@
     </style>
     <script>
         $(document).ready(function() {
-            $('#myTable').css('display', 'none');
+            var url = "{{ url()->current() }}";
+            if (url.includes('today')) {
+                $('#myTable').DataTable();
+                $('#myTable').css('display', 'block');
+                $('.farmer_tabel_ajax').css('display', 'none');
+                console.log('today');
+            }
+            if (url.includes('yesterday')) {
+                $('#myTable').DataTable();
+                $('#myTable').css('display', 'block');
+                $('.farmer_tabel_ajax').css('display', 'none');
+                console.log('yesterday');
+            }
+            if (url.includes('weekToDate')) {
+                $('#myTable').DataTable();
+                $('#myTable').css('display', 'block');
+                $('.farmer_tabel_ajax').css('display', 'none');
+                console.log('weekToDate');
+            }
+            if (url.includes('monthToDate')) {
+                $('#myTable').DataTable();
+                $('#myTable').css('display', 'block');
+                $('.farmer_tabel_ajax').css('display', 'none');
+                console.log('monthToDate');
+            }
+            if (url.includes('lastmonth')) {
+                $('#myTable').DataTable();
+                $('#myTable').css('display', 'block');
+                $('.farmer_tabel_ajax').css('display', 'none');
+                console.log('lastmonth');
+            }
+            if (url.includes('yearToDate')) {
+                $('#myTable').DataTable();
+                $('#myTable').css('display', 'block');
+                $('.farmer_tabel_ajax').css('display', 'none');
+                console.log('yearToDate');
+            }
+            if (url.includes('currentyear')) {
+                $('#myTable').DataTable();
+                $('#myTable').css('display', 'block');
+                $('.farmer_tabel_ajax').css('display', 'none');
+                console.log('currentyear');
+            }
+            if (url.includes('lastyear')) {
+                $('#myTable').DataTable();
+                $('#myTable').css('display', 'block');
+                $('.farmer_tabel_ajax').css('display', 'none');
+                console.log('lastyear');
+            }
+
             $(function() {
                 let base_path = "<?= asset('/') ?>";
                 $(document).ready(function() {
@@ -88,13 +137,12 @@
 
                                             `<td>`
                                     } else {
-                                        let image =
-                                            `{{Storage::disk('s3')->url('images/` +
-                                            row.image + `')}}`;
+
 
                                         return `<td class=" border-left-0 border-top-0">` +
-                                            `<img class="famerimg mr-2"  src=" ${image} "  alt=""/>` +
-                                            `<td>`
+                                            `<img class="famerimg mr-2"   src="HTTPS://QIMA.S3.US-EAST-2.AMAZONAWS.COM/images/` +
+                                            row.image + `"alt =""/>` +
+                                            `</td>`
                                     }
 
                                 }
@@ -107,7 +155,7 @@
                             },
                             {
                                 "mRender": function(data, type, row) {
-                                    return '<td >' +
+                                    return '<td>' +
                                         row.farmer_code + '</td>'
                                 }
                             },
@@ -180,7 +228,8 @@
                                     return '<td >' +
                                         "-" + '</td>'
                                 }
-                            }, {
+                            },
+                            {
 
                                 "mRender": function(data, type, row) {
                                     return '<td >' +
@@ -196,8 +245,9 @@
                             },
                             {
                                 "mRender": function(data, type, row) {
-                                    return `<td >` +
-
+                                    return `<td>` +
+                                        `<a  href="{{ url('admin/farmer/profile/`+row.farmer_id +`') }}"><i
+                                            class="fas fa-eye"></i></a>` +
                                         '</td>'
                                 }
                             }
@@ -251,7 +301,8 @@
                         let html =
                             ' <option value="0" selected disabled>Select Region</option>';
                         data.regions.forEach(region => {
-                            html += '<option value="' + region.region_id + '">' + region
+                            html += '<option value="' + region.region_id + '">' +
+                                region
                                 .region_title + '</option>';
                         });
 
@@ -569,44 +620,54 @@
                                         </tbody>
 
                                     </table>
-                                    <table class="table table-borderless border-0 custom-table text-center" id="farmerTable"
-                                        style="font-size:13px;">
-                                        <thead>
-                                            <tr align="center">
-                                                <th class="border-0"></th>
-                                                <!-- <th class="border border-dark">ID</th> -->
-                                                <th class="border border-dark font-weight-lighter">Name</th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Code</th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">First
-                                                    Purchase</th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Last
-                                                    Purchase</th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Governorate
-                                                </th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Region</th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Village
-                                                </th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Quantity
-                                                </th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Coffee
-                                                    Bought</th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Price Paid
-                                                </th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Reward</th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Money Owed
-                                                </th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Cupping
-                                                    Score</th>
-                                                <th class="border border-dark border-left-0 font-weight-lighter">Cup
-                                                    Profile
-                                                </th>
+                                    <div class="farmer_tabel_ajax">
+                                        <table class="table table-borderless border-0 custom-table text-center"
+                                            id="farmerTable" style="font-size:13px;">
+                                            <thead>
+                                                <tr align="center">
+                                                    <th class="border-0"></th>
+                                                    <!-- <th class="border border-dark">ID</th> -->
+                                                    <th class="border border-dark font-weight-lighter">Name</th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Code
+                                                    </th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">First
+                                                        Purchase</th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Last
+                                                        Purchase</th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">
+                                                        Governorate
+                                                    </th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Region
+                                                    </th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Village
+                                                    </th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">
+                                                        Quantity
+                                                    </th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Coffee
+                                                        Bought</th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Price
+                                                        Paid
+                                                    </th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Reward
+                                                    </th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Money
+                                                        Owed
+                                                    </th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">
+                                                        Cupping
+                                                        Score</th>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">Cup
+                                                        Profile
+                                                    </th>
 
-                                                <th class="border border-dark border-left-0 font-weight-lighter">View
-                                                    Details</th>
-                                            </tr>
-                                        </thead>
+                                                    <th class="border border-dark border-left-0 font-weight-lighter">View
+                                                        Details</th>
+                                                </tr>
+                                            </thead>
 
-                                    </table>
+                                        </table>
+                                    </div>
                                 </div>
                                 <!-- /.card-body -->
                             </div>

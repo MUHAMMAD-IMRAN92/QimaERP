@@ -381,10 +381,10 @@ class FarmerController extends Controller
     {
         Farmer::where('farmer_id', $id)->delete();
     }
-    public function farmerProfile(Farmer $farmer)
+    public function farmerProfile($id)
     {
 
-
+        $farmer = Farmer::find($id);
         $governorate = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
         $region = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
         $village = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
