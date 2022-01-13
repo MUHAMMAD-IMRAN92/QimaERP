@@ -63,6 +63,10 @@
             border: none;
         }
 
+        #farmerTable td:nth-child(2) {
+            border-left: 1px solid #343a40;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
