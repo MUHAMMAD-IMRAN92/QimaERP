@@ -76,7 +76,7 @@
                     <td class="border border-dark border-left-0 border-top-0">
                         {{ $farmer->cup_profile }}</td>
                     <td class="border border-dark border-left-0 border-top-0"> <a
-                            href="{{ url('admin/farmer/profile/', $farmer->farmer_id) }}"><i
+                            href="{{ url('admin/farmer/profile', $farmer->farmer_id) }}"><i
                                 class="fas fa-eye"></i></a></td>
 
 
