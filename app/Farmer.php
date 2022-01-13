@@ -44,7 +44,9 @@ class Farmer extends Model
 
         return $village;
     }
-
+function Fregion(){
+    // return $this->hasOne();
+}
     public function getRegion()
     {
         $region = $this->farmer_code;

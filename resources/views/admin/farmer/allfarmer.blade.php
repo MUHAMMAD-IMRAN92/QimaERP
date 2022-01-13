@@ -41,11 +41,179 @@
             border-radius: 50%;
         }
 
+        #farmerTable td {
+            border-bottom: 1px solid #343a40;
+            border-right: 1px solid #343a40;
+        }
+
+        #farmerTable th {
+            border: none !important;
+            border-top: 1px solid #dee2e6 !important;
+            border-bottom: 1px solid #343a40 !important;
+            font-weight: bold !important;
+        }
+
+        #farmerTable th:first-child {
+            border: none !important;
+            border-bottom: 1px solid #343a40 !important;
+        }
+
+        #farmerTable td:first-child {
+            border-right: 1px solid #343a40;
+            border: none;
+        }
+
     </style>
     <script>
         $(document).ready(function() {
-            $('#myTable').DataTable();
+            $('#myTable').css('display', 'none');
+            $(function() {
+                let base_path = "<?= asset('/') ?>";
+                $(document).ready(function() {
+                    var t = $('#farmerTable').DataTable({
+                        "processing": true,
+                        "serverSide": true,
+                        "deferRender": true,
+                        "language": {
+                            "searchPlaceholder": "Search here"
+                        },
+                        "ajax": {
+                            url: '<?= asset('admin/getallFarmer') ?>'
+                        },
+                        "columns": [{
+                                "mRender": function(data, type, row) {
+                                    if (row.picture_id == null) {
+                                        return `<td class=" border-left-0 border-top-0">` +
+                                            `<img class="famerimg mr-2"  src='{{ Storage::disk('s3')->url('images/dumy.png') }}' alt="" />` +
+
+                                            `<td>`
+                                    } else {
+                                        let image =
+                                            `{{Storage::disk('s3')->url('images/` +
+                                            row.image + `')}}`;
+
+                                        return `<td class=" border-left-0 border-top-0">` +
+                                            `<img class="famerimg mr-2"  src=" ${image} "  alt=""/>` +
+                                            `<td>`
+                                    }
+
+                                }
+                            },
+                            {
+                                "mRender": function(data, type, row) {
+                                    return `<td>` +
+                                        row.farmer_name + `</td>`
+                                }
+                            },
+                            {
+                                "mRender": function(data, type, row) {
+                                    return '<td >' +
+                                        row.farmer_code + '</td>'
+                                }
+                            },
+                            {
+                                "mRender": function(data, type, row) {
+                                    return '<td >' +
+                                        row.first_purchase + '</td>'
+                                }
+                            },
+                            {
+                                "mRender": function(data, type, row) {
+                                    return '<td>' +
+                                        row.last_purchase + '</td>'
+                                }
+                            },
+                            {
+
+                                "mRender": function(data, type, row) {
+                                    return '<td >' +
+                                        row.governerate_title + '</td>'
+                                }
+                            },
+                            {
+
+                                "mRender": function(data, type, row) {
+                                    return '<td>' +
+                                        row.region_title + '</td>'
+                                }
+                            },
+                            {
+
+                                "mRender": function(data, type, row) {
+                                    return '<td >' +
+                                        row.village_title + '</td>'
+                                }
+                            },
+                            {
+
+                                "mRender": function(data, type, row) {
+                                    return '<td >' +
+                                        row.quantity + '</td>'
+                                }
+                            },
+                            {
+                                "mRender": function(data, type, row) {
+                                    if (row.price_per_kg == null || row
+                                        .price_per_kg == 0) {
+                                        return row.price * row.quantity
+                                    } else {
+                                        return row.price_per_kg * row.quantity
+                                    }
+                                }
+                            },
+                            {
+
+                                "mRender": function(data, type, row) {
+                                    return '<td>' +
+                                        row.paidprice + '</td>'
+                                }
+                            },
+                            {
+                                "mRender": function(data, type, row) {
+                                    return '<td>' +
+                                        row.reward + '</td>'
+                                }
+                            },
+                            {
+
+                                "mRender": function(data, type, row) {
+                                    return '<td >' +
+                                        "-" + '</td>'
+                                }
+                            }, {
+
+                                "mRender": function(data, type, row) {
+                                    return '<td >' +
+                                        row.cupping_score + '</td>'
+                                }
+                            },
+                            {
+
+                                "mRender": function(data, type, row) {
+                                    return '<td>' +
+                                        row.cup_profile + '</td> </tr>'
+                                }
+                            },
+                            {
+                                "mRender": function(data, type, row) {
+                                    return `<td >` +
+
+                                        '</td>'
+                                }
+                            }
+
+
+                        ],
+                        "columnDefs": [{
+                            "targets": [0, 1, 2],
+                            "orderable": false
+                        }, ],
+                        "order": false
+                    });
+                });
+            });
             $('#to').on('change', function() {
+                $('#myTable').css('display', 'block');
                 let from = $('#from').val();
                 let to = $('#to').val();
 
@@ -214,7 +382,8 @@
                         DATE
                     </a></span>
                 &nbsp |
-                <span class="ml-md-2 hover"> <a href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH
+                <span class="ml-md-2 hover"> <a
+                        href="{{ url('admin/farmer_by_date/' . ($date = 'monthToDate')) }}">MONTH
                         TO
                         DATE</a></span>
                 &nbsp |
@@ -307,7 +476,7 @@
                                         <thead>
                                             <tr align="center">
                                                 <th class="border-0"></th>
-                                                <!-- <th class="border border-dark">ID</th> -->
+
                                                 <th class="border border-dark font-weight-lighter">Name</th>
                                                 <th class="border border-dark border-left-0 font-weight-lighter">Code</th>
                                                 <th class="border border-dark border-left-0 font-weight-lighter">First
@@ -338,64 +507,104 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($farmers as $farmer)
-                                                <tr>
-                                                    @if ($farmer->picture_id == null)
-                                                        <td class="border-0"> <img class="famerimg mr-2"
-                                                                src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
-                                                                alt="">
-                                                        </td>
-                                                    @else
-                                                        <td class="border-0"> <img class="famerimg mr-2"
-                                                                src="{{ Storage::disk('s3')->url('images/' . $farmer->image) }}"
-                                                                alt=""></td>
-                                                    @endif
+                                            @if (isset($farmers))
+                                                @foreach ($farmers as $farmer)
+                                                    <tr>
+                                                        @if ($farmer->picture_id == null)
+                                                            <td class="border-0"> <img class="famerimg mr-2"
+                                                                    src="{{ Storage::disk('s3')->url('images/' . 'dumy.png') }}"
+                                                                    alt="">
+                                                            </td>
+                                                        @else
+                                                            <td class="border-0"> <img class="famerimg mr-2"
+                                                                    src="{{ Storage::disk('s3')->url('images/' . $farmer->image) }}"
+                                                                    alt=""></td>
+                                                        @endif
 
-                                                    <!-- <td class="border border-dark border-top-0">{{ $farmer->farmer_id }}</td> -->
-                                                    <td class="border border-dark border-top-0">
-                                                        {{ $farmer->farmer_name }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->farmer_code }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->first_purchase }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->last_purchase }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->governerate_title }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->region_title }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->village_title }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ number_format($farmer->quantity) }}</td>
-                                                    @if ($farmer->price_per_kg == null || $farmer->price_per_kg == 0)
+                                                        <!-- <td class="border border-dark border-top-0">{{ $farmer->farmer_id }}</td> -->
+                                                        <td class="border border-dark border-top-0">
+                                                            {{ $farmer->farmer_name }}</td>
                                                         <td class="border border-dark border-left-0 border-top-0">
-                                                            {{ number_format($farmer->price * $farmer->quantity) }}</td>
-                                                    @else
+                                                            {{ $farmer->farmer_code }}</td>
                                                         <td class="border border-dark border-left-0 border-top-0">
-                                                            {{ number_format($farmer->price_per_kg * $farmer->quantity) }}
-                                                        </td>
-                                                    @endif
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->paidprice }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->reward }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->id }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->cupping_score }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0">
-                                                        {{ $farmer->cup_profile }}</td>
-                                                    <td class="border border-dark border-left-0 border-top-0"> <a
-                                                            href="{{ route('farmer.profile', $farmer) }}"><i
-                                                                class="fas fa-eye"></i></a></td>
+                                                            {{ $farmer->first_purchase }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->last_purchase }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->governerate_title }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->region_title }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->village_title }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ number_format($farmer->quantity) }}</td>
+                                                        @if ($farmer->price_per_kg == null || $farmer->price_per_kg == 0)
+                                                            <td class="border border-dark border-left-0 border-top-0">
+                                                                {{ number_format($farmer->price * $farmer->quantity) }}
+                                                            </td>
+                                                        @else
+                                                            <td class="border border-dark border-left-0 border-top-0">
+                                                                {{ number_format($farmer->price_per_kg * $farmer->quantity) }}
+                                                            </td>
+                                                        @endif
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->paidprice }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->reward }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->id }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->cupping_score }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0">
+                                                            {{ $farmer->cup_profile }}</td>
+                                                        <td class="border border-dark border-left-0 border-top-0"> <a
+                                                                href="{{ route('farmer.profile', $farmer) }}"><i
+                                                                    class="fas fa-eye"></i></a></td>
 
 
-                                                </tr>
+                                                    </tr>
 
-                                            @endforeach
-
+                                                @endforeach
+                                            @endif
                                         </tbody>
+
+                                    </table>
+                                    <table class="table table-borderless border-0 custom-table text-center" id="farmerTable"
+                                        style="font-size:13px;">
+                                        <thead>
+                                            <tr align="center">
+                                                <th class="border-0"></th>
+                                                <!-- <th class="border border-dark">ID</th> -->
+                                                <th class="border border-dark font-weight-lighter">Name</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Code</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">First
+                                                    Purchase</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Last
+                                                    Purchase</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Governorate
+                                                </th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Region</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Village
+                                                </th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Quantity
+                                                </th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Coffee
+                                                    Bought</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Price Paid
+                                                </th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Reward</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Money Owed
+                                                </th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Cupping
+                                                    Score</th>
+                                                <th class="border border-dark border-left-0 font-weight-lighter">Cup
+                                                    Profile
+                                                </th>
+
+                                                <th class="border border-dark border-left-0 font-weight-lighter">View
+                                                    Details</th>
+                                            </tr>
+                                        </thead>
 
                                     </table>
                                 </div>

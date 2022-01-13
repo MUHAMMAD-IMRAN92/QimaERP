@@ -350,13 +350,13 @@
                 </div>
             @endif
             @if (Session()->has('dmsg'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session()->get('msg') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session()->get('msg') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
 
             <div class="row anchor  btn-color-darkRed add-button justify-content-end">
                 <span class="ml-2"> <a href="{{ url('admin/editfarmer/' . $farmer->farmer_id) }}">EDIT
@@ -645,7 +645,8 @@
         <div class="">
             <ul>
                 @foreach ($farmer->cropsterReports as $url)
-                    <li> <a href="{{ $url->file_url }}" target="_blank">Report {{ Str::afterLast($url->file_url, '/') }}</a>
+                    <li> <a href="{{ $url->file_url }}" target="_blank">Report
+                            {{ Str::afterLast($url->file_url, '/') }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -677,7 +678,9 @@
                         {{ $transaction->created_at }} /{{ $farmer->farmer_name }}
                         /{{ App\User::find($transaction->created_by)->first_name . '' . App\User::find($transaction->created_by)->last_name }}/
                         {{ $farmer->governerate_title }} /
-                        {{ $farmer->region_title }} /
+                        {{ $farmer->region_title }} / <a
+                            href="{{ url('admin/farmer_invoice/' . $transaction->transaction_id) }}"><span> Upload
+                                Invoice</span></a>
                         @php
                             echo floatval($transaction->details->sum('container_weight'));
                         @endphp

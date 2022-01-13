@@ -79,6 +79,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         //Farmer Controller
         Route::get('allfarmer', 'FarmerController@index')->middleware('auth');
+        Route::get('getallFarmer', 'FarmerController@getAllFarmers')->middleware('auth');
         Route::get('getfarmer', 'FarmerController@getFarmerAjax');
         Route::get('editfarmer/{id}', 'FarmerController@edit');
         Route::post('updatefarmer', 'FarmerController@update');
@@ -96,6 +97,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
         Route::get('farmer_invoice/invoices/{id}', 'FarmerController@farmerInvoice');
         Route::get('farmer_id_documents/{id}', 'FarmerController@farmeridCard');
+        Route::get('farmer_invoice/{id}', 'FarmerController@transaction_invoice');
 
         //Coffee Buyer
         Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');

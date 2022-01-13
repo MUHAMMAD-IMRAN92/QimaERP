@@ -29,32 +29,67 @@ class FarmerController extends Controller
         $governorates = Governerate::all();
         $regions = Region::all();
         $villages = Village::all();
-        $farmers = Farmer::where('status', 1)->get();
+        // $farmers = Farmer::where('status', 1)->paginate(10);
 
-        $farmers = $farmers->map(function ($farmer) {
+        // $data['farmers'] = $farmers->map(function ($farmer) {
+        //     // $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
+        //     // $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
+        //     $farmer->image = $farmer->getImage();
+        //     // $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
+        //     $farmer->first_purchase = $farmer->getfirstTransaction();
+        //     $farmer->last_purchase = $farmer->getlastTransaction();
+        //     $farmer->quantity = $farmer->quntity();
+        //     $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
+        //     $farmer->paidprice = $farmer->paidPriceFromInvoice();
+
+        //     return $farmer;
+        // });
+
+        // return $farmers;
+        return view('admin.farmer.allfarmer', [
+            // 'farmers' => $farmers,
+            'governorates' => $governorates,
+            'regions' => $regions,
+            'villages' => $villages
+        ]);
+    }
+    function getAllFarmers(Request $request)
+    {
+        $draw = $request->get('draw');
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $search = $request->search['value'];
+        $total_members = Farmer::where('status', 1)->when($search, function ($q) use ($search) {
+            $q->where(function ($q) use ($search) {
+                $q->where('farmer_name', 'like', "%$search%")->orwhere('farmer_code', 'like', "%$search%");
+            });
+        })->count();
+        $faqs = Farmer::where('status', 1)->when($search, function ($q) use ($search) {
+            $q->where(function ($q) use ($search) {
+                $q->where('farmer_name', 'like', "%$search%")->orwhere('farmer_code', 'like', "%$search%");
+            });
+        })->orderBy('farmer_name', 'asc')->skip((int) $start)->take((int) $length);
+        $all_faqs = $faqs->get();
+        $all_faqs = $all_faqs->map(function ($farmer) {
             $farmer->region_title = $farmer->getRegion() ? $farmer->getRegion()->region_title : null;
             $farmer->village_title = $farmer->getVillage() ? $farmer->getVillage()->village_title : null;
             $farmer->image = $farmer->getImage();
             $farmer->governerate_title = $farmer->getgovernerate() ? $farmer->getgovernerate()->governerate_title : null;
             $farmer->first_purchase = $farmer->getfirstTransaction();
             $farmer->last_purchase = $farmer->getlastTransaction();
-
             $farmer->quantity = $farmer->quntity();
             $farmer->price = $farmer->price() ? $farmer->price()->price_per_kg : null;
             $farmer->paidprice = $farmer->paidPriceFromInvoice();
-
             return $farmer;
         });
-
-        // return $farmers;
-        return view('admin.farmer.allfarmer', [
-            'farmers' => $farmers,
-            'governorates' => $governorates,
-            'regions' => $regions,
-            'villages' => $villages
-        ]);
+        $data = array(
+            'draw' => $draw,
+            'recordsTotal' => $total_members,
+            'recordsFiltered' => $total_members,
+            'data' => $all_faqs,
+        );
+        return json_encode($data);
     }
-
     function getFarmerAjax(Request $request)
     {
         $draw = $request->get('draw');
@@ -1213,5 +1248,9 @@ class FarmerController extends Controller
         return view('admin.farmer.views.idcard ', [
             'farmer' =>  $farmer
         ])->render();
+    }
+    public function transaction_invoice($id)
+    {
+        return $id;
     }
 }

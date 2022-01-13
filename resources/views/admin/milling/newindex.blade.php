@@ -507,6 +507,24 @@
                     }
                 });
             });
+            $('.checkSentTo13').on('click', function() {
+                console.log('1');
+                {{--  --}}
+
+            });
+            {{-- $('.checkSentTo140').on('click', function() {
+
+                $('.checkSentTo140').prop('checked', false);
+                $('#mix').prop('disabled', true);
+                $('#pack-approval').prop('disabled', false);
+                if ($('.checkSentTo13').prop('checked')) {
+                    $('#mix').prop('disabled', true);
+                } else {
+                    $('#mix').prop('disabled', false);
+                }
+
+
+            }); --}}
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
@@ -651,11 +669,10 @@
                                                         <th>Quantity</th>
                                                         <th>Stage</th>
                                                         <th>Times</th>
-                                                        <th> <button class="milling-link" type="submit" id="submitbtn"
-                                                                class="btn btn-primary">Mix
+                                                        <th> <button class="milling-link" type="submit" id="mix">Mix
                                                                 Batches</button> </th>
                                                         <th id='milling-th'><button class="milling-link" type="submit"
-                                                                id="submitbtn" class="btn btn-primary">Confirm
+                                                                id="milling-btn">Confirm
                                                                 Milling</button></th>
                                                     </tr>
                                                 </thead>
@@ -708,7 +725,7 @@
                                                                         if ($farmer) {
                                                                             $village = App\Village::where('village_code', $farmer->village_code)->first();
                                                                         }
-                                                                        
+
                                                                     @endphp
                                                                     @if ($village->village_title)
                                                                         {{ $village->village_title }}
@@ -744,24 +761,18 @@
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                         name="transaction_id[]"
                                                                         value="{{ $transaction['transaction']->transaction_id }}"
-                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }}"
+                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }} checkSentTo13"
                                                                         onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
                                                                 @endif
 
                                                             </td>
                                                             <td>
-                                                                @php
 
-                                                                    $batchNumber = $transaction['transaction']->batch_number;
-                                                                    $batchExplode = explode('-', $batchNumber);
-                                                                    $gov = $batchExplode[0];
-                                                                @endphp
                                                                 @if ($transaction['transaction']->sent_to == 140)
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                         name="transaction_id[]"
                                                                         value="{{ $transaction['transaction']->transaction_id }}"
-                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }}"
-                                                                        onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                                        class='checkSentTo140'>
                                                                 @endif
                                                             </td>
 
@@ -790,7 +801,16 @@
 
             function checkGov(checkgov, id) {
 
-                //alert(id);
+
+                $('.checkSentTo140').prop('checked', false);
+                $('#milling-btn').prop('disabled', true);
+                console.log($('#milling-btn').prop('disabled'));
+                $('#mix').prop('disabled', false);
+                if ($('.checkSentTo24').prop('checked')) {
+                    $('#milling-btn').prop('disabled', true);
+                } else {
+                    $('#milling-btn').prop('disabled', false);
+                }
                 if (gov == null) {
                     gov = checkgov;
                 } else {
@@ -808,6 +828,7 @@
                     gov = null;
                 }
             }
+
             $(document).ready(function() {
                 $('#submitbtn').on('click', function() {
                     $('#submitbtn').hide();
@@ -815,7 +836,9 @@
                 $('#milling-th').on('click', function() {
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
                 });
-
+                $('.checkSentTo140').on('click' , function(){
+                    
+                });
             });
 
             const slider = document.querySelector(".milling-form");
