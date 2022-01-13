@@ -535,7 +535,7 @@
                 $('.checkSentTo29').prop('checked', false);
                 $('#pack-approval').prop('disabled', true);
                 $('#cnf-mixing').prop('disabled', false);
-                if ($('.checkSentTo24').prop('checked')) {
+                if ($(".checkSentTo24:checkbox:checked").length > 0) {
                     $('#pack-approval').prop('disabled', true);
                 } else {
                     $('#pack-approval').prop('disabled', false);
@@ -547,7 +547,7 @@
                 $('.checkSentTo24').prop('checked', false);
                 $('#cnf-mixing').prop('disabled', true);
                 $('#pack-approval').prop('disabled', false);
-                if ($('.checkSentTo29').prop('checked')) {
+                if ($(".checkSentTo29:checkbox:checked").length > 0) {
                     $('#cnf-mixing').prop('disabled', true);
                 } else {
                     $('#cnf-mixing').prop('disabled', false);
