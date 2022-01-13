@@ -781,12 +781,12 @@
         <script>
             function disableFun() {
                 $('.checkBox13').prop('checked', false);
-
                 if ($(".checkSentTo140:checkbox:checked").length > 0) {
                     console.log($(".checkSentTo140:checkbox:checked").length);
                     $('#mix').prop('disabled', true);
+                    $('#millingbtn').attr('disabled', false);
                 } else {
-                    console.log('0');
+                    console.log($(".checkSentTo140:checkbox:checked").length);
                     $('#mix').prop('disabled', false);
                 }
             }
@@ -797,6 +797,7 @@
 
                 if ($(".checkBox13:checkbox:checked").length > 0) {
                     $('#millingbtn').attr('disabled', true);
+                    $('#mix').prop('disabled', false);
                 } else {
                     $('#millingbtn').attr('disabled', false);
                 }
