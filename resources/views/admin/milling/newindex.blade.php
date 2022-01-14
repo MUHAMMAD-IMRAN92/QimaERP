@@ -651,15 +651,14 @@
                                                         <th>Quantity</th>
                                                         <th>Stage</th>
                                                         <th>Times</th>
-                                                        <th> <button class="milling-link" type="submit" id="submitbtn"
-                                                                class="btn btn-primary">Mix
+                                                        <th> <button class="milling-link" type="submit" id="mix">Mix
                                                                 Batches</button> </th>
                                                         <th id='milling-th'><button class="milling-link" type="submit"
-                                                                id="submitbtn" class="btn btn-primary">Confirm
+                                                                id="millingbtn">Confirm
                                                                 Milling</button></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody >
                                                     @foreach ($transactions as $transaction)
                                                         <tr>
 
@@ -708,7 +707,7 @@
                                                                         if ($farmer) {
                                                                             $village = App\Village::where('village_code', $farmer->village_code)->first();
                                                                         }
-                                                                        
+
                                                                     @endphp
                                                                     @if ($village->village_title)
                                                                         {{ $village->village_title }}
@@ -744,24 +743,18 @@
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                         name="transaction_id[]"
                                                                         value="{{ $transaction['transaction']->transaction_id }}"
-                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }}"
+                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }} checkBox13"
                                                                         onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
                                                                 @endif
 
                                                             </td>
                                                             <td>
-                                                                @php
 
-                                                                    $batchNumber = $transaction['transaction']->batch_number;
-                                                                    $batchExplode = explode('-', $batchNumber);
-                                                                    $gov = $batchExplode[0];
-                                                                @endphp
                                                                 @if ($transaction['transaction']->sent_to == 140)
                                                                     <input type="checkbox" data-gov-rate="<?= $gov ?>"
                                                                         name="transaction_id[]"
                                                                         value="{{ $transaction['transaction']->transaction_id }}"
-                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }}"
-                                                                        onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                                        class="checkSentTo140" onclick="disableFun()">
                                                                 @endif
                                                             </td>
 
@@ -786,11 +779,28 @@
             </div>
         </div>
         <script>
+            function disableFun() {
+                $('.checkBox13').prop('checked', false);
+                if ($(".checkSentTo140:checkbox:checked").length > 0) {
+                    console.log($(".checkSentTo140:checkbox:checked").length);
+                    $('#mix').prop('disabled', true);
+                    $('#millingbtn').attr('disabled', false);
+                } else {
+                    console.log($(".checkSentTo140:checkbox:checked").length);
+                    $('#mix').prop('disabled', false);
+                }
+            }
             var gov = null;
 
             function checkGov(checkgov, id) {
+                $('.checkSentTo140').prop('checked', false);
 
-                //alert(id);
+                if ($(".checkBox13:checkbox:checked").length > 0) {
+                    $('#millingbtn').attr('disabled', true);
+                    $('#mix').prop('disabled', false);
+                } else {
+                    $('#millingbtn').attr('disabled', false);
+                }
                 if (gov == null) {
                     gov = checkgov;
                 } else {
@@ -808,14 +818,15 @@
                     gov = null;
                 }
             }
+
             $(document).ready(function() {
                 $('#submitbtn').on('click', function() {
                     $('#submitbtn').hide();
                 });
                 $('#milling-th').on('click', function() {
+                    console.log('imran');
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
                 });
-
             });
 
             const slider = document.querySelector(".milling-form");

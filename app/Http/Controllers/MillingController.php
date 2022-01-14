@@ -257,8 +257,9 @@ class MillingController extends Controller
     {
         $transactions = collect();
         $batches = BatchNumber::pluck('batch_number');
+        $senttoArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 140, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
         foreach ($batches as $batch) {
-            $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->with('details')->latest()
+            $transaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', $senttoArr)->where('is_parent', 0)->with('details')->latest()
                 ->first();
             if ($transaction) {
                 if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
@@ -401,6 +402,7 @@ class MillingController extends Controller
     public function filterByDays(Request $request)
     {
         $date = $request->date;
+        $senttoArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 140, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
         if ($date == 'today') {
             $date = Carbon::today()->toDateString();
 
@@ -409,7 +411,7 @@ class MillingController extends Controller
             $batches = BatchNumber::pluck('batch_number');
             foreach ($batches as $batch) {
 
-                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereDate('created_at', $date)->with('details')->latest()->first();
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereIn('sent_to', $senttoArr)->whereDate('created_at', $date)->with('details')->latest()->first();
                 if ($transaction) {
                     if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
@@ -472,7 +474,7 @@ class MillingController extends Controller
             $transactions = collect();
             $batches = BatchNumber::pluck('batch_number');
             foreach ($batches as $batch) {
-                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereDate('created_at', $yesterday)->with('details')->latest()->first();
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereIn('sent_to', $senttoArr)->whereDate('created_at', $yesterday)->with('details')->latest()->first();
                 if ($transaction) {
                     if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
@@ -537,7 +539,7 @@ class MillingController extends Controller
             $transactions = collect();
             $batches = BatchNumber::pluck('batch_number');
             foreach ($batches as $batch) {
-                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->with('details')->latest()->first();
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereIn('sent_to', $senttoArr)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->with('details')->latest()->first();
                 if ($transaction) {
                     if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
@@ -604,7 +606,7 @@ class MillingController extends Controller
             $transactions = collect();
             $batches = BatchNumber::pluck('batch_number');
             foreach ($batches as $batch) {
-                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereYear('created_at', $year)->with('details')->latest()->first();
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereIn('sent_to', $senttoArr)->whereYear('created_at', $year)->with('details')->latest()->first();
                 if ($transaction) {
                     if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
@@ -670,7 +672,7 @@ class MillingController extends Controller
             $transactions = collect();
             $batches = BatchNumber::pluck('batch_number');
             foreach ($batches as $batch) {
-                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereBetween('created_at', [$start, $end])->with('details')->latest()->first();
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereIn('sent_to', $senttoArr)->whereBetween('created_at', [$start, $end])->with('details')->latest()->first();
                 if ($transaction) {
                     if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
@@ -736,7 +738,7 @@ class MillingController extends Controller
             $transactions = collect();
             $batches = BatchNumber::pluck('batch_number');
             foreach ($batches as $batch) {
-                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereBetween('created_at', [$start, $date])->with('details')->latest()->first();
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereIn('sent_to', $senttoArr)->whereBetween('created_at', [$start, $date])->with('details')->latest()->first();
                 if ($transaction) {
                     if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
@@ -801,7 +803,74 @@ class MillingController extends Controller
             $transactions = collect();
             $batches = BatchNumber::pluck('batch_number');
             foreach ($batches as $batch) {
-                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereBetween('created_at', [$start, $date])->with('details')->latest()->first();
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereIn('sent_to', $senttoArr)->whereBetween('created_at', [$start, $date])->with('details')->latest()->first();
+                if ($transaction) {
+                    if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
+                        $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
+                        if ($newtransaction) {
+                            foreach ($newtransaction as $t) {
+                                if ($t != null) {
+
+                                    $transactions->push($t);
+                                }
+                            }
+                        }
+                    } else {
+                        if ($transaction != null) {
+
+                            $transactions->push($transaction);
+                        }
+                    }
+                }
+            }
+            // return $transactions;
+            $data = array();
+            $allTransactions = array();
+            // $transactions = Transaction::where('is_parent', 0)
+
+            //     ->whereHas('log', function ($q) {
+            //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+            //     })->whereHas('transactionDetail', function ($q) {
+            //         $q->where('container_status', 0);
+            //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+            //         $query->where('container_status', 0);
+            //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+            // return $transactions;
+            foreach ($transactions as $key => $tran) {
+                // if ($tran->sent_to == 13) {
+                $childTransaction = array();
+                $tran->makeHidden('log');
+                $removeLocalId = explode("-", $tran->batch_number);
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+                $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+                // array_push($allTransactions, $tran);
+                array_push($allTransactions, $transaction);
+                // }
+                // array_push($allTransactions, $tran);
+            }
+            $data['transactions'] = $allTransactions;
+            // return $data;
+            return view('admin.milling.indexajax', $data);
+        } elseif ($date == 'lastyear') {
+
+            $date = Carbon::now();
+
+
+            $year = $date->year - 1;
+
+            // $farmers = Farmer::whereYear('created_at', $year)->get();
+
+            $transactions = collect();
+            $batches = BatchNumber::pluck('batch_number');
+            foreach ($batches as $batch) {
+                $transaction = Transaction::where('batch_number', $batch)->where('is_parent', 0)->whereIn('sent_to', $senttoArr)->whereYear('created_at', $year)->with('details')->latest()->first();
                 if ($transaction) {
                     if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
