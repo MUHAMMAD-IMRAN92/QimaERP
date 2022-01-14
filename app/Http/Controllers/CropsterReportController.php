@@ -26,7 +26,7 @@ class CropsterReportController extends Controller
             ]);
             return redirect()->back()->with('msg', 'Report Uploaded Successfully!');
         } else {
-            return redirect()->back()->with('dmsg', 'Please select atleast any file.');
+            return redirect()->back()->with('dmsg', 'Please select any file.');
         }
     }
 }
