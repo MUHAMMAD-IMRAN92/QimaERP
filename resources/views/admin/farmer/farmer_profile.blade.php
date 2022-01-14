@@ -316,6 +316,10 @@
             //         }
             //     });
             // });
+
+            $('#upload_cropster_report').on('click', function() {
+                $('#upload_cropster_report').hide();
+            });
         });
     </script>
 
@@ -395,7 +399,7 @@
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary" id="upload_cropster_report">
                                         Upload Report
                                     </button>
                                 </div>
