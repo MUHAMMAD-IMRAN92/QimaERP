@@ -230,8 +230,9 @@
     margin-top: 10px;
 }
 .btn-color-darkRed, .add-button, .btn-color-darkRed a,.btn-color-darkRed:hover, .add-button:hover, .btn-color-darkRed a:hover{
-    color: #B23552 !important;
+    color: #9F0202 !important;
 }
+
 
 .table-bordered-custom td, .table-bordered-custom th{
     border: 1px solid #343a40!important;
