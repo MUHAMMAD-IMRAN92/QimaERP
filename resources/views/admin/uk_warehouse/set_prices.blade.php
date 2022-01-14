@@ -81,6 +81,7 @@
     </style>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="mx-lg-5">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             @if (session()->has('msg'))
@@ -92,7 +93,7 @@
                 <div class="row mb-2">
 
                     <div class="col-sm-6">
-                        <h1><b> Coffee Prices</b></h1>
+                        <h1 class="m-0 text-dark text-uppercase font-weight-lighter text-heading"> Coffee Prices</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -233,7 +234,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="submit" class="btn btn-success" value="Allocate To China ">
+                                <input type="submit" class="btn bg-green-btn" value="Allocate To China ">
                             </form>
                         </div>
                         <!-- /.col -->
@@ -244,6 +245,7 @@
         </section>
         <!-- /.content -->
     </div>
+</div>
     <script>
         $('#myModal').modal('show');
     </script>

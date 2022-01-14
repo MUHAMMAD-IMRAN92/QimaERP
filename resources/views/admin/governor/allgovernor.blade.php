@@ -6,7 +6,6 @@
             margin-left: 0.5em;
             width: 240px;
         }
-
     </style>
 
     <!-- Content Wrapper. Contains page content -->
@@ -19,7 +18,7 @@
                         <div class="col-sm-6">
                         </div>
                         <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
+                            <ol class="breadcrumb float-sm-right sss">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                                 <li class="breadcrumb-item active">All Governors</li>
                             </ol>
