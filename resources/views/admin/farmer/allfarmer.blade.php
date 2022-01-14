@@ -70,6 +70,7 @@
     </style>
     <script>
         $(document).ready(function() {
+
             var url = "{{ url()->current() }}";
             if (url.includes('today')) {
                 $('#myTable').DataTable();
@@ -118,6 +119,8 @@
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('lastyear');
+            } else {
+                $('#myTable').css('display', 'none');
             }
 
             $(function() {
