@@ -204,96 +204,152 @@ class MillOperativeController extends Controller
                         throw new Exception("Batch Number [{$transactionData->batch_number}] does not exists.");
                     }
 
-                    $transaction =  Transaction::create([
-                        'batch_number' => $transactionData->batch_number,
-                        'is_parent' => $transactionData->is_parent,
-                        'created_by' => $request->user()->user_id,
-                        'is_local' => FALSE,
-                        'local_code' => $transactionData->local_code,
-                        'is_special' => $parentTransaction->is_special,
-                        'is_mixed' => $transactionData->is_mixed,
-                        'transaction_type' => 1,
-                        'reference_id' => $parentTransaction->transaction_id,
-                        'transaction_status' => $status,
-                        'is_new' => 0,
-                        'sent_to' => 17,
-                        'is_server_id' => 1,
-                        'is_sent' => $transactionData->is_sent,
-                        'session_no' => $sessionNo,
-                        'ready_to_milled' => $transactionData->ready_to_milled,
-                        'is_in_process' => $transactionData->is_in_process,
-                        'is_update_center' => $transactionData->is_update_center,
-                        'local_session_no' => $transactionData->local_session_no,
-                        'local_created_at' => toSqlDT($transactionData->local_created_at),
-                        'local_updated_at' => toSqlDT($transactionData->local_updated_at)
-                    ]);
+                    // $oldTransaction = Transaction::where('batch_number', $transactionData->batch_number)->where('sent_to',  $transactionData->sent_to)
+                    //     ->where('local_code', $transactionData->local_code)->with('details')->last();
+                    // if (!$oldTransaction) {
+                        $transaction =  Transaction::create([
+                            'batch_number' => $transactionData->batch_number,
+                            'is_parent' => $transactionData->is_parent,
+                            'created_by' => $request->user()->user_id,
+                            'is_local' => FALSE,
+                            'local_code' => $transactionData->local_code,
+                            'is_special' => $parentTransaction->is_special,
+                            'is_mixed' => $transactionData->is_mixed,
+                            'transaction_type' => 1,
+                            'reference_id' => $parentTransaction->transaction_id,
+                            'transaction_status' => $status,
+                            'is_new' => 0,
+                            'sent_to' => 17,
+                            'is_server_id' => 1,
+                            'is_sent' => $transactionData->is_sent,
+                            'session_no' => $sessionNo,
+                            'ready_to_milled' => $transactionData->ready_to_milled,
+                            'is_in_process' => $transactionData->is_in_process,
+                            'is_update_center' => $transactionData->is_update_center,
+                            'local_session_no' => $transactionData->local_session_no,
+                            'local_created_at' => toSqlDT($transactionData->local_created_at),
+                            'local_updated_at' => toSqlDT($transactionData->local_updated_at)
+                        ]);
 
-                    $log = new TransactionLog();
-                    $log->action = $status;
-                    $log->created_by = $request->user()->user_id;
-                    $log->entity_id = $transactionData->center_id;
-                    $log->local_created_at = $transaction->local_created_at;
-                    $log->local_updated_at = $transaction->local_updated_at;
-                    $log->type =  $type;
-                    $log->center_name = $transactionData->center_name;
+                        $log = new TransactionLog();
+                        $log->action = $status;
+                        $log->created_by = $request->user()->user_id;
+                        $log->entity_id = $transactionData->center_id;
+                        $log->local_created_at = $transaction->local_created_at;
+                        $log->local_updated_at = $transaction->local_updated_at;
+                        $log->type =  $type;
+                        $log->center_name = $transactionData->center_name;
 
-                    $transaction->log()->save($log);
+                        $transaction->log()->save($log);
 
-                    foreach ($transactionArray['details'] as $detailArray) {
+                        foreach ($transactionArray['details'] as $detailArray) {
 
-                        $detailData = (object) $detailArray['detail'];
+                            $detailData = (object) $detailArray['detail'];
 
-                        $container = Container::where('container_number', $detailData->container_number)->first();
+                            $container = Container::where('container_number', $detailData->container_number)->first();
 
-                        if (!$container) {
-                            $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
+                            if (!$container) {
+                                $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
 
-                            $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
-                                return $detail['code'] == $containerCode;
-                            });
+                                $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
+                                    return $detail['code'] == $containerCode;
+                                });
 
-                            if (!$containerDetail) {
-                                throw new Exception('Container type not found.', 400);
+                                if (!$containerDetail) {
+                                    throw new Exception('Container type not found.', 400);
+                                }
+
+                                $container = new Container();
+                                $container->container_number = $detailData->container_number;
+                                $container->container_type = $containerDetail['id'];
+                                $container->capacity = 100;
+                                $container->created_by = $request->user()->user_id;
+
+                                $container->save();
                             }
 
-                            $container = new Container();
-                            $container->container_number = $detailData->container_number;
-                            $container->container_type = $containerDetail['id'];
-                            $container->capacity = 100;
-                            $container->created_by = $request->user()->user_id;
+                            $detail = new TransactionDetail();
 
-                            $container->save();
+                            $detail->container_number = $detailData->container_number;
+                            $detail->created_by = $request->user()->user_id;
+                            $detail->is_local = FALSE;
+                            $detail->container_weight = $detailData->container_weight;
+                            $detail->weight_unit = $detailData->weight_unit;
+                            $detail->center_id = $detailData->center_id;
+                            $detail->reference_id = $transaction->reference_id;
+
+                            $transaction->details()->save($detail);
+
+                            TransactionDetail::where('transaction_id', $transaction->reference_id)
+                                ->where('container_number', $detail->container_number)
+                                ->update(['container_status' => 1]);
+
+                            foreach ($detailArray['metas'] as $metaArray) {
+                                $metaData = (object) $metaArray;
+
+                                $meta = new Meta();
+                                $meta->key = $metaData->key;
+                                $meta->value = $metaData->value;
+                                $detail->metas()->save($meta);
+                            }
                         }
 
-                        $detail = new TransactionDetail();
+                        $transaction->load(['details.metas']);
 
-                        $detail->container_number = $detailData->container_number;
-                        $detail->created_by = $request->user()->user_id;
-                        $detail->is_local = FALSE;
-                        $detail->container_weight = $detailData->container_weight;
-                        $detail->weight_unit = $detailData->weight_unit;
-                        $detail->center_id = $detailData->center_id;
-                        $detail->reference_id = $transaction->reference_id;
+                        $savedTransactions->push($transaction);
+                    // }
+                    // else {
+                    //     foreach ($transactionArray['details'] as $detailArray) {
 
-                        $transaction->details()->save($detail);
+                    //         $detailData = (object) $detailArray['detail'];
 
-                        TransactionDetail::where('transaction_id', $transaction->reference_id)
-                            ->where('container_number', $detail->container_number)
-                            ->update(['container_status' => 1]);
+                    //         $container = Container::where('container_number', $detailData->container_number)->first();
 
-                        foreach ($detailArray['metas'] as $metaArray) {
-                            $metaData = (object) $metaArray;
+                    //         if (!$container) {
+                    //             $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
 
-                            $meta = new Meta();
-                            $meta->key = $metaData->key;
-                            $meta->value = $metaData->value;
-                            $detail->metas()->save($meta);
-                        }
-                    }
+                    //             $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
+                    //                 return $detail['code'] == $containerCode;
+                    //             });
 
-                    $transaction->load(['details.metas']);
+                    //             if (!$containerDetail) {
+                    //                 throw new Exception('Container type not found.', 400);
+                    //             }
 
-                    $savedTransactions->push($transaction);
+                    //             $container = new Container();
+                    //             $container->container_number = $detailData->container_number;
+                    //             $container->container_type = $containerDetail['id'];
+                    //             $container->capacity = 100;
+                    //             $container->created_by = $request->user()->user_id;
+
+                    //             $container->save();
+                    //         }
+                    //         foreach ($oldTransaction->details as $detail) {
+                    //             if ($detail->container_number == $detailData->container_number && $detail->container_weight == $detailData->container_weight) {
+                    //             } else {
+                    //                 $detail = new TransactionDetail();
+
+                    //                 $detail->container_number = $detailData->container_number;
+                    //                 $detail->created_by = $request->user()->user_id;
+                    //                 $detail->is_local = FALSE;
+                    //                 $detail->container_weight = $detailData->container_weight;
+                    //                 $detail->weight_unit = $detailData->weight_unit;
+                    //                 $detail->center_id = $detailData->center_id;
+                    //                 $detail->reference_id = $oldTransaction->reference_id;
+
+                    //                 $oldTransaction->details()->save($detail);
+                    //                 foreach ($detailArray['metas'] as $metaArray) {
+                    //                     $metaData = (object) $metaArray;
+
+                    //                     $meta = new Meta();
+                    //                     $meta->key = $metaData->key;
+                    //                     $meta->value = $metaData->value;
+                    //                     $detail->metas()->save($meta);
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 }
 
                 // This coffe is sent further to next managers [sorting manager for sorting, yemen operative for local market]
