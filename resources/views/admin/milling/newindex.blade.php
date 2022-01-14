@@ -658,7 +658,7 @@
                                                                 Milling</button></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody >
                                                     @foreach ($transactions as $transaction)
                                                         <tr>
 
@@ -824,6 +824,7 @@
                     $('#submitbtn').hide();
                 });
                 $('#milling-th').on('click', function() {
+                    console.log('imran');
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
                 });
             });

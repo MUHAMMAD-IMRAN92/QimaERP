@@ -1,321 +1,3 @@
-<script>
-    $(document).ready(function() {
-
-        $('#myTable').DataTable({
-            columnDefs: [{
-                orderable: false,
-                targets: [11, 12]
-            }],
-            order: [
-                [1, 'asc']
-            ]
-        });
-        $('#to').on('change', function() {
-            let from = $('#from').val();
-            let to = $('#to').val();
-
-            $.ajax({
-
-                url: "{{ url('admin/regionByDate') }}",
-                type: "GET",
-                data: {
-                    'from': from,
-                    'to': to
-                },
-                success: function(data) {
-                    $('#transactionGraph').html(data);
-                    console.log(data);
-                }
-            });
-        });
-        $('#governorate_dropdown').on('change', function(e) {
-            // let from = $('#governorate_dropdown').val();
-            $('.all_regions').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            let from = e.target.value;
-            $.ajax({
-                url: "{{ url('admin/filterRegionByGovernrate') }}",
-                type: "GET",
-                data: {
-                    'from': from,
-
-                },
-                success: function(data) {
-                    console.log(data);
-                    $('#regions_dropdown').empty();
-
-                    let html =
-                        ' <option value="0" selected disabled>Select Region</option>';
-                    data.regions.forEach(region => {
-                        html += '<option value="' + region.region_id + '">' + region
-                            .region_title + '</option>';
-                    });
-
-                    $('#regions_dropdown').append(html);
-                    $('#transactionGraph').html(data.view);
-
-                }
-            });
-        });
-        $('#regions_dropdown').on('change', function(e) {
-            // let from = $('#regions_dropdown').val();
-            $('.all_regions').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-
-            let from = e.target.value;
-            $.ajax({
-                url: "{{ url('admin/filterRegionByRegions') }}",
-                type: "GET",
-                data: {
-                    'from': from,
-
-                },
-                success: function(data) {
-                    $('#village_dropdown').empty();
-                    let html =
-                        ' <option value="0" selected disabled>Select Village</option>';
-                    data.villages.forEach(village => {
-                        html += '<option value="' + village.village_id + '">' +
-                            village
-                            .village_title + '</option>';
-                    });
-
-
-                    $('#village_dropdown').append(html);
-                    $('#transactionGraph').html(data.view);
-                    console.log(data);
-
-
-                }
-            });
-        });
-        $('#village_dropdown').on('change', function(e) {
-            // let from = $('#regions_dropdown').val();
-            $('.all_regions').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-
-            let from = e.target.value;
-            $.ajax({
-                url: "{{ url('admin/filterRegionByVillages') }}",
-                type: "GET",
-                data: {
-                    'from': from,
-
-                },
-                success: function(data) {
-                    $('#transactionGraph').html(data.view);
-                    console.log(data);
-                }
-            });
-        });
-        $('#today').on('click', function() {
-            $('.blacklink .hover').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            $(this).css({
-                'font-weight': 'bold',
-                'text-decoration': 'underline'
-            });
-            $('#loader').css('display', 'block');
-            $.ajax({
-                url: "{{ url('admin/newMilling/filterByDays') }}",
-                type: "GET",
-                data: {
-                    'date': 'today'
-                },
-                success: function(data) {
-
-                    $('#ajaxdiv').html(data);
-                    $('#loader').css('display', 'none');
-                    console.log(data);
-                }
-            });
-        });
-        $('#yesterday').on('click', function() {
-            $('.blacklink .hover').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            $(this).css({
-                'font-weight': 'bold',
-                'text-decoration': 'underline'
-            });
-            $('#loader').css('display', 'block');
-            $.ajax({
-                url: "{{ url('admin/newMilling/filterByDays') }}",
-                type: "GET",
-                data: {
-                    'date': 'yesterday'
-                },
-                success: function(data) {
-
-                    $('#ajaxdiv').html(data);
-                    $('#loader').css('display', 'none');
-
-                    console.log(data);
-                }
-            });
-        });
-        $('#weekToDate').on('click', function() {
-            $('.blacklink .hover').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            $(this).css({
-                'font-weight': 'bold',
-                'text-decoration': 'underline'
-            });
-            $('#loader').css('display', 'block');
-            $.ajax({
-                url: "{{ url('admin/newMilling/filterByDays') }}",
-                type: "GET",
-                data: {
-                    'date': 'weekToDate'
-                },
-                success: function(data) {
-
-                    $('#ajaxdiv').html(data);
-                    $('#loader').css('display', 'none');
-
-                    console.log(data);
-                }
-            });
-        });
-        $('#monthToDate').on('click', function() {
-            $('.blacklink .hover').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            $(this).css({
-                'font-weight': 'bold',
-                'text-decoration': 'underline'
-            });
-            $('#loader').css('display', 'block');
-            $.ajax({
-                url: "{{ url('admin/newMilling/filterByDays') }}",
-                type: "GET",
-                data: {
-                    'date': 'monthToDate'
-                },
-                success: function(data) {
-
-                    $('#ajaxdiv').html(data);
-                    $('#loader').css('display', 'none');
-
-                    console.log(data);
-                }
-            });
-        });
-        $('#lastmonth').on('click', function() {
-            $('.blacklink .hover').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            $(this).css({
-                'font-weight': 'bold',
-                'text-decoration': 'underline'
-            });
-            $('#loader').css('display', 'block');
-            $.ajax({
-                url: "{{ url('admin/newMilling/filterByDays') }}",
-                type: "GET",
-                data: {
-                    'date': 'lastmonth'
-                },
-                success: function(data) {
-
-                    $('#ajaxdiv').html(data);
-                    $('#loader').css('display', 'none');
-
-                    console.log(data);
-                }
-            });
-        });
-        $('#yearToDate').on('click', function() {
-            $('.blacklink .hover').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            $(this).css({
-                'font-weight': 'bold',
-                'text-decoration': 'underline'
-            });
-            $('#loader').css('display', 'block');
-            $.ajax({
-                url: "{{ url('admin/newMilling/filterByDays') }}",
-                type: "GET",
-                data: {
-                    'date': 'yearToDate'
-                },
-                success: function(data) {
-
-                    $('#ajaxdiv').html(data);
-                    $('#loader').css('display', 'none');
-
-                    console.log(data);
-                }
-            });
-        });
-        $('#currentyear').on('click', function() {
-            $('.blacklink .hover').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            $(this).css({
-                'font-weight': 'bold',
-                'text-decoration': 'underline'
-            });
-            $('#loader').css('display', 'block');
-            $.ajax({
-                url: "{{ url('admin/newMilling/filterByDays') }}",
-                type: "GET",
-                data: {
-                    'date': 'currentyear'
-                },
-                success: function(data) {
-
-                    $('#ajaxdiv').html(data);
-                    $('#loader').css('display', 'none');
-
-                    console.log(data);
-                }
-            });
-        });
-        $('#lastyear').on('click', function() {
-            $('.blacklink .hover').css({
-                'font-weight': 'normal',
-                'text-decoration': 'none'
-            });
-            $(this).css({
-                'font-weight': 'bold',
-                'text-decoration': 'underline'
-            });
-            $('#loader').css('display', 'block');
-            $.ajax({
-                url: "{{ url('admin/newMilling/filterByDays') }}",
-                type: "GET",
-                data: {
-                    'date': 'lastyear'
-                },
-
-                success: function(data) {
-
-                    $('#ajaxdiv').html(data);
-                    $('#loader').css('display', 'none');
-
-                    console.log(data);
-                }
-            });
-        });
-    });
-</script>
 <div class="col-md-12">
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -458,97 +140,111 @@
         <form>
 </div>
 <script>
-    function disableFun() {
-        $('.checkBox13').prop('checked', false);
-        if ($(".checkSentTo140:checkbox:checked").length > 0) {
-            console.log($(".checkSentTo140:checkbox:checked").length);
-            $('#mix').prop('disabled', true);
-            $('#millingbtn').attr('disabled', false);
-        } else {
-            console.log($(".checkSentTo140:checkbox:checked").length);
-            $('#mix').prop('disabled', false);
-        }
-    }
-    var gov = null;
-
-    function checkGov(checkgov, id) {
-        $('.checkSentTo140').prop('checked', false);
-
-        if ($(".checkBox13:checkbox:checked").length > 0) {
-            $('#millingbtn').attr('disabled', true);
-            $('#mix').prop('disabled', false);
-        } else {
-            $('#millingbtn').attr('disabled', false);
-        }
-        if (gov == null) {
-            gov = checkgov;
-        } else {
-            if (gov != checkgov) {
-                if ($('.check_gov' + id).prop("checked") == true) {
-                    alert("You can not mix two different governerates")
-                    $('.check_gov' + id).prop('checked', false);
-                }
-
-            }
-        }
-        checkBoxCount = $('input[type="checkbox"]:checked').length;
-        if (checkBoxCount == 0) {
-            console.log(checkBoxCount);
-            gov = null;
-        }
-    }
-
     $(document).ready(function() {
-        $('#submitbtn').on('click', function() {
-            $('#submitbtn').hide();
-        });
-        $('#milling-th').on('click', function() {
-            $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
-        });
-    });
 
-    const slider = document.querySelector(".milling-form");
-    const preventClick = (e) => {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    }
-    let isDown = false;
-    let isDragged = false;
-    let startX;
-    let scrollLeft;
+        $('#myTable').DataTable({
+            columnDefs: [{
+                orderable: false,
+                targets: [11, 12]
+            }],
+            order: [
+                [1, 'asc']
+            ]
+        });
 
-    slider.addEventListener("mousedown", e => {
-        isDown = true;
-        slider.classList.add("active");
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-    });
-    slider.addEventListener("mouseleave", () => {
-        isDown = false;
-        slider.classList.remove("active");
-    });
-    slider.addEventListener("mouseup", (e) => {
-        isDown = false;
-        const elements = document.querySelectorAll(".milling-table a");
-        if (isDragged) {
-            for (let i = 0; i < elements.length; i++) {
-                elements[i].addEventListener("click", preventClick);
-            }
-        } else {
-            for (let i = 0; i < elements.length; i++) {
-                elements[i].removeEventListener("click", preventClick);
+        function disableFun() {
+            $('.checkBox13').prop('checked', false);
+            if ($(".checkSentTo140:checkbox:checked").length > 0) {
+                console.log($(".checkSentTo140:checkbox:checked").length);
+                $('#mix').prop('disabled', true);
+                $('#millingbtn').attr('disabled', false);
+            } else {
+                console.log($(".checkSentTo140:checkbox:checked").length);
+                $('#mix').prop('disabled', false);
             }
         }
-        slider.classList.remove("active");
-        isDragged = false;
-    });
-    slider.addEventListener("mousemove", e => {
-        if (!isDown) return;
-        isDragged = true;
-        e.preventDefault();
-        const x = e.pageX - slider.offsetLeft;
-        const walk = (x - startX) * 2;
-        slider.scrollLeft = scrollLeft - walk;
-        console.log(walk);
+        var gov = null;
+
+        function checkGov(checkgov, id) {
+            $('.checkSentTo140').prop('checked', false);
+
+            if ($(".checkBox13:checkbox:checked").length > 0) {
+                $('#millingbtn').attr('disabled', true);
+                $('#mix').prop('disabled', false);
+            } else {
+                $('#millingbtn').attr('disabled', false);
+            }
+            if (gov == null) {
+                gov = checkgov;
+            } else {
+                if (gov != checkgov) {
+                    if ($('.check_gov' + id).prop("checked") == true) {
+                        alert("You can not mix two different governerates")
+                        $('.check_gov' + id).prop('checked', false);
+                    }
+
+                }
+            }
+            checkBoxCount = $('input[type="checkbox"]:checked').length;
+            if (checkBoxCount == 0) {
+                console.log(checkBoxCount);
+                gov = null;
+            }
+        }
+
+        $(document).ready(function() {
+            $('#submitbtn').on('click', function() {
+                $('#submitbtn').hide();
+            });
+            $('#milling-th').on('click', function() {
+                console.log('imran');
+                $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
+            });
+        });
+
+        const slider = document.querySelector(".milling-form");
+        const preventClick = (e) => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+        let isDown = false;
+        let isDragged = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener("mousedown", e => {
+            isDown = true;
+            slider.classList.add("active");
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener("mouseleave", () => {
+            isDown = false;
+            slider.classList.remove("active");
+        });
+        slider.addEventListener("mouseup", (e) => {
+            isDown = false;
+            const elements = document.querySelectorAll(".milling-table a");
+            if (isDragged) {
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].addEventListener("click", preventClick);
+                }
+            } else {
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].removeEventListener("click", preventClick);
+                }
+            }
+            slider.classList.remove("active");
+            isDragged = false;
+        });
+        slider.addEventListener("mousemove", e => {
+            if (!isDown) return;
+            isDragged = true;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2;
+            slider.scrollLeft = scrollLeft - walk;
+            console.log(walk);
+        });
     });
 </script>
