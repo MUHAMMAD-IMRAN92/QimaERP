@@ -204,9 +204,9 @@ class MillOperativeController extends Controller
                         throw new Exception("Batch Number [{$transactionData->batch_number}] does not exists.");
                     }
 
-                    $oldTransaction = Transaction::where('batch_number', $transactionData->batch_number)->where('sent_to',  $transactionData->sent_to)
-                        ->where('local_code', $transactionData->local_code)->with('details.metas')->last();
-                    if (!$oldTransaction) {
+                    // $oldTransaction = Transaction::where('batch_number', $transactionData->batch_number)->where('sent_to',  $transactionData->sent_to)
+                    //     ->where('local_code', $transactionData->local_code)->with('details.metas')->last();
+                    // if (!$oldTransaction) {
                         $transaction =  Transaction::create([
                             'batch_number' => $transactionData->batch_number,
                             'is_parent' => $transactionData->is_parent,
@@ -297,62 +297,62 @@ class MillOperativeController extends Controller
                         $transaction->load(['details.metas']);
 
                         $savedTransactions->push($transaction);
-                    } else {
-                        foreach ($transactionArray['details'] as $detailArray) {
+                    // } else {
+                    //     foreach ($transactionArray['details'] as $detailArray) {
 
-                            $detailData = (object) $detailArray['detail'];
+                    //         $detailData = (object) $detailArray['detail'];
 
-                            $container = Container::where('container_number', $detailData->container_number)->first();
+                    //         $container = Container::where('container_number', $detailData->container_number)->first();
 
-                            if (!$container) {
-                                $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
+                    //         if (!$container) {
+                    //             $containerCode = preg_replace('/[0-9]+/', '', $detailData->container_number);
 
-                                $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
-                                    return $detail['code'] == $containerCode;
-                                });
+                    //             $containerDetail = Arr::first(containerType(), function ($detail) use ($containerCode) {
+                    //                 return $detail['code'] == $containerCode;
+                    //             });
 
-                                if (!$containerDetail) {
-                                    throw new Exception('Container type not found.', 400);
-                                }
+                    //             if (!$containerDetail) {
+                    //                 throw new Exception('Container type not found.', 400);
+                    //             }
 
-                                $container = new Container();
-                                $container->container_number = $detailData->container_number;
-                                $container->container_type = $containerDetail['id'];
-                                $container->capacity = 100;
-                                $container->created_by = $request->user()->user_id;
+                    //             $container = new Container();
+                    //             $container->container_number = $detailData->container_number;
+                    //             $container->container_type = $containerDetail['id'];
+                    //             $container->capacity = 100;
+                    //             $container->created_by = $request->user()->user_id;
 
-                                $container->save();
-                            }
-                            foreach ($oldTransaction->details as $detail) {
-                                if ($detail->container_number == $detailData->container_number && $detail->container_weight == $detailData->container_weight) {
-                                } else {
-                                    $detail = new TransactionDetail();
+                    //             $container->save();
+                    //         }
+                    //         foreach ($oldTransaction->details as $detail) {
+                    //             if ($detail->container_number == $detailData->container_number && $detail->container_weight == $detailData->container_weight) {
+                    //             } else {
+                    //                 $detail = new TransactionDetail();
 
-                                    $detail->container_number = $detailData->container_number;
-                                    $detail->created_by = $request->user()->user_id;
-                                    $detail->is_local = FALSE;
-                                    $detail->container_weight = $detailData->container_weight;
-                                    $detail->weight_unit = $detailData->weight_unit;
-                                    $detail->center_id = $detailData->center_id;
-                                    $detail->reference_id = $oldTransaction->reference_id;
+                    //                 $detail->container_number = $detailData->container_number;
+                    //                 $detail->created_by = $request->user()->user_id;
+                    //                 $detail->is_local = FALSE;
+                    //                 $detail->container_weight = $detailData->container_weight;
+                    //                 $detail->weight_unit = $detailData->weight_unit;
+                    //                 $detail->center_id = $detailData->center_id;
+                    //                 $detail->reference_id = $oldTransaction->reference_id;
 
-                                    $oldTransaction->details()->save($detail);
-                                    foreach ($detailArray['metas'] as $metaArray) {
-                                        $metaData = (object) $metaArray;
-                                        foreach ($detail->metas as $meta) {
-                                            if ($meta->key == $metaData->key && $meta->value == $metaData->value) {
-                                            } else {
-                                                $meta = new Meta();
-                                                $meta->key = $metaData->key;
-                                                $meta->value = $metaData->value;
-                                                $detail->metas()->save($meta);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    //                 $oldTransaction->details()->save($detail);
+                    //                 foreach ($detailArray['metas'] as $metaArray) {
+                    //                     $metaData = (object) $metaArray;
+                    //                     foreach ($detail->metas as $meta) {
+                    //                         if ($meta->key == $metaData->key && $meta->value == $metaData->value) {
+                    //                         } else {
+                    //                             $meta = new Meta();
+                    //                             $meta->key = $metaData->key;
+                    //                             $meta->value = $metaData->value;
+                    //                             $detail->metas()->save($meta);
+                    //                         }
+                    //                     }
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 }
 
                 // This coffe is sent further to next managers [sorting manager for sorting, yemen operative for local market]
