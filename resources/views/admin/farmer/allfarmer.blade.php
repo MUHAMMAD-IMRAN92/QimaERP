@@ -77,50 +77,44 @@
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('today');
-            }
-            if (url.includes('yesterday')) {
+            } else if (url.includes('yesterday')) {
                 $('#myTable').DataTable();
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('yesterday');
-            }
-            if (url.includes('weekToDate')) {
+            } else if (url.includes('weekToDate')) {
                 $('#myTable').DataTable();
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('weekToDate');
-            }
-            if (url.includes('monthToDate')) {
+            } else if (url.includes('monthToDate')) {
                 $('#myTable').DataTable();
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('monthToDate');
-            }
-            if (url.includes('lastmonth')) {
+            } else if (url.includes('lastmonth')) {
                 $('#myTable').DataTable();
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('lastmonth');
-            }
-            if (url.includes('yearToDate')) {
+            } else if (url.includes('yearToDate')) {
                 $('#myTable').DataTable();
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('yearToDate');
-            }
-            if (url.includes('currentyear')) {
+            } else if (url.includes('currentyear')) {
                 $('#myTable').DataTable();
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('currentyear');
-            }
-            if (url.includes('lastyear')) {
+            } else if (url.includes('lastyear')) {
                 $('#myTable').DataTable();
                 $('#myTable').css('display', 'block');
                 $('.farmer_tabel_ajax').css('display', 'none');
                 console.log('lastyear');
             } else {
                 $('#myTable').css('display', 'none');
+
             }
 
             $(function() {
