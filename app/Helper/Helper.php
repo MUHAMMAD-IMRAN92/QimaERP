@@ -403,7 +403,7 @@ function stagesOfSentTo($value)
         3 => 'Center Manager',
         4 => 'Processing Manager',
         5 => 'Special Processing',
-        6 => 'pending in special Processing',
+        6 => 'pending in Drying Coffee',
         8 => 'Recieved By Special Processing',
         7 => 'Special processing',
         9 => 'Sent By Special Processing',
