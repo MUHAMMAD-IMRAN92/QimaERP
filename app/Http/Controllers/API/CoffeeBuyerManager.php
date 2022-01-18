@@ -55,7 +55,7 @@ class CoffeeBuyerManager extends Controller
             $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
             $user_image_path = Storage::disk('s3')->url('images');
             foreach ($villages as $village) {
-                $villagefarmer = Farmer::where('status' , 1)->where('village_code', $village->village_code)->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
+                $villagefarmer = Farmer::where('status', 1)->where('village_code', $village->village_code)->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
                 }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
                     $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
@@ -91,7 +91,7 @@ class CoffeeBuyerManager extends Controller
 
                 $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
                 $user_image_path = Storage::disk('s3')->url('images');
-                $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
+                $farmers = Farmer::where('status', 1)->when($farmerName, function ($q) use ($farmerName) {
                     $q->where(function ($q) use ($farmerName) {
                         $q->where('farmer_name', 'like', "%$farmerName%");
                     });
@@ -129,6 +129,7 @@ class CoffeeBuyerManager extends Controller
                 }
             }
         } else {
+
             $farmerName = $request->farmer_name;
             $villageCode = $request->village_code;
             $farmerCode = $request->farmer_code;
@@ -136,50 +137,7 @@ class CoffeeBuyerManager extends Controller
 
             $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
             $user_image_path = Storage::disk('s3')->url('images');
-            $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
-                $q->where(function ($q) use ($farmerName) {
-                    $q->where('farmer_name', 'like', "%$farmerName%");
-                });
-            })->when($villageCode, function ($q) use ($villageCode) {
-                $q->where(function ($q) use ($villageCode) {
-                    $q->where('village_code', 'like', "%$villageCode%");
-                });
-            })->when($farmerCode, function ($q) use ($farmerCode) {
-                $q->where(function ($q) use ($farmerCode) {
-                    $q->where('farmer_code', 'like', "%$farmerCode%");
-                });
-            })->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
-                $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
-            }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
-                $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
-            }])->orderBy('farmer_name')->get();
-
-            foreach ($farmers as $key => $farmer) {
-                $farmer->farmer_id_card_picture = '';
-                $farmer->farmer_picture = '';
-                if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
-                    $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
-                }
-                if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
-                    $farmer->farmer_picture = $farmer->profileImage->user_file_name;
-                }
-                $farmer->farmer_village = $farmer->village_code;
-                $farmer->farmer_id_card_no = $farmer->farmer_nicn;
-                $farmer->makeHidden('idcardImage');
-                $farmer->makeHidden('profileImage');
-                $farmer->makeHidden('village_code');
-                $farmer->makeHidden('farmer_nicn');
-                $farmer->makeHidden('idcard_picture_id');
-                $farmer->makeHidden('picture_id');
-            }
-            $farmerName = $request->farmer_name;
-            $villageCode = $request->village_code;
-            $farmerCode = $request->farmer_code;
-            $farmerNicn = $request->farmer_nicn;
-
-            $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
-            $user_image_path = Storage::disk('s3')->url('images');
-            $farmers = Farmer::when($farmerName, function ($q) use ($farmerName) {
+            $farmers = Farmer::where('status', 1)->when($farmerName, function ($q) use ($farmerName) {
                 $q->where(function ($q) use ($farmerName) {
                     $q->where('farmer_name', 'like', "%$farmerName%");
                 });
