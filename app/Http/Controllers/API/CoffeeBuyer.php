@@ -537,7 +537,7 @@ class CoffeeBuyer extends Controller
                         ]);
                         $simillarParentMixedTransaction = Transaction::where('local_session_no', $batch_numbers->batch->transactions[0]->transactions->local_session_no)->where('sent_to', 2)
                             ->where('local_code',  $batch_numbers->batch->transactions[0]->transactions->local_code)->first();
-                        if ($simillarParentMixedTransaction) {
+                        if (!$simillarParentMixedTransaction) {
                             if (isset($batch_numbers->batch->transactions[0]) && isset($batch_numbers->batch->transactions[0]->transactions) && $batch_numbers->batch->transactions[0]->transactions) {
 
                                 // $pCheckSession = CoffeeSession::where('user_id', $batch_numbers->batch->transactions[0]->transactions->created_by)
@@ -733,7 +733,7 @@ class CoffeeBuyer extends Controller
                         ]);
                         $simillarParentNonMixedTransaction = Transaction::where('local_session_no', $batch_numbers->batch->transactions[0]->transactions->local_session_no)->where('sent_to', 2)
                             ->where('local_code',  $batch_numbers->batch->transactions[0]->transactions->local_code)->first();
-                        if ($simillarParentNonMixedTransaction) {
+                        if (!$simillarParentNonMixedTransaction) {
                             if (isset($batch_numbers->batch->transactions[0]) && isset($batch_numbers->batch->transactions[0]->transactions) && $batch_numbers->batch->transactions[0]->transactions) {
 
                                 // $pCheckSession = CoffeeSession::where('user_id', $batch_numbers->batch->transactions[0]->transactions->created_by)
