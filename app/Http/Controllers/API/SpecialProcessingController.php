@@ -371,7 +371,7 @@ class SpecialProcessingController extends Controller
                                     $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
                                     if ($checkTransaction) {
 
-                                        $refTransactions = $checkTransaction->transaction_id;
+                                        $refTransactions = $checkTransaction['transaction_id'];
                                     }
                                 } else {
                                     $refTransactions = $receivedTransaction->transaction->reference_id;
