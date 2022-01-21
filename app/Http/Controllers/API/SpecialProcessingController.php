@@ -367,8 +367,9 @@ class SpecialProcessingController extends Controller
                                 if ($receivedTransaction->transaction->is_server_id == FALSE) {
 
                                     $code = $receivedTransaction->transaction->reference_id . '_' . $userId . '-T';
-
+                                    \Log::info($code);
                                     $checkTransaction = Transaction::where('local_code', 'like', "$code%")->latest('transaction_id')->first();
+                                    \Log::info($checkTransaction);
                                     if ($checkTransaction) {
 
                                         $refTransactions = $checkTransaction['transaction_id'];
