@@ -484,7 +484,7 @@ class SpecialProcessingController extends Controller
             DB::commit();
         } catch (PDOException $e) {
             DB::rollback();
-            \Log::info($e->getLine());
+            \Log::info($e->getLine(), $e);
             return Response::json(array('status' => 'error', 'message' => 'Something was wrong', 'data' => []), 499);
         }
         $allTransactions = array();
