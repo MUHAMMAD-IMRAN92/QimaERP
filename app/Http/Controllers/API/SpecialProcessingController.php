@@ -455,31 +455,31 @@ class SpecialProcessingController extends Controller
                                     $detail->center_id = $similardetail->center_id;
                                     $detail->reference_id = $similardetail->reference_id;
 
-                                    $smiliarTransaction->details()->save($detail);
+                                    $receivedTransaction->transaction->details()->save($detail);
                                 }
                             }
                         }
 
-                        // $transactionMeta = $receivedTransaction->transactionMeta;
-                        // foreach ($transactionMeta as $key => $transactionMe) {
-                        //     foreach ($smiliarTransaction->meta as $similarMeta) {
-                        //         if ($transactionMe->key ==  $similarMeta->key && $transactionMe->value ==  $similarMeta->value) {
-                        //         } else {
-                        //             if (strstr($transactionMe->key, 'BS') || strstr($transactionMe->key, 'DT') || strstr($transactionMe->key, 'SC') || strstr($transactionMe->key, 'DM') || strstr($transactionMe->key, 'DS') || strstr($transactionMe->key, 'GS') || strstr($transactionMe->key, 'ES') || strstr($transactionMe->key, 'PS') || strstr($transactionMe->key, 'SS') || strstr($transactionMe->key, 'LS') || strstr($transactionMe->key, 'HS') || strstr($transactionMe->key, 'QS') || strstr($transactionMe->key, 'KS') || strstr($transactionMe->key, 'VB') || strstr($transactionMe->key, 'PB') || strstr($transactionMe->key, 'VP') || strstr($transactionMe->key, 'PP') || strstr($transactionMe->key, 'SM')) {
-                        //                 $basketArray = explode("_", $transactionMe->key);
-                        //                 $basket = $basketArray[0];
-                        //                 $weight = $basketArray[1];
-                        //                 $transationsExplodeId = $basketArray[2];
-                        //                 TransactionDetail::where('transaction_id', $transationsExplodeId)->where('container_number', $basket)->update(['container_status' => 1]);
-                        //             }
-                        //             MetaTransation::create([
-                        //                 'transaction_id' => $receivedTransaction->transaction->transaction_id,
-                        //                 'key' => $transactionMe->key,
-                        //                 'value' => $transactionMe->value,
-                        //             ]);
-                        //         }
-                        //     }
-                        // }
+                        $transactionMeta = $receivedTransaction->transactionMeta;
+                        foreach ($transactionMeta as $key => $transactionMe) {
+                            foreach ($smiliarTransaction->meta as $similarMeta) {
+                                if ($transactionMe->key ==  $similarMeta->key && $transactionMe->value ==  $similarMeta->value) {
+                                } else {
+                                    if (strstr($transactionMe->key, 'BS') || strstr($transactionMe->key, 'DT') || strstr($transactionMe->key, 'SC') || strstr($transactionMe->key, 'DM') || strstr($transactionMe->key, 'DS') || strstr($transactionMe->key, 'GS') || strstr($transactionMe->key, 'ES') || strstr($transactionMe->key, 'PS') || strstr($transactionMe->key, 'SS') || strstr($transactionMe->key, 'LS') || strstr($transactionMe->key, 'HS') || strstr($transactionMe->key, 'QS') || strstr($transactionMe->key, 'KS') || strstr($transactionMe->key, 'VB') || strstr($transactionMe->key, 'PB') || strstr($transactionMe->key, 'VP') || strstr($transactionMe->key, 'PP') || strstr($transactionMe->key, 'SM')) {
+                                        $basketArray = explode("_", $transactionMe->key);
+                                        $basket = $basketArray[0];
+                                        $weight = $basketArray[1];
+                                        $transationsExplodeId = $basketArray[2];
+                                        TransactionDetail::where('transaction_id', $transationsExplodeId)->where('container_number', $basket)->update(['container_status' => 1]);
+                                    }
+                                    MetaTransation::create([
+                                        'transaction_id' => $receivedTransaction->transaction->transaction_id,
+                                        'key' => $transactionMe->key,
+                                        'value' => $transactionMe->value,
+                                    ]);
+                                }
+                            }
+                        }
                     }
                 }
             }
