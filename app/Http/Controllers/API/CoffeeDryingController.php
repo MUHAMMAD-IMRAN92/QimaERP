@@ -812,7 +812,7 @@ class CoffeeDryingController extends Controller
                         ]);
                     }
                 } else {
-                    Log::info('here before last else');
+                    // Log::info('here before last else');
                     $alreadyExist = MetaTransation::where('transaction_id', $value->transaction_id)
                         ->where('key', $value->key)
                         ->first();
@@ -834,7 +834,7 @@ class CoffeeDryingController extends Controller
                 }
             }
         }
-        Log::info('here before  $allTransationsDetail = array();');
+        // Log::info('here before  $allTransationsDetail = array();');
         $allTransationsDetail = array();
         $currentlyReceivedCoffees = Transaction::whereIn('transaction_id', $transationsIdArray)
             ->with('transactionDetail', 'log', 'meta')
