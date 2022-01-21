@@ -750,10 +750,12 @@ class CoffeeDryingController extends Controller
                 $alreadyExistTransactionDetail = TransactionDetail::where('transaction_id', $transactionsInformation->transactionDetails->transaction_id)
                     ->where('container_number', $transactionsInformation->transactionDetails->container_number)
                     ->first();
+                if ($alreadyExistTransactionDetail) {
+                    $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
+                    $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
+                    $alreadyExistTransactionDetail->save();
+                }
 
-                $alreadyExistTransactionDetail->container_weight = $transactionsInformation->transactionDetails->container_weight;
-                $alreadyExistTransactionDetail->container_status = $transactionsInformation->transactionDetails->is_sent;
-                $alreadyExistTransactionDetail->save();
                 // }
                 if (!in_array($transactionsInformation->transactionDetails->transaction_id, $transationsIdArray)) {
                     array_push($transationsIdArray, $transactionsInformation->transactionDetails->transaction_id);
