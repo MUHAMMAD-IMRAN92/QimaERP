@@ -111,6 +111,7 @@ class SpecialProcessingController extends Controller
                     $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)
                         ->where('local_code', $receivedTransaction->transaction->local_code)->where('session_no', $receivedTransaction->transaction->session_no)->with('meta', 'details.metas')->first();
                     if (!$smiliarTransaction) {
+                        \Log::info('alst if similar');
                         if ($receivedTransaction->transaction->sent_to == 7) {
                             if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                                 // return response()->json($receivedTransaction->transaction->is_in_process);
@@ -436,6 +437,7 @@ class SpecialProcessingController extends Controller
                                 }
                             }
                         }
+                        \Log::info('alst if');
                     } else {
                         \Log::info('alst else');
                         $transactionContainers = $receivedTransaction->transactionDetails;
