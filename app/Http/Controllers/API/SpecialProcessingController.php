@@ -440,25 +440,25 @@ class SpecialProcessingController extends Controller
                         \Log::info('alst if');
                     } else {
                         \Log::info('alst else');
-                        // $transactionContainers = $receivedTransaction->transactionDetails;
-                        // foreach ($transactionContainers as $similardetail) {
-                        //     foreach ($smiliarTransaction->details as $detail) {
-                        //         if ($detail->container_number == $similardetail->container_number && $detail->container_weight == $similardetail->container_weight) {
-                        //         } else {
-                        //             $detail = new TransactionDetail();
+                        $transactionContainers = $receivedTransaction->transactionDetails;
+                        foreach ($transactionContainers as $similardetail) {
+                            foreach ($smiliarTransaction->details as $detail) {
+                                if ($detail->container_number == $similardetail->container_number && $detail->container_weight == $similardetail->container_weight) {
+                                } else {
+                                    $detail = new TransactionDetail();
 
-                        //             $detail->container_number = $similardetail->container_number;
-                        //             $detail->created_by = $request->user()->user_id;
-                        //             $detail->is_local = FALSE;
-                        //             $detail->container_weight = $similardetail->container_weight;
-                        //             $detail->weight_unit = $similardetail->weight_unit;
-                        //             $detail->center_id = $similardetail->center_id;
-                        //             $detail->reference_id = $similardetail->reference_id;
+                                    $detail->container_number = $similardetail->container_number;
+                                    $detail->created_by = $request->user()->user_id;
+                                    $detail->is_local = FALSE;
+                                    $detail->container_weight = $similardetail->container_weight;
+                                    $detail->weight_unit = $similardetail->weight_unit;
+                                    $detail->center_id = $similardetail->center_id;
+                                    $detail->reference_id = $similardetail->reference_id;
 
-                        //             $smiliarTransaction->details()->save($detail);
-                        //         }
-                        //     }
-                        // }
+                                    $smiliarTransaction->details()->save($detail);
+                                }
+                            }
+                        }
 
                         // $transactionMeta = $receivedTransaction->transactionMeta;
                         // foreach ($transactionMeta as $key => $transactionMe) {
