@@ -437,7 +437,7 @@ class SpecialProcessingController extends Controller
                             }
                         }
                     } else {
-
+                        \Log::info('alst else');
                         $transactionContainers = $receivedTransaction->transactionDetails;
                         foreach ($transactionContainers as $similardetail) {
                             foreach ($smiliarTransaction->details as $detail) {
