@@ -101,12 +101,14 @@ class SpecialProcessingController extends Controller
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
         }
+        \Log::info($request->all());
         $userId = $this->userId;
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
         DB::beginTransaction();
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
+
                 if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
                     $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)
                         ->where('local_code', $receivedTransaction->transaction->local_code)->where('session_no', $receivedTransaction->transaction->session_no)->with('meta', 'details.metas')->first();
