@@ -455,7 +455,7 @@ class SpecialProcessingController extends Controller
                                     $detail->center_id = $similardetail->center_id;
                                     $detail->reference_id = $similardetail->reference_id;
 
-                                    $receivedTransaction->transaction->details()->save($detail);
+                                    $smiliarTransaction->details()->save($detail);
                                 }
                             }
                         }
@@ -473,7 +473,7 @@ class SpecialProcessingController extends Controller
                                         TransactionDetail::where('transaction_id', $transationsExplodeId)->where('container_number', $basket)->update(['container_status' => 1]);
                                     }
                                     MetaTransation::create([
-                                        'transaction_id' => $receivedTransaction->transaction->transaction_id,
+                                        'transaction_id' => $smiliarTransaction->transaction_id,
                                         'key' => $transactionMe->key,
                                         'value' => $transactionMe->value,
                                     ]);
