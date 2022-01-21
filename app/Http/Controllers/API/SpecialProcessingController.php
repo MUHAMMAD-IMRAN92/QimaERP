@@ -374,7 +374,7 @@ class SpecialProcessingController extends Controller
                                     \Log::info($checkTransaction);
                                     if ($checkTransaction) {
 
-                                        $refTransactions = $checkTransaction['transaction_id'];
+                                        $refTransactions = $checkTransaction->transaction_id;
                                     }
                                 } else {
                                     $refTransactions = $receivedTransaction->transaction->reference_id;
