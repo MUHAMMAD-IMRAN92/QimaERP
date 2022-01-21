@@ -124,7 +124,7 @@ class CoffeeDryingController extends Controller
                     }
                 } else {
                     $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)
-                        ->where('local_code', $receivedTransaction->transaction->local_code)->with('details.metas')->first();
+                        ->where('local_code', $receivedTransaction->transaction->local_code)->where('session_no', $receivedTransaction->transaction->session_no)->with('details.metas')->first();
                     if (!$smiliarTransaction) {
 
                         if ($receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 10) {
