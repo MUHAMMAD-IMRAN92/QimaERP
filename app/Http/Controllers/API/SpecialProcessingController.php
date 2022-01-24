@@ -110,7 +110,7 @@ class SpecialProcessingController extends Controller
             foreach ($receivedTransactions as $key => $receivedTransaction) {
 
                 if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction) {
-                    $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)
+                    $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)->where('batch_number' ,  $receivedTransaction->transaction->batch_number)
                         ->where('local_code', $receivedTransaction->transaction->local_code)->where('session_no', $receivedTransaction->transaction->session_no)->with('meta', 'details.metas')->first();
                     if (!$smiliarTransaction) {
                         \Log::info('alst if similar');
