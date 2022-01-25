@@ -367,6 +367,6 @@ class CommonController extends Controller
                 $data->push($batch);
             }
         }
-        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $data);
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $data->unique());
     }
 }
