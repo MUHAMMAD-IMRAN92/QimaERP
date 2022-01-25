@@ -355,4 +355,18 @@ class CommonController extends Controller
             throw new Exception('User Not Found');
         }
     }
+    function lastBatchOfEveryFarmer()
+    {
+        $data = collect();
+        $farmers = Farmer::where('status', 1)->get();
+        // return $farmer->farmer_code;
+        foreach ($farmers as $farmer) {
+            $batch = BatchNumber::where('batch_number', 'LIKE', '%' . $farmer->farmer_code . '%')->orderByDesc('batch_id')->first();
+            if ($batch != null) {
+
+                $data->push($batch);
+            }
+        }
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $data->unique()->values());
+    }
 }

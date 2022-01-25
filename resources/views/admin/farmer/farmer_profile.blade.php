@@ -682,9 +682,10 @@
                         {{ $transaction->created_at }} /{{ $farmer->farmer_name }}
                         /{{ App\User::find($transaction->created_by)->first_name . '' . App\User::find($transaction->created_by)->last_name }}/
                         {{ $farmer->governerate_title }} /
-                        {{ $farmer->region_title }} / <a
+                        {{ $farmer->region_title }} /
+                        {{--  <a
                             href="{{ url('admin/farmer_invoice/' . $transaction->transaction_id) }}"><span> Upload
-                                Invoice</span></a>
+                                Invoice</span></a>  --}}
                         @php
                             echo floatval($transaction->details->sum('container_weight'));
                         @endphp
