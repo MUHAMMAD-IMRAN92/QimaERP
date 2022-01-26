@@ -97,7 +97,7 @@ class CoffeeDryingController extends Controller
         }
 
         $userId = $this->userId;
-
+        Log::info($request->all());
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
 
@@ -123,8 +123,9 @@ class CoffeeDryingController extends Controller
                         }
                     }
                 } else {
-                    $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)->where('batch_number' ,  $receivedTransaction->transaction->batch_number)
+                    $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)->where('batch_number',  $receivedTransaction->transaction->batch_number)
                         ->where('local_code', $receivedTransaction->transaction->local_code)->where('session_no', $receivedTransaction->transaction->session_no)->with('details.metas')->first();
+                    Log::info($smiliarTransaction);
                     if (!$smiliarTransaction) {
 
                         if ($receivedTransaction->transaction && $receivedTransaction->transaction->sent_to == 10) {
@@ -618,6 +619,7 @@ class CoffeeDryingController extends Controller
                             }
                             foreach ($smiliarTransaction->details as $detail) {
                                 if ($detail->container_number == $similardetail->container_number && $detail->container_weight == $similardetail->container_weight) {
+                                    Log::info('duplicated details');
                                 } else {
                                     $detail = new TransactionDetail();
 
