@@ -262,7 +262,7 @@ class MillingController extends Controller
             $transaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', $senttoArr)->where('is_parent', 0)->with('details')->latest()
                 ->first();
             if ($transaction) {
-                if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
+                // if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
                     $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
                     if ($newtransaction) {
                         foreach ($newtransaction as $t) {
@@ -272,7 +272,7 @@ class MillingController extends Controller
                             }
                         }
                     }
-                } else {
+                // } else {
                     if ($transaction != null) {
 
                         $transactions->push($transaction);
