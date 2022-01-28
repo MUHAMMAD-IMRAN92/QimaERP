@@ -142,7 +142,7 @@ class YOExportController extends Controller
                             $type = null;
                             break;
                     }
-                    
+
                     $transactionType = 1;
 
                     $transaction = Transaction::createAndLog(
@@ -153,6 +153,11 @@ class YOExportController extends Controller
                         $type,
                         $transactionType
                     );
+                    if ($sentTo == 29) {
+
+                        TransactionDetail::where('transaction_id',  $transaction->reference_id)
+                            ->update(['container_status' => 1]);
+                    }
 
                     $transactionDetails = TransactionDetail::createFromArray(
                         $detailsData,
@@ -160,6 +165,7 @@ class YOExportController extends Controller
                         $transaction->transaction_id,
                         $transaction->reference_id
                     );
+
 
                     $transaction->load(['details.metas']);
                     $savedTransactions->push($transaction);
