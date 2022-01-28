@@ -153,8 +153,11 @@ class YOExportController extends Controller
                         $type,
                         $transactionType
                     );
-                    TransactionDetail::where('transaction_id',  $transaction->reference_id)
-                        ->update(['container_status' => 1]);
+                    if ($sentTo == 29) {
+
+                        TransactionDetail::where('transaction_id',  $transaction->reference_id)
+                            ->update(['container_status' => 1]);
+                    }
 
                     $transactionDetails = TransactionDetail::createFromArray(
                         $detailsData,
