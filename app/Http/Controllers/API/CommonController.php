@@ -318,11 +318,11 @@ class CommonController extends Controller
     {
         $allBatches = array();
         $batches = BatchNumber::all();
-        foreach ($batches as $key => $batche) {
-            $batche->is_active = FALSE;
+        foreach ($batches as $key => $batch) {
+            $batch->is_active = FALSE;
             //   $childBatch = $batche->childBatches;
-            $batchData = ['batch' => $batche];
-            array_push($allBatches, $batchData);
+            // $batchData = ['batch' => $batche];
+            array_push($allBatches, $batch);
         }
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $allBatches);
     }
