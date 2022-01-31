@@ -318,6 +318,18 @@ class CommonController extends Controller
     {
         $allBatches = array();
         $batches = BatchNumber::all();
+        foreach ($batches as $key => $batche) {
+            $batche->is_active = FALSE;
+            //   $childBatch = $batche->childBatches;
+            $batchData = ['batch' => $batche];
+            array_push($allBatches, $batchData);
+        }
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $allBatches);
+    }
+    function foramtedAllBatches(Request $request)
+    {
+        $allBatches = array();
+        $batches = BatchNumber::all();
         foreach ($batches as $key => $batch) {
             $batch->is_active = FALSE;
             //   $childBatch = $batche->childBatches;

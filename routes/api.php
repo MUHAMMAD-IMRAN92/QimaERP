@@ -43,6 +43,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey', 'a
 
         //::all batches
         Route::get('/all_batches', 'API\CommonController@allBatches');
+        Route::get('/formatted_all_batches', 'API\CommonController@foramtedAllBatches');
         Route::get('/all_batches_by_farmer', 'API\CommonController@lastBatchOfEveryFarmer');
 
         //::Coffee buyer Routes
