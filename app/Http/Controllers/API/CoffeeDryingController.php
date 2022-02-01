@@ -102,7 +102,8 @@ class CoffeeDryingController extends Controller
         $receivedTransactions = json_decode($request['transactions']);
         // return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $receivedTransactions);
         DB::beginTransaction();
-        try {
+        // try 
+        {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
                 // return  'here1';
                 if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
@@ -656,14 +657,16 @@ class CoffeeDryingController extends Controller
                 }
             }
             DB::commit();
-        } catch (Exception $e) {
+        } 
+        // catch (Exception $e) 
+        {
             DB::rollback();
-            Log::channel('error')->error('Coffee Drying Exception', [
-                'message' => $e->getMessage(),
-                'exception' => $e
-            ]);
+            // Log::channel('error')->error('Coffee Drying Exception', [
+            //     'message' => $e->getMessage(),
+            //     'exception' => $e
+            // ]);
 
-            return Response::json(array('status' => 'error', 'message' => $e->getMessage() . $e->getLine(), 'data' => []), 499);
+            // return Response::json(array('status' => 'error', 'message' => $e->getMessage() . $e->getLine(), 'data' => []), 499);
         }
 
         $allTransactions = array();
