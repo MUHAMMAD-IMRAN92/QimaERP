@@ -104,7 +104,7 @@ class CoffeeDryingController extends Controller
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
                 return $receivedTransaction;
-                if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
+                if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                     if ($updateCoffees) {
                         $updateCoffees->is_sent = $receivedTransaction->transaction->is_sent;
@@ -122,6 +122,9 @@ class CoffeeDryingController extends Controller
                         }
                     }
                 } else {
+                    if(!isset($receivedTransaction->transaction)){
+                        return $receivedTransaction;
+                    }
                     $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)->where('batch_number',  $receivedTransaction->transaction->batch_number)
                         ->where('local_code', $receivedTransaction->transaction->local_code)->where('session_no', $receivedTransaction->transaction->session_no)->with('details.metas')->first();
 
