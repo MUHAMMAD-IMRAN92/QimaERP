@@ -662,7 +662,7 @@ class CoffeeDryingController extends Controller
                 'exception' => $e
             ]);
 
-            return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
+            return Response::json(array('status' => 'error', 'message' => $e->getMessage() . $e->getLine(), 'data' => []), 499);
         }
 
         $allTransactions = array();
