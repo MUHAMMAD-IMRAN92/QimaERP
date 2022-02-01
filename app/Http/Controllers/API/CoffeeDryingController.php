@@ -101,13 +101,13 @@ class CoffeeDryingController extends Controller
         // return $request->all();
         $receivedCofffee = array();
         $receivedTransactions = (str_replace('\\"','"' , $request['transactions']) );
-        return json_decode($receivedTransactions);
+        // return ($receivedTransactions);
         // return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $receivedTransactions);
         DB::beginTransaction();
         // try 
         {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
-                return  'here1';
+                return $receivedTransaction->transaction ;
                 if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                     return  'here3';
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
