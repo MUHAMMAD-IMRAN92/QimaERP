@@ -101,7 +101,7 @@ class CoffeeDryingController extends Controller
         // return $request->all();
         $receivedCofffee = array();
         $receivedTransactions = (str_replace('\\"','"' , $request['transactions']) );
-        return $receivedTransactions;
+        return json_decode($receivedTransactions);
         // return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $receivedTransactions);
         DB::beginTransaction();
         // try 
