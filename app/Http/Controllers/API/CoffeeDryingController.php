@@ -103,7 +103,6 @@ class CoffeeDryingController extends Controller
         DB::beginTransaction();
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
-                // return $receivedTransaction;
                 if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                     if ($updateCoffees) {
@@ -122,9 +121,6 @@ class CoffeeDryingController extends Controller
                         }
                     }
                 } else {
-                    if(!isset($receivedTransaction->transaction)){
-                        return $receivedTransaction;
-                    }
                     $smiliarTransaction = Transaction::where('sent_to', $receivedTransaction->transaction->sent_to)->where('batch_number',  $receivedTransaction->transaction->batch_number)
                         ->where('local_code', $receivedTransaction->transaction->local_code)->where('session_no', $receivedTransaction->transaction->session_no)->with('details.metas')->first();
 
