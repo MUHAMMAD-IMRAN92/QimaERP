@@ -108,9 +108,8 @@ class CoffeeDryingController extends Controller
         // try 
         {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
-                return $receivedTransaction->transaction ;
+                return $receivedTransaction ;
                 if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
-                    return  'here3';
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                     if ($updateCoffees) {
                         $updateCoffees->is_sent = $receivedTransaction->transaction->is_sent;
