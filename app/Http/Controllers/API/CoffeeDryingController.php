@@ -100,7 +100,7 @@ class CoffeeDryingController extends Controller
         Log::info($request->all());
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
-
+        return  $receivedTransactions;
         DB::beginTransaction();
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
