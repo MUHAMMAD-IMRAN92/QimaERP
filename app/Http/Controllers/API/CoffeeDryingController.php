@@ -98,17 +98,11 @@ class CoffeeDryingController extends Controller
 
         $userId = $this->userId;
         Log::info($request->all());
-        // return $request->all();
         $receivedCofffee = array();
-        // $receivedTransactions = (str_replace('\\"','"' , $request['transactions']) );
-        $receivedTransactions = json_decode( $request['transactions']);
-        // return ($receivedTransactions);
-        // return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $receivedTransactions);
+        $receivedTransactions = json_decode($request['transactions']);
         DB::beginTransaction();
-        // try 
-        {
+        try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
-                return $receivedTransaction;
                 if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                     if ($updateCoffees) {
@@ -659,16 +653,14 @@ class CoffeeDryingController extends Controller
                 }
             }
             DB::commit();
-        } 
-        // catch (Exception $e) 
-        {
+        } catch (Exception $e) {
             DB::rollback();
-            // Log::channel('error')->error('Coffee Drying Exception', [
-            //     'message' => $e->getMessage(),
-            //     'exception' => $e
-            // ]);
+            Log::channel('error')->error('Coffee Drying Exception', [
+                'message' => $e->getMessage(),
+                'exception' => $e
+            ]);
 
-            // return Response::json(array('status' => 'error', 'message' => $e->getMessage() . $e->getLine(), 'data' => []), 499);
+            return Response::json(array('status' => 'error', 'message' => $e->getMessage() . $e->getLine(), 'data' => []), 499);
         }
 
         $allTransactions = array();
