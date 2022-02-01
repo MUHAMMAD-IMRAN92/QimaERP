@@ -98,6 +98,7 @@ class CoffeeDryingController extends Controller
 
         $userId = $this->userId;
         Log::info($request->all());
+        return $request->all();
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
         // return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $receivedTransactions);
@@ -105,7 +106,7 @@ class CoffeeDryingController extends Controller
         // try 
         {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
-                // return  'here1';
+                return  'here1';
                 if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                     return  'here3';
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
