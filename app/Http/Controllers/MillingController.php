@@ -271,7 +271,13 @@ class MillingController extends Controller
                             $transactions->push($t);
                         }
                     }
+                } else {
+                    if ($transaction != null) {
+
+                        $transactions->push($transaction);
+                    }
                 }
+            } else {
                 if ($transaction != null) {
                     if ($transaction->sent_to != 13 || $transaction->sent_to = 140) {
 
