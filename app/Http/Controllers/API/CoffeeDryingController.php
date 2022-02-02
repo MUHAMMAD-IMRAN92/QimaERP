@@ -100,12 +100,10 @@ class CoffeeDryingController extends Controller
         Log::info($request->all());
         $receivedCofffee = array();
         $receivedTransactions = json_decode($request['transactions']);
-
         DB::beginTransaction();
         try {
             foreach ($receivedTransactions as $key => $receivedTransaction) {
-
-                if ($receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
+                if (isset($receivedTransaction->transaction) && $receivedTransaction->transaction->is_local == FALSE && $receivedTransaction->transaction->update_meta == TRUE) {
                     $updateCoffees = Transaction::where('transaction_id', $receivedTransaction->transaction->transaction_id)->first();
                     if ($updateCoffees) {
                         $updateCoffees->is_sent = $receivedTransaction->transaction->is_sent;
@@ -662,7 +660,7 @@ class CoffeeDryingController extends Controller
                 'exception' => $e
             ]);
 
-            return Response::json(array('status' => 'error', 'message' => $e->getMessage(), 'data' => []), 499);
+            return Response::json(array('status' => 'error', 'message' => $e->getMessage() . $e->getLine(), 'data' => []), 499);
         }
 
         $allTransactions = array();

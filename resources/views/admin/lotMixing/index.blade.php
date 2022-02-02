@@ -530,7 +530,8 @@
                 $(".alert").css('display', 'none');
             }
 
-            $('.checkSentTo24').on('click', function() {
+          
+                $("#myTable").on("click",".checkSentTo24", function(){
                 console.log('');
                 $('.checkSentTo29').prop('checked', false);
                 $('#pack-approval').prop('disabled', true);
@@ -542,7 +543,8 @@
                 }
 
             });
-            $('.checkSentTo29').on('click', function() {
+          
+            $("#myTable").on("click",".checkSentTo29", function(){
 
                 $('.checkSentTo24').prop('checked', false);
                 $('#cnf-mixing').prop('disabled', true);
@@ -553,8 +555,8 @@
                     $('#cnf-mixing').prop('disabled', false);
                 }
 
-
             });
+    
 
         });
     </script>
@@ -852,7 +854,7 @@
                                                                 @if ($transaction->sent_to == 29)
                                                                     <input type="checkbox" name="approvals[]"
                                                                         value="{{ $transaction->transaction_id }}"
-                                                                        class="checkSentTo29">
+                                                                        class="checkSentTo29" >
                                                                 @endif
 
                                                             </td>
@@ -955,4 +957,5 @@
                 console.log(walk);
             });
         </script> --}}
+  
     @endsection
