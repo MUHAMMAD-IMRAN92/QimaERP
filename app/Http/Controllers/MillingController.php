@@ -271,13 +271,17 @@ class MillingController extends Controller
                             $transactions->push($t);
                         }
                     }
+                } else {
+                    if ($transaction != null) {
+
+                        $transactions->push($transaction);
+                    }
                 }
-                // } else {
+            } else {
                 if ($transaction != null) {
 
                     $transactions->push($transaction);
                 }
-                // }
             }
         }
         // return $transactions;
