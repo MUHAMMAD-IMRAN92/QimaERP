@@ -174,6 +174,7 @@ class MillOperativeController extends Controller
                 // We are trying to find parent transaction here
 
                 $oldTransaction = Transaction::where('batch_number', $transactionData->batch_number)->where('sent_to',  $transactionData->sent_to)
+                    ->orWhere('sent_to', 20)
                     ->where('local_code', $transactionData->local_code)->with('details.metas')->first();
                 if ($oldTransaction) {
                     Log::info('similcar transaction old' . $oldTransaction);
