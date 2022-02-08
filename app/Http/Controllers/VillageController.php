@@ -459,9 +459,8 @@ class VillageController extends Controller
             ])->render();
         } elseif ($request->date == 'weekToDate') {
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
-            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
-
+            $start = $now->startOfWeek(Carbon::SATURDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::FRIDAY)->toDateString();
             $village = Village::find($id);
             $village = $village->gov_region();
 
