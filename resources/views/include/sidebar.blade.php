@@ -435,6 +435,15 @@
                                 </p>
                             </a>
                         </li>
+                         <!-- <li class="nav-item">
+                            <a href="{{ URL::to('') }}/admin/importView"
+                                class="nav-link  {{ Request::is('admin/duplication') ? 'active' : '' }} ">
+                                <i class="nav-icon fa fa-life-ring"></i>
+                                <p>
+                                    import
+                                </p>
+                            </a>
+                        </li> -->
                     @else
 
                     @endhasrole
