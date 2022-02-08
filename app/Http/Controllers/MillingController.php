@@ -262,23 +262,30 @@ class MillingController extends Controller
         foreach ($batches as $batch) {
             $transaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', $senttoArr)->where('is_parent', 0)->with('details')->latest()
                 ->first();
-            if ($transaction) {
+                if ($transaction) {
 
-               $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                if ($newtransaction->count() > 0) {
-                    foreach ($newtransaction as $t) {
-
-                        if ($t != null) {
-                            $transactions->push($t);
+                    if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
+                        $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
+                        foreach ($newtransaction as $t) {
+                            if ($t != null) {
+                                $transactions->push($t);
+                            }
+                        }
+                    } else {
+                        $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
+                        if ($newtransaction->count() > 0) {
+                            foreach ($newtransaction as $t) {
+                                if ($t != null) {
+                                    $transactions->push($t);
+                                }
+                            }
+                        } else {
+                            if ($transaction != null) {
+                                $transactions->push($transaction);
+                            }
                         }
                     }
-                } else {
-                    // return 'imran';
-                    if ($transaction != null) {
-                        $transactions->push($transaction);
-                    }
                 }
-            }
         }
         // return $transactions;
         $data = array();
@@ -423,7 +430,7 @@ class MillingController extends Controller
                         }
                     } else {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction) {
+                        if ($newtransaction->count() > 0) {
                             foreach ($newtransaction as $t) {
                                 if ($t != null) {
                                     $transactions->push($t);
@@ -492,7 +499,7 @@ class MillingController extends Controller
                         }
                     } else {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction) {
+                        if ($newtransaction->count() > 0) {
                             foreach ($newtransaction as $t) {
                                 if ($t != null) {
                                     $transactions->push($t);
@@ -563,7 +570,7 @@ class MillingController extends Controller
                         }
                     } else {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction) {
+                        if ($newtransaction->count() > 0) {
                             foreach ($newtransaction as $t) {
                                 if ($t != null) {
                                     $transactions->push($t);
@@ -636,7 +643,7 @@ class MillingController extends Controller
                         }
                     } else {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction) {
+                        if ($newtransaction->count() > 0) {
                             foreach ($newtransaction as $t) {
                                 if ($t != null) {
                                     $transactions->push($t);
@@ -708,7 +715,7 @@ class MillingController extends Controller
                         }
                     } else {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction) {
+                        if ($newtransaction->count() > 0) {
                             foreach ($newtransaction as $t) {
                                 if ($t != null) {
                                     $transactions->push($t);
@@ -780,7 +787,7 @@ class MillingController extends Controller
                         }
                     } else {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction) {
+                        if ($newtransaction->count() > 0) {
                             foreach ($newtransaction as $t) {
                                 if ($t != null) {
                                     $transactions->push($t);
@@ -851,7 +858,7 @@ class MillingController extends Controller
                         }
                     } else {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction) {
+                        if ($newtransaction->count() > 0) {
                             foreach ($newtransaction as $t) {
                                 if ($t != null) {
                                     $transactions->push($t);
@@ -924,7 +931,7 @@ class MillingController extends Controller
                         }
                     } else {
                         $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction) {
+                        if ($newtransaction->count() > 0) {
                             foreach ($newtransaction as $t) {
                                 if ($t != null) {
                                     $transactions->push($t);
