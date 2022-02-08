@@ -288,5 +288,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         //Cropster Report
         Route::post('add_cropster_report', 'CropsterReportController@index')->name('AddCropsterReport');
+
+        // Route::get('importView', 'CropsterReportController@importView');
+        // Route::post('importPost', 'CropsterReportController@importPost');
     });
 });

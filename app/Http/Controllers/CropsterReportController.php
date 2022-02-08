@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\CropsterReport;
 use App\FileSystem;
+use App\Imports\SystemDefinationImport;
+use App\SystemDefination;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CropsterReportController extends Controller
 {
@@ -28,5 +31,14 @@ class CropsterReportController extends Controller
         } else {
             return redirect()->back()->with('dmsg', 'Please select any file.');
         }
+    }
+    public function importView()
+    {
+        return view('admin.importView');
+    }
+    public function importPost(Request $request)
+    {
+        Excel::import(new SystemDefinationImport, request()->file('gen'));
+        return redirect('admin/system_definition');
     }
 }
