@@ -28,13 +28,18 @@ class ReportController extends Controller
         $file = fopen($name, 'w');
         fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
         // fputcsv($file, ['Buyer Name', 'Batch Number', 'Container weight', 'Date & Time']);
-        fputcsv($file, ['Farmer name', 'Farmer Code', 'Batch Number', 'Date of Purchase', 'Purchase Weight', 'Governante', 'Region', 'Village', 'Coffee buyer', 'Purchase price kg', 'Total purchase']);
+        fputcsv($file, ['Farmer name', 'Farmer Code', 'Batch Number', 'Date of Purchase', 'Purchase Weight', 'Baskets', 'Governante', 'Region', 'Village', 'Coffee buyer', 'Purchase price kg', 'Total purchase']);
         foreach ($transactions as $key => $transaction) {
             $user = User::find($key);
             foreach ($transaction as $tran) {
+                $detailsString = '';
+                foreach ($tran->details as $detail) {
+                    $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
+                }
                 // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
                 $arr = [
-                    getFarmer($tran->batch_number), \Str::beforelast($tran->batch_number, '-',), $tran->batch_number, $tran->local_created_at, $tran->details->sum('container_weight'), getGov($tran->batch_number), getRegion($tran->batch_number),  getVillage($tran->batch_number),
+                    getFarmer($tran->batch_number), \Str::beforelast($tran->batch_number, '-',), $tran->batch_number, $tran->local_created_at, $tran->details->sum('container_weight'), $detailsString,
+                    getGov($tran->batch_number), getRegion($tran->batch_number),  getVillage($tran->batch_number),
                     $user->user_first_name . ' ' . $user->last_name, farmerPricePerKg($tran->batch_number), $tran->details->sum('container_weight') * farmerPricePerKg($tran->batch_number)
                 ];
                 // return $arr
