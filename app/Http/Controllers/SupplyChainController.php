@@ -959,8 +959,8 @@ class SupplyChainController extends Controller
 
 
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SATURDAY)->toDateString();
-            $end = $now->endOfWeek(Carbon::FRIDAY)->toDateString();
+            $end = Carbon::tomorrow()->toDateString();
+            $start = $now->firstOfMonth();
 
 
             foreach ($sentTo as $key => $sent) {
