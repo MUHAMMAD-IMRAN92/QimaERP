@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Center;
 use App\ResetPassword;
@@ -39,6 +39,9 @@ class UserController extends Controller
         $members = $members->when($search, function ($q) use ($search) {
             $q->where('first_name', 'like', "%$search%")->orWhere('last_name', 'like', "%$search%")->orWhere('email', 'like', "%$search%");
         });
+        $filteredRecord = $members->when($search, function ($q) use ($search) {
+            $q->where('first_name', 'like', "%$search%")->orWhere('last_name', 'like', "%$search%")->orWhere('email', 'like', "%$search%");
+        })->count();
         if ($request->has('order') && !is_null($request['order'])) {
             $orderBy = $request->get('order');
             $orderby = 'asc';
@@ -59,7 +62,7 @@ class UserController extends Controller
         $data = array(
             'draw' => $draw,
             'recordsTotal' => $total_members,
-            'recordsFiltered' => $total_members,
+            'recordsFiltered' => $filteredRecord,
             'data' => $members,
         );
         //:: return json
