@@ -196,7 +196,6 @@
                             {
 
                                 "mRender": function(data, type, row) {
-                                    console.log( row.quantity);
                                     return '<td >' +
                                         row.quantity + '</td>'
                                 }
