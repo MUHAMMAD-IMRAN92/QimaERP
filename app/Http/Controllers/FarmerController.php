@@ -301,7 +301,7 @@ class FarmerController extends Controller
 
     public function create()
     {
-        $data['villages'] = Village::where('stauts' , 1)->get();
+        $data['villages'] = Village::where('status' , 1)->get();
         return view('admin.farmer.add_farmer', $data);
     }
 
