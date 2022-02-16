@@ -126,7 +126,7 @@ function Fregion(){
             }
             return $sum;
         } else {
-            return  $transactions = null;
+            return $sum = 0;
         }
     }
     public function price()
