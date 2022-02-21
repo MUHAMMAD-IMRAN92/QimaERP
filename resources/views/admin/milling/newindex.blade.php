@@ -791,7 +791,12 @@
                 }
             }
             var gov = null;
-
+            $('#millingbtn').on('click' , function(){
+                $('#millingbtn').css('display' , 'none');
+            });
+            $('#mix').on('click' , function(){
+                $('#mix').css('display' , 'none');
+            });
             function checkGov(checkgov, id) {
                 $('.checkSentTo140').prop('checked', false);
 

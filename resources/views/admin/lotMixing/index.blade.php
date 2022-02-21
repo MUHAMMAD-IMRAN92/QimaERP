@@ -523,6 +523,11 @@
             $('#pack-approval').on('click', function() {
                 $('#milling-form').attr('action',
                     '{{ URL::to('admin/packaging/approval') }}');
+                    $('#pack-approval').css('display' , 'none');
+            });
+            $('#cnf-mixing').on('click', function() {
+               
+                    $('#cnf-mixing').css('display' , 'none');
             });
             const myTimeout = setTimeout(myGreeting, 5000);
 
@@ -557,7 +562,9 @@
 
             });
     
-
+            $('#confirm-mixing-modal').on('click', function() {
+                    $('#confirm-mixing-modal').css('display' , 'none');
+                });
         });
     </script>
     <!-- Content Wrapper. Contains page content -->
@@ -715,7 +722,7 @@
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
                                                                     data-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary">
+                                                                <button type="submit" class="btn btn-primary" id='confirm-mixing-modal'> 
                                                                     Confirm Mixing
                                                                 </button>
                                                             </div>
@@ -907,11 +914,13 @@
                     $('#submitbtn').hide();
                 });
                 $('#milling-th').on('click', function() {
+                    $('#cnf-mixing').css('display' , 'none');
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
                 });
 
             });
 
+               
             const slider = document.querySelector(".milling-form");
             const preventClick = (e) => {
                 e.preventDefault();
