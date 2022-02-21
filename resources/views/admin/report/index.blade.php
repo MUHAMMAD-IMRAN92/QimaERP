@@ -20,11 +20,35 @@
     <script>
         $(document).ready(function() {
             $('#myTable').DataTable();
+
+            $('#cfebuyer').on('click', function() {
+                if($('#from-date').val() == '' || $('#to').val() == ''){
+                    $('#form').submit(function (evt) {
+                    evt.preventDefault();
+                    });
+                    console.log('empty');
+                    alert('Please Select Interval dates');
+                }
+            });
             $('#cfeDrying').on('click', function() {
-                $('form').attr('action', '{{ url('admin/report/generateCfeDrying') }}')
+                if($('#from-date').val() == '' || $('#to').val() == ''){
+                    $('#form').submit(function (evt) {
+                    evt.preventDefault();
+                    });
+                    console.log('empty');
+                }else{
+
+                $('form').attr('action', '{{ url('admin/report/generateCfeDrying') }}');
+                }
             });
             $('#cfeDryingWarehouse').on('click', function() {
-                $('form').attr('action', '{{ url('admin/report/generateWarehouse') }}')
+                if($('#from-date').val() == '' || $('#to').val() == ''){
+                    $('#form').submit(function (evt) {
+                    evt.preventDefault();
+                    });
+                    console.log('empty');
+                }else{
+                $('form').attr('action', '{{ url('admin/report/generateWarehouse') }}');}
             });
         });
     </script>
@@ -78,19 +102,19 @@
                                     </div>
                                     <div class="row ml-2 mb-2">
 
-                                        <form class="col-12 pl-0" action="{{ url('admin/report/generate') }}"
+                                        <form class="col-12 pl-0" id="form" action="{{ url('admin/report/generate') }}"
                                             method="POST">
                                             @csrf
 
 
                                             <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1"
                                                 for="exampleInputEmail1">From</label>
-                                            <input class="mr-3" type="date" name="from" id="exampleInputEmail1"
+                                            <input class="mr-3" type="date" name="from" id="from-date"
                                                 aria-describedby="emailHelp">
 
                                             <label class="text-uppercase font-weight-normal mr-2 mb-0 letter-spacing-1"
                                                 for="exampleInputEmail1">To</label>
-                                            <input class="mr-3" type="date" name="to" id="exampleInputEmail1"
+                                            <input class="mr-3" type="date" name="to" id="to"
                                                 aria-describedby="emailHelp">
 
                                             <br>
@@ -117,6 +141,7 @@
                                                                                 <td class="text-center">
                                                                                     <button style="min-width: 100px;"
                                                                                         type="submit"
+                                                                                        id="cfebuyer"
                                                                                         class="btn bg-green-btn newbtn">
                                                                                         Report
                                                                                     </button>
