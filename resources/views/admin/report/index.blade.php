@@ -36,6 +36,7 @@
                     evt.preventDefault();
                     });
                     console.log('empty');
+                    alert('Please Select Interval dates');
                 }else{
 
                 $('form').attr('action', '{{ url('admin/report/generateCfeDrying') }}');
@@ -47,6 +48,7 @@
                     evt.preventDefault();
                     });
                     console.log('empty');
+                    alert('Please Select Interval dates');
                 }else{
                 $('form').attr('action', '{{ url('admin/report/generateWarehouse') }}');}
             });
