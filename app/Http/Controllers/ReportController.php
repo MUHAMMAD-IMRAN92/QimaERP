@@ -55,7 +55,7 @@ class ReportController extends Controller
     {
         $transactions = Transaction::with(['meta' => function ($q) {
             $q->where('key', 'moisture_measurement')->latest();
-        }])->with('log', 'details')->where('sent_to', 10)->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->get()->groupBy('created_by');
+        }])->with('log', 'details')->where('sent_to', 10)->where('transaction_status' , 'sent')->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->get()->groupBy('created_by');
 
 
         $name = "public/reports/" . uniqid(rand(), true)  . ".csv";
