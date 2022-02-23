@@ -196,7 +196,7 @@
                             {
 
                                 "mRender": function(data, type, row) {
-                                    return '<td >' +
+                                    return '<td>' +
                                         row.quantity + '</td>'
                                 }
                             },

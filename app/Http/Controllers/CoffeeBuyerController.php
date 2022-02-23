@@ -1566,7 +1566,7 @@ class CoffeeBuyerController extends Controller
     }
     public function assignVillages(User $user)
     {
-        $village = Village::all();
+        $village = Village::where('status' , 1)->get();
         $buyerVillage =  $user->VillagesResposibleFor();
         $villId = [];
         foreach ($buyerVillage as $vill) {

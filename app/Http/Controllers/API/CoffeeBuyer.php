@@ -136,12 +136,12 @@ class CoffeeBuyer extends Controller
                 if ($farmer->farmer_picture) {
                     $destinationPath =  'images/';
                     // $destinationPath = 'public/images';
-                    $file = base64_decode($farmer->farmer_picture);
-                    $file_name = time() . $i . getFileExtensionForBase64($file);
-                    Storage::disk('s3')->put($destinationPath . $file_name, $file);
+                    // $file = base64_decode($farmer->farmer_picture);
+                    // $file_name = time() . $i . getFileExtensionForBase64($file);
+                    // Storage::disk('s3')->put($destinationPath . $file_name, $file);
 
                     $userProfileImage = FileSystem::create([
-                        'user_file_name' => $file_name,
+                        'user_file_name' => $farmer->farmer_picture,
                     ]);
                     $profileImageId = $userProfileImage->file_id;
                 }
@@ -149,14 +149,14 @@ class CoffeeBuyer extends Controller
                 if ($farmer->farmer_id_card_picture) {
                     $destinationPath =  'images/';
                     // $destinationPath = 'public/images';
-                    $idfile = base64_decode($farmer->farmer_id_card_picture);
-                    $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
-                    // file_put_contents($destinationPath . $id_card_file_name, $idfile);
-                    Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
+                    // $idfile = base64_decode($farmer->farmer_id_card_picture);
+                    // $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
+                    // // file_put_contents($destinationPath . $id_card_file_name, $idfile);
+                    // Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
 
                     // $request->file('profile_picture')->storeAs('public/images', $file_name);
                     $userIdCardImage = FileSystem::create([
-                        'user_file_name' => $id_card_file_name,
+                        'user_file_name' => $farmer->farmer_id_card_picture,
                     ]);
                     $idcardImageId = $userIdCardImage->file_id;
                 }
