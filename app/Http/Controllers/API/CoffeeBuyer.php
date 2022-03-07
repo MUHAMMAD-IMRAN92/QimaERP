@@ -218,7 +218,110 @@ class CoffeeBuyer extends Controller
 
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_FARMER"), $farmers);
     }
+    function addFarmerWithOutBaseSF(Request $request)
+    {
+        //::validation
+        $validator = Validator::make($request->all(), [
+            'farmers' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = implode(', ', $validator->errors()->all());
+            return sendError($errors, 400);
+        }
+        $formaersId = array();
+        $farmers = json_decode($request['farmers']);
+        $i = 1;
+        $x = 500;
+        foreach ($farmers as $key => $farmer) {
+            $alreadyFarmer = Farmer::where('farmer_nicn', $farmer->farmer_id_card_no)->first();
+            if (!$alreadyFarmer) {
+                $profileImageId = null;
+                $idcardImageId = null;
+                if ($farmer->farmer_picture) {
+                    $destinationPath =  'images/';
+                    $destinationPath = 'public/images';
+                    // $file = base64_decode($farmer->farmer_picture);
+                    // $file_name = time() . $i . getFileExtensionForBase64($file);
+                    // Storage::disk('s3')->put($destinationPath . $file_name, $file);
 
+                    $userProfileImage = FileSystem::create([
+                        'user_file_name' => $farmer->farmer_picture,
+                    ]);
+                    $profileImageId = $userProfileImage->file_id;
+                }
+
+                if ($farmer->farmer_id_card_picture) {
+                    $destinationPath =  'images/';
+                    $destinationPath = 'public/images';
+                    // $idfile = base64_decode($farmer->farmer_id_card_picture);
+                    // $id_card_file_name = time() . $x . getFileExtensionForBase64($idfile);
+                    // file_put_contents($destinationPath . $id_card_file_name, $idfile);
+                    // Storage::disk('s3')->put($destinationPath . $id_card_file_name, $idfile);
+
+                    // $request->file('profile_picture')->storeAs('public/images', $file_name);
+                    $userIdCardImage = FileSystem::create([
+                        'user_file_name' =>  $farmer->farmer_id_card_picture,
+                    ]);
+                    $idcardImageId = $userIdCardImage->file_id;
+                }
+                $lastFarmer = Farmer::orderBy('farmer_id', 'desc')->first();
+                $currentFarmerCode = 1;
+                if (isset($lastFarmer) && $lastFarmer) {
+                    $currentFarmerCode = ($lastFarmer->farmer_id + 1);
+                }
+                $currentFarmerCode = sprintf("%03d", $currentFarmerCode);
+                $village = Village::where('village_code', 'like', "%$farmer->farmer_village%")->first();
+                //::create new
+                $checkfarmerCode =   $village->village_code . '-' . $currentFarmerCode;
+                $alreadyFarmer = Farmer::create([
+                    'farmer_code' => checkBatchNumber($checkfarmerCode),
+                    'farmer_name' => $farmer->farmer_name,
+                    'village_code' => $farmer->farmer_village,
+                    'picture_id' => $profileImageId,
+                    'idcard_picture_id' => $idcardImageId,
+                    'farmer_nicn' => $farmer->farmer_id_card_no,
+                    'local_code' => $farmer->local_code,
+                    'is_local' => 0,
+                    'created_by' => $farmer->created_id,
+                    'center_id' => $farmer->center_id,
+                ]);
+            } else {
+                $alreadyFarmer->local_code = $alreadyFarmer->local_code . ',' . $farmer->local_code;
+                $alreadyFarmer->save();
+            }
+            array_push($formaersId, $alreadyFarmer->farmer_id);
+            $i++;
+            $x++;
+        }
+        $user_image = Storage::disk('s3')->url('images/demo_user_image.png');
+        $user_image_path = Storage::disk('s3')->url('images/');
+        $farmers = Farmer::whereIn('farmer_id', $formaersId)->with(['profileImage' => function ($query) use ($user_image, $user_image_path) {
+            $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+        }])->with(['idcardImage' => function ($query) use ($user_image, $user_image_path) {
+            $query->select('file_id', 'user_file_name', \DB::raw("IFNULL(CONCAT('" . $user_image_path . "/',`user_file_name`),IFNULL(`user_file_name`,'" . $user_image . "')) as user_file_name"));
+        }])->get();
+
+        foreach ($farmers as $key => $farmer) {
+            $farmer->farmer_id_card_picture = '';
+            $farmer->farmer_picture = '';
+            if (isset($farmer->idcardImage) && isset($farmer->idcardImage->user_file_name)) {
+                $farmer->farmer_id_card_picture = $farmer->idcardImage->user_file_name;
+            }
+            if (isset($farmer->profileImage) && isset($farmer->profileImage->user_file_name)) {
+                $farmer->farmer_picture = $farmer->profileImage->user_file_name;
+            }
+            $farmer->farmer_village = $farmer->village_code;
+            $farmer->farmer_id_card_no = $farmer->farmer_nicn;
+            $farmer->makeHidden('idcardImage');
+            $farmer->makeHidden('profileImage');
+            $farmer->makeHidden('village_code');
+            $farmer->makeHidden('farmer_nicn');
+            $farmer->makeHidden('idcard_picture_id');
+            $farmer->makeHidden('picture_id');
+        }
+
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.ADD_FARMER"), $farmers);
+    }
     function addCoffeeWithBatchNumber(Request $request)
     {
         $validator = Validator::make($request->all(), [

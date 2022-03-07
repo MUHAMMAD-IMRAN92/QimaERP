@@ -57,6 +57,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey', 'a
 
         //::add farmer
         Route::post('/add_farmer', 'API\CoffeeBuyer@addFarmer');
+        Route::post('/add_farmer_without_baseSF', 'API\CoffeeBuyer@addFarmerWithOutBaseSF');
 
         //::Add Coffee with batch number
         Route::post('/coffee_buyer_add_coffee', 'API\CoffeeBuyer@addCoffeeWithBatchNumber');
