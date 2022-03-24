@@ -767,7 +767,7 @@ class CoffeeDryingController extends Controller
             }
 
             foreach ($transactionsInformation->transactionMeta as $key => $value) {
-
+               
                 if ($value->key == 'moisture_measurement') {
 
                     // $alreadyMetaExist = MetaTransation::where('transaction_id', $value->transaction_id)
@@ -813,6 +813,23 @@ class CoffeeDryingController extends Controller
                             'key' => $value->key,
                             'value' => $value->value,
                             'local_created_at' => Carbon::parse($value->local_created_at)->toDateTimeString()
+                        ]);
+                    }
+                } if ($value->key == 'yemen_warehouse') {
+
+                   
+
+                    $newMata = MetaTransation::create([
+                        'transaction_id' => $value->transaction_id,
+                        'key' => $value->key,
+                        'value' => $value->value,
+                        'local_created_at' => Carbon::parse($value->local_created_at)->toDateTimeString()
+                    ]);
+
+                    $transaction = Transaction::find($value->transaction_id);
+                    if($transaction){
+                        $transaction->update([
+                            'is_sent' => 1,
                         ]);
                     }
                 } else {
