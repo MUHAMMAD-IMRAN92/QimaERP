@@ -381,9 +381,8 @@ class CoffeeBuyerController extends Controller
         } elseif ($date == 'weekToDate') {
 
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
-
-            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
+            $start = $now->startOfWeek(Carbon::SATURDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::FRIDAY)->toDateString();
 
             $coffeeBuyingManagers = Role::with(['users' => function ($query) use ($start, $end) {
             }])->where('name', 'Coffee Buying Manager')->first()->users;
@@ -1567,7 +1566,7 @@ class CoffeeBuyerController extends Controller
     }
     public function assignVillages(User $user)
     {
-        $village = Village::all();
+        $village = Village::where('status' , 1)->get();
         $buyerVillage =  $user->VillagesResposibleFor();
         $villId = [];
         foreach ($buyerVillage as $vill) {

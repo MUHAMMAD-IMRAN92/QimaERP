@@ -52,7 +52,9 @@ class ProcessingManagerController extends Controller
             $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
         })->doesntHave('isReference')->with(['transactionDetail' => function ($query) {
             $query->where('container_status', 0);
-        }])->orderBy('transaction_id', 'desc')->get();
+        }])->whereHas('transactionDetail', function ($q) {
+            $q->where('container_status', 0);
+        }, '>', 0)->orderBy('transaction_id', 'desc')->get();
 
         foreach ($transactions as $key => $transaction) {
             $transaction->buyer_name = '';

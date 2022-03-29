@@ -43,6 +43,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey', 'a
 
         //::all batches
         Route::get('/all_batches', 'API\CommonController@allBatches');
+        Route::get('/formatted_all_batches', 'API\CommonController@foramtedAllBatches');
+        Route::get('/all_batches_by_farmer', 'API\CommonController@lastBatchOfEveryFarmer');
 
         //::Coffee buyer Routes
         Route::post('/add_batches', 'API\CoffeeBuyer@addBatchNumber');
@@ -55,6 +57,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey', 'a
 
         //::add farmer
         Route::post('/add_farmer', 'API\CoffeeBuyer@addFarmer');
+        Route::post('/add_farmer_without_baseSF', 'API\CoffeeBuyer@addFarmerWithOutBaseSF');
 
         //::Add Coffee with batch number
         Route::post('/coffee_buyer_add_coffee', 'API\CoffeeBuyer@addCoffeeWithBatchNumber');

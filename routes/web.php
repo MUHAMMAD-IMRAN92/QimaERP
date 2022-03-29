@@ -1,6 +1,7 @@
 <?php
 
 use App\Center;
+use App\Http\Controllers\CropsterReportController;
 use App\Transaction;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
@@ -78,6 +79,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         //Farmer Controller
         Route::get('allfarmer', 'FarmerController@index')->middleware('auth');
+        Route::get('getallFarmer', 'FarmerController@getAllFarmers')->middleware('auth');
         Route::get('getfarmer', 'FarmerController@getFarmerAjax');
         Route::get('editfarmer/{id}', 'FarmerController@edit');
         Route::post('updatefarmer', 'FarmerController@update');
@@ -92,9 +94,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('farmer_by_date_profile/{date}', 'FarmerController@filter_farmer_profile_by_date');
         Route::get('add_farmer', 'FarmerController@create')->middleware('auth');
         Route::post('create_farmer', 'FarmerController@save');
-        Route::get('farmer/profile/{farmer}', 'FarmerController@farmerProfile')->name('farmer.profile');
+        Route::get('farmer/profile/{id}', 'FarmerController@farmerProfile')->name('farmer.profile');
         Route::get('farmer_invoice/invoices/{id}', 'FarmerController@farmerInvoice');
         Route::get('farmer_id_documents/{id}', 'FarmerController@farmeridCard');
+        Route::get('farmer_invoice/{id}', 'FarmerController@transaction_invoice');
 
         //Coffee Buyer
         Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');
@@ -273,6 +276,20 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('report/generateCfeDrying', 'ReportController@generateCfeDrying');
         Route::post('report/generateWarehouse', 'ReportController@generateWarehouse');
 
-        Route::get('lot_mixing' , 'LotMixingController@index')->name('lotMixing');
+        Route::get('lot_mixing', 'LotMixingController@index')->name('lotMixing');
+        Route::get('lot_mixing/filterByDays', 'LotMixingController@filterByDays');
+        Route::get('lot_mixing/betweenDate', 'LotMixingController@betweenDate');
+        Route::get('lot_mixing/filterLotMixingByGovernrate', 'LotMixingController@filterLotMixingByGovernrate');
+        Route::get('lot_mixing/filterLotMixingByRegion', 'LotMixingController@filterLotMixingByRegion');
+        Route::get('lot_mixing/filterLotMixingByvillage', 'LotMixingController@filterLotMixingByvillage');
+
+        //Duplication
+        Route::get('duplication', 'BatchNumberController@duplication')->name('duplication');
+
+        //Cropster Report
+        Route::post('add_cropster_report', 'CropsterReportController@index')->name('AddCropsterReport');
+
+        // Route::get('importView', 'CropsterReportController@importView');
+        // Route::post('importPost', 'CropsterReportController@importPost');
     });
 });

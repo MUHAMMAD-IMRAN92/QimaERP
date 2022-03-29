@@ -44,7 +44,9 @@ class Farmer extends Model
 
         return $village;
     }
-
+function Fregion(){
+    // return $this->hasOne();
+}
     public function getRegion()
     {
         $region = $this->farmer_code;
@@ -124,7 +126,7 @@ class Farmer extends Model
             }
             return $sum;
         } else {
-            return  $transactions = null;
+            return $sum = 0;
         }
     }
     public function price()
@@ -173,5 +175,11 @@ class Farmer extends Model
         }
 
         return $paidPrice;
+    }
+    public function cropsterReports()
+    {
+        $farmerId = $this->farmer_id;
+        $urls =   CropsterReport::where('entity_type', 1)->where('entity_id', $farmerId)->orderByDesc('created_at')->get();
+        return $urls;
     }
 }

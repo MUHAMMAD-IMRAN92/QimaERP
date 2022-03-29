@@ -1315,8 +1315,8 @@ class RegionController extends Controller
         } elseif ($date == 'weekToDate') {
 
             $now = Carbon::now();
-            $start = $now->startOfWeek(Carbon::SUNDAY)->toDateString();
-            $end = $now->endOfWeek(Carbon::SATURDAY)->toDateString();
+            $start = $now->startOfWeek(Carbon::SATURDAY)->toDateString();
+            $end = $now->endOfWeek(Carbon::FRIDAY)->toDateString();
 
 
 
@@ -1834,7 +1834,7 @@ class RegionController extends Controller
 
         $governorate = Governerate::find($id);
         $governorateCode = $governorate->governerate_code;
-        $regions = Region::where('region_code', 'LIKE', $governorateCode . '%')->get();
+        $regions = Region::where('status', 1)->where('region_code', 'LIKE', $governorateCode . '%')->get();
         $governorates = Governerate::where('status', 1)->get();
         $villages = Village::where('status', 1)->where('village_code', 'LIKE', $governorateCode . '%')->get();
         $farmers = Farmer::where('status', 1)->where('farmer_code', 'LIKE', $governorateCode . '%')->get();
@@ -1987,7 +1987,7 @@ class RegionController extends Controller
         $regionCount = $regionArray->count();
         $villageCount = $villageArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('govcount' , 'regionCount' , 'villageCount','regionQuantity', 'regionName', 'governorates',  'regions', 'villages', 'farmers',  'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport', 'govcount'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('govcount', 'regionCount', 'villageCount', 'regionQuantity', 'regionName', 'governorates',  'regions', 'villages', 'farmers',  'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport', 'govcount'))->render(),
             'regions' => $regions
         ]);
     }
@@ -2149,7 +2149,7 @@ class RegionController extends Controller
         $regionCount = $regionArray->count();
         $villageCount = $villageArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('govcount' , 'regionCount' , 'villageCount','regionQuantity', 'regionName', 'governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'readyForExport', 'farmerCount'))->render(),
+            'view' => view('admin.region.views.filter_transctions', compact('govcount', 'regionCount', 'villageCount', 'regionQuantity', 'regionName', 'governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'readyForExport', 'farmerCount'))->render(),
             'villages' => $villages
         ])->with('govCount', $govArray->count())->with('villageCount', $villageArray->count())
             ->with('regionCount', $regionArray->count());
@@ -2310,7 +2310,7 @@ class RegionController extends Controller
         $regionCount = $regionArray->count();
         $villageCount = $villageArray->count();
         return response()->json([
-            'view' => view('admin.region.views.filter_transctions', compact('govcount' , 'regionCount' , 'villageCount','regionQuantity', 'regionName', 'governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport'))->with('govCount', $govArray->count())->with('villageCount', $villageArray->count())
+            'view' => view('admin.region.views.filter_transctions', compact('govcount', 'regionCount', 'villageCount', 'regionQuantity', 'regionName', 'governorates', 'regions', 'villages', 'farmers', 'total_coffee', 'totalPrice', 'farmerCount', 'readyForExport'))->with('govCount', $govArray->count())->with('villageCount', $villageArray->count())
                 ->with('regionCount', $regionArray->count())->render(),
 
         ]);

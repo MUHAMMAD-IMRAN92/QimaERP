@@ -326,6 +326,18 @@ class CommonController extends Controller
         }
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $allBatches);
     }
+    function foramtedAllBatches(Request $request)
+    {
+        $allBatches = array();
+        $batches = BatchNumber::all();
+        foreach ($batches as $key => $batch) {
+            $batch->is_active = FALSE;
+            //   $childBatch = $batche->childBatches;
+            // $batchData = ['batch' => $batche];
+            array_push($allBatches, $batch);
+        }
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $allBatches);
+    }
 
     function getContainerType(Request $request)
     {
@@ -354,5 +366,19 @@ class CommonController extends Controller
         } else {
             throw new Exception('User Not Found');
         }
+    }
+    function lastBatchOfEveryFarmer()
+    {
+        $data = collect();
+        $farmers = Farmer::where('status', 1)->get();
+        // return $farmer->farmer_code;
+        foreach ($farmers as $farmer) {
+            $batch = BatchNumber::where('batch_number', 'LIKE', '%' . $farmer->farmer_code . '%')->orderByDesc('batch_id')->first();
+            if ($batch != null) {
+
+                $data->push($batch);
+            }
+        }
+        return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RETRIEVED_BATCHES"), $data->unique()->values());
     }
 }

@@ -195,11 +195,14 @@
         $(document).ready(function() {
 
             $('#myTable').DataTable({
-                columnDefs: [
-                  { orderable: false, targets: [11,12]}
-                ],
-                order: [[1, 'asc']]
-              });
+                columnDefs: [{
+                    orderable: false,
+                    targets: [11, 12]
+                }],
+                order: [
+                    [1, 'asc']
+                ]
+            });
             $('#to').on('change', function() {
                 let from = $('#from').val();
                 let to = $('#to').val();
@@ -560,10 +563,10 @@
                 <span class="ml-2 hover" id="yearToDate"> YEAR TO
                     DATE</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover" id="currentyear"> 2021
+                <span class="ml-md-2 hover" id="currentyear"> 2022
                     SEASON</a></span>
                 &nbsp |
-                <span class="ml-md-2 hover" id="lastyear"> 2020
+                <span class="ml-md-2 hover" id="lastyear"> 2021
                     SEASON</a></span>
                 &nbsp |
                 <span class="ml-md-2 hover" style="font-weight: bold; text-decoration: underline;"> <a
@@ -648,182 +651,113 @@
                                                         <th>Quantity</th>
                                                         <th>Stage</th>
                                                         <th>Times</th>
-                                                        <th> <button class="milling-link" type="submit" id="submitbtn"
-                                                                class="btn btn-primary">Mix
+                                                        <th> <button class="milling-link" type="submit" id="mix">Mix
                                                                 Batches</button> </th>
                                                         <th id='milling-th'><button class="milling-link" type="submit"
-                                                                id="submitbtn" class="btn btn-primary">Confirm
+                                                                id="millingbtn">Confirm
                                                                 Milling</button></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody >
                                                     @foreach ($transactions as $transaction)
                                                         <tr>
-                                                            @if (Str::contains($transaction['transaction']->batch_number, '000'))
-                                                                <td>
 
-                                                                    {{ $transaction['transaction']->transaction_id }}
+                                                            <td>
+                                                                {{ $transaction['transaction']->transaction_id }}
+                                                            </td>
+                                                            <td>
+                                                                @php
+                                                                    $farmers = parentBatch($transaction['transaction']->batch_number);
+                                                                @endphp
+                                                                @foreach ($farmers as $farmer)
+                                                                    @if ($farmer)
+                                                                        {{ $farmer->farmer_name }} <br>
+                                                                    @endif
+                                                                @endforeach
+                                                            </td>
+                                                            <td>
+                                                                @php
+                                                                    $farmers = parentBatch($transaction['transaction']->batch_number);
+                                                                @endphp
+                                                                @foreach ($farmers as $farmer)
+                                                                    @if ($farmer)
+                                                                        {{ $farmer->farmer_code }} <br>
+                                                                    @endif
+                                                                @endforeach
+                                                            </td>
+                                                            <td>
+                                                                {{ $transaction['transaction']->batch_number }}
+                                                            </td>
+                                                            <td>
+                                                                SPECIALTY
+                                                            </td>
+                                                            <td>
+                                                                {{ getGov($transaction['transaction']->batch_number) }}
+                                                            </td>
+                                                            <td>
+                                                                {{ getRegion($transaction['transaction']->batch_number) }}
+                                                            </td>
+                                                            <td>
+                                                                {{-- {{ getVillage($transaction['transaction']->batch_number) }} --}}
+                                                                @php
+                                                                    $farmers = parentBatch($transaction['transaction']->batch_number);
+                                                                @endphp
+                                                                @foreach ($farmers as $farmer)
+                                                                    @php
+                                                                        if ($farmer) {
+                                                                            $village = App\Village::where('village_code', $farmer->village_code)->first();
+                                                                        }
+
+                                                                    @endphp
+                                                                    @if ($village->village_title)
+                                                                        {{ $village->village_title }}
+                                                                    @endif
                                                                     <br>
-                                                                </td>
-                                                                <td>
-                                                                    @foreach ($transaction['child_transactions'] as $childtran)
-                                                                        {{ getFarmer($childtran->batch_number) }} <br>
-                                                                    @endforeach
-                                                                </td>
+                                                                @endforeach
+                                                            </td>
+                                                            <td>
+                                                                @foreach ($transaction['transaction']->transactionDetail as $detail)
+                                                                    {{ $detail->container_number . ':' . $detail->container_weight }}
+                                                                    <br>
 
-                                                                <td>
-                                                                    @foreach ($transaction['child_transactions'] as $childtran)
-                                                                        {{ explode('-', $childtran->batch_number)[0] . '-' . explode('-', $childtran->batch_number)[1] . '-' . explode('-', $childtran->batch_number)[2] . '-' . explode('-', $childtran->batch_number)[3] }}
-                                                                        <br>
-                                                                    @endforeach
-                                                                </td>
-                                                                <td>
-                                                                    {{ $transaction['transaction']->batch_number }}
-                                                                </td>
-                                                                <td>
-                                                                    SPECIALTY
-                                                                </td>
-                                                                <td>
-                                                                    @foreach ($transaction['child_transactions'] as $childtran)
-                                                                        {{ getGov($childtran->batch_number) }} <br>
-                                                                    @endforeach
-                                                                </td>
-                                                                <td>
-                                                                    @foreach ($transaction['child_transactions'] as $childtran)
-                                                                        {{ getRegion($childtran->batch_number) }} <br>
-                                                                    @endforeach
-                                                                </td>
-                                                                <td>
-                                                                    @foreach ($transaction['child_transactions'] as $childtran)
-                                                                        {{ getVillage($childtran->batch_number) }} <br>
-                                                                    @endforeach
-                                                                </td>
-                                                                <td>
-                                                                    {{-- @foreach ($transaction['child_transactions'] as $childtran)
-                                                                            {{ $childtran->transactionDetail->sum('container_weight') }}
-                                                                            <br>
-                                                                        @endforeach --}}
-                                                                    @foreach ($transaction['transaction']->transactionDetail as $detail)
-                                                                        {{ $detail->container_number . ':' . $detail->container_weight }}
-                                                                        <br>
-                                                                    @endforeach
-                                                                </td>
+                                                                @endforeach
+                                                            </td>
+                                                            <td>
+                                                                {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
+                                                            </td>
+                                                            <td>
+                                                                @php
+                                                                    $now = \Carbon\Carbon::now();
+                                                                    $today = $now->today()->toDateString();
+                                                                @endphp
+                                                                {{ $transaction['transaction']->created_at->diffInDays($today) . ' ' . 'Days' }}
+                                                            </td>
+                                                            <td>
+                                                                @php
 
-                                                                <td>
-                                                                    {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
-                                                                </td>
-                                                                <td>
-                                                                    @php
-                                                                        $now = \Carbon\Carbon::now();
-                                                                        $today = $now->today()->toDateString();
-                                                                    @endphp
-                                                                    {{ $transaction['transaction']->created_at->diffInDays($today) . ' ' . 'Days' }}
-                                                                </td>
-                                                                <td>
-                                                                    @php
+                                                                    $batchNumber = $transaction['transaction']->batch_number;
+                                                                    $batchExplode = explode('-', $batchNumber);
+                                                                    $gov = $batchExplode[0];
+                                                                @endphp
+                                                                @if ($transaction['transaction']->sent_to == 13)
+                                                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
+                                                                        name="transaction_id[]"
+                                                                        value="{{ $transaction['transaction']->transaction_id }}"
+                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }} checkBox13"
+                                                                        onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                                                @endif
 
-                                                                        $batchNumber = $transaction['transaction']->batch_number;
-                                                                        $batchExplode = explode('-', $batchNumber);
-                                                                        $gov = $batchExplode[0];
-                                                                    @endphp
-                                                                    @if ($transaction['transaction']->sent_to == 13)
-                                                                        <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                            name="transaction_id[]"
-                                                                            value="{{ $transaction['transaction']->transaction_id }}"
-                                                                            class="milling_check check_gov{{ $transaction['transaction']->transaction_id }}"
-                                                                            onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
-                                                                    @endif
+                                                            </td>
+                                                            <td>
 
-                                                                </td>
-                                                                <td>
-                                                                    @php
+                                                                @if ($transaction['transaction']->sent_to == 140)
+                                                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
+                                                                        name="transaction_id[]"
+                                                                        value="{{ $transaction['transaction']->transaction_id }}"
+                                                                        class="checkSentTo140" onclick="disableFun()">
+                                                                @endif
+                                                            </td>
 
-                                                                        $batchNumber = $transaction['transaction']->batch_number;
-                                                                        $batchExplode = explode('-', $batchNumber);
-                                                                        $gov = $batchExplode[0];
-                                                                    @endphp
-                                                                    @if ($transaction['transaction']->sent_to == 140)
-                                                                        <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                            name="transaction_id[]"
-                                                                            value="{{ $transaction['transaction']->transaction_id }}"
-                                                                            class="check_gov{{ $transaction['transaction']->transaction_id }}"
-                                                                            onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
-                                                                    @endif
-                                                                </td>
-                                                            @else
-                                                                <td>
-                                                                    {{ $transaction['transaction']->transaction_id }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ getFarmer($transaction['transaction']->batch_number) }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ explode('-', $transaction['transaction']->batch_number)[0] . '-' . explode('-', $transaction['transaction']->batch_number)[1] . '-' . explode('-', $transaction['transaction']->batch_number)[2] . '-' . explode('-', $transaction['transaction']->batch_number)[3] }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ $transaction['transaction']->batch_number }}
-                                                                </td>
-                                                                <td>
-                                                                    SPECIALTY
-                                                                </td>
-                                                                <td>
-                                                                    {{ getGov($transaction['transaction']->batch_number) }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ getRegion($transaction['transaction']->batch_number) }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ getVillage($transaction['transaction']->batch_number) }}
-                                                                </td>
-                                                                <td>
-                                                                    @foreach ($transaction['transaction']->transactionDetail as $detail)
-                                                                        {{ $detail->container_number . ':' . $detail->container_weight }}
-                                                                        <br>
-
-                                                                    @endforeach
-                                                                </td>
-                                                                <td>
-                                                                    {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
-                                                                </td>
-                                                                <td>
-                                                                    @php
-                                                                        $now = \Carbon\Carbon::now();
-                                                                        $today = $now->today()->toDateString();
-                                                                    @endphp
-                                                                    {{ $transaction['transaction']->created_at->diffInDays($today) . ' ' . 'Days' }}
-                                                                </td>
-                                                                <td>
-                                                                    @php
-
-                                                                        $batchNumber = $transaction['transaction']->batch_number;
-                                                                        $batchExplode = explode('-', $batchNumber);
-                                                                        $gov = $batchExplode[0];
-                                                                    @endphp
-                                                                    @if ($transaction['transaction']->sent_to == 13)
-                                                                        <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                            name="transaction_id[]"
-                                                                            value="{{ $transaction['transaction']->transaction_id }}"
-                                                                            class="check_gov{{ $transaction['transaction']->transaction_id }}"
-                                                                            onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
-                                                                    @endif
-
-                                                                </td>
-                                                                <td>
-                                                                    @php
-
-                                                                        $batchNumber = $transaction['transaction']->batch_number;
-                                                                        $batchExplode = explode('-', $batchNumber);
-                                                                        $gov = $batchExplode[0];
-                                                                    @endphp
-                                                                    @if ($transaction['transaction']->sent_to == 140)
-                                                                        <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                            name="transaction_id[]"
-                                                                            value="{{ $transaction['transaction']->transaction_id }}"
-                                                                            class="check_gov{{ $transaction['transaction']->transaction_id }}"
-                                                                            onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
-                                                                    @endif
-                                                                </td>
-                                                            @endif
 
                                                         </tr>
                                                     @endforeach
@@ -845,11 +779,33 @@
             </div>
         </div>
         <script>
+            function disableFun() {
+                $('.checkBox13').prop('checked', false);
+                if ($(".checkSentTo140:checkbox:checked").length > 0) {
+                    console.log($(".checkSentTo140:checkbox:checked").length);
+                    $('#mix').prop('disabled', true);
+                    $('#millingbtn').attr('disabled', false);
+                } else {
+                    console.log($(".checkSentTo140:checkbox:checked").length);
+                    $('#mix').prop('disabled', false);
+                }
+            }
             var gov = null;
-
+            $('#millingbtn').on('click' , function(){
+                $('#millingbtn').css('display' , 'none');
+            });
+            $('#mix').on('click' , function(){
+                $('#mix').css('display' , 'none');
+            });
             function checkGov(checkgov, id) {
+                $('.checkSentTo140').prop('checked', false);
 
-                //alert(id);
+                if ($(".checkBox13:checkbox:checked").length > 0) {
+                    $('#millingbtn').attr('disabled', true);
+                    $('#mix').prop('disabled', false);
+                } else {
+                    $('#millingbtn').attr('disabled', false);
+                }
                 if (gov == null) {
                     gov = checkgov;
                 } else {
@@ -867,14 +823,15 @@
                     gov = null;
                 }
             }
+
             $(document).ready(function() {
                 $('#submitbtn').on('click', function() {
                     $('#submitbtn').hide();
                 });
                 $('#milling-th').on('click', function() {
+                    console.log('imran');
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
                 });
-
             });
 
             const slider = document.querySelector(".milling-form");
