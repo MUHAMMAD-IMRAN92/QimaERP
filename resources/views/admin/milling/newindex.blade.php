@@ -681,7 +681,7 @@
                                                                 @endphp
                                                                 @foreach ($farmers as $farmer)
                                                                     @if ($farmer)
-                                                                        {{ $farmer->farmer_name }} <br>
+                                                                        {{ $farmer->farmer_code }} <br>
                                                                     @endif
                                                                 @endforeach
                                                             </td>
