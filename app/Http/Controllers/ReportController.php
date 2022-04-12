@@ -152,7 +152,7 @@ class ReportController extends Controller
                 $now = \Carbon\Carbon::now();
                 $today = $now->today()->toDateString();
                 $weight = 0;
-                if ($tran->detailts->sum('container_weight') != null) {
+                if ($tran->detailts) {
 
                     $weight +=   $tran->detailts->sum('container_weight');
                 }
