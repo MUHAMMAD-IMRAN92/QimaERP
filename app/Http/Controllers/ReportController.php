@@ -55,7 +55,7 @@ class ReportController extends Controller
     {
         $transactions = Transaction::with(['meta' => function ($q) {
             $q->where('key', 'moisture_measurement')->latest();
-        }])->with('log', 'details')->where('sent_to', 10)->where('transaction_status' , 'sent')->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->get()->groupBy('created_by');
+        }])->with('log', 'details')->where('sent_to', 10)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->where('batch_number', 'NOT LIKE', '%000%')->get()->groupBy('created_by');
 
 
         $name = "public/reports/" . uniqid(rand(), true)  . ".csv";
@@ -112,6 +112,58 @@ class ReportController extends Controller
     }
     public function generateWarehouse(Request $request)
     {
-        return $request->all();
+         $transactions = Transaction::with(['meta' => function ($q) {
+            $q->where('key', 'moisture_measurement')->latest();
+        }])->with('log', 'details')->where('sent_to', 12)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get()->groupBy('created_by');
+
+
+
+        $name = "public/reports/" . uniqid(rand(), true)  . ".csv";
+
+
+        header('Content-Type: text/xml,  charset=UTF-8; encoding=UTF-8');
+        $file = fopen($name, 'w');
+        fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        // fputcsv($file, ['Buyer Name', 'Batch Number', 'Container weight', 'Date & Time']);
+        fputcsv($file, ['Coffee Centre', 'Centre Manager',  'Batch number', 'Input weight', 'Date of input','WareHouse']);
+        foreach ($transactions as $key => $transaction) {
+            // $user = User::find($key);
+            foreach ($transaction as $tran) {
+                // dd($tran);
+                $center = Center::find($tran->log->entity_id);
+                $centerName = '';
+                if ($center) {
+                    $centerName = $center->center_name;
+                }
+                $centerUser = CenterUser::where('center_id', $tran->log->entity_id)->first();
+                $managerName = '';
+                if ($centerUser) {
+                    $user = User::find($centerUser->user_id);
+                    $managerName =    $user->user_first_name . ' ' . $user->last_name;
+                }
+                $meta = '';
+                $localcareatedAt = '';
+                foreach ($tran->meta as $m) {
+                    if($m->key == 'yemen_warehouse'){
+                        $meta = $m->value;
+                    }
+                    $localcareatedAt = $m->local_created_at;
+                }
+                $now = \Carbon\Carbon::now();
+                $today = $now->today()->toDateString();
+                // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
+                $arr = [
+                    $centerName, $managerName,
+                     $tran->batch_number, $tran->detailts->sum('container_weight'), $tran->local_created_at, $meta,
+                    $localcareatedAt, 
+
+                ];
+                // return $arr
+
+                fputcsv($file, $arr);
+            }
+        }
+        fclose($file);
+        return Response::Download($name);
     }
 }
