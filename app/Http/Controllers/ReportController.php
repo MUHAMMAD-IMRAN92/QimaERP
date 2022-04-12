@@ -112,7 +112,7 @@ class ReportController extends Controller
     }
     public function generateWarehouse(Request $request)
     {
-      return  $transactions = Transaction::with(['meta' => function ($q) {
+        $transactions = Transaction::with(['meta' => function ($q) {
             $q->where('key', 'moisture_measurement')->latest();
         }])->with('log', 'details')->where('sent_to', 12)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get()->groupBy('created_by');
 
@@ -144,9 +144,9 @@ class ReportController extends Controller
                 $meta = '';
                 $localcareatedAt = '';
                 foreach ($tran->meta as $m) {
-                    if ($m->key == 'yemen_warehouse') {
-                        $meta = $m->value;
-                    }
+                    // if ($m->key == 'yemen_warehouse') {
+                    //     $meta = $m->value;
+                    // }
                     $localcareatedAt = $m->local_created_at;
                 }
                 $now = \Carbon\Carbon::now();
@@ -159,8 +159,7 @@ class ReportController extends Controller
                 // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
                 $arr = [
                     $centerName, $managerName,
-                    $tran->batch_number, $weight, $tran->local_created_at, $meta,
-                    $localcareatedAt,
+                    $tran->batch_number, $weight, $tran->local_created_at, 'yemen_warehouse'
 
                 ];
                 // return $arr
