@@ -152,9 +152,9 @@ class ReportController extends Controller
                 $now = \Carbon\Carbon::now();
                 $today = $now->today()->toDateString();
                 $weight = 0;
-                if ($tran->detailts) {
+                if ($tran->details) {
 
-                    $weight +=   $tran->detailts->sum('container_weight');
+                    $weight +=   $tran->details->sum('container_weight');
                 }
                 // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
                 $arr = [
