@@ -112,7 +112,7 @@ class ReportController extends Controller
     }
     public function generateWarehouse(Request $request)
     {
-         $transactions = Transaction::with(['meta' => function ($q) {
+        $transactions = Transaction::with(['meta' => function ($q) {
             $q->where('key', 'moisture_measurement')->latest();
         }])->with('log', 'details')->where('sent_to', 12)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get()->groupBy('created_by');
 
@@ -125,7 +125,7 @@ class ReportController extends Controller
         $file = fopen($name, 'w');
         fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
         // fputcsv($file, ['Buyer Name', 'Batch Number', 'Container weight', 'Date & Time']);
-        fputcsv($file, ['Coffee Centre', 'Centre Manager',  'Batch number', 'Input weight', 'Date of input','WareHouse']);
+        fputcsv($file, ['Coffee Centre', 'Centre Manager',  'Batch number', 'Input weight', 'Date of input', 'WareHouse']);
         foreach ($transactions as $key => $transaction) {
             // $user = User::find($key);
             foreach ($transaction as $tran) {
@@ -144,18 +144,23 @@ class ReportController extends Controller
                 $meta = '';
                 $localcareatedAt = '';
                 foreach ($tran->meta as $m) {
-                    if($m->key == 'yemen_warehouse'){
+                    if ($m->key == 'yemen_warehouse') {
                         $meta = $m->value;
                     }
                     $localcareatedAt = $m->local_created_at;
                 }
                 $now = \Carbon\Carbon::now();
                 $today = $now->today()->toDateString();
+                $weight = 0;
+                if ($tran->detailts->sum('container_weight') != null) {
+
+                    $weight +=   $tran->detailts->sum('container_weight');
+                }
                 // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
                 $arr = [
                     $centerName, $managerName,
-                     $tran->batch_number, $tran->detailts->sum('container_weight'), $tran->local_created_at, $meta,
-                    $localcareatedAt, 
+                    $tran->batch_number, $weight, $tran->local_created_at, $meta,
+                    $localcareatedAt,
 
                 ];
                 // return $arr
