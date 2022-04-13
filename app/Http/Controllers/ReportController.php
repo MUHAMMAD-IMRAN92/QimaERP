@@ -142,12 +142,10 @@ class ReportController extends Controller
                     $managerName =    $user->user_first_name . ' ' . $user->last_name;
                 }
                 $meta = '';
-                $localcareatedAt = '';
                 foreach ($tran->meta as $m) {
-                    // if ($m->key == 'yemen_warehouse') {
-                    //     $meta = $m->value;
-                    // }
-                    $localcareatedAt = $m->local_created_at;
+                    if ($m->key == 'yemen_warehouse') {
+                        $meta = $m->value;
+                    }
                 }
                 $now = \Carbon\Carbon::now();
                 $today = $now->today()->toDateString();
@@ -159,7 +157,7 @@ class ReportController extends Controller
                 // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
                 $arr = [
                     $centerName, $managerName,
-                    $tran->batch_number, $weight, $tran->local_created_at, 'yemen_warehouse'
+                    $tran->batch_number, $weight, $tran->local_created_at, $meta
 
                 ];
                 // return $arr
