@@ -144,7 +144,7 @@ class ReportController extends Controller
                 $meta = '';
                 foreach ($tran->meta as $m) {
                     if ($m->key == 'yemen_warehouse') {
-                        $meta .= $m->value;
+                        $meta = $m->value;
                     }
                 }
                 $now = \Carbon\Carbon::now();
