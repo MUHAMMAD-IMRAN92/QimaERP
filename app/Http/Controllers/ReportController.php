@@ -114,7 +114,7 @@ class ReportController extends Controller
     {
         $transactions = Transaction::with(['meta' => function ($q) {
             $q->where('key', 'yemen_warehouse')->latest();
-        }])->with('log', 'details')->where('sent_to', 12)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get()->groupBy('created_by');
+        }])->with('log', 'details')->where('sent_to', 13)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get()->groupBy('created_by');
 
 
 
