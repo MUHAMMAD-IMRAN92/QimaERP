@@ -98,6 +98,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('farmer_invoice/invoices/{id}', 'FarmerController@farmerInvoice');
         Route::get('farmer_id_documents/{id}', 'FarmerController@farmeridCard');
         Route::get('farmer_invoice/{id}', 'FarmerController@transaction_invoice');
+        RoutE::get('farmers/download' , 'FarmerController@download');
 
         //Coffee Buyer
         Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');

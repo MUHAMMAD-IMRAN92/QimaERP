@@ -400,6 +400,10 @@
                         <hr>
                         <div class="col-sm-6 d-flex justify-content-end align-items-end">
                             <ol class="breadcrumb float-sm-right">
+                                <a href="{{ URL::to('') }}/admin/farmers/download" class="btn btn-add rounded-circle">
+                                    <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase">Download
+                                        Farmer</button>
+                                </a> 
                                 <a href="{{ URL::to('') }}/admin/add_farmer" class="btn btn-add rounded-circle">
                                     <button class="btn btn-dark bg-transparent border-0 add-button text-uppercase">Add
                                         Farmer</button>

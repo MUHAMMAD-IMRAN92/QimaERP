@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FarmersExport;
 use App\Farmer;
 use Illuminate\Support\Str;
 use App\Region;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Stringable;
 
 class FarmerController extends Controller
@@ -301,7 +303,7 @@ class FarmerController extends Controller
 
     public function create()
     {
-        $data['villages'] = Village::where('status' , 1)->get();
+        $data['villages'] = Village::where('status', 1)->get();
         return view('admin.farmer.add_farmer', $data);
     }
 
@@ -1252,5 +1254,9 @@ class FarmerController extends Controller
     public function transaction_invoice($id)
     {
         return $id;
+    }
+    public function download()
+    {
+        return Excel::download(new FarmersExport, 'farmers.xlsx');
     }
 }
