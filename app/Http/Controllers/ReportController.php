@@ -125,7 +125,7 @@ class ReportController extends Controller
         $file = fopen($name, 'w');
         fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
         // fputcsv($file, ['Buyer Name', 'Batch Number', 'Container weight', 'Date & Time']);
-        fputcsv($file, ['Coffee Centre', 'Centre Manager',  'Batch number', 'Basket', 'Input weight', 'Date of input', 'WareHouse']);
+        fputcsv($file, ['Coffee Centre', 'Centre Manager',  'Batch number', 'Baskets', 'Input weight', 'Date of input', 'WareHouse']);
         foreach ($transactions as $key => $transaction) {
             // $user = User::find($key);
             foreach ($transaction as $tran) {
@@ -164,12 +164,12 @@ class ReportController extends Controller
                     $arr = [
                         $centerName, $managerName,
                         $tran->batch_number, $detail->container_number, $weight, $tran->local_created_at, $meta
-
+    
                     ];
-                    fputcsv($file, $arr);
                 }
                 // return $arr
 
+                fputcsv($file, $arr);
             }
         }
         fclose($file);
