@@ -159,14 +159,14 @@ class ReportController extends Controller
                     $weight +=   $tran->details->sum('container_weight');
                 }
                 // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
-                foreach ($tran->details as $detail) {
-                    $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
-                    $arr = [
-                        $centerName, $managerName,
-                        $tran->batch_number, $detail->container_number, $weight, $tran->local_created_at, $meta
-    
-                    ];
-                }
+                // foreach ($tran->details as $detail) {
+                //     $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
+                // }
+                $arr = [
+                    $centerName, $managerName,
+                    $tran->batch_number, $detail->container_number, $weight, $tran->local_created_at, $meta
+
+                ];
                 // return $arr
 
                 fputcsv($file, $arr);
