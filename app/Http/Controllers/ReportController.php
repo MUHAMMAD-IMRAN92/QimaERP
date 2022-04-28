@@ -125,7 +125,7 @@ class ReportController extends Controller
         $file = fopen($name, 'w');
         fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
         // fputcsv($file, ['Buyer Name', 'Batch Number', 'Container weight', 'Date & Time']);
-        fputcsv($file, ['Coffee Centre', 'Centre Manager',  'Batch number', 'Baskets', 'Input weight', 'Date of input', 'WareHouse']);
+        fputcsv($file, ['Coffee Centre', 'Centre Manager',  'Batch number', 'Basket', 'Input weight', 'Date of input', 'WareHouse']);
         foreach ($transactions as $key => $transaction) {
             // $user = User::find($key);
             foreach ($transaction as $tran) {
@@ -159,14 +159,17 @@ class ReportController extends Controller
                     $weight +=   $tran->details->sum('container_weight');
                 }
                 // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
-                $arr = [
-                    $centerName, $managerName,
-                    $tran->batch_number, $detailsString, $weight, $tran->local_created_at, $meta
+                foreach ($tran->details as $detail) {
+                    $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
+                    $arr = [
+                        $centerName, $managerName,
+                        $tran->batch_number, $detail->container_number, $weight, $tran->local_created_at, $meta
 
-                ];
+                    ];
+                    fputcsv($file, $arr);
+                }
                 // return $arr
 
-                fputcsv($file, $arr);
             }
         }
         fclose($file);
