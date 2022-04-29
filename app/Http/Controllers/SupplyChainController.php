@@ -30,10 +30,10 @@ class SupplyChainController extends Controller
                     // $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
                     $q->where('action', 'sent')->where('type', 'special_processing');
                 })->with('meta')->orderBy('transaction_id', 'desc')->get();
-            } elseif ($sent == 12) {
-                $transactions =  Transaction::whereYear('created_at', $year)->where('is_parent', 0)->whereHas('log', function ($q) {
-                    $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                })->whereHas('transactionDetail', function ($q) {
+                } elseif ($sent == 12) {
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('is_parent', 0)->whereHas('log', function ($q) {
+                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
+                    })->whereHas('transactionDetail', function ($q) {
                     $q->where('container_status', 0);
                 }, '>', 0)
                     //->doesntHave('isReference')
