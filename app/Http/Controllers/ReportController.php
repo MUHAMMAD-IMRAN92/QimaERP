@@ -164,7 +164,7 @@ class ReportController extends Controller
 
                     $arr = [
                         $centerName, $managerName,
-                        $tran->batch_number, $detail->container_number, $detail->container_weight, $tran->local_created_at, $meta
+                        $tran->batch_number, $detail->container_number, $detail->container_weight, $tran->local_created_at, 'warehouseOne'
 
                     ];
 
