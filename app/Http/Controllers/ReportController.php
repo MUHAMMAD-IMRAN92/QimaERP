@@ -113,7 +113,7 @@ class ReportController extends Controller
     public function generateWarehouse(Request $request)
     {
         $transactions = Transaction::with(['meta' => function ($q) {
-            $q->where('key', 'yemen_warehouse')->latest();
+            // $q->where('key', 'yemen_warehouse')->latest();
         }])->with('log', 'details')->where('sent_to', 13)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get()->groupBy('created_by');
 
 
@@ -164,7 +164,7 @@ class ReportController extends Controller
 
                     $arr = [
                         $centerName, $managerName,
-                        $tran->batch_number, $detail->container_number, $detail->container_weight, $tran->local_created_at, $meta
+                        $tran->batch_number, $detail->container_number, $detail->container_weight, $tran->local_created_at, 'warehouseOne'
 
                     ];
 
