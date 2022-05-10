@@ -112,7 +112,7 @@ class ReportController extends Controller
     }
     public function generateWarehouse(Request $request)
     {
-        $transactions = Transaction::with('details')->where('sent_to', 13)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get();
+        $transactions = Transaction::with('details')->where('sent_to', 13)->whereBetween('created_at', [$request->from, $request->to])->get();
 
 
 
