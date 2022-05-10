@@ -31,23 +31,9 @@ class SupplyChainController extends Controller
                     $q->where('action', 'sent')->where('type', 'special_processing');
                 })->with('meta')->orderBy('transaction_id', 'desc')->get();
             } elseif ($sent == 12) {
-                $transactions = Transaction::where('is_parent', 0)
-                ->whereHas('log', function ($q) {
-                    $q->whereIn('action', ['sent', 'received'])
-                        ->whereIn('type', ['sent_to_yemen', 'received_by_yemen', 'milling_coffee', 'sent_to_mill']);
-                })->whereHas(
-                    'transactionDetail',
-                    function ($q) {
-                        $q->where('container_status', 0);
-                    },
-                    '>',
-                    0
-                )->with(['transactionDetail' => function ($query) {
-                    $query->where('container_status', 0);
-                }])->with('meta', 'child')
-                ->orderBy('transaction_id', 'desc')
-                ->get();
-    
+                $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
             } elseif ($sent == 14) {
                 $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                     // ->whereHas('log', function ($q) {
@@ -93,16 +79,9 @@ class SupplyChainController extends Controller
                     $q->where('action', 'sent')->where('type', 'special_processing');
                 })->with('meta')->orderBy('transaction_id', 'desc')->get();
             } elseif ($sent == 12) {
-                $transactions =  Transaction::where('is_parent', 0)->whereDate('created_at', $today)->whereHas('log', function ($q) {
-                    $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                })
-                    // ->whereHas('transactionDetail', function ($q) {
-                    //     $q->where('container_status', 0);
-                    // }, '>', 0)
-                    //     //->doesntHave('isReference')
-                    ->with(['transactionDetail' => function ($query) {
-                        $query->where('container_status', 0);
-                    }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                $transactions = Transaction::whereYear('created_at', $year)->whereDate('created_at', $today)->where('sent_to', 12)
+                    ->orderBy('transaction_id', 'desc')
+                    ->get();
             } elseif ($sent == 14) {
                 $transactions = Transaction::whereYear('created_at', $year)->whereDate('created_at', $today)->where('sent_to', 14)
                     // ->whereHas('log', function ($q) {
@@ -159,16 +138,8 @@ class SupplyChainController extends Controller
                     $q->where('action', 'sent')->where('type', 'special_processing');
                 })->with('meta')->orderBy('transaction_id', 'desc')->get();
             } elseif ($sent == 12) {
-                $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                    $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                })
-                    // ->whereHas('transactionDetail', function ($q) {
-                    //     $q->where('container_status', 0);
-                    // }, '>', 0)
-                    //     //->doesntHave('isReference')
-                    ->with(['transactionDetail' => function ($query) {
-                        $query->where('container_status', 0);
-                    }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                    ->orderBy('transaction_id', 'desc')->get();
             } elseif ($sent == 14) {
                 $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                     // ->whereHas('log', function ($q) {
@@ -214,16 +185,8 @@ class SupplyChainController extends Controller
                     $q->where('action', 'sent')->where('type', 'special_processing');
                 })->with('meta')->orderBy('transaction_id', 'desc')->get();
             } elseif ($sent == 12) {
-                $transactions =  Transaction::whereBetween('created_at', [$request->from, $request->to])->whereHas('log', function ($q) {
-                    $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                })
-                    // ->whereHas('transactionDetail', function ($q) {
-                    //     $q->where('container_status', 0);
-                    // }, '>', 0)
-                    //     //->doesntHave('isReference')
-                    ->with(['transactionDetail' => function ($query) {
-                        // $query->where('container_status', 0);
-                    }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                $transactions =  Transaction::whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 12)
+                    ->orderBy('transaction_id', 'desc')->get();
             } elseif ($sent == 14) {
                 $transactions = Transaction::whereBetween('created_at', [$request->from, $request->to])->where('sent_to', 14)
                     // ->whereHas('log', function ($q) {
@@ -286,16 +249,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -341,16 +296,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereDate('created_at', $today)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->whereDate('created_at', $today)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->whereDate('created_at', $today)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -402,16 +349,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -455,16 +394,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereDate('created_at', $yesterday)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->whereDate('created_at', $yesterday)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->whereDate('created_at', $yesterday)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -520,16 +451,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -575,16 +498,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereMonth('created_at', $lastMonth)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->whereMonth('created_at', $lastMonth)->whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -640,16 +555,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -695,16 +602,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -759,16 +658,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -815,16 +706,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -880,16 +763,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -935,16 +810,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -1001,16 +868,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -1056,16 +915,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -1121,16 +972,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -1176,16 +1019,8 @@ class SupplyChainController extends Controller
                         $q->where('action', 'sent')->where('type', 'special_processing');
                     })->with('meta')->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 12) {
-                    $transactions =  Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->whereHas('log', function ($q) {
-                        $q->where('action', 'sent')->whereIn('type', ['coffee_drying', 'coffee_drying_received', 'coffee_drying_send', 'sent_to_yemen']);
-                    })
-                        // ->whereHas('transactionDetail', function ($q) {
-                        //     $q->where('container_status', 0);
-                        // }, '>', 0)
-                        //->doesntHave('isReference')
-                        ->with(['transactionDetail' => function ($query) {
-                            // $query->where('container_status', 0);
-                        }])->with('meta')->orderBy('transaction_id', 'desc')->get();
+                    $transactions =  Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->where('sent_to', 12)
+                        ->orderBy('transaction_id', 'desc')->get();
                 } elseif ($sent == 14) {
                     $transactions = Transaction::whereYear('created_at', $year)->whereBetween('created_at', [$start, $end])->where('sent_to', 14)
                         // ->whereHas('log', function ($q) {
@@ -1222,4 +1057,3 @@ class SupplyChainController extends Controller
         }
     }
 }
-

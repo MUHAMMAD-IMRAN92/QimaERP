@@ -112,7 +112,7 @@ class ReportController extends Controller
     }
     public function generateWarehouse(Request $request)
     {
-        $transactions = Transaction::with('log', 'details')->where('sent_to', 13)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get()->groupBy('created_by');
+        $transactions = Transaction::with('details')->where('sent_to', 13)->where('transaction_status', 'sent')->whereBetween('created_at', [$request->from, $request->to])->get();
 
 
 
@@ -123,54 +123,68 @@ class ReportController extends Controller
         $file = fopen($name, 'w');
         fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
         // fputcsv($file, ['Buyer Name', 'Batch Number', 'Container weight', 'Date & Time']);
-        fputcsv($file, ['Coffee Centre', 'Centre Manager',  'Batch number', 'Basket', 'Input weight', 'Date of input', 'WareHouse']);
-        foreach ($transactions as $key => $transaction) {
-            // $user = User::find($key);
-            foreach ($transaction as $tran) {
-                // dd($tran);
-                // $detailsString = '';
-                // foreach ($tran->details as $detail) {
-                //     $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
-                // }
-                $center = Center::find($tran->log->entity_id);
-                $centerName = '';
-                if ($center) {
-                    $centerName = $center->center_name;
-                }
-                $centerUser = CenterUser::where('center_id', $tran->log->entity_id)->first();
-                $managerName = '';
-                if ($centerUser) {
-                    $user = User::find($centerUser->user_id);
-                    $managerName =    $user->user_first_name . ' ' . $user->last_name;
-                }
-                $meta = '';
-                foreach ($tran->meta as $m) {
-                    if ($m->key == 'yemen_warehouse') {
-                        $meta = $m->value;
-                    }
-                }
-                $now = \Carbon\Carbon::now();
-                $today = $now->today()->toDateString();
-                // $weight = 0;
-                // if ($tran->details) {
+        fputcsv($file, ['Batch number', 'Basket', 'Input weight', 'Date of input', 'WareHouse']);
+        foreach($transactions as $trans){
+            foreach ($trans->details as $detail) {
+                // $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
 
-                //     $weight +=   $tran->details->sum('container_weight');
-                // }
-                // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
-                foreach ($tran->details as $detail) {
-                    // $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
+                $arr = [
+                  
+                    $trans->batch_number, $detail->container_number, $detail->container_weight, $trans->local_created_at, 'warehouseOne'
 
-                    $arr = [
-                        $centerName, $managerName,
-                        $tran->batch_number, $detail->container_number, $detail->container_weight, $tran->local_created_at, 'warehouseOne'
-
-                    ];
+                ];
 
 
-                    fputcsv($file, $arr);
-                }
+                fputcsv($file, $arr);
             }
         }
+        // foreach ($transactions as $key => $transaction) {
+        //     // $user = User::find($key);
+        //     foreach ($transaction as $tran) {
+        //         // dd($tran);
+        //         // $detailsString = '';
+        //         // foreach ($tran->details as $detail) {
+        //         //     $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
+        //         // }
+        //         $center = Center::find($tran->log->entity_id);
+        //         $centerName = '';
+        //         if ($center) {
+        //             $centerName = $center->center_name;
+        //         }
+        //         $centerUser = CenterUser::where('center_id', $tran->log->entity_id)->first();
+        //         $managerName = '';
+        //         if ($centerUser) {
+        //             $user = User::find($centerUser->user_id);
+        //             $managerName =    $user->user_first_name . ' ' . $user->last_name;
+        //         }
+        //         // $meta = '';
+        //         // foreach ($tran->meta as $m) {
+        //         //     if ($m->key == 'yemen_warehouse') {
+        //         //         $meta = $m->value;
+        //         //     }
+        //         // }
+        //         $now = \Carbon\Carbon::now();
+        //         $today = $now->today()->toDateString();
+        //         // $weight = 0;
+        //         // if ($tran->details) {
+
+        //         //     $weight +=   $tran->details->sum('container_weight');
+        //         // }
+        //         // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
+        //         foreach ($tran->details as $detail) {
+        //             // $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
+
+        //             $arr = [
+        //                 $centerName, $managerName,
+        //                 $tran->batch_number, $detail->container_number, $detail->container_weight, $tran->local_created_at, 'warehouseOne'
+
+        //             ];
+
+
+        //             fputcsv($file, $arr);
+        //         }
+        //     }
+        // }
         fclose($file);
         return Response::Download($name);
     }
