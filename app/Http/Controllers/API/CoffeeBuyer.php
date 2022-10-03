@@ -478,7 +478,7 @@ class CoffeeBuyer extends Controller
                             if (isset($childBatch->transactions[0]->transactions_detail) && $childBatch->transactions[0]->transactions_detail) {
                                 $transactionsDetails = $childBatch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
-                                    if ($newTransaction->is_deleted == true) {
+                                    if ($transactionsDetail->is_deleted == true) {
                                         $softDelete = Carbon::now();
                                         $softDelete =  $softDelete->toDateTimeString();
                                     } else {
@@ -701,7 +701,7 @@ class CoffeeBuyer extends Controller
 
                                 $transactionsDetails = $batch_numbers->batch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
-                                    if ($newTransaction->is_deleted == true) {
+                                    if ($transactionsDetail->is_deleted == true) {
                                         $softDelete = Carbon::now();
                                         $softDelete =  $softDelete->toDateTimeString();
                                     } else {
@@ -904,7 +904,7 @@ class CoffeeBuyer extends Controller
 
                                 $transactionsDetails = $batch_numbers->batch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
-                                    if ($newTransaction->is_deleted == true) {
+                                    if ($transactionsDetail->is_deleted == true) {
                                         $softDelete = Carbon::now();
                                         $softDelete =  $softDelete->toDateTimeString();
                                     } else {
