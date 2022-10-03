@@ -478,6 +478,13 @@ class CoffeeBuyer extends Controller
                             if (isset($childBatch->transactions[0]->transactions_detail) && $childBatch->transactions[0]->transactions_detail) {
                                 $transactionsDetails = $childBatch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
+                                    if ($newTransaction->is_deleted == true) {
+                                        $softDelete = Carbon::now();
+                                        $softDelete =  $softDelete->toDateTimeString();
+                                    } else {
+                                        $softDelete = null;
+                                    }
+
                                     TransactionDetail::create([
                                         'transaction_id' => $newTransaction->transaction_id,
                                         'container_number' => $transactionsDetail->container_number,
@@ -485,6 +492,7 @@ class CoffeeBuyer extends Controller
                                         'is_local' => FALSE,
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
+                                        'deleted_at' => $softDelete
                                     ]);
                                 }
                             }
@@ -693,6 +701,12 @@ class CoffeeBuyer extends Controller
 
                                 $transactionsDetails = $batch_numbers->batch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
+                                    if ($newTransaction->is_deleted == true) {
+                                        $softDelete = Carbon::now();
+                                        $softDelete =  $softDelete->toDateTimeString();
+                                    } else {
+                                        $softDelete = null;
+                                    }
                                     TransactionDetail::create([
                                         'transaction_id' => $parentTransaction->transaction_id,
                                         'container_number' => $transactionsDetail->container_number,
@@ -700,6 +714,7 @@ class CoffeeBuyer extends Controller
                                         'is_local' => FALSE,
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
+                                        'deleted_at' => $softDelete
                                     ]);
                                 }
                             }
@@ -889,6 +904,12 @@ class CoffeeBuyer extends Controller
 
                                 $transactionsDetails = $batch_numbers->batch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
+                                    if ($newTransaction->is_deleted == true) {
+                                        $softDelete = Carbon::now();
+                                        $softDelete =  $softDelete->toDateTimeString();
+                                    } else {
+                                        $softDelete = null;
+                                    }
                                     TransactionDetail::create([
                                         'transaction_id' => $parentTransaction->transaction_id,
                                         'container_number' => $transactionsDetail->container_number,
@@ -896,6 +917,7 @@ class CoffeeBuyer extends Controller
                                         'is_local' => FALSE,
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
+                                        'deleted_at' => $softDelete
                                     ]);
                                 }
                             }
