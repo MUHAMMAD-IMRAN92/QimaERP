@@ -329,7 +329,6 @@ class CoffeeBuyer extends Controller
         ]);
 
 
-
         if ($validator->fails()) {
             $errors = implode(', ', $validator->errors()->all());
             return sendError($errors, 400);
@@ -478,22 +477,20 @@ class CoffeeBuyer extends Controller
                             if (isset($childBatch->transactions[0]->transactions_detail) && $childBatch->transactions[0]->transactions_detail) {
                                 $transactionsDetails = $childBatch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
-                                    if ($transactionsDetail->is_deleted == true) {
-                                        $softDelete = Carbon::now();
-                                        $softDelete =  $softDelete->toDateTimeString();
-                                    } else {
-                                        $softDelete = null;
-                                    }
 
-                                    TransactionDetail::create([
+
+                                    $transactionDetail=   TransactionDetail::create([
                                         'transaction_id' => $newTransaction->transaction_id,
                                         'container_number' => $transactionsDetail->container_number,
                                         'created_by' => $transactionsDetail->created_by,
                                         'is_local' => FALSE,
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
-                                        'deleted_at' => $softDelete
                                     ]);
+                                    if ($transactionsDetail->is_deleted == true) {
+                                        $transactionDetail->delete();
+                                    }
+
                                 }
                             }
                             array_push($childBatchNumberArray, $newBatch->batch_id);
@@ -701,21 +698,18 @@ class CoffeeBuyer extends Controller
 
                                 $transactionsDetails = $batch_numbers->batch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
-                                    if ($transactionsDetail->is_deleted == true) {
-                                        $softDelete = Carbon::now();
-                                        $softDelete =  $softDelete->toDateTimeString();
-                                    } else {
-                                        $softDelete = null;
-                                    }
-                                    TransactionDetail::create([
+
+                                    $transactionDetail =   TransactionDetail::create([
                                         'transaction_id' => $parentTransaction->transaction_id,
                                         'container_number' => $transactionsDetail->container_number,
                                         'created_by' => $transactionsDetail->created_by,
                                         'is_local' => FALSE,
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
-                                        'deleted_at' => $softDelete
                                     ]);
+                                    if ($transactionsDetail->is_deleted == true) {
+                                        $transactionDetail->delete();
+                                    }
                                 }
                             }
 
@@ -790,7 +784,6 @@ class CoffeeBuyer extends Controller
                         }
                     }
                     if ($checkMixed == 0) {
-
                         //$farmerCode = implode("-", $removeLocalId) . '_' . $batch_numbers->batch->created_by;
                         $farmerCode = implode("-", $removeLocalId);
                         $userId = Auth::user()->user_id;
@@ -904,21 +897,18 @@ class CoffeeBuyer extends Controller
 
                                 $transactionsDetails = $batch_numbers->batch->transactions[0]->transactions_detail;
                                 foreach ($transactionsDetails as $key => $transactionsDetail) {
-                                    if ($transactionsDetail->is_deleted == true) {
-                                        $softDelete = Carbon::now();
-                                        $softDelete =  $softDelete->toDateTimeString();
-                                    } else {
-                                        $softDelete = null;
-                                    }
-                                    TransactionDetail::create([
+
+                                    $transactionDetail =   TransactionDetail::create([
                                         'transaction_id' => $parentTransaction->transaction_id,
                                         'container_number' => $transactionsDetail->container_number,
                                         'created_by' => $transactionsDetail->created_by,
                                         'is_local' => FALSE,
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
-                                        'deleted_at' => $softDelete
                                     ]);
+                                    if ($transactionsDetail->is_deleted == true) {
+                                        $transactionDetail->delete();
+                                    }
                                 }
                             }
 
