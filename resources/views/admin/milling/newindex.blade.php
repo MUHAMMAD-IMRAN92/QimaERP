@@ -637,12 +637,12 @@
                         <select class="ml-md-2" name="sent_to" id="governorate_dropdown">
                             <option value="0" selected disabled>Select Stage</option>
                             @foreach ($sent_to as $key => $sent)
-                                <option value="{{ $key }}">
+                                <option value="{{ $key }}" {{request()->get('sent_to') == $key ? "selected" : ""}}>
                                     {{ $sent }}
                                 </option>
                             @endforeach
                         </select>
-                        <button class="milling-link btn-border" type="submit">Search</button>
+                        <button class="milling-link btn-border"  onclick="search()"  id="search-btn" type="submit">Search</button>
                         <button class="milling-link btn-border" id="excel-btn" type="submit"
                             onclick="excel()">Export</button>
 
@@ -946,7 +946,10 @@
             function excel() {
                 $('#excel-form').attr('action', '{{ url('admin/milling_export') }}');
             }
-
+            function search() {
+                $('#excel-form').attr('action', '{{ url('admin/new_milling_coffee') }}');
+            }
+            search-btn
             function disableFun() {
                 $('.checkBox13').prop('checked', false);
                 if ($(".checkSentTo140:checkbox:checked").length > 0) {
