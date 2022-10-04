@@ -147,4 +147,22 @@ class InventoryController extends Controller
             'speciallgradeonecfe' => $specialsum
         ]);
     }
+
+    public function export(Request $request)
+    {
+
+
+        $parentBatch = collect();
+
+        $transactions = Transaction::with(['details' => function ($query) {
+            $query->where('container_status', 0);
+        }])->where('is_parent', 0)
+            ->where('transaction_type', 5)->get();
+        foreach ($transactions as $transaction) {
+            $parentBatch->push($transaction->batch_number);
+        }
+
+
+        return $parentBatch;
+    }
 }

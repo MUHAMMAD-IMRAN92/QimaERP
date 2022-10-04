@@ -3,7 +3,9 @@
 @section('content')
     <style>
         /* Center the loader */
-
+        .btn-border{
+            border :1px solid #B23552 !important
+        }
         .list-group-item {
             padding: .5rem 1rem;
         }
@@ -619,6 +621,33 @@
 
             </div>
             <hr>
+            <div class="row ml-2 text-uppercase mb-2">
+                <strong>
+                    <b>Filter By Stage</b>
+                </strong>
+            </div>
+            <div class="row row ml-2 blacklink letter-spacing-1">
+                <div class="col-md-12 pl-0 text-uppercase">
+                    <form action="{{ url('admin/new_milling_coffee') }}" method="GET" id="excel-form">
+                        <span class="ml-md-2">
+                            Stages
+                        </span>
+
+                        <select class="ml-md-2" name="sent_to" id="governorate_dropdown">
+                            <option value="0" selected disabled>Select Stage</option>
+                            @foreach ($sent_to as $key => $sent)
+                                <option value="{{ $key }}">
+                                    {{ $sent }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button class="milling-link btn-border" type="submit">Search</button>
+                        <button class="milling-link btn-border" id="excel-btn" type="submit" onclick="excel()">Export</button>
+
+                </div>
+
+            </div>
+            <hr>
             <div id="transactionGraph">
 
                 <div id="loader"></div>
@@ -658,7 +687,8 @@
                                                         <th>Quantity</th>
                                                         <th>Stage</th>
                                                         <th>Times</th>
-                                                        <th> <button class="milling-link" type="submit" id="mix">Mix
+                                                        <th> <button class="milling-link" type="submit"
+                                                                id="mix">Mix
                                                                 Batches</button> </th>
                                                         <th id='milling-th'><button class="milling-link" type="submit"
                                                                 id="millingbtn">Confirm
@@ -849,7 +879,7 @@
                                         @foreach ($transaction['transaction']->transactionDetail as $keyf => $detail)
                                             @if ($keyf == 0)
                                                 {{ $detail->container_number . ':' }}
-                                                <b>{{ $detail->container_weight }}</b>
+                                                <b>{{ '"' . $detail->container_weight. '"' }}</b>
                                                 <br>
                                             @endif
                                         @endforeach
@@ -911,6 +941,10 @@
             </div>
         </div>
         <script>
+            function excel (){
+                $('#excel-form').attr('action', '{{ url('admin/milling_export') }}');
+            }
+
             function disableFun() {
                 $('.checkBox13').prop('checked', false);
                 if ($(".checkSentTo140:checkbox:checked").length > 0) {
@@ -962,7 +996,7 @@
                     $('#submitbtn').hide();
                 });
                 $('#milling-th').on('click', function() {
-                    console.log('imran');
+                    // console.log('imran');
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
                 });
             });
@@ -1011,5 +1045,7 @@
                 slider.scrollLeft = scrollLeft - walk;
                 console.log(walk);
             });
+
+
         </script>
     @endsection

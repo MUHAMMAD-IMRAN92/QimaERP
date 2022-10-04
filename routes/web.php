@@ -219,6 +219,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('milling_coffee', 'MillingController@millingCoffee')->middleware('auth');
         Route::get('new_milling_coffee', 'MillingController@newmillingCoffee')->middleware('auth');
         Route::post('newMilliing', 'MillingController@newpost')->middleware('auth');
+        Route::get('/milling_export','MillingController@export');
         //miling filters
         Route::get('newMilling/filterByDays', 'MillingController@filterByDays');
 
@@ -232,6 +233,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('local_market/sales', 'LocalMarketSales@get')->name('local_market.sales.index');
 
         Route::get('/inventory', 'InventoryController@index')->name('inventory.index');
+        Route::get('/generate_inventory_excel' , 'InventoryController@export');
 
         Route::get('/orders', 'OrderController@index')->name('orders.index');
         Route::get('/orders/create', 'OrderController@create')->name('orders.create');
