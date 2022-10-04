@@ -879,7 +879,7 @@
                                         @foreach ($transaction['transaction']->transactionDetail as $keyf => $detail)
                                             @if ($keyf == 0)
                                                 {{ $detail->container_number . ':' }}
-                                                <b>{{ '"' . $detail->container_weight. '"' }}</b>
+                                                <b style="font-size: 16px;">{{  $detail->container_weight }}</b>
                                                 <br>
                                             @endif
                                         @endforeach
