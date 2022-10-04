@@ -3,9 +3,10 @@
 @section('content')
     <style>
         /* Center the loader */
-        .btn-border{
-            border :1px solid #B23552 !important
+        .btn-border {
+            border: 1px solid #B23552 !important
         }
+
         .list-group-item {
             padding: .5rem 1rem;
         }
@@ -642,7 +643,8 @@
                             @endforeach
                         </select>
                         <button class="milling-link btn-border" type="submit">Search</button>
-                        <button class="milling-link btn-border" id="excel-btn" type="submit" onclick="excel()">Export</button>
+                        <button class="milling-link btn-border" id="excel-btn" type="submit"
+                            onclick="excel()">Export</button>
 
                 </div>
 
@@ -879,7 +881,7 @@
                                         @foreach ($transaction['transaction']->transactionDetail as $keyf => $detail)
                                             @if ($keyf == 0)
                                                 {{ $detail->container_number . ':' }}
-                                                <b style="font-size: 16px;">{{  $detail->container_weight }}</b>
+                                                <b style="font-size: 16px;">{{ $detail->container_weight }}</b>
                                                 <br>
                                             @endif
                                         @endforeach
@@ -941,7 +943,7 @@
             </div>
         </div>
         <script>
-            function excel (){
+            function excel() {
                 $('#excel-form').attr('action', '{{ url('admin/milling_export') }}');
             }
 
@@ -1045,7 +1047,5 @@
                 slider.scrollLeft = scrollLeft - walk;
                 console.log(walk);
             });
-
-
         </script>
     @endsection
