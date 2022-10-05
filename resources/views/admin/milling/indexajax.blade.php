@@ -32,7 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($transactions as $transaction)
+                @foreach ($transactions as $key => $transaction)
                     <tr>
 
                         <td>
@@ -42,21 +42,26 @@
                             @php
                                 $farmers = parentBatch($transaction['transaction']->batch_number);
                             @endphp
-                            @foreach ($farmers as $farmer)
+                            @foreach ($farmers as $keyf => $farmer)
+                            @if ($keyf == 0)
                                 @if ($farmer)
                                     {{ $farmer->farmer_name }} <br>
-                                @endif
+                                @endif @endif
                             @endforeach
                         </td>
                         <td>
                             @php
                                 $farmers = parentBatch($transaction['transaction']->batch_number);
                             @endphp
-                            @foreach ($farmers as $farmer)
-                                @if ($farmer)
-                                    {{ $farmer->farmer_code }} <br>
+                            @foreach ($farmers as $keyf => $farmer)
+                                @if ($keyf == 0)
+                                    @if ($farmer)
+                                        {{ $farmer->farmer_code }} <br>
+                                    @endif
                                 @endif
-                            @endforeach
+                            @endforeach <i class="fa fa-info-circle" aria-hidden="true"
+                                class="btn btn-primary" data-toggle="modal"
+                                data-target="#exampleModalCenter{{ $key }}"></i>
                         </td>
                         <td>
                             {{ $transaction['transaction']->batch_number }}
@@ -75,25 +80,30 @@
                             @php
                                 $farmers = parentBatch($transaction['transaction']->batch_number);
                             @endphp
-                            @foreach ($farmers as $farmer)
+                            @foreach ($farmers as $keyf => $farmer)
                                 @php
                                     if ($farmer) {
                                         $village = App\Village::where('village_code', $farmer->village_code)->first();
                                     }
 
                                 @endphp
-                                @if ($village->village_title)
-                                    {{ $village->village_title }}
+                                @if ($keyf == 0)
+                                    @if ($village->village_title)
+                                        {{ $village->village_title }}
+                                    @endif
                                 @endif
-                                <br>
                             @endforeach
+                            <i class="fa fa-info-circle" aria-hidden="true" class="btn btn-primary" data-toggle="modal"
+                                data-target="#exampleModalCenter{{ $key }}"></i>
                         </td>
                         <td>
-                            @foreach ($transaction['transaction']->transactionDetail as $detail)
+                            @foreach ($transaction['transaction']->transactionDetail as  $keyf => $detail)
+                            @if ($keyf == 0)
                                 {{ $detail->container_number . ':' . $detail->container_weight }}
-                                <br>
-
+                                @endif
                             @endforeach
+                            <i class="fa fa-info-circle" aria-hidden="true" class="btn btn-primary" data-toggle="modal"
+                                data-target="#exampleModalCenter{{ $key }}"></i>
                         </td>
                         <td>
                             {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
@@ -128,7 +138,97 @@
                                     onclick="disableFun()">
                             @endif
                         </td>
+                        <div class="modal fade" id="exampleModalCenter{{ $key }}" tabindex="-1"
+                            role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">
+                                            {{ $transaction['transaction']->batch_number }}
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
 
+                                            <div class="col-md-3 borderClass">
+                                                <h3>Farmers</h3>
+                                                <hr>
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach ($farmers as $keyf => $farmer)
+                                                        @if ($farmer)
+                                                            <li class="list-group-item">
+                                                                {{ $farmer->farmer_name }}
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-3 borderClass">
+                                                <h3>Farmer Code</h3>
+                                                <hr>
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach ($farmers as $keyf => $farmer)
+                                                        @if ($farmer)
+                                                            <li class="list-group-item">
+                                                                {{ $farmer->farmer_code }}
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-3 borderClass">
+                                                <h3>Villages</h3>
+                                                <hr>
+                                                <span>
+                                                    <ul class="list-group list-group-flush">
+                                                        @foreach ($farmers as $farmer)
+                                                            @php
+                                                                if ($farmer) {
+                                                                    $village = App\Village::where('village_code', $farmer->village_code)->first();
+                                                                }
+
+                                                            @endphp
+                                                            @if ($village->village_title)
+                                                                <li class="list-group-item">
+                                                                    {{ $village->village_title }}
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+                                                    </ul>
+                                                </span>
+                                            </div>
+                                            <div class="col-md-3 borderClass">
+                                                <h3>Containers</h3>
+                                                <hr>
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach ($transaction['transaction']->transactionDetail as $keyf => $detail)
+                                                        <li class="list-group-item">
+                                                            {{ $detail->container_number . ':' }}
+                                                            <b>{{ $detail->container_weight }}
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+
+                                </div>
+                                {{-- <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Close</button>
+                                <button type="button"
+                                    class="btn btn-primary">Save
+                                    changes</button>
+                            </div> --}}
+                            </div>
+                        </div>
 
                     </tr>
                 @endforeach
