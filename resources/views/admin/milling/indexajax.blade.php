@@ -47,10 +47,12 @@
                                 @if ($farmer)
                                     {{ $farmer->farmer_name }} <br>
                                 @endif @endif
-                            @endforeach
+                            @endforeach<i class="fa fa-info-circle" aria-hidden="true"
+                            class="btn btn-primary" data-toggle="modal"
+                            data-target="#exampleModalCenter{{ $key }}"></i>
                         </td>
                         <td>
-                            @php
+                            @php`
                                 $farmers = parentBatch($transaction['transaction']->batch_number);
                             @endphp
                             @foreach ($farmers as $keyf => $farmer)
