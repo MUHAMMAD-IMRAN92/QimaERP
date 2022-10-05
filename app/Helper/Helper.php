@@ -503,3 +503,35 @@ function parentBatch($batch)
     }
     return $farmers;
 }
+
+function allSentTo()
+{
+    return   $sentTo = [
+        2 => 'Coffee Buyer',
+        3 => 'Center Manager',
+        4 => 'Processing Manager',
+        5 => 'Special Processing',
+        6 => 'pending in Drying Coffee',
+        8 => 'Recieved By Special Processing',
+        7 => 'Special processing',
+        9 => 'Sent By Special Processing',
+        10 => 'On Drying Beds',
+        11 => 'Recieved By Coffee Drying',
+        12 => 'Dry Coffee',
+        13 => 'Sent For Approve Milling',
+        14 => 'Ready To Be Milled',
+        15 => 'Mill Operative',
+        17 => 'Mill Operative Received',
+        // 20 => 'Local Market',
+        // 21 => 'Milled',
+        // 22 => 'sorting Pending',
+        // 23 => 'sorting Rec',
+        // 201 => 'sorting sent',
+        140 => 'Ready For Approve',
+        20 => 'local market from Mill op',
+        21 => 'sorting pending',
+        22 =>  'sorting Received',
+        23 =>  'Yemen Pack Coffee',
+        24 =>  'Pack Coffee For Mixing(Admin)'
+    ];
+}

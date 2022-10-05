@@ -3,10 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TransactionDetail extends Model
 {
+    use SoftDeletes;
 
     protected $primaryKey = 'transaction_detail_id';
     protected $fillable = ['transaction_id', 'container_number', 'created_by', 'is_local', 'local_code', 'container_weight', 'weight_unit', 'container_status', 'center_id', 'reference_id'];

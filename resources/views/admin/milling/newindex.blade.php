@@ -3,6 +3,14 @@
 @section('content')
     <style>
         /* Center the loader */
+        .btn-border {
+            border: 1px solid #B23552 !important
+        }
+
+        .list-group-item {
+            padding: .5rem 1rem;
+        }
+
         #loader {
             position: absolute;
             left: 50%;
@@ -17,6 +25,10 @@
             -webkit-animation: spin 2s linear infinite;
             animation: spin 2s linear infinite;
             display: none
+        }
+
+        .borderClass {
+            border: 1px solid black;
         }
 
         @-webkit-keyframes spin {
@@ -76,7 +88,6 @@
             display: none;
             text-align: center;
         }
-
     </style>
     <style type="text/css">
         .nav.nav-tabs {
@@ -186,7 +197,6 @@
         .blacklink .hover:hover {
             cursor: pointer;
         }
-
     </style>
     <style href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"></style>
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
@@ -612,6 +622,34 @@
 
             </div>
             <hr>
+            <div class="row ml-2 text-uppercase mb-2">
+                <strong>
+                    <b>Filter By Stage</b>
+                </strong>
+            </div>
+            <div class="row row ml-2 blacklink letter-spacing-1">
+                <div class="col-md-12 pl-0 text-uppercase">
+                    <form action="{{ url('admin/new_milling_coffee') }}" method="GET" id="excel-form">
+                        <span class="ml-md-2">
+                            Stages
+                        </span>
+
+                        <select class="ml-md-2" name="sent_to" id="governorate_dropdown">
+                            <option value="0" selected disabled>Select Stage</option>
+                            @foreach ($sent_to as $key => $sent)
+                                <option value="{{ $key }}" {{request()->get('sent_to') == $key ? "selected" : ""}}>
+                                    {{ $sent }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button class="milling-link btn-border"  onclick="search()"  id="search-btn" type="submit">Search</button>
+                        <button class="milling-link btn-border" id="excel-btn" type="submit"
+                            onclick="excel()">Export</button>
+
+                </div>
+
+            </div>
+            <hr>
             <div id="transactionGraph">
 
                 <div id="loader"></div>
@@ -651,134 +689,267 @@
                                                         <th>Quantity</th>
                                                         <th>Stage</th>
                                                         <th>Times</th>
-                                                        <th> <button class="milling-link" type="submit" id="mix">Mix
+                                                        <th> <button class="milling-link" type="submit"
+                                                                id="mix">Mix
                                                                 Batches</button> </th>
                                                         <th id='milling-th'><button class="milling-link" type="submit"
                                                                 id="millingbtn">Confirm
                                                                 Milling</button></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody >
-                                                    @foreach ($transactions as $transaction)
+                                                <tbody>
+                                                    @foreach ($transactions as $key => $transaction)
                                                         <tr>
 
                                                             <td>
                                                                 {{ $transaction['transaction']->transaction_id }}
                                                             </td>
-                                                            <td>
+                                                            <td style="white-space: nowrap;">
                                                                 @php
                                                                     $farmers = parentBatch($transaction['transaction']->batch_number);
                                                                 @endphp
-                                                                @foreach ($farmers as $farmer)
+
+                                                                @foreach ($farmers as $keyf => $farmer)
                                                                     @if ($farmer)
-                                                                        {{ $farmer->farmer_name }} <br>
+                                                                        @if ($keyf == 0)
+                                                                            {{ $farmer->farmer_name }} <br>
+                                                                        @endif
                                                                     @endif
                                                                 @endforeach
-                                                            </td>
-                                                            <td>
-                                                                @php
-                                                                    $farmers = parentBatch($transaction['transaction']->batch_number);
-                                                                @endphp
-                                                                @foreach ($farmers as $farmer)
-                                                                    @if ($farmer)
-                                                                        {{ $farmer->farmer_code }} <br>
-                                                                    @endif
-                                                                @endforeach
-                                                            </td>
-                                                            <td>
-                                                                {{ $transaction['transaction']->batch_number }}
-                                                            </td>
-                                                            <td>
-                                                                SPECIALTY
-                                                            </td>
-                                                            <td>
-                                                                {{ getGov($transaction['transaction']->batch_number) }}
-                                                            </td>
-                                                            <td>
-                                                                {{ getRegion($transaction['transaction']->batch_number) }}
-                                                            </td>
-                                                            <td>
-                                                                {{-- {{ getVillage($transaction['transaction']->batch_number) }} --}}
-                                                                @php
-                                                                    $farmers = parentBatch($transaction['transaction']->batch_number);
-                                                                @endphp
-                                                                @foreach ($farmers as $farmer)
-                                                                    @php
-                                                                        if ($farmer) {
-                                                                            $village = App\Village::where('village_code', $farmer->village_code)->first();
-                                                                        }
+                                                                <i class="fa fa-info-circle" aria-hidden="true"
+                                                                    class="btn btn-primary" data-toggle="modal"
+                                                                    data-target="#exampleModalCenter{{ $key }}"></i>
 
-                                                                    @endphp
-                                                                    @if ($village->village_title)
-                                                                        {{ $village->village_title }}
-                                                                    @endif
-                                                                    <br>
-                                                                @endforeach
-                                                            </td>
-                                                            <td>
-                                                                @foreach ($transaction['transaction']->transactionDetail as $detail)
-                                                                    {{ $detail->container_number . ':' . $detail->container_weight }}
-                                                                    <br>
-
-                                                                @endforeach
-                                                            </td>
-                                                            <td>
-                                                                {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
-                                                            </td>
-                                                            <td>
-                                                                @php
-                                                                    $now = \Carbon\Carbon::now();
-                                                                    $today = $now->today()->toDateString();
-                                                                @endphp
-                                                                {{ $transaction['transaction']->created_at->diffInDays($today) . ' ' . 'Days' }}
-                                                            </td>
-                                                            <td>
-                                                                @php
-
-                                                                    $batchNumber = $transaction['transaction']->batch_number;
-                                                                    $batchExplode = explode('-', $batchNumber);
-                                                                    $gov = $batchExplode[0];
-                                                                @endphp
-                                                                @if ($transaction['transaction']->sent_to == 13)
-                                                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                        name="transaction_id[]"
-                                                                        value="{{ $transaction['transaction']->transaction_id }}"
-                                                                        class="check_gov{{ $transaction['transaction']->transaction_id }} checkBox13"
-                                                                        onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
-                                                                @endif
+                                                                {{-- <button type="button" class="btn btn-primary"
+                                                                    data-toggle="modal" data-target="#exampleModalCenter">
+                                                                    See Details
+                                                                </button> --}}
 
                                                             </td>
-                                                            <td>
+                                                            <div class="modal fade"
+                                                                id="exampleModalCenter{{ $key }}" tabindex="-1"
+                                                                role="dialog" aria-labelledby="exampleModalCenterTitle"
+                                                                aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered  modal-lg"
+                                                                    role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title"
+                                                                                id="exampleModalLongTitle">
+                                                                                {{ $transaction['transaction']->batch_number }}
+                                                                            </h5>
+                                                                            <button type="button" class="close"
+                                                                                data-dismiss="modal" aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
 
-                                                                @if ($transaction['transaction']->sent_to == 140)
-                                                                    <input type="checkbox" data-gov-rate="<?= $gov ?>"
-                                                                        name="transaction_id[]"
-                                                                        value="{{ $transaction['transaction']->transaction_id }}"
-                                                                        class="checkSentTo140" onclick="disableFun()">
-                                                                @endif
-                                                            </td>
+                                                                                <div class="col-md-3 borderClass">
+                                                                                    <h3>Farmers</h3>
+                                                                                    <hr>
+                                                                                    <ul
+                                                                                        class="list-group list-group-flush">
+                                                                                        @foreach ($farmers as $keyf => $farmer)
+                                                                                            @if ($farmer)
+                                                                                                <li
+                                                                                                    class="list-group-item">
+                                                                                                    {{ $farmer->farmer_name }}
+                                                                                                </li>
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    </ul>
+                                                                                </div>
+                                                                                <div class="col-md-3 borderClass">
+                                                                                    <h3>Farmer Code</h3>
+                                                                                    <hr>
+                                                                                    <ul
+                                                                                        class="list-group list-group-flush">
+                                                                                        @foreach ($farmers as $keyf => $farmer)
+                                                                                            @if ($farmer)
+                                                                                                <li
+                                                                                                    class="list-group-item">
+                                                                                                    {{ $farmer->farmer_code }}
+                                                                                                </li>
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    </ul>
+                                                                                </div>
+                                                                                <div class="col-md-3 borderClass">
+                                                                                    <h3>Villages</h3>
+                                                                                    <hr>
+                                                                                    <span>
+                                                                                        <ul
+                                                                                            class="list-group list-group-flush">
+                                                                                            @foreach ($farmers as $farmer)
+                                                                                                @php
+                                                                                                    if ($farmer) {
+                                                                                                        $village = App\Village::where('village_code', $farmer->village_code)->first();
+                                                                                                    }
+
+                                                                                                @endphp
+                                                                                                @if ($village->village_title)
+                                                                                                    <li
+                                                                                                        class="list-group-item">
+                                                                                                        {{ $village->village_title }}
+                                                                                                    </li>
+                                                                                                @endif
+                                                                                            @endforeach
+                                                                                        </ul>
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="col-md-3 borderClass">
+                                                                                    <h3>Containers</h3>
+                                                                                    <hr>
+                                                                                    <ul
+                                                                                        class="list-group list-group-flush">
+                                                                                        @foreach ($transaction['transaction']->transactionDetail as $keyf => $detail)
+                                                                                            <li class="list-group-item">
+                                                                                                {{ $detail->container_number . ':' }}
+                                                                                                <b>{{ $detail->container_weight }}
+                                                                                            </li>
+                                                                                        @endforeach
+                                                                                    </ul>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <br>
 
 
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                            <div class="card-footer">
-
-                                            </div>
-                                            <form>
+                                                                    </div>
+                                                                    {{-- <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Close</button>
+                                                                        <button type="button"
+                                                                            class="btn btn-primary">Save
+                                                                            changes</button>
+                                                                    </div> --}}
+                                                                </div>
+                                                            </div>
                                     </div>
+                                    <td style="white-space: nowrap;">
+                                        @php
+                                            $farmers = parentBatch($transaction['transaction']->batch_number);
+                                        @endphp
+                                        @foreach ($farmers as $keyf => $farmer)
+                                            @if ($farmer)
+                                                @if ($keyf == 0)
+                                                    {{ $farmer->farmer_code }} <br>
+                                                @endif
+                                            @endif
+                                        @endforeach
+                                        <i class="fa fa-info-circle" aria-hidden="true" class="btn btn-primary"
+                                            data-toggle="modal" data-target="#exampleModalCenter{{ $key }}"></i>
+                                    </td>
+                                    <td>
+                                        {{ $transaction['transaction']->batch_number }}
+                                    </td>
+                                    <td>
+                                        SPECIALTY
+                                    </td>
+                                    <td>
+                                        {{ getGov($transaction['transaction']->batch_number) }}
+                                    </td>
+                                    <td>
+                                        {{ getRegion($transaction['transaction']->batch_number) }}
+                                    </td>
+                                    <td>
+                                        {{-- {{ getVillage($transaction['transaction']->batch_number) }} --}}
+                                        @php
+                                            $farmers = parentBatch($transaction['transaction']->batch_number);
+                                        @endphp
+                                        @foreach ($farmers as $keyf => $farmer)
+                                            @php
+                                                if ($farmer) {
+                                                    $village = App\Village::where('village_code', $farmer->village_code)->first();
+                                                }
+
+                                            @endphp
+                                            @if ($keyf == 0)
+                                                @if ($village->village_title)
+                                                    {{ $village->village_title }}
+                                                @endif
+                                            @endif
+                                        @endforeach
+                                        <i class="fa fa-info-circle" aria-hidden="true" class="btn btn-primary"
+                                            data-toggle="modal" data-target="#exampleModalCenter{{ $key }}"></i>
+                                    </td>
+                                    <td style="white-space: nowrap;">
+                                        @foreach ($transaction['transaction']->transactionDetail as $keyf => $detail)
+                                            @if ($keyf == 0)
+                                                {{ $detail->container_number . ':' }}
+                                                <b style="font-size: 16px;">{{ $detail->container_weight }}</b>
+                                                <br>
+                                            @endif
+                                        @endforeach
+                                        <i class="fa fa-info-circle" aria-hidden="true" class="btn btn-primary"
+                                            data-toggle="modal" data-target="#exampleModalCenter{{ $key }}"></i>
+                                    </td>
+                                    <td>
+                                        {{ stagesOfSentTo($transaction['transaction']->sent_to) }}
+                                    </td>
+                                    <td>
+                                        @php
+                                            $now = \Carbon\Carbon::now();
+                                            $today = $now->today()->toDateString();
+                                        @endphp
+                                        {{ $transaction['transaction']->created_at->diffInDays($today) . ' ' . 'Days' }}
+                                    </td>
+                                    <td>
+                                        @php
+
+                                            $batchNumber = $transaction['transaction']->batch_number;
+                                            $batchExplode = explode('-', $batchNumber);
+                                            $gov = $batchExplode[0];
+                                        @endphp
+                                        @if ($transaction['transaction']->sent_to == 13)
+                                            <input type="checkbox" data-gov-rate="<?= $gov ?>" name="transaction_id[]"
+                                                value="{{ $transaction['transaction']->transaction_id }}"
+                                                class="check_gov{{ $transaction['transaction']->transaction_id }} checkBox13"
+                                                onClick="checkGov('<?= $gov ?>',{{ $transaction['transaction']->transaction_id }})">
+                                        @endif
+
+                                    </td>
+                                    <td>
+
+                                        @if ($transaction['transaction']->sent_to == 140)
+                                            <input type="checkbox" data-gov-rate="<?= $gov ?>" name="transaction_id[]"
+                                                value="{{ $transaction['transaction']->transaction_id }}"
+                                                class="checkSentTo140" onclick="disableFun()">
+                                        @endif
+                                    </td>
+
+
+                                    </tr>
+                                    @endforeach
+                                    </tbody>
+                                    </table>
+                                    <div class="card-footer">
+
+                                    </div>
+                                    <form>
                                 </div>
-                                <!-- /.col -->
                             </div>
-                            <!-- /.row -->
+                            <!-- /.col -->
                         </div>
-                        <!-- /.container-fluid -->
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.container-fluid -->
                 </section>
                 <!-- /.content -->
             </div>
         </div>
         <script>
+            function excel() {
+                $('#excel-form').attr('action', '{{ url('admin/milling_export') }}');
+            }
+            function search() {
+                $('#excel-form').attr('action', '{{ url('admin/new_milling_coffee') }}');
+            }
+            search-btn
             function disableFun() {
                 $('.checkBox13').prop('checked', false);
                 if ($(".checkSentTo140:checkbox:checked").length > 0) {
@@ -791,12 +962,13 @@
                 }
             }
             var gov = null;
-            $('#millingbtn').on('click' , function(){
-                $('#millingbtn').css('display' , 'none');
+            $('#millingbtn').on('click', function() {
+                $('#millingbtn').css('display', 'none');
             });
-            $('#mix').on('click' , function(){
-                $('#mix').css('display' , 'none');
+            $('#mix').on('click', function() {
+                $('#mix').css('display', 'none');
             });
+
             function checkGov(checkgov, id) {
                 $('.checkSentTo140').prop('checked', false);
 
@@ -829,7 +1001,7 @@
                     $('#submitbtn').hide();
                 });
                 $('#milling-th').on('click', function() {
-                    console.log('imran');
+                    // console.log('imran');
                     $attr = $('form').attr('action', '{{ URL::to('admin/newMilliing') }}');
                 });
             });

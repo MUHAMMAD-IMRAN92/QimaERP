@@ -8,12 +8,14 @@ use App\Transaction;
 use App\TransactionLog;
 use App\ChildTransaction;
 use App\TransactionDetail;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
 
 class MillingController extends Controller
 {
@@ -253,39 +255,43 @@ class MillingController extends Controller
             return redirect('admin/new_milling_coffee');
         }
     }
-    public function newmillingCoffee()
+    public function newmillingCoffee(Request $request)
     {
-        // return 'imran';
         $transactions = collect();
         $batches = BatchNumber::pluck('batch_number');
         $senttoArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 140, 15, 16, 17, 18, 19, 21, 22, 23, 24];
+        if ($request->sent_to) {
+            unset($senttoArr);
+            $senttoArr[0] = (int) $request->sent_to;
+        }
+
         foreach ($batches as $batch) {
             $transaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', $senttoArr)->where('is_parent', 0)->with('details')->latest()
                 ->first();
-                if ($transaction) {
+            if ($transaction) {
 
-                    if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
-                        $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
+                if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
+                    $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('sent_to', @$request->sent_to)->where('is_parent', 0)->with('details')->get();
+                    foreach ($newtransaction as $t) {
+                        if ($t != null) {
+                            $transactions->push($t);
+                        }
+                    }
+                } else {
+                    $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('sent_to', @$request->sent_to)->where('is_parent', 0)->with('details')->get();
+                    if ($newtransaction->count() > 0) {
                         foreach ($newtransaction as $t) {
                             if ($t != null) {
                                 $transactions->push($t);
                             }
                         }
                     } else {
-                        $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('is_parent', 0)->with('details')->get();
-                        if ($newtransaction->count() > 0) {
-                            foreach ($newtransaction as $t) {
-                                if ($t != null) {
-                                    $transactions->push($t);
-                                }
-                            }
-                        } else {
-                            if ($transaction != null) {
-                                $transactions->push($transaction);
-                            }
+                        if ($transaction != null) {
+                            $transactions->push($transaction);
                         }
                     }
                 }
+            }
         }
         // return $transactions;
         $data = array();
@@ -323,7 +329,7 @@ class MillingController extends Controller
             // array_push($allTransactions, $tran);
         }
         $data['transactions'] = $allTransactions;
-        // return $data;
+        $data['sent_to'] =  allSentTo();
         return view('admin.milling.newindex', $data);
     }
     public function newpost(Request $request)
@@ -981,6 +987,113 @@ class MillingController extends Controller
             // return $data;
             return view('admin.milling.indexajax', $data);
         }
+    }
+    public function export(Request $request)
+    {
+        $transactions = collect();
+        $batches = BatchNumber::pluck('batch_number');
+        $senttoArr[0] = $request->sent_to;
+        foreach ($batches as $batch) {
+            $transaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', $senttoArr)->where('is_parent', 0)->with('details')->latest()
+                ->first();
+            if ($transaction) {
+
+                if ($transaction->sent_to == 13 || $transaction->sent_to == 140) {
+                    $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('sent_to', @$request->sent_to)->where('is_parent', 0)->with('details')->get();
+                    foreach ($newtransaction as $t) {
+                        if ($t != null) {
+                            $transactions->push($t);
+                        }
+                    }
+                } else {
+                    $newtransaction = Transaction::where('batch_number', $batch)->whereIn('sent_to', [13, 140])->where('sent_to', @$request->sent_to)->where('is_parent', 0)->with('details')->get();
+                    if ($newtransaction->count() > 0) {
+                        foreach ($newtransaction as $t) {
+                            if ($t != null) {
+                                $transactions->push($t);
+                            }
+                        }
+                    } else {
+                        if ($transaction != null) {
+                            $transactions->push($transaction);
+                        }
+                    }
+                }
+            }
+        }
+        // return $transactions;
+        $data = array();
+        $allTransactions = array();
+        // $transactions = Transaction::where('is_parent', 0)
+
+        //     ->whereHas('log', function ($q) {
+        //         $q->where('action', 'received')->where('type', 'received_by_yemen');
+        //     })->whereHas('transactionDetail', function ($q) {
+        //         $q->where('container_status', 0);
+        //     }, '>', 0)->with(['transactionDetail' => function ($query) {
+        //         $query->where('container_status', 0);
+        //     }])->orderBy('transaction_id', 'desc')->get();
+
+
+        // return $transactions;
+        foreach ($transactions as $key => $tran) {
+            // if ($tran->sent_to == 13) {
+            $childTransaction = array();
+            $tran->makeHidden('log');
+            $removeLocalId = explode("-", $tran->batch_number);
+            // return count($removeLocalId);
+            if (count($removeLocalId) > 3) {
+                if ($removeLocalId[3] == '000') {
+                    $FindParentTransactions = Transaction::where('is_parent', 0)->where('batch_number', $tran->batch_number)->first();
+                    if ($FindParentTransactions) {
+                        $childTransaction = Transaction::where('is_parent', $FindParentTransactions->transaction_id)->get();
+                    }
+                }
+            }
+            $transaction = ['transaction' => $tran, 'child_transactions' => $childTransaction];
+            // array_push($allTransactions, $tran);
+            array_push($allTransactions, $transaction);
+            // }
+            // array_push($allTransactions, $tran);
+        }
+        $data['transactions'] = $allTransactions;
+        // $data['sent_to'] =  allSentTo();
+
+        $name = "public/reports/" . uniqid(rand(), true)  . ".csv";
+        header('Content-Type: text/xml,  charset=UTF-8; encoding=UTF-8');
+        $file = fopen($name, 'w');
+        fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        // fputcsv($file, ['Buyer Name', 'Batch Number', 'Container weight', 'Date & Time']);
+        fputcsv($file, ['Farmer name', 'Farmer Code', 'Batch Number', 'Date of Purchase', 'Purchase Weight', 'Baskets', 'Governante', 'Region' , 'Stage']);
+        foreach ($data['transactions'] as $key => $transaction) {
+
+
+            $user = User::find($transaction['transaction']->created_by);
+            $detailsString = '';
+            foreach ($transaction['transaction']->details as $detail) {
+                $detailsString .= (string)($detail->container_number . ':' . $detail->container_weight) . ',';
+            }
+            $farmers =  parentBatch($transaction['transaction']->batch_number);
+            $farmerName = '';
+            $farmerCode = '';
+            foreach ($farmers as $farmer) {
+                $farmerName .= $farmer->farmer_name.',  ';
+                $farmerCode .= $farmer->farmer_code.',  ';
+            };
+            // $arr = ['Buyer Name' => $user->user_first_name . ' ' . $user->last_name, "Batch Number" => $tran->batch_number, 'Container weight' => $tran->details->sum('container_weight'), 'Date & Time' => $tran->created_at->format('Y:m:d H:i:s')];
+            $arr = [
+                $farmerName, $farmerCode, $transaction['transaction']->batch_number, $transaction['transaction']->local_created_at, $transaction['transaction']->details->sum('container_weight'), $detailsString,
+                getGov($transaction['transaction']->batch_number), getRegion($transaction['transaction']->batch_number),stagesOfSentTo(@$request->sent_to)
+            ];
+            // return $arr
+
+            fputcsv($file, $arr);
+
+            // return $transaction['transaction']->created_by;
+        }
+
+        fclose($file);
+        return Response::Download($name);
     }
 }
 //checks
