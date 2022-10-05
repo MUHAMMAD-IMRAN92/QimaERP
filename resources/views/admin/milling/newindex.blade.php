@@ -256,8 +256,8 @@
                                 .region_title + '</option>';
                         });
 
-                        $('#regions_dropdown').append(html);
-                        $('#transactionGraph').html(data.view);
+                        // $('#regions_dropdown').append(html);
+                        // $('#transactionGraph').html(data.view);
 
                     }
                 });
@@ -288,8 +288,8 @@
                         });
 
 
-                        $('#village_dropdown').append(html);
-                        $('#transactionGraph').html(data.view);
+                        // $('#village_dropdown').append(html);
+                        // $('#transactionGraph').html(data.view);
                         console.log(data);
 
 
@@ -312,7 +312,7 @@
 
                     },
                     success: function(data) {
-                        $('#transactionGraph').html(data.view);
+                        // $('#transactionGraph').html(data.view);
                         console.log(data);
                     }
                 });
