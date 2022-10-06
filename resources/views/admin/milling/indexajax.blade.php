@@ -52,7 +52,7 @@
                             data-target="#exampleModalCenter{{ $key }}"></i>
                         </td>
                         <td>
-                            @php`
+                            @php
                                 $farmers = parentBatch($transaction['transaction']->batch_number);
                             @endphp
                             @foreach ($farmers as $keyf => $farmer)
