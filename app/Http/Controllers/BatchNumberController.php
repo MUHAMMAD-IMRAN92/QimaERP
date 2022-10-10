@@ -133,4 +133,36 @@ class BatchNumberController extends Controller
             'data' => $data,
         ]);
     }
+
+    public function testing($batchNumber = 'SGR2-HSK-00', $id = 0)
+    {
+
+        $farmers = collect();
+        $transaction = Transaction::where('batch_number', $batchNumber)->get()->last();
+        // if ($id == 0) {
+        //     $transaction = Transaction::where('batch_number', $batchNumber)->get()->last();
+        // } else {
+            // }
+        //     $transaction = Transaction::where('transaction_id', $id)->first();
+
+        // if ($id != 0) {
+        //     return $id;
+        // }
+        if ($transaction->sent_to == 2 && !Str::contains($transaction->batch_number, '000')) {
+            $farmer = \Farmer::where('farmer_code', Str::beforeLast($transaction->batch_number, '-'))->first();
+            // return $farmer;
+            // $farmers->push($farmer);
+            // return 'here';
+        } else {
+            $childTransaction =  Transaction::whereIn('transaction_id',  explode(',', $transaction->reference_id))->get();
+
+            foreach ($childTransaction as $childTran) {
+                return $childTran->tranaction_id;
+                // $farmers = $this->testing('', $childTran->tranaction_id);
+
+                $farmers->push($childTran->tranaction_id);
+            }
+        }
+        return $farmers;
+    }
 }
