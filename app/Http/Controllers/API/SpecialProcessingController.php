@@ -47,11 +47,11 @@ class SpecialProcessingController extends Controller
         $userCenter = CenterUser::where('user_id', $this->userId)->first();
         if ($userCenter) {
             $centerId = $userCenter->center_id;
-        }
+    }
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->whereHas('log', function ($q) use ($centerId) {
             // $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
-            $q->where('action', 'sent')->where('type', 'special_processing')->where('entity_id', $centerId);
+            $q->where('action', 'sent')->whereIn('type', ['special_processing', 'coffee_drying'])->where('entity_id', $centerId);
         })->whereHas('transactionDetail', function ($q) use ($centerId) {
             $q->where('container_status', 0);
         }, '>', 0)->with(['transactionDetail' => function ($query) {

@@ -134,35 +134,38 @@ class BatchNumberController extends Controller
         ]);
     }
 
-    public function testing($batchNumber = 'SGR2-HSK-00', $id = 0)
+    public function testing($id = 27589)
     {
-
-        $farmers = collect();
-        $transaction = Transaction::where('batch_number', $batchNumber)->get()->last();
-        // if ($id == 0) {
-        //     $transaction = Transaction::where('batch_number', $batchNumber)->get()->last();
-        // } else {
-            // }
-        //     $transaction = Transaction::where('transaction_id', $id)->first();
-
-        // if ($id != 0) {
+        // if ($id != 27589) {
         //     return $id;
         // }
-        if ($transaction->sent_to == 2 && !Str::contains($transaction->batch_number, '000')) {
-            $farmer = \Farmer::where('farmer_code', Str::beforeLast($transaction->batch_number, '-'))->first();
-            // return $farmer;
-            // $farmers->push($farmer);
-            // return 'here';
-        } else {
-            $childTransaction =  Transaction::whereIn('transaction_id',  explode(',', $transaction->reference_id))->get();
+        $transactions = collect();
+        // $farmers = collect();
+        // $transaction = Transaction::where('transaction_id', $id)->first();
+        // if ($transaction) {
+        //     if ($transaction->sent_to == 2 && !Str::contains($transaction->batch_number, '000')) {
+        //         $farmer = \Farmer::where('farmer_code', Str::beforeLast($transaction->batch_number, '-'))->first();
+        //         $farmers->push($farmer);
+        //     } else {
+        //         // return  explode(',', $transaction->reference_id);
+        //         $childTransaction =  Transaction::whereIn('transaction_id',  explode(',', $transaction->reference_id))->get();
 
-            foreach ($childTransaction as $childTran) {
-                return $childTran->tranaction_id;
-                // $farmers = $this->testing('', $childTran->tranaction_id);
+        //         foreach ($childTransaction as $childTran) {
 
-                $farmers->push($childTran->tranaction_id);
-            }
+        //             if ($childTran) {
+        //                 $transactions->push($childTran);
+        //                 $farmer = $this->testing($childTran['reference_id']);
+        //             }
+        //         }
+        //     }
+        // }
+
+        $transaction = Transaction::where('transaction_id', $id)->first();
+        $transactions->push($transaction);
+        if ($transaction) {
+            $transaction = $this->testing($transaction['reference_id']);
+            // $transactions->push($transaction);
         }
-        return $farmers;
+        return $transactions;
     }
 }

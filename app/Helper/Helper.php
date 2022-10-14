@@ -4,6 +4,7 @@ use App\Lot;
 use App\Governerate;
 use App\Region;
 use App\Farmer;
+use App\MetaTransation;
 use App\Village;
 use Carbon\Carbon;
 use App\Transaction;
@@ -534,4 +535,17 @@ function allSentTo()
         23 =>  'Yemen Pack Coffee',
         24 =>  'Pack Coffee For Mixing(Admin)'
     ];
+}
+
+
+function parentMeta($transactionId, $referenceIds)
+{
+    $referenceIdsArr = explode('-', $referenceIds);
+    $referenceTransactionMetas = MetaTransation::where('key', 'special_process')
+        ->whereIn('transaction_id', $referenceIdsArr)->get();
+    $referenceTransactionMetas->each(function ($meta) use ($transactionId) {
+        $meta->replicate()->fill([
+            'transaction_id' => $transactionId,
+        ])->save();
+    });
 }
