@@ -133,4 +133,39 @@ class BatchNumberController extends Controller
             'data' => $data,
         ]);
     }
+
+    public function testing($id = 27589)
+    {
+        // if ($id != 27589) {
+        //     return $id;
+        // }
+        $transactions = collect();
+        // $farmers = collect();
+        // $transaction = Transaction::where('transaction_id', $id)->first();
+        // if ($transaction) {
+        //     if ($transaction->sent_to == 2 && !Str::contains($transaction->batch_number, '000')) {
+        //         $farmer = \Farmer::where('farmer_code', Str::beforeLast($transaction->batch_number, '-'))->first();
+        //         $farmers->push($farmer);
+        //     } else {
+        //         // return  explode(',', $transaction->reference_id);
+        //         $childTransaction =  Transaction::whereIn('transaction_id',  explode(',', $transaction->reference_id))->get();
+
+        //         foreach ($childTransaction as $childTran) {
+
+        //             if ($childTran) {
+        //                 $transactions->push($childTran);
+        //                 $farmer = $this->testing($childTran['reference_id']);
+        //             }
+        //         }
+        //     }
+        // }
+
+        $transaction = Transaction::where('transaction_id', $id)->first();
+        $transactions->push($transaction);
+        if ($transaction) {
+            $transaction = $this->testing($transaction['reference_id']);
+            // $transactions->push($transaction);
+        }
+        return $transactions;
+    }
 }

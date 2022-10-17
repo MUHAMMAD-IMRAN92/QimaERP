@@ -324,6 +324,7 @@ class CoffeeBuyer extends Controller
     }
     function addCoffeeWithBatchNumber(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'batch_number' => 'required',
         ]);
@@ -487,7 +488,7 @@ class CoffeeBuyer extends Controller
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
                                     ]);
-                                    if ($transactionsDetail->is_deleted == true) {
+                                    if (@$transactionsDetail->is_deleted == true) {
                                         $transactionDetail->delete();
                                     }
 
@@ -707,7 +708,7 @@ class CoffeeBuyer extends Controller
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
                                     ]);
-                                    if ($transactionsDetail->is_deleted == true) {
+                                    if (@$transactionsDetail->is_deleted == true) {
                                         $transactionDetail->delete();
                                     }
                                 }
@@ -906,7 +907,8 @@ class CoffeeBuyer extends Controller
                                         'container_weight' => $transactionsDetail->container_weight,
                                         'weight_unit' => $transactionsDetail->weight_unit,
                                     ]);
-                                    if ($transactionsDetail->is_deleted == true) {
+
+                                    if (@$transactionsDetail->is_deleted == true) {
                                         $transactionDetail->delete();
                                     }
                                 }

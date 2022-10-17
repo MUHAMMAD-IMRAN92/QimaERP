@@ -767,7 +767,7 @@ class CoffeeDryingController extends Controller
             }
 
             foreach ($transactionsInformation->transactionMeta as $key => $value) {
-               
+
                 if ($value->key == 'moisture_measurement') {
 
                     // $alreadyMetaExist = MetaTransation::where('transaction_id', $value->transaction_id)
@@ -817,7 +817,7 @@ class CoffeeDryingController extends Controller
                     }
                 }elseif($value->key == 'yemen_warehouse') {
 
-                   
+
 
                     $newMata = MetaTransation::create([
                         'transaction_id' => $value->transaction_id,

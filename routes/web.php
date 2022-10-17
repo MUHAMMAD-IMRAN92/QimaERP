@@ -294,5 +294,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         // Route::get('importView', 'CropsterReportController@importView');
         // Route::post('importPost', 'CropsterReportController@importPost');
+
+        Route::get('/backtrack' ,'BatchNumberController@testing');
     });
 });
