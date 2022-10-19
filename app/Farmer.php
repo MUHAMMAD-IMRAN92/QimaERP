@@ -184,14 +184,13 @@ class Farmer extends Model
         return $urls;
     }
 
-    protected $appends = ['VillageName'];
+    protected $appends = ['village_name'];
     public function getVillageNameAttribute()
     {
         $villageCode  =  Str::beforeLast($this->farmer_code, '-');
         $village = Village::where('village_code', $villageCode)->first();
         if ($village) {
-            return $village->village_title;
+            return $village->village_title_ar;
         }
     }
-
 }
