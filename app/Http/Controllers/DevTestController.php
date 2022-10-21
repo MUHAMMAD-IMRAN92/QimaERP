@@ -41,7 +41,7 @@ class DevTestController extends Controller
             ]);
         }
 
-        return 'code is live for dev server!';
+        return 'code is live for dev server village!';
         // $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv4';
         // abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
 
