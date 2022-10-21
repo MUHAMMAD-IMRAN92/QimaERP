@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\BatchNumber;
+use App\Imports\ImportFarmer;
+use App\Imports\ImportVillage;
 use App\Transaction;
 use App\TransactionDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BatchNumberController extends Controller
 {
@@ -167,5 +170,19 @@ class BatchNumberController extends Controller
             // $transactions->push($transaction);
         }
         return $transactions;
+    }
+    public function farmer(Request $request)
+    {
+        return view('form');
+    }
+    public function farmerPost(Request $request)
+    {
+        Excel::import(new ImportFarmer,  $request->file('file')->store('files'));
+        return redirect()->back();
+    }
+    public function villages(Request $request)
+    {
+        Excel::import(new ImportVillage,  $request->file('file')->store('files'));
+        return redirect()->back();
     }
 }

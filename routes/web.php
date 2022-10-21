@@ -297,5 +297,8 @@ Route::group(['prefix' => 'admin'], function () {
         // Route::post('importPost', 'CropsterReportController@importPost');
 
         Route::get('/backtrack' ,'BatchNumberController@testing');
+        Route::get('/farmers_upload' , 'BatchNumberController@farmer');
+        Route::post('/farmers_upload' , 'BatchNumberController@farmerPost');
+        Route::post('/villages_upload' , 'BatchNumberController@villages');
     });
 });

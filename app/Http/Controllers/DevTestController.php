@@ -15,8 +15,11 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use App\FileSystem;
 use App\Governerate;
+use App\Imports\ImportFarmer;
 use App\TransactionInvoice;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DevTestController extends Controller
 {
@@ -28,6 +31,8 @@ class DevTestController extends Controller
      */
     public function __invoke(Request $request)
     {
+
+
         return 'code is live for dev server!';
         // $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv4';
         // abort_unless($request->secret === $secret, 403, 'Only dev is authorized for this route V3');
