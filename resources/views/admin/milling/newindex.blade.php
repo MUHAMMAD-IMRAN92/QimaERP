@@ -947,7 +947,7 @@
                 $('#excel-form').attr('action', '{{ url('admin/milling_export') }}');
             }
             function search() {
-                $('#excel-form').attr('action', '{{ url('admin/new_milling_coffee') }}');
+                $('#excel-form').attr('action', '{{ url('admin/milling_coffee_search') }}');
             }
             search-btn
             function disableFun() {

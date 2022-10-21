@@ -270,10 +270,81 @@ class Transaction extends Model
     protected $appends = ['FarmerName'];
     public function getFarmerNameAttribute()
     {
-        $farmer_code  =  Str::beforeLast($this->batch_number,'-');
+        $farmer_code  =  Str::beforeLast($this->batch_number, '-');
         $farmer = Farmer::where('farmer_code', $farmer_code)->first();
         if ($farmer) {
             return $farmer->farmer_name;
         }
+    }
+
+    public static function createTransactionAndDetail($transaction)
+    {
+        $user = auth()->user();
+        $parentTransaction = self::findParent($transaction['is_server_id'], $transaction['reference_id'], $user->user_id);
+
+        if (!$parentTransaction) {
+            throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id']);
+        }
+
+        $batchCheck = BatchNumber::where('batch_number', $transaction['batch_number'])->exists();
+
+        if (!$batchCheck) {
+            throw new Exception("Batch Number [{$transaction['batch_number']}] does not exists.");
+        }
+        $sessionNo =  $sessionNo = CoffeeSession::max('server_session_id') + 1;
+
+        $result = self::create([
+            'batch_number' => $transaction['batch_number'],
+            'is_parent' => 0,
+            'created_by' =>  $user->user_id,
+            'is_local' => FALSE,
+            'local_code' => $transaction['local_code'],
+            'is_special' => $parentTransaction->is_special,
+            'is_mixed' => $transaction['is_mixed'],
+            'transaction_type' => 'mixing',
+            'reference_id' => $parentTransaction->transaction_id,
+            'transaction_status' => 'minxed',
+            'is_new' => 0,
+            'sent_to' => $sentTo ?? $transaction['sent_to'],
+            'is_server_id' => true,
+            'is_sent' => $transaction['is_sent'],
+            'session_no' => $sessionNo,
+            'ready_to_milled' => $transaction['ready_to_milled'],
+            'is_in_process' => $transaction['is_in_process'],
+            'is_update_center' => array_key_exists('is_update_center', $transaction) ? $transaction['is_update_center'] : false,
+            'local_session_no' => array_key_exists('local_session_no', $transaction) ? $transaction['local_session_no'] : false,
+            'local_created_at' => toSqlDT($transaction['local_created_at']),
+            'local_updated_at' => toSqlDT($transaction['local_updated_at'])
+        ]);
+
+        $transactionLog = TransactionLog::create([
+            'transaction_id' => $result->transaction_id,
+            'action' => 'sent',
+            'created_by' => $user->user_id,
+            'entity_id' => $result->transaction->center_id,
+            'center_name' => $result->transaction->center_name,
+            'local_created_at' => date("Y-m-d H:i:s", strtotime($transaction->created_at)),
+            'type' => $type,
+        ]);
+
+        foreach ($transaction->details as $key => $detail) {
+
+
+            TransactionDetail::create([
+                'transaction_id' => $result->transaction_id,
+                'container_number' => $detail->container_number,
+                'created_by' => $detail->created_by,
+                'is_local' => FALSE,
+                'container_weight' => $detail->container_weight,
+                'weight_unit' => $detail->weight_unit,
+                'center_id' => $detail->center_id,
+                'reference_id' => $detail->reference_id,
+            ]);
+
+            TransactionDetail::where('transaction_id', $detail->reference_id)->where('container_number', $detail->container_number)->update(['container_status' => 1]);
+        }
+
+
+        return   $result =  $result->with('details');
     }
 }
