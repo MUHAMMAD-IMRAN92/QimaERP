@@ -3,9 +3,10 @@
 use App\Center;
 use App\Http\Controllers\CropsterReportController;
 use App\Transaction;
+use App\Village;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
-
+use Illuminate\Support\Str;
 /*
   |--------------------------------------------------------------------------
   | Web Routes
@@ -22,6 +23,17 @@ Route::get('login', 'AuthController@adminLogin')->name('login');
 Route::get('/', function () {
     return Redirect::route('login');
     // return view('welcome');
+});
+
+Route::get('/updateFarmer', function () {
+
+    $village = Village::get();
+    foreach ($village as  $v) {
+        return   $code = Str::beforeLast($v->village_code, '-');
+        $v->update([
+            'village_code' => $code
+        ]);
+    }
 });
 
 
@@ -98,7 +110,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('farmer_invoice/invoices/{id}', 'FarmerController@farmerInvoice');
         Route::get('farmer_id_documents/{id}', 'FarmerController@farmeridCard');
         Route::get('farmer_invoice/{id}', 'FarmerController@transaction_invoice');
-        RoutE::get('farmers/download' , 'FarmerController@download');
+        RoutE::get('farmers/download', 'FarmerController@download');
 
         //Coffee Buyer
         Route::get('allcoffeebuyer', 'CoffeeBuyerController@index')->middleware('auth');
@@ -220,7 +232,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('new_milling_coffee', 'MillingController@newmillingCoffee')->middleware('auth');
         Route::get('milling_coffee_search', 'MillingController@newmillingCoffeeSearch')->middleware('auth');
         Route::post('newMilliing', 'MillingController@newpost')->middleware('auth');
-        Route::get('/milling_export','MillingController@export');
+        Route::get('/milling_export', 'MillingController@export');
         //miling filters
         Route::get('newMilling/filterByDays', 'MillingController@filterByDays');
 
@@ -234,7 +246,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('local_market/sales', 'LocalMarketSales@get')->name('local_market.sales.index');
 
         Route::get('/inventory', 'InventoryController@index')->name('inventory.index');
-        Route::get('/generate_inventory_excel' , 'InventoryController@export');
+        Route::get('/generate_inventory_excel', 'InventoryController@export');
 
         Route::get('/orders', 'OrderController@index')->name('orders.index');
         Route::get('/orders/create', 'OrderController@create')->name('orders.create');
@@ -296,9 +308,9 @@ Route::group(['prefix' => 'admin'], function () {
         // Route::get('importView', 'CropsterReportController@importView');
         // Route::post('importPost', 'CropsterReportController@importPost');
 
-        Route::get('/backtrack' ,'BatchNumberController@testing');
-        Route::get('/farmers_upload' , 'BatchNumberController@farmer');
-        Route::post('/farmers_upload' , 'BatchNumberController@farmerPost');
-        Route::post('/villages_upload' , 'BatchNumberController@villages');
+        Route::get('/backtrack', 'BatchNumberController@testing');
+        Route::get('/farmers_upload', 'BatchNumberController@farmer');
+        Route::post('/farmers_upload', 'BatchNumberController@farmerPost');
+        Route::post('/villages_upload', 'BatchNumberController@villages');
     });
 });
