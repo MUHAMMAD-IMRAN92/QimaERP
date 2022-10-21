@@ -151,7 +151,7 @@ class ProcessingManagerController extends Controller
                         //     'session_no' => $sentTransaction->transaction->session_no,
                         //     'local_created_at' => toSqlDT($sentTransaction->transaction->local_created_at),
                         //     'local_updated_at' => toSqlDT($sentTransaction->transaction->local_updated_at)
-                        // ]); 
+                        // ]);
                         $savedtransaction = new Transaction();
                         $savedtransaction->batch_number =  $sentTransaction->transaction->batch_number;
                         $savedtransaction->is_parent =  $sentTransaction->transaction->is_parent;
@@ -205,7 +205,6 @@ class ProcessingManagerController extends Controller
                             TransactionDetail::where('transaction_id', $transactionContainer->reference_id)->where('container_number', $transactionContainer->container_number)->update(['container_status' => 1]);
                         }
                         array_push($reciviedCoffee, $savedtransaction->transaction_id);
-                       
                     }
                     DB::commit();
                 } catch (Throwable $th) {
@@ -310,5 +309,32 @@ class ProcessingManagerController extends Controller
             array_push($allTransactions, $data);
         }
         return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), $allTransactions);
+    }
+
+    public function post(Request $request)
+    {
+        $transactions = $request->transactions;
+        $parentChildCollection = collect();
+
+        foreach ($transactions as $transaction) {
+            $result = Transaction::createTransactionAndDetail($transaction);
+
+            foreach ($parentChildCollection as $pc) {
+                if ($pc['local_parent_id'] == $transaction->transaction_id) {
+                    $transactionUpdateParent = Transaction::where('transaction_id', $pc['transaction_id'])->update([
+                        'is_parent' => $result->transaction_id
+                    ]);
+                }
+            }
+
+            if ($transaction->is_parent != 0) {
+                $arr = [
+                    'local_id' => $transaction->transaction_id,
+                    'local_parent_id' => $transaction->is_parent,
+                    'transaction_id' => $result->transaction_id
+                ];
+                $parentChildCollection->push($arr);
+            }
+        }
     }
 }

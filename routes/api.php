@@ -91,6 +91,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['headersmid', 'checkAppKey', 'a
         Route::get('/get_processor_manager_coffee', 'API\ProcessingManagerController@getProcessingManager');
         Route::get('/get_processor_role', 'API\ProcessingManagerController@fetchProcessorRole');
         Route::post('/processor_manager_sent_to_special_and_drying', 'API\ProcessingManagerController@sentToSpecialProcessingAndCoffeeDrying');
+        Route::post('/processor_manager', 'API\ProcessingManagerController@post');
 
         Route::get('/get_sent_special_processing_and_drying_coffee', 'API\ProcessingManagerController@getSendSpecialProcessingAndDryingCoffee');
         Route::get('/get_sent_coffee_drying_coffee', 'API\ProcessingManagerController@getSendCoffeeDrying');

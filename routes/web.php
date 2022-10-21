@@ -218,6 +218,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('milling_coffee/{id}', 'MillingController@milling')->middleware('auth');
         Route::post('milling_coffee', 'MillingController@millingCoffee')->middleware('auth');
         Route::get('new_milling_coffee', 'MillingController@newmillingCoffee')->middleware('auth');
+        Route::get('milling_coffee_search', 'MillingController@newmillingCoffeeSearch')->middleware('auth');
         Route::post('newMilliing', 'MillingController@newpost')->middleware('auth');
         Route::get('/milling_export','MillingController@export');
         //miling filters
@@ -296,5 +297,8 @@ Route::group(['prefix' => 'admin'], function () {
         // Route::post('importPost', 'CropsterReportController@importPost');
 
         Route::get('/backtrack' ,'BatchNumberController@testing');
+        Route::get('/farmers_upload' , 'BatchNumberController@farmer');
+        Route::post('/farmers_upload' , 'BatchNumberController@farmerPost');
+        Route::post('/villages_upload' , 'BatchNumberController@villages');
     });
 });

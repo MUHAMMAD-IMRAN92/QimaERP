@@ -44,9 +44,10 @@ class Farmer extends Model
 
         return $village;
     }
-function Fregion(){
-    // return $this->hasOne();
-}
+    function Fregion()
+    {
+        // return $this->hasOne();
+    }
     public function getRegion()
     {
         $region = $this->farmer_code;
@@ -181,5 +182,15 @@ function Fregion(){
         $farmerId = $this->farmer_id;
         $urls =   CropsterReport::where('entity_type', 1)->where('entity_id', $farmerId)->orderByDesc('created_at')->get();
         return $urls;
+    }
+
+    protected $appends = ['village_name'];
+    public function getVillageNameAttribute()
+    {
+        $villageCode  =  Str::beforeLast($this->farmer_code, '-');
+        $village = Village::where('village_code', $villageCode)->first();
+        if ($village) {
+            return $village->village_title_ar;
+        }
     }
 }
