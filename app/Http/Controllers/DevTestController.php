@@ -17,6 +17,7 @@ use App\FileSystem;
 use App\Governerate;
 use App\Imports\ImportFarmer;
 use App\TransactionInvoice;
+use App\Village;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -32,6 +33,13 @@ class DevTestController extends Controller
     public function __invoke(Request $request)
     {
 
+        $village = Village::get();
+        foreach ($village as  $v) {
+            $code = Str::beforeLast($v->village_code, '-');
+            $v->update([
+                'village_code' => $code
+            ]);
+        }
 
         return 'code is live for dev server!';
         // $secret = '81aGk2WUJt4Sy3tGr9gQRtDTTsg0MDxpRI1kY0Vdv4';
