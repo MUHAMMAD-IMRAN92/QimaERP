@@ -336,8 +336,8 @@ class ProcessingManagerController extends Controller
 
                 if ($transaction['is_parent'] != 0) {
                     $arr = [
-                        'local_id' => $transaction->transaction_id,
-                        'local_parent_id' => $transaction->is_parent,
+                        'local_id' => $transaction['transaction_id'],
+                        'local_parent_id' => $transaction['is_parent'],
                         'transaction_id' => $result->transaction_id
                     ];
                     $parentChildCollection->push($arr);
