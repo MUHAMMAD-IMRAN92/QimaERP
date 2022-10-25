@@ -279,12 +279,13 @@ class Transaction extends Model
 
     public static function createTransactionAndDetail($transaction)
     {
+
         $transaction = $transaction['transaction'];
         $user = auth()->user();
         $parentTransaction = self::findParent($transaction['is_server_id'], $transaction['reference_id'], $user->user_id);
 
         if (!$parentTransaction) {
-            throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id']);
+            throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id'] . '=>' .  $transaction['reference_id'].'='.$transaction['is_server_id']~);
         }
         if ($transaction['is_server_id']) {
             return  $result = $transaction;
