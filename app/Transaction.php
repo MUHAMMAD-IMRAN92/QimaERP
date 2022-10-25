@@ -279,13 +279,14 @@ class Transaction extends Model
 
     public static function createTransactionAndDetail($transaction)
     {
+        $transaction = $transaction['transaction'];
         $user = auth()->user();
         $parentTransaction = self::findParent($transaction['is_server_id'], $transaction['reference_id'], $user->user_id);
 
         if (!$parentTransaction) {
             throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id']);
         }
-        if ($transaction->is_server_id) {
+        if ($transaction['is_server_id']) {
             return  $result = $transaction;
         }
 
@@ -295,7 +296,7 @@ class Transaction extends Model
             throw new Exception("Batch Number [{$transaction['batch_number']}] does not exists.");
         }
         // $sessionNo =  $sessionNo = CoffeeSession::max('server_session_id') + 1;
-        if ($transaction->sent_to == 5) {
+        if ($transaction['sent_to'] == 5) {
             $type = 'special_processing';
             $isSpecial = true;
         } else {
@@ -345,7 +346,7 @@ class Transaction extends Model
             'type' => $type,
         ]);
 
-        foreach ($transaction->details as $key => $detail) {
+        foreach ($transaction['transactionDetails'] as $key => $detail) {
 
 
             TransactionDetail::create([

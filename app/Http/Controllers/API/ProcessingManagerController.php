@@ -319,6 +319,7 @@ class ProcessingManagerController extends Controller
 
             foreach ($transactions as $transaction) {
                 $result = Transaction::createTransactionAndDetail($transaction);
+                $transaction = $transaction['transaction'];
 
                 foreach ($parentChildCollection as $pc) {
                     if ($pc['local_parent_id'] == $transaction->transaction_id) {
@@ -333,7 +334,7 @@ class ProcessingManagerController extends Controller
                     }
                 }
 
-                if ($transaction->is_parent != 0) {
+                if ($transaction['is_parent'] != 0) {
                     $arr = [
                         'local_id' => $transaction->transaction_id,
                         'local_parent_id' => $transaction->is_parent,
