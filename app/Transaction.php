@@ -285,7 +285,7 @@ class Transaction extends Model
         $parentTransaction = self::findParent($transaction['is_server_id'], $transaction['reference_id'], $user->user_id);
 
         if (!$parentTransaction) {
-            throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id'] . '=>' .  $transaction['reference_id'].'='.$transaction['is_server_id']~);
+            throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id'] . '=>' .  $transaction['reference_id'].'='.$transaction['is_server_id']);
         }
         if ($transaction['is_server_id']) {
             return  $result = $transaction;
