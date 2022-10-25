@@ -313,33 +313,40 @@ class ProcessingManagerController extends Controller
 
     public function post(Request $request)
     {
-        $transactions = $request->transactions;
-        $parentChildCollection = collect();
+        try {
+            $transactions = $request->transactions;
+            $parentChildCollection = collect();
 
-        foreach ($transactions as $transaction) {
-            $result = Transaction::createTransactionAndDetail($transaction);
+            foreach ($transactions as $transaction) {
+                $result = Transaction::createTransactionAndDetail($transaction);
 
-            foreach ($parentChildCollection as $pc) {
-                if ($pc['local_parent_id'] == $transaction->transaction_id) {
-                    $transactionUpdateParent = Transaction::where('transaction_id', $pc['transaction_id'])->update([
-                        'is_parent' => $result->transaction_id
-                    ]);
-                    $transactionUpdateParent->details()->each(function ($detail) {
-                        $detail->update([
-                            'container_status' => 1
+                foreach ($parentChildCollection as $pc) {
+                    if ($pc['local_parent_id'] == $transaction->transaction_id) {
+                        $transactionUpdateParent = Transaction::where('transaction_id', $pc['transaction_id'])->update([
+                            'is_parent' => $result->transaction_id
                         ]);
-                    });
+                        $transactionUpdateParent->details()->each(function ($detail) {
+                            $detail->update([
+                                'container_status' => 1
+                            ]);
+                        });
+                    }
+                }
+
+                if ($transaction->is_parent != 0) {
+                    $arr = [
+                        'local_id' => $transaction->transaction_id,
+                        'local_parent_id' => $transaction->is_parent,
+                        'transaction_id' => $result->transaction_id
+                    ];
+                    $parentChildCollection->push($arr);
                 }
             }
-
-            if ($transaction->is_parent != 0) {
-                $arr = [
-                    'local_id' => $transaction->transaction_id,
-                    'local_parent_id' => $transaction->is_parent,
-                    'transaction_id' => $result->transaction_id
-                ];
-                $parentChildCollection->push($arr);
-            }
+        } catch (Throwable $th) {
+            DB::rollback();
+            return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
+                'line' => $th->getLine()
+            ]), 499);
         }
     }
 }
