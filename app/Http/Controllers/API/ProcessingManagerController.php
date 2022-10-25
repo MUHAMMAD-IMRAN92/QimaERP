@@ -316,9 +316,10 @@ class ProcessingManagerController extends Controller
         try {
             $transactions = $request->transactions;
             $parentChildCollection = collect();
-
+            $data = collect();
             foreach ($transactions as $transaction) {
                 $result = Transaction::createTransactionAndDetail($transaction);
+                $data->push( $result );
                 $transaction = $transaction['transaction'];
 
                 foreach ($parentChildCollection as $pc) {
@@ -345,6 +346,10 @@ class ProcessingManagerController extends Controller
                     $parentChildCollection->push($arr);
                 }
             }
+
+            return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
+                $data
+            ]);
         } catch (Throwable $th) {
             DB::rollback();
             return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
