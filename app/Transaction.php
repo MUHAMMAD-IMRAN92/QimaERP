@@ -282,20 +282,20 @@ class Transaction extends Model
 
         $transactionObj = $transaction['transaction'];
         $user = auth()->user();
-        $parentTransaction = self::findParent($transaction['is_server_id'], $transaction['reference_id'], $user->user_id);
+        // $parentTransaction = self::findParent($transaction['is_server_id'], $transaction['reference_id'], $user->user_id);
 
-        if (!$parentTransaction) {
-            throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id'] . '=>'  . $transaction['transaction_id']);
-        }
-        if ($transaction['is_server_id']) {
-            return  $result = $transaction;
-        }
+        // if (!$parentTransaction) {
+        //     throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id'] . '=>'  . $transaction['transaction_id']);
+        // }
+        // if ($transaction['is_server_id']) {
+        //     return  $result = $transaction;
+        // }
 
-        $batchCheck = BatchNumber::where('batch_number', $transaction['batch_number'])->exists();
+        // $batchCheck = BatchNumber::where('batch_number', $transaction['batch_number'])->exists();
 
-        if (!$batchCheck) {
-            throw new Exception("Batch Number [{$transaction['batch_number']}] does not exists.");
-        }
+        // if (!$batchCheck) {
+        //     throw new Exception("Batch Number [{$transaction['batch_number']}] does not exists.");
+        // }
         $sessionNo =  $sessionNo = CoffeeSession::max('server_session_id') + 1;
         if ($transactionObj['sent_to'] == 5) {
             $type = 'special_processing';
