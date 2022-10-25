@@ -377,6 +377,6 @@ class Transaction extends Model
         }
 
 
-        return   $result =  $result->with('details');
+        return   $result;
     }
 }
