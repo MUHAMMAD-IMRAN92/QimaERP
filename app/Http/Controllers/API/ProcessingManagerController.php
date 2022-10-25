@@ -324,7 +324,7 @@ class ProcessingManagerController extends Controller
                 foreach ($parentChildCollection as $pc) {
                     if ($pc['local_parent_id'] == $transaction['transaction_id']) {
                         $transactionUpdateParent = Transaction::where('transaction_id', $pc['transaction_id'])->update([
-                            'is_parent' => $result->transaction_id
+                            'is_parent' => $result['transaction_id']
                         ]);
                         $transactionUpdateParent->details()->each(function ($detail) {
                             $detail->update([
