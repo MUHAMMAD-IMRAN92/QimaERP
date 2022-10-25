@@ -285,21 +285,39 @@ class Transaction extends Model
         if (!$parentTransaction) {
             throw new Exception('Parent transaction not found. reference_id = ' . $transaction['reference_id']);
         }
+        if ($transaction->is_server_id) {
+            return  $result = $transaction;
+        }
 
         $batchCheck = BatchNumber::where('batch_number', $transaction['batch_number'])->exists();
 
         if (!$batchCheck) {
             throw new Exception("Batch Number [{$transaction['batch_number']}] does not exists.");
         }
-        $sessionNo =  $sessionNo = CoffeeSession::max('server_session_id') + 1;
+        // $sessionNo =  $sessionNo = CoffeeSession::max('server_session_id') + 1;
+        if ($transaction->sent_to == 5) {
+            $type = 'special_processing';
+            $isSpecial = true;
+        } else {
+            $isSpecial =  $parentTransaction->is_special;
+            $type = 'coffee_drying';
+        }
+        $removeLocalId = explode("-", $transaction['batch_number']);
+        array_pop($removeLocalId);
+        $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
+        if ($lastBatchNumber) {
+            $newLastBID = ($lastBatchNumber->batch_id + 1);
+        }
+
+        $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
 
         $result = self::create([
-            'batch_number' => $transaction['batch_number'],
+            'batch_number' => $parentBatchCode,
             'is_parent' => 0,
             'created_by' =>  $user->user_id,
             'is_local' => FALSE,
             'local_code' => $transaction['local_code'],
-            'is_special' => $parentTransaction->is_special,
+            'is_special' => $isSpecial,
             'is_mixed' => $transaction['is_mixed'],
             'transaction_type' => 'mixing',
             'reference_id' => $parentTransaction->transaction_id,
@@ -308,7 +326,7 @@ class Transaction extends Model
             'sent_to' => $sentTo ?? $transaction['sent_to'],
             'is_server_id' => true,
             'is_sent' => $transaction['is_sent'],
-            'session_no' => $sessionNo,
+            'session_no' => $transaction['session_no'],
             'ready_to_milled' => $transaction['ready_to_milled'],
             'is_in_process' => $transaction['is_in_process'],
             'is_update_center' => array_key_exists('is_update_center', $transaction) ? $transaction['is_update_center'] : false,

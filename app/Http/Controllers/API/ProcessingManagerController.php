@@ -324,6 +324,11 @@ class ProcessingManagerController extends Controller
                     $transactionUpdateParent = Transaction::where('transaction_id', $pc['transaction_id'])->update([
                         'is_parent' => $result->transaction_id
                     ]);
+                    $transactionUpdateParent->details()->each(function ($detail) {
+                        $detail->update([
+                            'container_status' => 1
+                        ]);
+                    });
                 }
             }
 
