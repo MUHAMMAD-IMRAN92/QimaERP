@@ -387,20 +387,20 @@ class ProcessingManagerController extends Controller
                     $ref_local_code =    explode(",", $transactionObj['ref_local_code']);
                     foreach ($ref_local_code as $rlc) {
                         if (Str::contains($rlc, '-')) {
-                            $transaction = Transaction::where('local_code', 'LIKE', "%$rlc%")->first();
-                            $transaction->update([
+                            $serverTransaction = Transaction::where('local_code', 'LIKE', "%$rlc%")->first();
+                            $serverTransaction->update([
                                 'is_parent' => $result->transaction_id,
                             ]);
                             $result->update([
-                                'reference_id' => $result->reference_id . ',' . $transaction->transaction_id
+                                'reference_id' => $result->reference_id . ',' . $serverTransaction->transaction_id
                             ]);
                         } else {
-                            $transaction = Transaction::where('transaction_id', $rlc)->first();
-                            $transaction->update([
+                            $serverTransaction = Transaction::where('transaction_id', $rlc)->first();
+                            $serverTransaction->update([
                                 'is_parent' => $result->transaction_id,
                             ]);
                             $result->update([
-                                'reference_id' => $result->reference_id . ',' . $transaction->transaction_id
+                                'reference_id' => $result->reference_id . ',' . $serverTransaction->transaction_id
                             ]);
                         }
                     }
