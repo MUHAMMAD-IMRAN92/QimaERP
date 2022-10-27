@@ -8,13 +8,16 @@ use App\LoginUser;
 use Carbon\Carbon;
 use App\CenterUser;
 use App\BatchNumber;
+use App\CoffeeSession;
 use App\Transaction;
 use App\TransactionLog;
 use App\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Season;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -314,39 +317,109 @@ class ProcessingManagerController extends Controller
     public function post(Request $request)
     {
         try {
-            $transactions = $request->transactions;
-            $parentChildCollection = collect();
             $data = collect();
+            $transactions = $request->transactions;
+            $user = auth()->user();
             foreach ($transactions as $transaction) {
-                $result = Transaction::createTransactionAndDetail($transaction);
-                $data->push( $result );
-                $transaction = $transaction['transaction'];
+                $transactionObj = $transaction['transaction'];
+                $sessionNo =  $sessionNo = CoffeeSession::max('server_session_id') + 1;
+                if ($transactionObj['sent_to'] == 5) {
+                    $type = 'special_processing';
+                    $isSpecial = true;
+                } else {
+                    $isSpecial = 1; //change from  parent
+                    $type = 'coffee_drying';
+                }
+                $removeLocalId = explode("-", $transactionObj['batch_number']);
+                array_pop($removeLocalId);
+                $season = Season::where('status', 0)->first();
+                $lastBatchNumber = BatchNumber::orderBy('batch_id', 'desc')->first();
+                if ($lastBatchNumber) {
+                    $newLastBID = ($lastBatchNumber->batch_id + 1);
+                }
 
-                foreach ($parentChildCollection as $pc) {
-                    if ($pc['local_parent_id'] == $transaction['transaction_id']) {
-                        $transactionUpdateParent = Transaction::where('transaction_id', $pc['transaction_id'])->first();
-                        $transactionUpdateParent->update([
-                            'is_parent' => $result['transaction_id']
+                $parentBatchCode = implode("-", $removeLocalId) . '-' . ($newLastBID);
+                $parentBatch = BatchNumber::create([
+                    'batch_number' => $parentBatchCode,
+                    'is_parent' => 0,
+                    'is_mixed' => $lastBatchNumber->is_mixed,
+                    'created_by' => $lastBatchNumber->created_by,
+                    'is_local' => FALSE,
+                    'season_no' =>  $lastBatchNumber->season_no,
+                    'local_code' => $lastBatchNumber->local_code,
+                    'is_server_id' => $lastBatchNumber->is_server_id,
+                    'season_id' => $season->season_id,
+                    'season_status' => $season->status,
+                ]);
+                $result = Transaction::create([
+                    'batch_number' => $parentBatchCode,
+                    'is_parent' => 0,
+                    'created_by' =>  $user->user_id,
+                    'is_local' => FALSE,
+                    'local_code' => $transactionObj['local_code'],
+                    'is_special' => $isSpecial,
+                    'is_mixed' => $transactionObj['is_mixed'],
+                    'transaction_type' => 0,
+                    'reference_id' => 000, //change from  parent
+                    'transaction_status' => 'minxed',
+                    'is_new' => 0,
+                    'sent_to' => $sentTo ?? $transactionObj['sent_to'],
+                    'is_server_id' => true,
+                    'is_sent' => $transactionObj['is_sent'],
+                    'session_no' => $transactionObj['session_no'],
+                    'ready_to_milled' => 0,
+                    'is_in_process' => 0,
+                    'is_update_center' => array_key_exists('is_update_center', $transactionObj) ? $transactionObj['is_update_center'] : false,
+                    'local_session_no' => array_key_exists('local_session_no', $transactionObj) ? $transactionObj['local_session_no'] : false,
+                    'local_created_at' => toSqlDT($transactionObj['local_created_at']),
+                    'local_updated_at' => toSqlDT($transactionObj['local_updated_at'])
+                ]);
+                $transactionLog = TransactionLog::create([
+                    'transaction_id' => $result->transaction_id,
+                    'action' => 'sent', ///
+                    'created_by' => $user->user_id,
+                    'entity_id' => $transactionObj['center_id'],
+                    'center_name' => "",
+                    'local_created_at' => date("Y-m-d H:i:s", strtotime($transactionObj['created_at'])),
+                    'type' => $type,
+                ]);
+                $ref_local_code =    explode(",", $transactionObj->ref_local_code);
+                foreach ($ref_local_code as $rlc) {
+                    if (Str::contains($rlc, '-')) {
+                        $transaction = Transaction::where('local_code', 'LIKE', "%$rlc%")->first();
+                        $transaction->update([
+                            'parent_transaction' => $result->transaction_id,
                         ]);
-
-                        $transactionUpdateParent->details()->each(function ($detail) {
-                            $detail->update([
-                                'container_status' => 1
-                            ]);
-                        });
+                        $result->update([
+                            'reference_id' => $result->reference_id . ',' . $transaction->transaction_id
+                        ]);
+                    } else {
+                        $transaction = Transaction::where('reference_id', $rlc)->first();
+                        $transaction->update([
+                            'parent_transaction' => $result->transaction_id,
+                        ]);
+                        $result->update([
+                            'reference_id' => $result->reference_id . ',' . $transaction->transaction_id
+                        ]);
                     }
                 }
 
-                if ($transaction['is_parent'] != 0) {
-                    $arr = [
-                        'local_id' => $transaction['transaction_id'],
-                        'local_parent_id' => $transaction['is_parent'],
-                        'transaction_id' => $result['transaction_id']
-                    ];
-                    $parentChildCollection->push($arr);
+
+                foreach ($transaction['transactionDetails'] as $key => $detail) {
+                    TransactionDetail::create([
+                        'transaction_id' => $result->transaction_id,
+                        'container_number' => $detail['container_number'],
+                        'created_by' => $detail['created_by'],
+                        'is_local' => FALSE,
+                        'container_weight' => $detail['container_weight'],
+                        'weight_unit' => $detail['weight_unit'],
+                        'center_id' => $detail['center_id'],
+                        'reference_id' => $detail['reference_id'],
+                    ]);
+
+                    TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
                 }
             }
-
             return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
                 $data
             ]);

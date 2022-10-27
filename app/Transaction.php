@@ -351,7 +351,7 @@ class Transaction extends Model
 
         $transactionLog = TransactionLog::create([
             'transaction_id' => $result->transaction_id,
-            'action' => 'sent',
+            'action' => 'sent',///
             'created_by' => $user->user_id,
             'entity_id' => 1,
             'center_name' => $result->center_name,
