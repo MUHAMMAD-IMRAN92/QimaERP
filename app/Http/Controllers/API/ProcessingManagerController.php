@@ -318,8 +318,7 @@ class ProcessingManagerController extends Controller
     {
         try {
             $data = collect();
-            // $transactions = $request->transactions;
-            $transactions = json_decode($request['transactions']);
+            $transactions = $request->transactions;
             $user = auth()->user();
             foreach ($transactions as $transaction) {
                 $transactionObj = $transaction['transaction'];
