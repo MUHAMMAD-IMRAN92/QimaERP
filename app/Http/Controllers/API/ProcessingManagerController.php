@@ -362,7 +362,7 @@ class ProcessingManagerController extends Controller
                         'is_mixed' => $transactionObj['is_mixed'],
                         'transaction_type' => 0,
                         'reference_id' => 000, //change from  parent
-                        'transaction_status' => 'minxed',
+                        'transaction_status' => 'received',
                         'is_new' => 0,
                         'sent_to' => $sentTo ?? $transactionObj['sent_to'],
                         'is_server_id' => true,
@@ -377,12 +377,12 @@ class ProcessingManagerController extends Controller
                     ]);
                     $transactionLog = TransactionLog::create([
                         'transaction_id' => $result->transaction_id,
-                        'action' => 'sent', ///
+                        'action' => 'received', ///
                         'created_by' => $user->user_id,
                         'entity_id' => $transactionObj['center_id'],
                         'center_name' => "",
                         'local_created_at' => date("Y-m-d H:i:s", strtotime($transactionObj['created_at'])),
-                        'type' => $type,
+                        'type' => 'center',
                     ]);
                     $ref_local_code =    explode(",", $transactionObj['ref_local_code']);
                     foreach ($ref_local_code as $rlc) {
@@ -391,6 +391,7 @@ class ProcessingManagerController extends Controller
                             $serverTransaction->update([
                                 'is_parent' => $result->transaction_id,
                             ]);
+
                             $result->update([
                                 'reference_id' => $result->reference_id . ',' . $serverTransaction->transaction_id
                             ]);
@@ -399,6 +400,7 @@ class ProcessingManagerController extends Controller
                             $serverTransaction->update([
                                 'is_parent' => $result->transaction_id,
                             ]);
+
                             $result->update([
                                 'reference_id' => $result->reference_id . ',' . $serverTransaction->transaction_id
                             ]);
