@@ -389,7 +389,7 @@ class ProcessingManagerController extends Controller
                         if (Str::contains($rlc, '-')) {
                             $transaction = Transaction::where('local_code', 'LIKE', "%$rlc%")->first();
                             $transaction->update([
-                                'parent_transaction' => $result->transaction_id,
+                                'is_parent' => $result->transaction_id,
                             ]);
                             $result->update([
                                 'reference_id' => $result->reference_id . ',' . $transaction->transaction_id
@@ -397,7 +397,7 @@ class ProcessingManagerController extends Controller
                         } else {
                             $transaction = Transaction::where('transaction_id', $rlc)->first();
                             $transaction->update([
-                                'parent_transaction' => $result->transaction_id,
+                                'is_parent' => $result->transaction_id,
                             ]);
                             $result->update([
                                 'reference_id' => $result->reference_id . ',' . $transaction->transaction_id
