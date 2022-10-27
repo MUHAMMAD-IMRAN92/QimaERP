@@ -384,7 +384,7 @@ class ProcessingManagerController extends Controller
                         'local_created_at' => date("Y-m-d H:i:s", strtotime($transactionObj['created_at'])),
                         'type' => $type,
                     ]);
-                    $ref_local_code =    explode(",", $transactionObj->ref_local_code);
+                    $ref_local_code =    explode(",", $transactionObj['ref_local_code']);
                     foreach ($ref_local_code as $rlc) {
                         if (Str::contains($rlc, '-')) {
                             $transaction = Transaction::where('local_code', 'LIKE', "%$rlc%")->first();
