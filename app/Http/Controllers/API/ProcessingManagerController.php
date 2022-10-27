@@ -395,7 +395,7 @@ class ProcessingManagerController extends Controller
                                 'reference_id' => $result->reference_id . ',' . $transaction->transaction_id
                             ]);
                         } else {
-                            $transaction = Transaction::where('reference_id', $rlc)->first();
+                            $transaction = Transaction::where('transaction_id', $rlc)->first();
                             $transaction->update([
                                 'parent_transaction' => $result->transaction_id,
                             ]);
