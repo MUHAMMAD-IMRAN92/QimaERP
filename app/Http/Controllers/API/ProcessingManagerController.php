@@ -529,9 +529,10 @@ class ProcessingManagerController extends Controller
                     }
                 }
             }
-            return sendSuccess(Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"), [
+            return sendSuccess(
+                Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"),
                 $data
-            ]);
+            );
         } catch (Throwable $th) {
             DB::rollback();
             return Response::json(array('status' => 'error', 'message' => $th->getMessage(), '  data' => [
