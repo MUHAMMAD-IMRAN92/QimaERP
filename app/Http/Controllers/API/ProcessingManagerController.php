@@ -416,7 +416,7 @@ class ProcessingManagerController extends Controller
 
                         TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
                     }
-                    $data->push($result->details);
+                    $data->push($result);
                 }
                 if ($transactionObj['sent_to'] == 5) {
 
@@ -472,7 +472,7 @@ class ProcessingManagerController extends Controller
 
                         TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
                     }
-                    $data->push($result->details);
+                    $data->push($result);
                 }
                 if ($transactionObj['sent_to'] == 6) {
 
@@ -529,7 +529,7 @@ class ProcessingManagerController extends Controller
 
                         TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
                     }
-                    $data->push($result->details);
+                    $data->push($result);
                 }
             }
             return sendSuccess(
