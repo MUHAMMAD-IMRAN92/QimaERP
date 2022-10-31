@@ -416,6 +416,7 @@ class ProcessingManagerController extends Controller
 
                         TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
                     }
+                    $data->push($result->details);
                 }
                 if ($transactionObj['sent_to'] == 5) {
 
@@ -423,7 +424,7 @@ class ProcessingManagerController extends Controller
                     $isSpecial = true;
 
                     $result = Transaction::create([
-                        'batch_number' => $parentBatchCode,
+                        'batch_number' => $transactionObj['batch_number'],
                         'is_parent' => 0,
                         'created_by' =>  $user->user_id,
                         'is_local' => FALSE,
@@ -471,6 +472,7 @@ class ProcessingManagerController extends Controller
 
                         TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
                     }
+                    $data->push($result->details);
                 }
                 if ($transactionObj['sent_to'] == 6) {
 
@@ -478,7 +480,7 @@ class ProcessingManagerController extends Controller
                     $isSpecial = true;
 
                     $result = Transaction::create([
-                        'batch_number' => $parentBatchCode,
+                        'batch_number' => $transactionObj['batch_number'],
                         'is_parent' => 0,
                         'created_by' =>  $user->user_id,
                         'is_local' => FALSE,
@@ -527,6 +529,7 @@ class ProcessingManagerController extends Controller
 
                         TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
                     }
+                    $data->push($result->details);
                 }
             }
             return sendSuccess(
