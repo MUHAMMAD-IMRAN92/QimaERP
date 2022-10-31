@@ -324,13 +324,7 @@ class ProcessingManagerController extends Controller
                 $transactionObj = $transaction['transaction'];
                 if ($transactionObj['sent_to'] == 4) {
                     $sessionNo =  $sessionNo = CoffeeSession::max('server_session_id') + 1;
-                    if ($transactionObj['sent_to'] == 5) {
-                        $type = 'special_processing';
-                        $isSpecial = true;
-                    } else {
-                        $isSpecial = 1; //change from  parent
-                        $type = 'coffee_drying';
-                    }
+                    $isSpecial = false;
                     $removeLocalId = explode("-", $transactionObj['batch_number']);
                     array_pop($removeLocalId);
                     $season = Season::where('status', 0)->first();
@@ -406,6 +400,117 @@ class ProcessingManagerController extends Controller
                             ]);
                         }
                     }
+
+
+                    foreach ($transaction['transactionDetails'] as $key => $detail) {
+                        TransactionDetail::create([
+                            'transaction_id' => $result->transaction_id,
+                            'container_number' => $detail['container_number'],
+                            'created_by' => $detail['created_by'],
+                            'is_local' => FALSE,
+                            'container_weight' => $detail['container_weight'],
+                            'weight_unit' => $detail['weight_unit'],
+                            'center_id' => $detail['center_id'],
+                            'reference_id' => $detail['reference_id'],
+                        ]);
+
+                        TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
+                    }
+                }
+                if ($transactionObj['sent_to'] == 5) {
+
+                    $type = 'special_processing';
+                    $isSpecial = true;
+
+                    $result = Transaction::create([
+                        'batch_number' => $parentBatchCode,
+                        'is_parent' => 0,
+                        'created_by' =>  $user->user_id,
+                        'is_local' => FALSE,
+                        'local_code' => $transactionObj['local_code'],
+                        'is_special' => $isSpecial,
+                        'is_mixed' => $transactionObj['is_mixed'],
+                        'transaction_type' => 0,
+                        'reference_id' => 000, //change from  parent
+                        'transaction_status' => 'received',
+                        'is_new' => 0,
+                        'sent_to' => $sentTo ?? $transactionObj['sent_to'],
+                        'is_server_id' => true,
+                        'is_sent' => $transactionObj['is_sent'],
+                        'session_no' => $transactionObj['session_no'],
+                        'ready_to_milled' => 0,
+                        'is_in_process' => 0,
+                        'is_update_center' => array_key_exists('is_update_center', $transactionObj) ? $transactionObj['is_update_center'] : false,
+                        'local_session_no' => array_key_exists('local_session_no', $transactionObj) ? $transactionObj['local_session_no'] : false,
+                        'local_created_at' => toSqlDT($transactionObj['local_created_at']),
+                        'local_updated_at' => toSqlDT($transactionObj['local_updated_at'])
+                    ]);
+                    $transactionLog = TransactionLog::create([
+                        'transaction_id' => $result->transaction_id,
+                        'action' => 'received', ///
+                        'created_by' => $user->user_id,
+                        'entity_id' => $transactionObj['center_id'],
+                        'center_name' => "",
+                        'local_created_at' => date("Y-m-d H:i:s", strtotime($transactionObj['created_at'])),
+                        'type' => 'center',
+                    ]);
+
+
+
+                    foreach ($transaction['transactionDetails'] as $key => $detail) {
+                        TransactionDetail::create([
+                            'transaction_id' => $result->transaction_id,
+                            'container_number' => $detail['container_number'],
+                            'created_by' => $detail['created_by'],
+                            'is_local' => FALSE,
+                            'container_weight' => $detail['container_weight'],
+                            'weight_unit' => $detail['weight_unit'],
+                            'center_id' => $detail['center_id'],
+                            'reference_id' => $detail['reference_id'],
+                        ]);
+
+                        TransactionDetail::where('transaction_id', $detail['reference_id'])->where('container_number', $detail['container_number'])->update(['container_status' => 1]);
+                    }
+                }
+                if ($transactionObj['sent_to'] == 6) {
+
+                    $type = 'special_processing';
+                    $isSpecial = true;
+
+                    $result = Transaction::create([
+                        'batch_number' => $parentBatchCode,
+                        'is_parent' => 0,
+                        'created_by' =>  $user->user_id,
+                        'is_local' => FALSE,
+                        'local_code' => $transactionObj['local_code'],
+                        'is_special' => $isSpecial,
+                        'is_mixed' => $transactionObj['is_mixed'],
+                        'transaction_type' => 0,
+                        'reference_id' => 000, //change from  parent
+                        'transaction_status' => 'received',
+                        'is_new' => 0,
+                        'sent_to' => $sentTo ?? $transactionObj['sent_to'],
+                        'is_server_id' => true,
+                        'is_sent' => $transactionObj['is_sent'],
+                        'session_no' => $transactionObj['session_no'],
+                        'ready_to_milled' => 0,
+                        'is_in_process' => 0,
+                        'is_update_center' => array_key_exists('is_update_center', $transactionObj) ? $transactionObj['is_update_center'] : false,
+                        'local_session_no' => array_key_exists('local_session_no', $transactionObj) ? $transactionObj['local_session_no'] : false,
+                        'local_created_at' => toSqlDT($transactionObj['local_created_at']),
+                        'local_updated_at' => toSqlDT($transactionObj['local_updated_at'])
+                    ]);
+                    $transactionLog = TransactionLog::create([
+                        'transaction_id' => $result->transaction_id,
+                        'action' => 'received', ///
+                        'created_by' => $user->user_id,
+                        'entity_id' => $transactionObj['center_id'],
+                        'center_name' => "",
+                        'local_created_at' => date("Y-m-d H:i:s", strtotime($transactionObj['created_at'])),
+                        'type' => 'center',
+                    ]);
+
+
 
 
                     foreach ($transaction['transactionDetails'] as $key => $detail) {
