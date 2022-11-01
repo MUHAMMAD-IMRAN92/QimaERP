@@ -469,12 +469,12 @@ class ProcessingManagerController extends Controller
                     ]);
                     $transactionLog = TransactionLog::create([
                         'transaction_id' => $result->transaction_id,
-                        'action' => 'received', ///
+                        'action' => 'sent', ///
                         'created_by' => $user->user_id,
                         'entity_id' => $transactionObj['center_id'],
                         'center_name' => "",
                         'local_created_at' => date("Y-m-d H:i:s", strtotime($transactionObj['created_at'])),
-                        'type' => 'center',
+                        'type' => 'special_processing',
                     ]);
 
 
@@ -535,37 +535,15 @@ class ProcessingManagerController extends Controller
                         'local_created_at' => toSqlDT($transactionObj['local_created_at']),
                         'local_updated_at' => toSqlDT($transactionObj['local_updated_at'])
                     ]);
-                    $result = Transaction::create([
-                        'batch_number' => $transactionObj['batch_number'],
-                        'is_parent' => 0,
-                        'created_by' =>  $user->user_id,
-                        'is_local' => FALSE,
-                        'local_code' => $transactionObj['local_code'],
-                        'is_special' => $isSpecial,
-                        'is_mixed' => $transactionObj['is_mixed'],
-                        'transaction_type' => 0,
-                        'reference_id' => 000, //change from  parent
-                        'transaction_status' => 'received',
-                        'is_new' => 0,
-                        'sent_to' => $sentTo ?? $transactionObj['sent_to'],
-                        'is_server_id' => true,
-                        'is_sent' => $transactionObj['is_sent'],
-                        'session_no' => $transactionObj['session_no'],
-                        'ready_to_milled' => 0,
-                        'is_in_process' => 0,
-                        'is_update_center' => array_key_exists('is_update_center', $transactionObj) ? $transactionObj['is_update_center'] : false,
-                        'local_session_no' => array_key_exists('local_session_no', $transactionObj) ? $transactionObj['local_session_no'] : false,
-                        'local_created_at' => toSqlDT($transactionObj['local_created_at']),
-                        'local_updated_at' => toSqlDT($transactionObj['local_updated_at'])
-                    ]);
+
                     $transactionLog = TransactionLog::create([
                         'transaction_id' => $result->transaction_id,
-                        'action' => 'received', ///
+                        'action' => 'sent', ///
                         'created_by' => $user->user_id,
                         'entity_id' => $transactionObj['center_id'],
                         'center_name' => "",
                         'local_created_at' => date("Y-m-d H:i:s", strtotime($transactionObj['created_at'])),
-                        'type' => 'center',
+                        'type' => 'coffee_drying',
                     ]);
 
 
