@@ -53,7 +53,7 @@ class ProcessingManagerController extends Controller
         }
         $allTransactions = array();
         $transactions = Transaction::where('is_parent', 0)->where('transaction_status', 'received')->whereHas('log', function ($q) use ($centerId) {
-            $q->where('action', 'received')->where('type', 'center')->where('entity_id', $centerId);
+            $q->where('action', 'received')->whereIn('type',  ['center','special_processing', 'coffee_drying'])->where('entity_id', $centerId);
         })->doesntHave('isReference')->with(['transactionDetail' => function ($query) {
             $query->where('container_status', 0);
         }])->whereHas('transactionDetail', function ($q) {
