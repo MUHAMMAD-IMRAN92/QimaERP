@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Season;
+use Exception;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
@@ -422,9 +423,21 @@ class ProcessingManagerController extends Controller
 
                     $type = 'special_processing';
                     $isSpecial = true;
+                    if ($transactionObj['is_server']) {
+                        $parentTransaction = Transaction::where('transaction_id', $transactionObj['reference_id'])->first();
+                    } else {
+                        $localCode =  $transactionObj['reference_id'] . '_' . auth()->user()->user_id . '-T';
+
+                        $parentTransaction = Transaction::where('local_code', 'like', "$localCode%")
+                            ->latest('transaction_id')
+                            ->first();
+                    }
+                    if (!$parentTransaction) {
+                        throw new Exception('Parent trans`action not found. reference_id = ' . $transactionObj['reference_id']);
+                    }
 
                     $result = Transaction::create([
-                        'batch_number' => $transactionObj['batch_number'],
+                        'batch_number' => $parentTransaction->batch_number,
                         'is_parent' => 0,
                         'created_by' =>  $user->user_id,
                         'is_local' => FALSE,
@@ -432,7 +445,7 @@ class ProcessingManagerController extends Controller
                         'is_special' => $isSpecial,
                         'is_mixed' => $transactionObj['is_mixed'],
                         'transaction_type' => 0,
-                        'reference_id' => 000, //change from  parent
+                        'reference_id' =>  $parentTransaction->transaction_id,
                         'transaction_status' => 'received',
                         'is_new' => 0,
                         'sent_to' => $sentTo ?? $transactionObj['sent_to'],
