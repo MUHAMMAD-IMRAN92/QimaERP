@@ -382,23 +382,30 @@ class ProcessingManagerController extends Controller
                     ]);
                     $ref_local_code =    explode(",", $transactionObj['ref_local_code']);
                     foreach ($ref_local_code as $rlc) {
+
                         if (Str::contains($rlc, '-')) {
                             $serverTransaction = Transaction::where('local_code', 'LIKE', "%$rlc%")->first();
+                            $subject = $result->reference_id . ',' . $serverTransaction->transaction_id;
+                            $search = '0,';
+                            $trimmed = str_replace($search, '', $subject);
                             $serverTransaction->update([
                                 'is_parent' => $result->transaction_id,
                             ]);
 
                             $result->update([
-                                'reference_id' => $result->reference_id . ',' . $serverTransaction->transaction_id
+                                'reference_id' => $trimmed
                             ]);
                         } else {
                             $serverTransaction = Transaction::where('transaction_id', $rlc)->first();
+                            $subject = $result->reference_id . ',' . $serverTransaction->transaction_id;
+                            $search = '0,';
+                            $trimmed = str_replace($search, '', $subject);
                             $serverTransaction->update([
                                 'is_parent' => $result->transaction_id,
                             ]);
 
                             $result->update([
-                                'reference_id' => $result->reference_id . ',' . $serverTransaction->transaction_id
+                                'reference_id' => $trimmed
                             ]);
                         }
                     }
@@ -492,7 +499,42 @@ class ProcessingManagerController extends Controller
 
                     $type = 'special_processing';
                     $isSpecial = true;
+                    if ($transactionObj['is_server_id']) {
+                        $parentTransaction = Transaction::where('transaction_id', $transactionObj['reference_id'])->first();
+                    } else {
+                        $localCode =  $transactionObj['reference_id'] . '_' . auth()->user()->user_id . '-T';
 
+                        $parentTransaction = Transaction::where('local_code', 'like', "$localCode%")
+                            ->latest('transaction_id')
+                            ->first();
+                    }
+                    if (!$parentTransaction) {
+                        throw new Exception('Parent trans`action not found. reference_id = ' . $transactionObj['reference_id']);
+                    }
+
+                    $result = Transaction::create([
+                        'batch_number' => $parentTransaction->batch_number,
+                        'is_parent' => 0,
+                        'created_by' =>  $user->user_id,
+                        'is_local' => FALSE,
+                        'local_code' => $transactionObj['local_code'],
+                        'is_special' => $isSpecial,
+                        'is_mixed' => $transactionObj['is_mixed'],
+                        'transaction_type' => 0,
+                        'reference_id' =>  $parentTransaction->transaction_id,
+                        'transaction_status' => 'received',
+                        'is_new' => 0,
+                        'sent_to' => $sentTo ?? $transactionObj['sent_to'],
+                        'is_server_id' => true,
+                        'is_sent' => $transactionObj['is_sent'],
+                        'session_no' => $transactionObj['session_no'],
+                        'ready_to_milled' => 0,
+                        'is_in_process' => 0,
+                        'is_update_center' => array_key_exists('is_update_center', $transactionObj) ? $transactionObj['is_update_center'] : false,
+                        'local_session_no' => array_key_exists('local_session_no', $transactionObj) ? $transactionObj['local_session_no'] : false,
+                        'local_created_at' => toSqlDT($transactionObj['local_created_at']),
+                        'local_updated_at' => toSqlDT($transactionObj['local_updated_at'])
+                    ]);
                     $result = Transaction::create([
                         'batch_number' => $transactionObj['batch_number'],
                         'is_parent' => 0,
