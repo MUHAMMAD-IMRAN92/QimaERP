@@ -321,6 +321,7 @@ class ProcessingManagerController extends Controller
             $data = collect();
             $transactions = $request->transactions;
             $user = auth()->user();
+            DB::beginTransaction();
             foreach ($transactions as $transaction) {
                 $transactionObj = $transaction['transaction'];
                 if ($transactionObj['sent_to'] == 4) {
@@ -545,6 +546,7 @@ class ProcessingManagerController extends Controller
                     $data->push($result);
                 }
             }
+            DB::commit();
             return sendSuccess(
                 Config("statuscodes." . $this->app_lang . ".success_messages.RECV_COFFEE_MESSAGE"),
                 $data
