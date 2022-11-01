@@ -423,7 +423,7 @@ class ProcessingManagerController extends Controller
 
                     $type = 'special_processing';
                     $isSpecial = true;
-                    if ($transactionObj['is_server']) {
+                    if ($transactionObj['is_server_id']) {
                         $parentTransaction = Transaction::where('transaction_id', $transactionObj['reference_id'])->first();
                     } else {
                         $localCode =  $transactionObj['reference_id'] . '_' . auth()->user()->user_id . '-T';
