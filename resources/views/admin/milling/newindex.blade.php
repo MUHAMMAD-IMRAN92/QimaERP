@@ -637,12 +637,14 @@
                         <select class="ml-md-2" name="sent_to" id="governorate_dropdown">
                             <option value="0" selected disabled>Select Stage</option>
                             @foreach ($sent_to as $key => $sent)
-                                <option value="{{ $key }}" {{request()->get('sent_to') == $key ? "selected" : ""}}>
+                                <option value="{{ $key }}"
+                                    {{ request()->get('sent_to') == $key ? 'selected' : '' }}>
                                     {{ $sent }}
                                 </option>
                             @endforeach
                         </select>
-                        <button class="milling-link btn-border"  onclick="search()"  id="search-btn" type="submit">Search</button>
+                        <button class="milling-link btn-border" onclick="search()" id="search-btn"
+                            type="submit">Search</button>
                         <button class="milling-link btn-border" id="excel-btn" type="submit"
                             onclick="excel()">Export</button>
 
@@ -805,10 +807,19 @@
                                                                                     <ul
                                                                                         class="list-group list-group-flush">
                                                                                         @foreach ($transaction['transaction']->transactionDetail as $keyf => $detail)
-                                                                                            <li class="list-group-item">
-                                                                                                {{ $detail->container_number . ':' }}
-                                                                                                <b>{{ $detail->container_weight }}
-                                                                                            </li>
+                                                                                            <div style="display: flex"
+                                                                                                id="details_{{ $detail->transaction_detail_id }}">
+                                                                                                <li
+                                                                                                    class="list-group-item">
+                                                                                                    {{ $detail->container_number . ':' }}
+                                                                                                    <b>{{ $detail->container_weight }}
+                                                                                                </li>
+                                                                                                @if ($transaction['transaction']->sent_to == 12 && $detail->reference_id == 0)
+                                                                                                    <i class="fa fa-trash mt-2"
+                                                                                                        aria-hidden="true"
+                                                                                                        onclick="delBasket({{ $detail->transaction_detail_id }})"></i>
+                                                                                                @endif
+                                                                                            </div>
                                                                                         @endforeach
                                                                                     </ul>
                                                                                 </div>
@@ -946,10 +957,12 @@
             function excel() {
                 $('#excel-form').attr('action', '{{ url('admin/milling_export') }}');
             }
+
             function search() {
                 $('#excel-form').attr('action', '{{ url('admin/milling_coffee_search') }}');
             }
-            search-btn
+            search - btn
+
             function disableFun() {
                 $('.checkBox13').prop('checked', false);
                 if ($(".checkSentTo140:checkbox:checked").length > 0) {
@@ -1050,5 +1063,21 @@
                 slider.scrollLeft = scrollLeft - walk;
                 console.log(walk);
             });
+
+            function delBasket(key) {
+
+                $(`#details_${key}`).remove();
+                $.ajax({
+
+                    url: "{{ url('admin/delBasket') }}",
+                    type: "GET",
+                    data: {
+                        'id': key,
+                    },
+                    success: function(data) {
+                       console.log(data);
+                    }
+                });
+            }
         </script>
     @endsection

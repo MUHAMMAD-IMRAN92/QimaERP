@@ -185,4 +185,13 @@ class BatchNumberController extends Controller
         Excel::import(new ImportVillage,  $request->file('file')->store('files'));
         return redirect()->back();
     }
+    public function deleteBasket(Request $request)
+    {
+        $detail =  TransactionDetail::where('transaction_detail_id', $request->id)->first();
+
+        $detail->metas()->delete();
+
+        $detail->delete();
+        return 1;
+    }
 }

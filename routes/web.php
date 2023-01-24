@@ -312,5 +312,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/farmers_upload', 'BatchNumberController@farmer');
         Route::post('/farmers_upload', 'BatchNumberController@farmerPost');
         Route::post('/villages_upload', 'BatchNumberController@villages');
+
+        Route::get('/delBasket', 'BatchNumberController@deleteBasket');
     });
 });
